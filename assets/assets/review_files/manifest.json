@@ -35,7 +35,7 @@
    "txt": "assets/review_files/التنشيط التربوي/01.txt",
    "name": "الاندية التربوية\\الأندية التربوية",
    "topic": "الاندية التربوية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/التنشيط التربوي/02.pdf",
@@ -182,7 +182,7 @@
    "txt": "assets/review_files/التنشيط التربوي/22.txt",
    "name": "الحياة المدرسية\\دليل رقم4 تدبير الأنشطة الصفية ودعم التعلمات(2)",
    "topic": "الحياة المدرسية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/التنشيط التربوي/23.pdf",
@@ -256,42 +256,42 @@
    "txt": "assets/review_files/خطاطات ذهنية/01.txt",
    "name": ".\\TIMSS-PIRLS-PNEA-PISA التقييمات بمنظومة التعليم",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/02.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/02.txt",
    "name": ".\\البرنامج الحكومي",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/03.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/03.txt",
    "name": ".\\التربية الدامجة الجزء 1",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/04.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/04.txt",
    "name": ".\\التربية الدامجة الجزء 2",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/05.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/05.txt",
    "name": ".\\التربية الدامجة الجزء 3",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/06.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/06.txt",
    "name": ".\\القانون الإطار من المادة 1 إلى 18",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/07.pdf",
@@ -305,28 +305,28 @@
    "txt": "assets/review_files/خطاطات ذهنية/08.txt",
    "name": ".\\القانون الإطار من المادة 36 إلى 59",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/09.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/09.txt",
    "name": ".\\القانون الإطار من المادة 53 إلى 56",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/10.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/10.txt",
    "name": ".\\النمودج التنموي الجزء الأول",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/11.pdf",
    "txt": "assets/review_files/خطاطات ذهنية/11.txt",
    "name": ".\\النمودج التنموي الجزء الثاني",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/12.pdf",
@@ -340,7 +340,7 @@
    "txt": "assets/review_files/خطاطات ذهنية/13.txt",
    "name": ".\\ملخص ديداكتيك المواد",
    "topic": "خطاطات ذهنية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/14.pdf",
@@ -356,14 +356,14 @@
    "txt": "assets/review_files/دورات تكوينية/01.txt",
    "name": ".\\احداث الاكاديميات الجهوية المهام والاختصاصات",
    "topic": "دورات تكوينية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/02.pdf",
    "txt": "assets/review_files/دورات تكوينية/02.txt",
    "name": ".\\الحقيبة التكوينية لدورة علوم التربية والديداكتيك مع المفتش التربوي",
    "topic": "دورات تكوينية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/03.pdf",
@@ -398,7 +398,7 @@
    "txt": "assets/review_files/دورات تكوينية/07.txt",
    "name": ".\\دليل إنتاج الوسائل التعليمية وتدبير الأنشطة الصفية في اللغة العربية",
    "topic": "دورات تكوينية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/08.pdf",
@@ -475,7 +475,7 @@
    "txt": "assets/review_files/دورات تكوينية/18.txt",
    "name": ".\\نظريات القيادة ورشات",
    "topic": "دورات تكوينية",
-   "quiz": false
+   "quiz": "false"
   }
  ],
  "ديداكتيك الرياضيات": [
@@ -1053,7 +1053,7 @@
    "txt": "assets/review_files/ديداكتيك اللغة العربية/62.txt",
    "name": "ديداكتيك\\مشروع الوحدة البختي-عام",
    "topic": "ديداكتيك",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/ديداكتيك اللغة العربية/63.pdf",
@@ -1228,7 +1228,7 @@
    "txt": "assets/review_files/ديداكتيك اللغة العربية/87.txt",
    "name": "عدة كاملة خاصة بالمستويات الابتذائية\\دليل في رحاب اللغة العربية المستوى الثاني (الجزء 1)",
    "topic": "عدة كاملة خاصة بالمستويات الابتدائية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/ديداكتيك اللغة العربية/88.pdf",
@@ -1470,14 +1470,14 @@
    "txt": "assets/review_files/ديداكتيك النشاط العلمي/08.txt",
    "name": "ديداكتيك\\تجارب النشاط العلمي-1",
    "topic": "ديداكتيك",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/ديداكتيك النشاط العلمي/09.pdf",
    "txt": "assets/review_files/ديداكتيك النشاط العلمي/09.txt",
    "name": "ديداكتيك\\جرد لجميع دروس النشاط العلمي",
    "topic": "ديداكتيك",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/ديداكتيك النشاط العلمي/10.pdf",
@@ -1491,7 +1491,7 @@
    "txt": "assets/review_files/ديداكتيك النشاط العلمي/11.txt",
    "name": "ديداكتيك\\دليل فضاء النشاط-العلمي المستوى1 شتنبر2019",
    "topic": "ديداكتيك",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/ديداكتيك النشاط العلمي/12.pdf",
@@ -1563,7 +1563,7 @@
    "txt": "assets/review_files/علوم التربية/04.txt",
    "name": "الإصلاح التربوي والسياسة التعليمية\\التدابير-ذات-الاولوية",
    "topic": "الإصلاح التربوي والسياسة التعليمية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/05.pdf",
@@ -1611,7 +1611,7 @@
    "txt": "assets/review_files/علوم التربية/11.txt",
    "name": "الإصلاح التربوي والسياسة التعليمية\\المجلس الاعلى",
    "topic": "الإصلاح التربوي والسياسة التعليمية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/12.pdf",
@@ -1632,7 +1632,7 @@
    "txt": "assets/review_files/علوم التربية/14.txt",
    "name": "الإصلاح التربوي والسياسة التعليمية\\النظام المدرسي في التعليم الأولي والابتدائي والثانوي",
    "topic": "الإصلاح التربوي والسياسة التعليمية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/15.pdf",
@@ -1695,7 +1695,7 @@
    "txt": "assets/review_files/علوم التربية/23.txt",
    "name": "الإصلاح التربوي والسياسة التعليمية\\ملخص المنهاج الدراسي",
    "topic": "الإصلاح التربوي والسياسة التعليمية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/24.pdf",
@@ -1751,7 +1751,7 @@
    "txt": "assets/review_files/علوم التربية/31.txt",
    "name": "النمو واستراتيجيات اكتساب الفهم\\فروع علم النفس",
    "topic": "النمو واستراتيجيات اكتساب الفهم",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/32.pdf",
@@ -1786,7 +1786,7 @@
    "txt": "assets/review_files/علوم التربية/36.txt",
    "name": "سوسيولوجيا التربية وسيكوسوسيولوجيا التربية\\القياس النفسي والتربوي 2",
    "topic": "سوسيولوجيا التربية وسيكوسوسيولوجيا التربية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/37.pdf",
@@ -1814,14 +1814,14 @@
    "txt": "assets/review_files/علوم التربية/40.txt",
    "name": "سوسيولوجيا التربية وسيكوسوسيولوجيا التربية\\مشكلة الكذب في سلوك الاطفال",
    "topic": "سوسيولوجيا التربية وسيكوسوسيولوجيا التربية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/41.pdf",
    "txt": "assets/review_files/علوم التربية/41.txt",
    "name": "سيكولوجيا التربية وتقاطعاتها\\سيكولوجيا التربية",
    "topic": "سيكولوجيا التربية وتقاطعاتها",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/42.pdf",
@@ -1940,7 +1940,7 @@
    "txt": "assets/review_files/علوم التربية/58.txt",
    "name": "نظريات التعلم والمقاربات البيداغوجية\\دليل رقم5 استراتيجات وممارسات في ضوء البيداغوجيا الفارقية(2)",
    "topic": "نظريات التعلم والمقاربات البيداغوجية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/59.pdf",
@@ -1982,7 +1982,7 @@
    "txt": "assets/review_files/علوم التربية/64.txt",
    "name": "نظريات التعلم والمقاربات البيداغوجية\\نظريات التعلم و المستجدات",
    "topic": "نظريات التعلم والمقاربات البيداغوجية",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/علوم التربية/65.pdf",
@@ -2033,7 +2033,7 @@
    "txt": "assets/review_files/مؤسسات الريادة/01.txt",
    "name": ".\\Mon Aide Mémoire Français 5",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/02.pdf",
@@ -2061,35 +2061,35 @@
    "txt": "assets/review_files/مؤسسات الريادة/05.txt",
    "name": ".\\البطاقة التقنية للدعم الممتد مدونة معلمي 2022 2026",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/06.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/06.txt",
    "name": ".\\البطاقة التقنية للدعم الممتد",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/07.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/07.txt",
    "name": ".\\المستجد في مواد التعليم الصريح 2025 2026 مدونة معلمي",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/08.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/08.txt",
    "name": ".\\المستوى الأول مستجدات الرائز القبلي مدونة معلمي",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/09.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/09.txt",
    "name": ".\\خطاطة ذهنية نمطية فرنسية و رياضيات",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/10.pdf",
@@ -2145,21 +2145,21 @@
    "txt": "assets/review_files/مؤسسات الريادة/17.txt",
    "name": ".\\كراسة الرياضيات المستوى الرابع طبعة 2025",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/18.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/18.txt",
    "name": ".\\كراسة اللغة العربية المستوى السادس 2025 2026 الجزء 1",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/19.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/19.txt",
    "name": ".\\كراسة اللغة الفرنسية المستوى الرابع المدرسة الرائدة",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/20.pdf",
@@ -2187,7 +2187,7 @@
    "txt": "assets/review_files/مؤسسات الريادة/23.txt",
    "name": ".\\كراسة النشاط العلمي المستوى الرابع 2025",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/24.pdf",
@@ -2236,21 +2236,21 @@
    "txt": "assets/review_files/مؤسسات الريادة/30.txt",
    "name": ".\\مصفوفة المضامين والبنيات اللغوية للمستوى الخامس",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/31.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/31.txt",
    "name": ".\\مفكرتي في الرياضيات المستوى الخامس",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/32.pdf",
    "txt": "assets/review_files/مؤسسات الريادة/32.txt",
    "name": ".\\مفكرتي في اللغة العربية المستوى الخامس",
    "topic": "مؤسسات الريادة — مقاربة TaRL",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/33.pdf",
@@ -2273,7 +2273,7 @@
    "txt": "assets/review_files/مراسلات ومذكرات/01.txt",
    "name": ".\\154 تأمين الزمن المدرسي",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/02.pdf",
@@ -2287,42 +2287,42 @@
    "txt": "assets/review_files/مراسلات ومذكرات/03.txt",
    "name": ".\\ارساء المشروع الشخصي للمتعلم",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/04.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/04.txt",
    "name": ".\\استراتيجية التكوين المستمر",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/05.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/05.txt",
    "name": ".\\الأستاذ الرئيس",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/06.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/06.txt",
    "name": ".\\الأسس والمرجعيات المؤطرة للسياسات العمومية في التربية والتكوين",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/07.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/07.txt",
    "name": ".\\الارتقاء بالتوجيه المدرسي",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/08.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/08.txt",
    "name": ".\\التوجيه المدرسي-المشروع الشخصي للمتعلم",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/09.pdf",
@@ -2336,14 +2336,14 @@
    "txt": "assets/review_files/مراسلات ومذكرات/10.txt",
    "name": ".\\شريف رقم 1.00.201 - بتنفيذ القانون رقم 05.00 بشأن النظام الأساسي للتعليم الأولي",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/11.pdf",
    "txt": "assets/review_files/مراسلات ومذكرات/11.txt",
    "name": ".\\شريف رقم 1.14.100 - بتنفيذ القانون رقم 105.12 المتعلق بالمجلس الأعلى للتربية",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/12.pdf",
@@ -2357,7 +2357,7 @@
    "txt": "assets/review_files/مراسلات ومذكرات/13.txt",
    "name": ".\\مذكرة المدارس الجماعاتية",
    "topic": "مراسلات ومذكرات",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/14.pdf",
@@ -2401,14 +2401,14 @@
    "txt": "assets/review_files/مشروع المؤسسة المندمج/03.txt",
    "name": ".\\مذكرة تعميم مشروع المؤسسة المندمج",
    "topic": "مشروع المؤسسة المندمج",
-   "quiz": false
+   "quiz": "false"
   },
   {
    "pdf": "assets/review_files/مشروع المؤسسة المندمج/04.pdf",
    "txt": "assets/review_files/مشروع المؤسسة المندمج/04.txt",
    "name": ".\\مذكرة مشروع المؤسسة بالمؤسسات",
    "topic": "مشروع المؤسسة المندمج",
-   "quiz": false
+   "quiz": "false"
   }
  ]
 }
