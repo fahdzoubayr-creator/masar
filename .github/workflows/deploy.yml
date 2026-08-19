@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Download review files
+        run: |
+          curl -sL -o review_files.tar.gz https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v2/review_files.tar.gz
+          tar -xzf review_files.tar.gz
+          rm review_files.tar.gz
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
