@@ -1,0 +1,154 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:masar_app/core/theme/app_theme.dart';
+import 'package:masar_app/core/services/session_service.dart';
+import 'package:masar_app/core/widgets/page_transitions.dart';
+import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/home_dashboard_screen.dart';
+import 'package:masar_app/features/audio_room/presentation/screens/audio_room_screen.dart';
+import 'package:masar_app/features/splash/presentation/splash_web_url_cleaner_stub.dart'
+    if (dart.library.js_interop) 'package:masar_app/features/splash/presentation/splash_web_url_cleaner.dart';
+
+class SplashScreen extends StatefulWidget {
+  /// عند الرجوع إليها عبر زر رجوع (وليست أول شاشة عند الإقلاع)
+  /// يُمنع التخطّي التلقائي حتى لا ينقلك للتسجيل/اللوحة مباشرة.
+  final bool fromBack;
+  const SplashScreen({super.key, this.fromBack = false});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _autoSkip();
+  }
+
+  Future<void> _autoSkip() async {
+    if (widget.fromBack) return;
+    final loggedIn = await SessionService.isLoggedIn();
+    if (!mounted) return;
+    if (loggedIn) {
+      _goHomeOrRoom();
+    }
+  }
+
+  void _startBranching() {
+    Navigator.of(context).push(fadeRoute(const BranchingScreen()));
+  }
+
+  /// يتوجه إما إلى لوحة الرئيسية أو مباشرة إلى قاعة صوتية عبر رابط عميق
+  /// (`?room=...`) يعيد توجيه الدخول إلى القاعة.
+  Future<void> _goHomeOrRoom() async {
+    final query = Uri.base.queryParameters;
+    final roomId = (query['room'] ?? '').trim();
+    if (roomId.isNotEmpty) {
+      // استهلاك الرابط العميق مرة واحدة: يُحذف من شريط العنوان فوراً
+      // حتى لا يعيد «واصل» دخول الجلسة في كل مرة.
+      _clearDeepLinkQuery();
+      final name = await SessionService.resolveUserName();
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => AudioRoomScreen(
+            room: roomId,
+            displayName: name,
+            isCoordinator: false,
+          ),
+        ),
+        (route) => false,
+      );
+      return;
+    }
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const HomeDashboardScreen()),
+      (route) => false,
+    );
+  }
+
+  /// يزيل معاملات الرابط العميق (`?room=&code=`) من عنوان المتصفح عبر
+  /// `history.replaceState` دون إعادة تحميل الصفحة (لا يعمل على المنصات الأخرى).
+  void _clearDeepLinkQuery() {
+    if (!kIsWeb) return;
+    final clean = Uri.base.replace(queryParameters: {});
+    clearDeepLinkQuery(clean.toString());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 14, 24, 22),
+            child: Column(
+              children: [
+                const Spacer(flex: 2),
+                Image.asset(
+                  'assets/images/شعار التطبيق1.png',
+                  width: 140,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                ),
+                const SizedBox(height: 18),
+                const Text(
+                  'أهلاً بك في تطبيق احتراف',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.goldSoft),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'فضاؤك الشامل للتحضير لمباريات وامتحانات المنظومة التربوية',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 13, color: AppColors.muted, height: 1.6),
+                ),
+                const Spacer(flex: 3),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.gold,
+                      foregroundColor: const Color(0xFF06201F),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: _startBranching,
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('اختر مباراتك وابدأ التحضير',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 14.5)),
+                        SizedBox(width: 8),
+                        Icon(Icons.arrow_forward, size: 18),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text('معاً نحو النجاح',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 10.5, color: AppColors.muted)),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,556 @@
+import 'package:masar_app/core/models/question.dart';
+
+class FrenchDidacticsBank {
+  FrenchDidacticsBank._();
+
+  static const String allWrong = 'Toutes les réponses ci-dessus sont fausses.';
+
+  static const Map<String, List<Question>> bank = {
+    'La planification des activités d\'enseignement/apprentissage': [
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Qu\'appelle-t-on, dans le langage didactique, la « fiche pédagogique » ?',
+        options: [
+          'Le registre dans lequel l\'enseignant note les résultats des évaluations.',
+          'Le document de préparation écrite qui organise les étapes du déroulement d\'une leçon et les activités des apprenants.',
+          'La liste des manuels et des supports utilisés pendant toute l\'année scolaire.',
+          'Le compte rendu rédigé par l\'inspecteur après une visite de la classe.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'La fiche pédagogique est le document de préparation dans lequel l\'enseignant planifie la leçon : étapes, activités de l\'enseignant et des apprenants, durée, supports et évaluation.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Laquelle de ces formulations constitue un objectif opérationnel correctement rédigé ?',
+        options: [
+          'Comprendre le rôle des adjectifs dans le texte étudié.',
+          'Sensibiliser les élèves à l\'importance de la politesse dans la vie quotidienne.',
+          'L\'élève sera capable de lire couramment de petits textes variés.',
+          'À la fin de la séance, et sans aide, l\'élève sera capable d\'identifier le sujet du verbe dans une phrase simple.',
+          allWrong,
+        ],
+        correctIndex: 3,
+        explanation:
+            'Un objectif opérationnel doit être observable et mesurable : il précise un comportement, une condition et un critère. La formulation « identifier le sujet du verbe dans une phrase simple » répond à cette exigence.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Selon les choix majeurs du curriculum de l\'enseignement primaire, la planification de l\'enseignement du français doit s\'appuyer d\'abord sur :',
+        options: [
+          'le rythme de progression prévu dans le guide pédagogique du manuel.',
+          'les profils d\'entrée et de sortie de l\'apprenant.',
+          'la préférence de l\'enseignant pour certains types de supports.',
+          'les acquis de la classe qui précède le niveau concerné.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Parmi les cinq choix majeurs de l\'organisation des apprentissages figure la planification à partir des profils d\'entrée et de sortie de l\'apprenant.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Dans l\'acronyme « SMART » utilisé pour formuler les objectifs, la lettre « M » signifie que l\'objectif doit être :',
+        options: [
+          'Minimal, c\'est-à-dire limité à une seule activité.',
+          'Motivant, pour susciter l\'intérêt de l\'élève.',
+          'Mesurable, afin que son atteinte puisse être observée et vérifiée.',
+          'Manuel, c\'est-à-dire réalisable avec le seul manuel scolaire.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'Dans la règle SMART, chaque lettre renvoie à un critère : Spécifique, Mesurable, Atteignable, Réaliste et Temporellement défini. La lettre « M » renvoie au caractère mesurable de l\'objectif.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Dans une fiche pédagogique, la rubrique « prérequis » désigne :',
+        options: [
+          'les supports et le matériel nécessaires au déroulement de la séance.',
+          'les acquisitions antérieures indispensables à l\'apprentissage de la nouvelle notion.',
+          'les exercices de fixation proposés à la fin de la leçon.',
+          'les critères d\'évaluation de la leçon à venir.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Les prérequis sont les connaissances et habiletés déjà installées chez l\'élève et sur lesquelles s\'appuie la nouvelle leçon ; ils sont souvent vérifiés lors de l\'évaluation diagnostique.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'L\'organisation de la classe en ateliers a principalement pour objectif de :',
+        options: [
+          'occuper les élèves les plus rapides pendant que les autres terminent.',
+          'réduire le nombre de supports à préparer pour la séance.',
+          'permettre à l\'enseignant de se reposer pendant l\'activité.',
+          'diversifier les activités et individualiser l\'aide selon les besoins des élèves.',
+          allWrong,
+        ],
+        correctIndex: 3,
+        explanation:
+            'Les ateliers font travailler les élèves sur des tâches variées, permettent de différencier les aides et favorisent l\'autonomie et la coopération entre élèves.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Dans le curriculum marocain de l\'enseignement primaire (2021), une unité didactique :',
+        options: [
+          'dure quatre semaines, dont la dernière est consacrée au projet de classe.',
+          'dure cinq semaines : quatre semaines d\'installation des ressources et une semaine d\'évaluation et de soutien.',
+          'dure six semaines et couvre une période du semestre.',
+          'dure un semestre et comprend trois sous-compétences.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'L\'enseignement par séquences repose sur six unités didactiques par an (trois par semestre) ; chaque unité dure cinq semaines, la cinquième étant réservée à l\'évaluation, la remédiation et le soutien.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Le document qui répartit les unités didactiques, les leçons et les activités sur les trente-quatre semaines de l\'année scolaire s\'appelle :',
+        options: [
+          'la programmation annuelle.',
+          'la programmation périodique.',
+          'la programmation hebdomadaire.',
+          'la fiche de préparation quotidienne.',
+          allWrong,
+        ],
+        correctIndex: 0,
+        explanation:
+            'La programmation annuelle répartit les apprentissages (compétences, sous-compétences, unités didactiques) sur les semaines de l\'année ; la programmation périodique et hebdomadaire en sont des déclinaisons plus fines.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Quel est l\'ordre méthodologique des grandes étapes d\'une leçon au cycle primaire ?',
+        options: [
+          'Évaluation – Découverte – Conceptualisation – Application.',
+          'Observation/Découverte – Compréhension/Conceptualisation – Application/Transfert – Évaluation.',
+          'Application – Observation – Évaluation – Conceptualisation.',
+          'Découverte – Application – Conceptualisation – Évaluation.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'La démarche méthodologique recommandée comporte quatre étapes principales dans cet ordre : découverte/observation, compréhension/conceptualisation, application/transfert, évaluation.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Au cycle primaire, la compétence annuelle en français est organisée en :',
+        options: [
+          'séquences qui correspondent chacune à une leçon de langue.',
+          'sous-compétences, chacune étant développée à travers une ou plusieurs unités didactiques.',
+          'chapitres, chacun étant clos par un projet de classe.',
+          'domaines étanches enseignés séparément tout au long de l\'année.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'La compétence annuelle se décline en sous-compétences ; chaque sous-compétence est développée à travers une unité didactique (six unités par an, trois par semestre).',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Dans le curriculum marocain, la grammaire, la conjugaison, l\'orthographe et le lexique constituent :',
+        options: [
+          'les quatre domaines d\'apprentissage du français.',
+          'les disciplines des activités de langue au service des domaines d\'apprentissage.',
+          'les quatre étapes de la démarche d\'une leçon.',
+          'les composantes obligatoires de l\'évaluation sommative.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Les activités de langue (grammaire, conjugaison, orthographe, lexique) fournissent les apprentissages linguistiques nécessaires au développement des compétences dans les quatre domaines : compréhension et production de l\'oral, compréhension et production de l\'écrit.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La planification des activités d\'enseignement/apprentissage',
+        text: 'Le « décloisonnement des activités » recommandé par le curriculum consiste à :',
+        options: [
+          'supprimer les leçons de langue pour consacrer plus de temps à la lecture.',
+          'enseigner chaque discipline indépendamment afin de ne pas confondre les élèves.',
+          'organiser les activités autour d\'un même thème et d\'une même sous-compétence en les reliant entre elles.',
+          'remplacer toutes les activités orales par des activités écrites.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'Le décloisonnement relie les activités (communication orale, lecture, langue, production écrite, projet) autour du thème et de la sous-compétence de l\'unité didactique, en créant un univers homogène de référence.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+    ],
+    'La gestion des activités d\'enseignement/apprentissage': [
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Dans l\'approche par compétences, le rôle de l\'enseignant est avant tout celui d\'un :',
+        options: [
+          'transmetteur de connaissances qui dicte la règle à apprendre.',
+          'animateur, médiateur et facilitateur des apprentissages de l\'élève.',
+          'contrôleur qui sanctionne chaque erreur commise.',
+          'observateur passif qui intervient uniquement à la fin de la séance.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'L\'approche par compétences est centrée sur l\'apprenant : l\'enseignant anime, médiatise et facilite les apprentissages, tout en considérant l\'erreur comme une nécessité didactique.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Selon les fondements de l\'enseignement du français au Maroc, l\'erreur de l\'élève doit être :',
+        options: [
+          'immédiatement sanctionnée pour éviter qu\'elle ne se répète.',
+          'ignorée afin de ne pas décourager l\'élève.',
+          'considérée comme une nécessité didactique à exploiter.',
+          'corrigée uniquement par l\'enseignant en fin de trimestre.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'L\'erreur est une nécessité didactique : elle renseigne sur le raisonnement de l\'élève et constitue un point d\'appui pour la remédiation et la régulation des apprentissages.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'La différenciation pédagogique consiste, pour l\'enseignant, à :',
+        options: [
+          'donner les mêmes exercices à tous les élèves en même temps.',
+          'réserver un soutien particulier aux seuls élèves les plus rapides.',
+          'diviser la classe en deux niveaux de manière définitive pour toute l\'année.',
+          'diversifier les approches, les méthodes, le matériel et les activités selon les besoins des élèves.',
+          allWrong,
+        ],
+        correctIndex: 3,
+        explanation:
+            'L\'approche ouverte à la différenciation pédagogique vise à donner à chaque apprenant les meilleures chances d\'apprendre en diversifiant les approches, les méthodes, le matériel et les activités.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Qu\'appelle-t-on « pédagogie du projet » (projet de classe) au cycle primaire ?',
+        options: [
+          'Une modalité qui consiste à faire réaliser chaque semaine un exercice d\'entraînement.',
+          'Un choix pédagogique ancré dans l\'action qui donne du sens aux apprentissages et ouvre la classe sur son environnement.',
+          'Une technique de gestion du temps réservée aux grandes classes.',
+          'Une méthode d\'évaluation des acquis en fin d\'unité didactique.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Le projet de classe concrétise l\'approche par compétences et l\'approche actionnelle : il permet à l\'apprenant d\'apprendre par l\'action et de développer des compétences communicatives et sociales.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Le travail en groupe en classe de FLE présente l\'intérêt principal de :',
+        options: [
+          'permettre à l\'enseignant de réduire le temps de préparation des séances.',
+          'éviter les conflits entre les élèves pendant l\'apprentissage.',
+          'favoriser l\'interaction, la coopération et les échanges sociocognitifs entre les élèves.',
+          'remplacer entièrement le travail individuel et l\'expression personnelle.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'L\'apprentissage collaboratif, interactif et solidaire crée des occasions de conflits sociocognitifs et permet l\'entraide, le tutorat entre pairs et le recul métacognitif.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Pendant une séance de production écrite, face aux élèves en difficulté, la pratique recommandée est de :',
+        options: [
+          'les laisser travailler seuls sans consigne pour préserver leur autonomie.',
+          'rester disponible, les aider de manière différenciée et maintenir des ressources à leur disposition.',
+          'leur demander de copier la production d\'un camarade qui a réussi.',
+          'reporter leur production à la séance suivante pour gagner du temps.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Le déroulement recommandé de la production écrite prévoit une aide pour les élèves en difficulté : l\'enseignant se montre disponible et les appuie de façon différenciée (dictionnaire, banque d\'idées, consignes explicites).',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Pour maintenir l\'attention et la motivation des élèves, l\'enseignant devrait :',
+        options: [
+          'multiplier les exercices écrits pour habituer les élèves au travail sérieux.',
+          'donner la parole uniquement aux élèves les plus à l\'aise à l\'oral.',
+          'diversifier les techniques d\'animation et s\'appuyer sur des situations de communication significatives.',
+          'réduire la durée des séances sans tenir compte de la progression.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'La diversité des techniques d\'animation et l\'usage de situations de communication significatives, proches de l\'environnement de l\'élève, favorisent la motivation et l\'attention.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Qu\'appelle-t-on « tutorat » dans la gestion des activités de classe ?',
+        options: [
+          'Une situation où l\'enseignant suit individuellement chaque élève pendant toute la séance.',
+          'Une organisation où un élève plus avancé apporte une aide à un camarade en difficulté.',
+          'Un groupe de soutien organisé après les heures de classe.',
+          'Une technique de correction collective des cahiers d\'exercices.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Le tutorat est une modalité d\'entraide entre pairs : l\'élève tuteur accompagne un camarade, ce qui favorise la coopération et l\'apprentissage mutuel.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Lors de la correction collective d\'une production écrite, la pratique recommandée est de :',
+        options: [
+          'corriger toutes les copies en dehors de la classe et annoncer les résultats.',
+          'corriger uniquement les erreurs d\'orthographe pour ne pas perdre de temps.',
+          'choisir une ou deux productions, même comportant des erreurs, et impliquer les apprenants dans leur amélioration.',
+          'faire réécrire le texte aux élèves sans l\'expliciter au tableau.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'La correction collective porte sur des productions choisies, même erronées : les élèves participent aux modifications, ce qui les rend conscients de leurs lacunes.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Le jeu de rôles et la dramatisation, utilisés en communication orale, visent principalement à :',
+        options: [
+          'occuper les élèves pendant les moments libres de la semaine.',
+          'faire mémoriser des textes sans en comprendre le sens.',
+          'permettre aux élèves de produire des actes de langage dans des situations simulées de communication.',
+          'évaluer la compréhension écrite en fin d\'unité.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'La dramatisation et le jeu de rôles placent les élèves dans des situations de communication simulées où ils réinvestissent les actes de langage étudiés, avec attention à la correction phonétique et prosodique.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Les « conflits sociocognitifs » recherchés par l\'enseignant lors des interactions de classe ont pour rôle de :',
+        options: [
+          'sanctionner les élèves qui ne respectent pas les règles de la classe.',
+          'créer un climat de compétition entre les équipes.',
+          'susciter le recul métacognitif nécessaire à la construction des apprentissages.',
+          'vérifier la discipline générale de la classe.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'Les occasions de conflits sociocognitifs, nées de la confrontation des points de vue entre élèves, favorisent la prise de recul métacognitif et donc la construction des apprentissages.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'La gestion des activités d\'enseignement/apprentissage',
+        text: 'Une gestion efficace du temps pendant une séance de lecture suppose que l\'enseignant :',
+        options: [
+          'consacre tout le temps de la séance à la lecture magistrale du texte.',
+          'répartisse le temps entre les moments avant, pendant et après la lecture pour équilibrer les activités.',
+          'laisse la durée s\'écouler librement pour ne pas brusquer les élèves.',
+          'accorde la priorité à la correction écrite au détriment de la lecture.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'La démarche de lecture s\'organise en trois phases (avant, pendant et après la lecture) : l\'enseignant gère le temps pour faire place aux activités d\'observation, de compréhension, d\'application et d\'évaluation.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+    ],
+    'L\'évaluation et le soutien des apprentissages': [
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Qu\'appelle-t-on évaluation diagnostique ?',
+        options: [
+          'Une évaluation qui sanctionne les acquis de l\'élève en fin d\'année.',
+          'Une évaluation faite au début d\'un apprentissage pour recueillir les acquis et identifier les besoins des élèves.',
+          'Une évaluation qui attribue une note par rapport à la moyenne de la classe.',
+          'Une évaluation faite pendant la séance pour mesurer les progrès en cours.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'L\'évaluation diagnostique se situe au début de l\'année, d\'une unité ou d\'une leçon : elle vérifie les pré-acquis et oriente la planification et le soutien.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Quelle est la fonction principale de l\'évaluation formative ?',
+        options: [
+          'Attester officiellement des acquis de l\'élève à la fin de l\'unité.',
+          'Classer les élèves selon leurs résultats sur une échelle de la classe.',
+          'Réguler l\'apprentissage en cours et aider l\'élève à prendre conscience de ses progrès et de ses difficultés.',
+          'Remplacer l\'évaluation sommative en fin de semestre.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'L\'évaluation formative accompagne l\'apprentissage : elle informe l\'enseignant et l\'élève afin d\'ajuster l\'enseignement et la remédiation en temps opportun.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'L\'évaluation sommative a pour fonction de :',
+        options: [
+          'réguler le déroulement de la séance en cours.',
+          'recueillir les pré-acquis au début de l\'unité.',
+          'permettre à l\'élève de s\'auto-évaluer sur ses progrès.',
+          'certifier, en fin d\'unité ou de période, le degré de maîtrise des acquis visés.',
+          allWrong,
+        ],
+        correctIndex: 3,
+        explanation:
+            'L\'évaluation sommative intervient à la fin d\'une séquence d\'apprentissage : elle vérifie et certifie les acquis (compétences et connaissances) par rapport aux objectifs visés.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Quelle est la différence entre une évaluation critériée et une évaluation normative ?',
+        options: [
+          'L\'évaluation critériée compare l\'élève à la moyenne de la classe, l\'évaluation normative aux critères de réussite.',
+          'L\'évaluation critériée compare la production de l\'élève à des critères de réussite prédéfinis, l\'évaluation normative à la moyenne du groupe.',
+          'L\'évaluation critériée se fait à l\'oral, l\'évaluation normative à l\'écrit.',
+          'L\'évaluation critériée est réservée aux sciences, l\'évaluation normative aux langues.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'L\'évaluation critériée mesure la production par rapport à des critères et indicateurs fixés à l\'avance ; l\'évaluation normative situe l\'élève par rapport au groupe (moyenne de la classe).',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'L\'évaluation d\'une compétence à l\'école primaire consiste à vérifier la capacité de l\'élève à :',
+        options: [
+          'restituer par cœur les règles et les définitions du manuel.',
+          'reproduire le modèle de texte étudié sans aucune modification.',
+          'mobiliser des ressources (savoirs, savoir-faire, savoir-être) pour réaliser une tâche dans une situation de communication.',
+          'répondre à un questionnaire à choix multiples.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'La compétence est une capacité à mobiliser des ressources dans des situations de communication ; son évaluation passe donc par des tâches et des situations d\'intégration, non par une simple restitution.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'L\'ensemble des activités prévues pour aider les élèves en difficulté à combler leurs lacunes après une évaluation s\'appelle :',
+        options: [
+          'la remédiation.',
+          'la consolidation.',
+          'l\'approfondissement.',
+          'la différenciation de la programmation.',
+          allWrong,
+        ],
+        correctIndex: 0,
+        explanation:
+            'La remédiation vise à combler les lacunes repérées lors de l\'évaluation ; elle s\'accompagne parfois de consolidation (fixer les acquis) et d\'approfondissement (aller plus loin).',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Quelle est la différence entre « consolidation » et « approfondissement » dans le soutien ?',
+        options: [
+          'La consolidation enrichit les connaissances, l\'approfondissement les refait.',
+          'La consolidation vise à renforcer et fixer les acquis, l\'approfondissement à les dépasser et aller plus loin.',
+          'La consolidation s\'adresse aux élèves en difficulté, l\'approfondissement à toute la classe.',
+          'La consolidation se fait à l\'écrit, l\'approfondissement à l\'oral.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'La consolidation renforce et fixe ce qui a été appris ; l\'approfondissement propose des situations plus complexes pour dépasser les acquis et développer davantage la compétence.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Qu\'appelle-t-on « critères de réussite » dans l\'évaluation ?',
+        options: [
+          'Les notes attribuées par l\'enseignant à chaque exercice.',
+          'Les conditions et les performances qui permettent de considérer qu\'une tâche a été correctement réalisée.',
+          'La liste des objectifs fixés pour l\'ensemble de l\'unité.',
+          'Les critères utilisés uniquement lors de l\'examen professionnel.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'Les critères de réussite précisent ce que l\'élève doit réussir pour qu\'une tâche soit jugée satisfaisante ; les critères de réalisation décrivent la manière d\'y parvenir.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Qu\'appelle-t-on « portfolio » de l\'élève ?',
+        options: [
+          'Un classeur de fiches pédagogiques utilisé par l\'enseignant.',
+          'Le registre des notes officielles de la classe.',
+          'Un recueil organisé des travaux de l\'élève qui témoigne de ses réalisations et de ses progrès.',
+          'Un recueil de textes et de poésies à apprendre pendant l\'unité.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'Le portfolio rassemble des productions choisies par l\'élève ; il permet de suivre les progrès et d\'évaluer le travail dans des situations réelles de production.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'L\'évaluation diagnostique faite au début d\'une unité didactique sert avant tout à :',
+        options: [
+          'attribuer une note qui sera prise en compte dans la moyenne du semestre.',
+          'planifier les activités et le soutien en fonction des besoins réels des élèves.',
+          'compter le nombre d\'élèves qui ont préparé la leçon à la maison.',
+          'sanctionner les élèves qui ne maîtrisent pas encore la notion.',
+          allWrong,
+        ],
+        correctIndex: 1,
+        explanation:
+            'L\'évaluation diagnostique renseigne sur les acquis et les besoins des élèves ; elle permet d\'adapter la planification, de prévoir la remédiation et de fixer les objectifs de l\'unité.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'Dans l\'organisation de l\'année scolaire marocaine, la cinquième semaine de chaque unité didactique est réservée à :',
+        options: [
+          'l\'installation des nouvelles ressources linguistiques.',
+          'la réalisation du projet de classe.',
+          'l\'évaluation, la remédiation et le soutien.',
+          'la lecture de textes d\'auteur.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'Chaque unité didactique compte cinq semaines : quatre pour l\'installation des ressources et la cinquième pour l\'évaluation, la remédiation et le soutien.',
+        source: 'Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)',
+      ),
+      Question(
+        subject: 'L\'évaluation et le soutien des apprentissages',
+        text: 'La rubrique « Je m\'évalue » proposée à l\'élève à la fin de certaines leçons relève de :',
+        options: [
+          'l\'évaluation sommative organisée par l\'enseignant.',
+          'l\'évaluation diagnostique des acquis antérieurs.',
+          'l\'évaluation formatrice, car l\'élève s\'auto-évalue pour réguler son propre apprentissage.',
+          'l\'évaluation normative comparant l\'élève au groupe.',
+          allWrong,
+        ],
+        correctIndex: 2,
+        explanation:
+            'L\'évaluation formatrice place l\'élève au cœur de l\'évaluation : il s\'auto-évalue, prend conscience de ses réussites et de ses difficultés et régule son propre apprentissage.',
+        source: 'Didactique du français au primaire (Lamgouni)',
+      ),
+    ],
+  };
+}

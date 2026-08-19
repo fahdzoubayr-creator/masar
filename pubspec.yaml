@@ -1,0 +1,33 @@
+name: masar_app
+description: "تطبيق مسار — التحضير لامتحان الكفاءة المهنية للأساتذة"
+publish_to: 'none'
+version: 1.0.3+4
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
+  pdfx: ^2.9.2
+  shared_preferences: ^2.2.3
+  http: ^1.2.2
+  url_launcher: ^6.3.0
+  web: ^1.1.1
+  path_provider: ^2.1.4
+  dart_jsonwebtoken: ^3.4.1
+  livekit_client: ^2.11.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/review_files/
