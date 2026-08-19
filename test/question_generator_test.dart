@@ -28,7 +28,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  test('المولد عربي: 5 خيارات، الخامس «كل الإجابات خاطئة»، والجواب قد يكون عليه', () {
+  test('المولد عربي: 5 خيارات، الخامس «جميع الاختيارات أعلاه خاطئة»، والجواب قد يكون عليه', () {
     final questions = QuestionGenerator.generateFromText(
       _sampleText,
       folder: 'علوم التربية',
@@ -40,8 +40,8 @@ void main() {
 
     for (final q in questions) {
       expect(q.options.length, 5, reason: 'كل سؤال له 5 خيارات');
-      expect(q.options.last, 'كل الإجابات خاطئة',
-          reason: 'الخيار الأخير هو دائماً «كل الإجابات خاطئة»');
+      expect(q.options.last, QuestionGenerator.allWrongOption,
+          reason: 'الخيار الأخير هو دائماً «جميع الاختيارات أعلاه خاطئة»');
       expect(q.correctIndex, inInclusiveRange(0, 4),
           reason: 'الجواب الصحيح بين الخيارات الخمسة');
       expect(q.options[q.correctIndex], isNotNull);
@@ -73,7 +73,7 @@ void main() {
     expect(comprehension, isNotEmpty, reason: 'أسئلة «وفق النص أي عبارة صحيحة»');
     for (final q in comprehension) {
       expect(q.options.length, 5);
-      expect(q.options.last, 'كل الإجابات خاطئة');
+      expect(q.options.last, QuestionGenerator.allWrongOption);
       expect(q.correctIndex, inInclusiveRange(0, 4));
       expect(q.explanation, isNotEmpty);
     }
@@ -153,14 +153,14 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(allWrongOnes, isNotEmpty,
         reason: 'يجب أن يحتوي الكويز أسئلة جوابها «كل الإجابات خاطئة»');
     for (final q in allWrongOnes) {
-      expect(q.explanation, contains('كل'),
+      expect(q.explanation, contains('خاطئ'),
           reason: 'التعليل يوضح أن الخيارات المذكورة خاطئة');
-      expect(q.options[4], 'كل الإجابات خاطئة',
-          reason: 'الخيار الخامس هو «كل الإجابات خاطئة»');
+      expect(q.options[4], QuestionGenerator.allWrongOption,
+          reason: 'الخيار الخامس هو «جميع الاختيارات أعلاه خاطئة»');
       // لا يظهر جواب صحيح فعلي بين الخيارات الأربعة الأولى في أسئلة
       // التعريف: التعليل يعرض التعريف الصحيح، فلا يكون حرفياً أحد الخيارات.
       final defMatch =
-          RegExp(r'كل الإجابات المذكورة خاطئة — (.+): (.+)$').firstMatch(q.explanation);
+          RegExp(r'جميع الخيارات المذكورة خاطئة — (.+): (.+)$').firstMatch(q.explanation);
       if (defMatch != null) {
         final trueDefinition = defMatch.group(2)!.trim();
         expect(q.options.take(4).contains(trueDefinition), isFalse,
@@ -234,7 +234,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(list.length, lessThanOrEqualTo(20));
     for (final q in list) {
       expect(q.options.length, 5);
-      expect(q.options.last, 'جميع الأجوبة المقترحة أعلاه خاطئة.');
+      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
     }
   });
 
@@ -251,7 +251,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(bankQuestions, isNotEmpty,
         reason: 'أسئلة بنك الموضوع حاضرة في الكويز');
     for (final q in bankQuestions) {
-      expect(q.options.last, 'جميع الأجوبة المقترحة أعلاه خاطئة.');
+      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
     }
   });
 
@@ -299,16 +299,16 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(fromBank, isNotEmpty,
         reason: 'بنك الكفاءة المهنية يُفضَّل عند توليد الكويز');
     for (final q in fromBank) {
-      expect(q.options.last, 'جميع الأجوبة المقترحة أعلاه خاطئة.');
+      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
     }
   });
 
   test('بنوك الديداكتيك: رياضيات، نشاط علمي، أمازيغية، فرنسية', () async {
     const checks = [
-      ('ديداكتيك الرياضيات', 'التخطيط والتدبير', 5, 'جميع الأجوبة المقترحة أعلاه خاطئة.'),
-      ('ديداكتيك الرياضيات', 'التقويم والدعم', 5, 'جميع الأجوبة المقترحة أعلاه خاطئة.'),
-      ('ديداكتيك النشاط العلمي', null, 5, 'جميع الأجوبة المقترحة أعلاه خاطئة.'),
-      ('ديداكتيك اللغة الأمازيغية', null, 5, 'جميع الأجوبة المقترحة أعلاه خاطئة.'),
+      ('ديداكتيك الرياضيات', 'التخطيط والتدبير', 5, 'جميع الاختيارات أعلاه خاطئة.'),
+      ('ديداكتيك الرياضيات', 'التقويم والدعم', 5, 'جميع الاختيارات أعلاه خاطئة.'),
+      ('ديداكتيك النشاط العلمي', null, 5, 'جميع الاختيارات أعلاه خاطئة.'),
+      ('ديداكتيك اللغة الأمازيغية', null, 5, 'جميع الاختيارات أعلاه خاطئة.'),
       ('ديداكتيك اللغة الفرنسية',
           'La planification des activités d\'enseignement/apprentissage', 5,
           'Toutes les réponses ci-dessus sont fausses.'),
