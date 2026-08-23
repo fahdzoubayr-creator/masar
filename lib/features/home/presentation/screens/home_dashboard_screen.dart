@@ -52,7 +52,7 @@ class HomeDashboardScreen extends StatelessWidget {
   // البطاقتان الرئيسيتان (Hero) أولاً — أكثر ما يقصده الأستاذ عند الفتح.
   static const List<_DashboardItem> _items = [
     _DashboardItem(
-      title: 'حقيبة الملخصات',
+      title: 'العدة المتكاملة للتحضير للامتحان المهني',
       subtitle: 'ملخصات شاملة بصيغة PDF',
       icon: Icons.auto_stories_rounded,
       builder: _buildReviewSpace,
