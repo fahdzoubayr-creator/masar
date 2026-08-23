@@ -297,30 +297,32 @@ class _DashboardCard extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(item.title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                               style: GoogleFonts.tajawal(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.25,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.3,
                                   color: featured
                                       ? AppColors.goldSoft
                                       : AppColors.cream)),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 5),
                           Text(item.subtitle,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
                               style: GoogleFonts.tajawal(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                   height: 1.35,
-                                  color: AppColors.muted)),
+                                  color: AppColors.cream.withValues(alpha: 0.75))),
                         ],
                       ),
                     ),
