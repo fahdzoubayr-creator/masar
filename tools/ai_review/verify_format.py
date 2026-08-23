@@ -16,10 +16,10 @@ for fp in sorted(BANKS_DIR.glob("*.json")):
             total += 1
             opts = q.get("options", [])
             ci = q.get("correctIndex", 0)
-            if len(opts) != 5:
+            if len(opts) != 4:
                 print(f"OPT_COUNT: {fp.name} {s} Q{i}: {len(opts)} options")
                 errors += 1
-            if ci < 0 or ci > 4:
+            if ci < 0 or ci > 3:
                 print(f"BAD_CI: {fp.name} {s} Q{i}: correctIndex={ci}")
                 errors += 1
             # Check for duplicates

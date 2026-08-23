@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/question_generator.dart';
@@ -160,9 +161,12 @@ class _BestScoresCardState extends State<_BestScoresCard> {
         taken.fold<int>(0, (acc, a) => a.bestPercentage > acc ? a.bestPercentage : acc);
 
     return InkWell(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const BestScoresScreen()),
-      ),
+      onTap: () {
+        playSfx(Sfx.select);
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const BestScoresScreen()),
+        );
+      },
       borderRadius: BorderRadius.circular(18),
       child: Ink(
         decoration: BoxDecoration(

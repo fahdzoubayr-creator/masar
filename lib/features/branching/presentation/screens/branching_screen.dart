@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
 import 'package:masar_app/features/auth/presentation/screens/dummy_auth_screen.dart';
@@ -131,6 +132,7 @@ class _BranchingScreenState extends State<BranchingScreen> {
   }
 
   Future<void> _tapCard(String label, Future<void> Function() action) async {
+    playSfx(Sfx.select);
     if (_navigating) return;
     setState(() => _selectedLabel = label);
     await Future.delayed(const Duration(milliseconds: 300));

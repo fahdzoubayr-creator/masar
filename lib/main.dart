@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/unified_background.dart';
 import 'package:masar_app/features/splash/presentation/splash_screen.dart';
@@ -35,6 +36,10 @@ void main() async {
   // يُبقي شجرة الوصول (Semantics) مفعّلة دائماً — لإتاحة قارئات الشاشة
   // ولتمكين الفحص التلقائي للواجهة.
   SemanticsBinding.instance.ensureSemantics();
+  // تحميل مسبق صامت للمؤثرات الصوتية (ويب) — لا يعطل الإقلاع.
+  try {
+    preloadSfx();
+  } catch (_) {}
   runApp(const MasarApp());
 }
 

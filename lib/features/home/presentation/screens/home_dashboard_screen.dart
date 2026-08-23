@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
@@ -230,11 +231,17 @@ class _DashboardCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: InkWell(
               // الفضاء غير الجاهز مقفل — لا فتح ولا استجابة للضغط.
+              // القاعات الصوتية فضاء صامت تماماً: بلا مؤثرات إطلاقاً.
               onTap: locked
                   ? null
-                  : () => Navigator.of(context).push(
+                  : () {
+                      if (item.builder != HomeDashboardScreen._buildLiveRoom) {
+                        playSfx(Sfx.select);
+                      }
+                      Navigator.of(context).push(
                         MaterialPageRoute(builder: item.builder),
-                      ),
+                      );
+                    },
               borderRadius: BorderRadius.circular(20),
             child: Container(
               decoration: BoxDecoration(

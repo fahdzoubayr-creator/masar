@@ -1,0 +1,736 @@
+﻿import 'package:masar_app/core/models/question.dart';
+
+class FrenchDidacticsBank4Data {
+  FrenchDidacticsBank4Data._();
+
+  static const Map<String, List<Question>> bank = {
+    'ديداكتيك الفرنسية': [
+    // ── Guides pédagogiques 1ère AEP ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 1ère année (version 2020), l\'enseignement du français a été introduit en 1ère AEP à partir de septembre :',
+      options: ['A) 2015', 'B) 2017', 'C) 2019', 'D) 2020'],
+      correctIndex: 1, // B = 2017
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide pédagogique "Dire, faire et agir pour apprendre le français" est destiné aux enseignants de :',
+      options: ['A) La maternelle', 'B) La 1ère année du primaire', 'C) La 2ème année du primaire', 'D) Le collège'],
+      correctIndex: 1, // B = 1ère année
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon les orientations pédagogiques du curriculum final (juillet 2021), l\'enseignement du français au Maroc obéit à un certain nombre de fondements. Lequel des suivants n\'est pas mentionné parmi les 7 fondements ?',
+      options: ['A) Un cadre porteur de valeurs', 'B) Un apprentissage fonctionnel axé sur le développement des compétences', 'C) Une approche fondée sur l\'action', 'D) Une approche insérant les TIC et les activités intégrées'],
+      correctIndex: 3, // D
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire" (version juillet 2021), les trois entrées stratégiques orientant la réforme sont :',
+      options: ['A) L\'approche par compétences, l\'éducation aux valeurs et l\'éducation au choix', 'B) La maîtrise des connaissances de base, la maîtrise des langues et lamélioration de l\'offre scolaire', 'C) La formation de qualité, la socialisation et l\'épanouissement des apprenants', 'D) La communication, l\'action et la réflexion'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les affirmations suivantes concernant les orientations du curriculum final (juillet 2021), laquelle est correcte ?',
+      options: ['A) Le curriculum ignore totalement la dimension des valeurs.', 'B) L\'approche par compétences est exclue du curriculum.', 'C) L\'éducation au choix n\'est pas prise en compte.', 'D) La réforme ne concerne que la 1ère année du primaire.'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── Guides pédagogiques 1ère AEP (unités) ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 1ère AEP, le projet de classe de l\'unité 1 (Thème : La famille) consiste à :',
+      options: ['A) Réaliser l\'album de son école', 'B) Réaliser l\'arbre généalogique de sa famille', 'C) Réaliser un dossier sur les jeux', 'D) Fabriquer des objets recyclables'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En unité 1 de la 1ère AEP, les élèves apprennent à identifier les phonèmes :',
+      options: ['A) [i] et [b]', 'B) [m] et [a]', 'C) [l] et [o]', 'D) [n] et [e]'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 1ère AEP, la comptine "Brosse ! Brosse !" est étudiée dans l\'unité :',
+      options: ['A) Unité 1 (La famille)', 'B) Unité 2 (L\'école)', 'C) Unité 3 (La tenue vestimentaire et l\'hygiène)', 'D) Unité 4 (Le quartier/Le village)'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En graphisme, la production des "boucles" en 1ère AEP est associée à l\'apprentissage du graphème :',
+      options: ['A) « m »', 'B) « b »', 'C) « l »', 'D) « o »'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le canevas méthodologique de la 1ère AEP, les activités orales sont réparties sur :',
+      options: ['A) 2 séances de 30 minutes par semaine', 'B) 4 séances de 20 minutes par semaine', 'C) 5 séances de 30 minutes par semaine', 'D) 1 séance de 45 minutes par semaine'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── Guides pédagogiques 2ème AEP ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 2ème AEP (Mon Livre de Français), le projet de classe de l\'unité 1 (Thème : Ma vie scolaire) consiste à :',
+      options: ['A) Réaliser l\'arbre généalogique de sa famille', 'B) Réaliser l\'album de son école', 'C) Réaliser un dépliant sur la nourriture et la santé', 'D) Réaliser un dossier sur les fêtes'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 2ème AEP, l\'unité 2 (Thème : Ma grande famille) vise à identifier les phonèmes :',
+      options: ['A) [m] et [a]', 'B) [i] et [b]', 'C) [l] et [o]', 'D) [n] et [e]'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    // ── Guides pédagogiques 4ème AEP ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 4ème AEP (Mon Livre de Français), le projet de classe de l\'unité 1 (Thème : La civilisation marocaine) consiste à :',
+      options: ['A) Réaliser un album sur la vie culturelle artistique', 'B) Réaliser un dossier sur les loisirs', 'C) Réaliser un dossier sur la civilisation marocaine', 'D) Réaliser une affiche sur la protection de la forêt'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    // ── Guides pédagogiques 5ème AEP ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 5ème AEP (Mes apprentissages en français), l\'approche méthodologique retenue pour toutes les disciplines va de :',
+      options: ['A) L\'observation/découverte à l\'évaluation en passant par la compréhension/conceptualisation et l\'application/transfert', 'B) La dictée à la copie en passant par les exercices écrits', 'C) La lecture à l\'écriture en passant par l\'oral', 'D) La grammaire à la conjugaison en passant par l\'orthographe'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les affirmations suivantes concernant les projets de classe dans les guides pédagogiques, laquelle est correcte ?',
+      options: ['A) Le projet de classe n\'est pas lié aux thèmes des unités.', 'B) Le projet de classe est une activité parallèle déconnectée des autres activités.', 'C) Le projet de classe ne donne pas de sens aux apprentissages.', 'D) Le projet de classe ne permet pas l\'ouverture de la classe sur son environnement.'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 5ème AEP (Mes apprentissages en français), la "Communication et actes de langage" est placée au tout début de l\'unité pour indiquer :',
+      options: ['A) L\'importance des compétences orales dans l\'apprentissage de la langue', 'B) La supériorité de l\'écrit sur l\'oral', 'C) La nécessité de commencer par la grammaire', 'D) L\'importance de la dictée'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 5ème AEP, la leçon de lecture diction comporte plusieurs rubriques. Laquelle des suivantes n\'est pas mentionnée ?',
+      options: ['A) Je découvre le poème', 'B) J\'écoute et je comprends', 'C) J\'étudie la forme du poème', 'D) Je recopie le poème'],
+      correctIndex: 3, // D
+        explanation: '',
+    ),
+    // ── Guides pédagogiques 6ème AEP ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 6ème AEP (Le français pratique), le projet "AGIR AUTREMENT" vise à :',
+      options: ['A) Transmettre des savoirs cloisonnés', 'B) Développer des compétences disciplinaires (stratégiques, culturelles, communicatives, méthodologiques et technologiques)', 'C) Maintenir l\'élève dans un statut passif', 'D) Enseigner de manière mécanique'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique de la 6ème AEP, l\'organisation pédagogique de la 6ème année prévoit que la première unité est consacrée à :',
+      options: ['A) L\'évaluation diagnostique, à la mise à niveau et au renforcement des acquis', 'B) L\'étude de la grammaire', 'C) La production écrite', 'D) Le projet de classe'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Démarches méthodologiques ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique des disciplines enseignées en 1ère AEP", la séance de "Graphisme" en 1ère AEP se déroule sur :',
+      options: ['A) 2 séances par semaine', 'B) 3 séances par semaine', 'C) 1 séance par semaine', 'D) 4 séances par semaine'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique des disciplines enseignées en 2ème AEP", la séance de "Poésie" dure :',
+      options: ['A) 15 minutes', 'B) 20 minutes', 'C) 30 minutes', 'D) 45 minutes'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique des disciplines enseignées en 4ème AEP", la séance de "Communication orale" comporte une étape "Avant l\'écoute" qui vise à :',
+      options: ['A) Évaluer les connaissances grammaticales des élèves', 'B) Dicter le dialogue aux élèves pour qu\'ils le copient', 'C) Faire observer l\'illustration et formuler des hypothèses', 'D) Faire une lecture magistrale du dialogue'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique des disciplines enseignées en 5ème et 6ème AEP", la séance de "Production de l\'écrit" comporte une phase d\'"Évaluation/Soutien" qui consiste à :',
+      options: ['A) Animer un débat sur les productions des élèves', 'B) Présenter les erreurs identifiées et animer la correction', 'C) Faire une dictée de phrases du texte produit', 'D) Faire réciter les productions par cœur'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── Didactique du français (auteurs) ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" de Youssef Najimi, les fondements de l\'enseignement du français au Maroc permettent de :',
+      options: ['A) Définir uniquement les profils d\'entrée', 'B) Orienter le choix des contenus sans tenir compte des démarches pédagogiques', 'C) Définir les profils d\'entrée et de sortie, les compétences et orienter les démarches', 'D) Développer uniquement la compétence linguistique'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" de Youssef Najimi, l\'enseignement de la lecture en 1ère, 2ème et 3ème années s\'appuie sur :',
+      options: ['A) Les activités de communication orale et l\'acquisition du vocabulaire', 'B) L\'étude de la grammaire', 'C) La copie de textes longs', 'D) L\'analyse littéraire'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" de Youssef Najimi, les techniques d\'aide à la production orale incluent :',
+      options: ['A) La répétition et le questionnement', 'B) La dictée', 'C) La copie', 'D) La récitation'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" (OUHSSEIN Said), les domaines d\'activités en français au primaire sont :',
+      options: ['A) Écouter, Parler, Lire, Écrire', 'B) Grammaire, Conjugaison, Orthographe, Lexique', 'C) Compréhension, Production, Interaction', 'D) Dictée, Copie, Exercices, Projet'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" (OUHSSEIN Said), l\'étape de "Compréhension/Conceptualisation" dans les activités orales se déroule :',
+      options: ['A) Avant l\'écoute', 'B) Pendant l\'écoute', 'C) Après l\'écoute', 'D) Uniquement lors de la séance d\'évaluation'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" (El-Mustapha Lamgouni), l\'organisation générale d\'une leçon repose sur 4 étapes principales. Laquelle des suivantes n\'est pas mentionnée ?',
+      options: ['A) Observation et découverte', 'B) Compréhension et conceptualisation', 'C) Application et transfert', 'D) Récitation et mémorisation'],
+      correctIndex: 3, // D
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" (El-Mustapha Lamgouni), les disciplines de la FLE à l\'école marocaine incluent :',
+      options: ['A) Les activités de l\'oral, les activités de l\'écrit et les activités de langue', 'B) La grammaire, la conjugaison, l\'orthographe et le lexique', 'C) La lecture, l\'écriture, l\'oral et le projet de classe', 'D) La communication, l\'action, la réflexion et l\'évaluation'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Didactique du français" (Hamdi), les 7 fondements de l\'enseignement du français au Maroc permettent de retenir 5 choix majeurs. Lequel des suivants n\'est pas mentionné parmi ces 5 choix ?',
+      options: ['A) Définir la planification à partir des profils d\'entrée et de sortie', 'B) Définir la compétence annuelle et les sous-compétences', 'C) Orienter le choix des thèmes motivants et fonctionnels', 'D) Orienter le choix des approches didactiques (décloisonnement des activités)'],
+      correctIndex: 3, // D
+        explanation: '',
+    ),
+    // ── Enseignement-apprentissage FLE ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", les 3 objectifs visés par le curriculum final sont :',
+      options: ['A) Une formation de qualité, la socialisation des apprenants et l\'épanouissement des apprenants', 'B) La maîtrise des connaissances de base uniquement', 'C) La maîtrise des langues uniquement', 'D) L\'amélioration de l\'offre scolaire uniquement'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", les principales stratégies de prise de parole incluent :',
+      options: ['A) Savoir pourquoi parler', 'B) Établir un contact et parler avec respect', 'C) Employer des mots justes et utiliser une posture appropriée', 'D) Contrôler sa voix et préparer sa présentation'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", l\'organisation de l\'année scolaire est répartie en :',
+      options: ['A) 30 semaines', 'B) 34 semaines réparties en deux semestres (17 semaines chacun)', 'C) 36 semaines', 'D) 40 semaines'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les affirmations suivantes concernant l\'évaluation (document "Enseignement-apprentissage du FLE au primaire"), laquelle est correcte ?',
+      options: ['A) L\'évaluation diagnostique intervient à la fin des apprentissages.', 'B) L\'évaluation formative sert à la certification.', 'C) L\'évaluation sommative permet de dépister les forces et les faiblesses.', 'D) L\'évaluation formative n\'est pas intégrée au processus d\'apprentissage.'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", les stratégies de lecture incluent la capacité à :',
+      options: ['A) Reconnaître globalement des mots fréquents', 'B) Entrer dans un texte en utilisant le paratexte', 'C) Formuler des hypothèses sur le sens du texte', 'D) Utiliser des indices pour donner du sens aux mots inconnus'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", les outils d\'évaluation fermés incluent :',
+      options: ['A) Le QCM (questions à choix multiples)', 'B) Le test d\'appariement', 'C) Le QROC (questions à réponse ouverte courte)', 'D) Le texte lacunaire'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── Compétences à évaluer ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les compétences à évaluer", l\'évaluation formative se caractérise par :',
+      options: ['A) Une évaluation qui se fait en fin d\'apprentissage', 'B) Une évaluation qui permet de remédier aux lacunes peu après leur apparition', 'C) Une évaluation qui sert à la certification', 'D) Une évaluation qui porte sur une longue période'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les compétences à évaluer", l\'auto-évaluation favorise le développement de l\'autonomie et nécessite la mise en œuvre de trois démarches :',
+      options: ['A) L\'auto-observation, l\'auto-diagnostic et l\'auto-régulation', 'B) L\'observation, la compréhension et l\'application', 'C) La dictée, la copie et la production', 'D) La lecture, l\'écriture et l\'oral'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Rythmes scolaires ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", la durée moyenne de la journée d\'école au Maroc est de :',
+      options: ['A) 4 heures', 'B) 5 heures', 'C) 6 heures 30 minutes à 7 heures', 'D) 8 heures'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", les résultats de recherches scientifiques montrent que les élèves réussissent mieux :',
+      options: ['A) S\'ils ont des journées très longues', 'B) S\'ils évoluent dans un contexte adapté à leur rythme quotidien', 'C) S\'ils n\'ont pas de récréations', 'D) S\'ils commencent l\'école à 7 heures du matin'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", la durée des séquences d\'enseignement au Maroc est généralement de :',
+      options: ['A) 15 à 20 minutes', 'B) 30 à 60 minutes', 'C) 60 à 90 minutes', 'D) 90 à 120 minutes'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", deux moments de la journée scolaire se caractérisent par une vigilance nettement plus faible :',
+      options: ['A) À partir de 8h30 et à la mi-journée (12h-12h30 à 14h)', 'B) À 10h et à 15h', 'C) À 9h et à 16h', 'D) À 7h et à 18h'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Charte nationale ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique" de la Charte nationale, le budget consacré par l\'État à l\'Education a augmenté de :',
+      options: ['A) 10 milliards de dirhams', 'B) 22 milliards de dirhams', 'C) 30 milliards de dirhams', 'D) 50 milliards de dirhams'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", l\'évaluation de la mise en œuvre de la Charte montre que les enseignants :',
+      options: ['A) Sont pleinement satisfaits des conditions de travail', 'B) Se sont approprié les réformes', 'C) Sont fortement mobilisés autour de la réforme', 'D) Participent activement à la conception des programmes'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", l\'indice de l\'effort absolu (IEA) a atteint son niveau le plus haut pendant les années :',
+      options: ['A) 2005-2006', 'B) 2010-2011', 'C) 2012-2013', 'D) 2015-2016'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", la scolarisation des enfants âgés de 6 à 15 ans a connu une augmentation continue. Si le rythme est maintenu, la généralisation de la scolarisation obligatoire pourra être atteinte en :',
+      options: ['A) 2014', 'B) 2016', 'C) 2018', 'D) 2020'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", les enjeux de gouvernance qui ont nui à la continuité des réformes sont liés à :',
+      options: ['A) La stabilité des équipes ministérielles', 'B) Les changements fréquents des départements ministériels', 'C) La bonne gestion des ressources humaines', 'D) La transparence des décisions'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", la production scientifique marocaine a progressé entre 2000 et 2010 de 100%, mais cette augmentation n\'a pas suivi le même rythme que celle de :',
+      options: ['A) L\'Égypte', 'B) La Tunisie et l\'Algérie', 'C) Le Sénégal', 'D) La France'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", les défis de l\'avenir pour l\'école marocaine incluent :',
+      options: ['A) La pression démographique', 'B) Le financement de l\'éducation', 'C) La problématique linguistique', 'D) La mutation du métier de l\'enseignant'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── Didactique français Hamdi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", les 7 fondements de l\'enseignement du français au Maroc incluent :',
+      options: ['A) Un cadre porteur de valeurs', 'B) Un apprentissage fonctionnel axé sur le développement des compétences', 'C) Une approche fondée sur l\'action', 'D) Un apprentissage collaboratif, interactif et solidaire'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", les thèmes choisis pour les unités en 1ère AEP incluent :',
+      options: ['A) La famille et l\'école', 'B) La tenue vestimentaire et l\'hygiène', 'C) Le quartier/le village et l\'environnement', 'D) Les jeux'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", l\'emploi du temps hebdomadaire de la 1ère AEP prévoit une séance de "Graphisme" d\'une durée de 30 minutes pendant :',
+      options: ['A) Les semaines 2, 4 et 5', 'B) Les semaines 1 et 3', 'C) La semaine 5 uniquement', 'D) Toutes les semaines de l\'unité'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", la séance de "Grammaire" en 4ème AEP se déroule en deux phases principales :',
+      options: ['A) Observation et découverte, et Application et transfert', 'B) Dictée et Copie', 'C) Lecture et Écriture', 'D) Production orale et Production écrite'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", les projets de classe en 3ème AEP incluent :',
+      options: ['A) Réaliser un dossier sur l\'amitié', 'B) Réaliser un journal sur la coopérative scolaire', 'C) Réaliser un dépliant sur la protection contre les dangers', 'D) Réaliser une affiche sur la protection de la forêt'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", l\'unité 4 de la 1ère AEP a pour thème :',
+      options: ['A) L\'école', 'B) Le quartier/Le village', 'C) L\'environnement', 'D) Les jeux'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", le projet de classe en 1ère AEP (Unité 5) consiste à :',
+      options: ['A) Réaliser un dossier sur son quartier/son village', 'B) Fabriquer des objets décoratifs à partir de matériel recyclable', 'C) Réaliser un album sur la tenue vestimentaire et l\'hygiène', 'D) Réaliser un dossier sur les jeux'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", les références institutionnelles de la réforme incluent :',
+      options: ['A) La Charte nationale de l\'éducation et de la formation (2000-2013)', 'B) Le plan d\'urgence (2009-2012)', 'C) La vision stratégique de la réforme (2015-2030)', 'D) La loi-cadre 51-17 (19/08/2019)'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "didactique français Hamdi", les thèmes choisis pour les unités en 6ème AEP incluent :',
+      options: ['A) Des civilisations universelles', 'B) La citoyenneté et le comportement civique', 'C) Sciences et Technologies', 'D) L\'énergie dans notre vie'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── La pensée pédagogique ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", Jean-Jacques Rousseau est l\'auteur de :',
+      options: ['A) Le contrat social', 'B) Émile ou de l\'éducation', 'C) Discours sur l\'origine de l\'inégalité', 'D) La nouvelle Héloïse'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", Rousseau distingue trois sources de l\'éducation d\'Émile :',
+      options: ['A) L\'éducation de la nature, l\'éducation des choses et l\'éducation des hommes', 'B) L\'éducation familiale, l\'éducation scolaire et l\'éducation sociale', 'C) L\'éducation religieuse, l\'éducation civique et l\'éducation morale', 'D) L\'éducation théorique, l\'éducation pratique et l\'éducation esthétique'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", l\'idée maîtresse de Rousseau est que :',
+      options: ['A) L\'homme est mauvais par nature', 'B) L\'homme est bon par nature, c\'est la société qui le corrompt', 'C) L\'homme naît mauvais et s\'améliore par l\'éducation', 'D) L\'homme est neutre et l\'éducation détermine tout'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", John Dewey est associé à la philosophie de l\'expérience appelée :',
+      options: ['A) Behaviorisme', 'B) Instrumentalisme', 'C) Cognitivisme', 'D) Constructivisme'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", Carl Rogers est connu pour son approche centrée sur la personne (ACP) qui met l\'accent sur :',
+      options: ['A) La punition et la sanction', 'B) L\'écoute empathique, la congruence et l\'autodirection', 'C) La mémorisation et la répétition', 'D) L\'évaluation et la notation'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", l\'approche socioconstructiviste repose sur le principe que :',
+      options: ['A) Les connaissances sont transmises par l\'enseignant', 'B) Les connaissances sont innées', 'C) Les connaissances sont construites par les apprenants en échangeant et en partageant', 'D) Les connaissances sont données par le manuel scolaire'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── 5ème AEP approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mes apprentissages en français" 5ème AEP, la pédagogie différenciée se définit comme :',
+      options: ['A) Une pratique d\'enseignement qui ignore les différences inter-individus', 'B) Une pratique d\'enseignement qui consent aux différences inter-individus et propose des activités individualisées', 'C) Une pratique qui uniformise les apprentissages', 'D) Une pratique qui exclut les élèves en difficulté'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mes apprentissages en français" 5ème AEP, l\'évaluation diagnostique survient :',
+      options: ['A) À la fin de l\'apprentissage', 'B) Au début de l\'apprentissage', 'C) Pendant l\'apprentissage', 'D) Après l\'apprentissage'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mes apprentissages en français" 5ème AEP, l\'évaluation formative est une démarche qui :',
+      options: ['A) Informe l\'apprenant et le professeur du degré de maîtrise atteint', 'B) Attribue une note chiffrée', 'C) Certifie les acquis', 'D) Compare les élèves entre eux'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mes apprentissages en français" 5ème AEP, la pédagogie de l\'erreur considère que les erreurs sont :',
+      options: ['A) La preuve de l\'échec de l\'apprenant', 'B) Inévitables et le produit transitoire du développement de la langue', 'C) À sanctionner sévèrement', 'D) À ignorer totalement'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mes apprentissages en français" 5ème AEP, la leçon de communication et actes de langage se déroule en quatre grandes étapes :',
+      options: ['A) Observation/Découverte, Compréhension/Conceptualisation, Application/Transfert, Evaluation/Remédiation', 'B) Dictée, Copie, Exercices, Production', 'C) Lecture, Écriture, Grammaire, Conjugaison', 'D) Avant l\'écoute, Pendant l\'écoute, Après l\'écoute, Réinvestissement'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── 6ème AEP approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Le français pratique" 6ème AEP, le projet "AGIR AUTREMENT" ambitionne de transformer le statut de l\'apprenant en passant :',
+      options: ['A) De l\'élève actif à l\'apprenant passif', 'B) De l\'élève passif à l\'apprenant acteur de son apprentissage', 'C) De l\'élève autonome à l\'apprenant dépendant', 'D) De l\'élève créatif à l\'apprenant mécanique'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Le français pratique" 6ème AEP, l\'unité 1 est consacrée à :',
+      options: ['A) L\'étude de la grammaire', 'B) L\'évaluation diagnostique, la remédiation et la consolidation des acquis', 'C) La production écrite', 'D) Le projet de classe'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Le français pratique" 6ème AEP, la cinquième semaine de chaque unité est réservée à :',
+      options: ['A) L\'installation des ressources', 'B) La remédiation et à la consolidation', 'C) L\'évaluation diagnostique', 'D) La découverte du projet'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Le français pratique" 6ème AEP, le décloisonnement vise essentiellement à développer :',
+      options: ['A) La synergie entre les actes de communication, la lecture, la langue et la production de l\'écrit', 'B) L\'isolement des disciplines', 'C) La spécialisation des enseignants', 'D) La séparation entre l\'oral et l\'écrit'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Le français pratique" 6ème AEP, l\'étape "Observation/découverte" dans la fiche pédagogique est le premier contact de l\'apprenant avec le support où il peut :',
+      options: ['A) Évaluer ses acquis', 'B) Formuler des hypothèses', 'C) Appliquer des concepts', 'D) Synthétiser des idées'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── 4ème AEP approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 4ème AEP, la compétence annuelle en 4ème année stipule que l\'apprenant doit être capable de produire des textes courts de :',
+      options: ['A) 2 ou 3 phrases simples', 'B) 3 à 5 phrases', 'C) 5 lignes au moins', 'D) 7 lignes au moins'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 4ème AEP, l\'évaluation formative est intégrée au processus d\'apprentissage et vise à :',
+      options: ['A) Attribuer une note chiffrée', 'B) Mesurer le degré de réalisation des objectifs d\'apprentissage et identifier les difficultés', 'C) Certifier les acquis en fin d\'année', 'D) Comparer les élèves entre eux'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 4ème AEP, les thèmes choisis pour les unités incluent :',
+      options: ['A) La civilisation marocaine', 'B) La vie culturelle artistique', 'C) Les loisirs', 'D) L\'agriculture, l\'industrie et le commerce'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 4ème AEP, l\'emploi du temps hebdomadaire prévoit une enveloppe horaire totale de :',
+      options: ['A) 4 heures', 'B) 5 heures 30 minutes', 'C) 6 heures', 'D) 7 heures'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── 2ème AEP approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 2ème AEP, la compétence annuelle en 2ème année stipule que l\'apprenant doit être capable de :',
+      options: ['A) Comprendre et produire des énoncés courts, simples et variés', 'B) Lire des syllabes, des mots et des phrases simples', 'C) Copier et écrire sous dictée une phrase courte et simple', 'D) Comprendre et produire des énoncés courts, simples et variés, lire des syllabes, des mots et des phrases simples, copier et écrire sous dictée une phrase courte et simple'],
+      correctIndex: 3, // D
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 2ème AEP, l\'unité 3 (Thème : Ma nourriture et ma santé) a pour projet de classe :',
+      options: ['A) Réaliser l\'arbre généalogique de sa famille', 'B) Réaliser un dépliant sur la nourriture et la santé', 'C) Réaliser un dossier sur les fêtes', 'D) Réaliser un documentaire sur les animaux'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide pédagogique "Mon Livre de Français" 2ème AEP, la séance de "Poésie" en 2ème AEP dure :',
+      options: ['A) 15 minutes', 'B) 20 minutes', 'C) 30 minutes', 'D) 45 minutes'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── Démarche méthodologique approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique" pour la 4ème AEP, la séance de "Grammaire" se déroule en deux phases principales :',
+      options: ['A) Observation et découverte, et Application et transfert', 'B) Dictée et Copie', 'C) Lecture et Écriture', 'D) Production orale et Production écrite'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique" pour la 5ème/6ème AEP, la séance de "Lecture" comporte une phase "Après la lecture" intitulée "Je participe au débat" qui vise à :',
+      options: ['A) Faire réciter le texte par cœur', 'B) Évaluer la compréhension par des questions à choix multiples', 'C) Amener les élèves à donner leur avis et à échanger sur le texte', 'D) Faire une dictée de mots tirés du texte'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique" pour la 5ème/6ème AEP, la séance de "Production de l\'écrit" comporte une phase "Observation et Découverte" qui consiste à :',
+      options: ['A) Orienter l\'observation des apprenants pour découvrir le sujet de la production', 'B) Faire une dictée préparatoire', 'C) Faire réciter un poème', 'D) Faire un exercice de grammaire'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Démarche méthodologique" pour la 5ème/6ème AEP, la séance de "Projet de classe" se déroule en 5 séances qui sont :',
+      options: ['A) Choix du projet, Réalisation, Réalisation (suite), Réalisation, Présentation', 'B) Observation, Compréhension, Application, Évaluation', 'C) Dictée, Copie, Exercices, Production', 'D) Lecture, Écriture, Oral, Grammaire'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Évaluation FLE ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", l\'évaluation sommative (ou certificative) a pour fonction de :',
+      options: ['A) Réguler les apprentissages en cours de route', 'B) Vérifier les acquis des apprenants et décider du passage dans la classe supérieure', 'C) Dépister les forces et les faiblesses des apprenants', 'D) Adapter l\'enseignement aux besoins des apprenants'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", les stratégies de production écrite incluent la capacité à :',
+      options: ['A) Comprendre la tâche demandée', 'B) Rédiger un premier jet à partir d\'idées formulées mentalement', 'C) Vérifier si ce qui est écrit correspond à ce qui est demandé', 'D) Relire sa production plus d\'une fois'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    // ── Compétences à évaluer approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les compétences à évaluer", l\'évaluation à dimension "écologique" se caractérise par :',
+      options: ['A) Une évaluation en situation authentique', 'B) Une évaluation qui se centre sur les processus mentaux du traitement de l\'information', 'C) Une évaluation qui découle d\'une pédagogie différenciée', 'D) Une évaluation qui se veut dynamique, interactionnelle et authentique'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les compétences à évaluer", les compétences à évaluer en didactique des langues sont généralement :',
+      options: ['A) La compréhension orale, la compréhension écrite, la production orale et la production écrite', 'B) La grammaire, la conjugaison, l\'orthographe et le lexique', 'C) La lecture, l\'écriture, l\'oral et la langue', 'D) La communication, l\'action, la réflexion et l\'évaluation'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Rythmes scolaires approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", la durée moyenne de la semaine scolaire au Maroc est de :',
+      options: ['A) 4 jours et demi', 'B) 5 jours', 'C) 5 jours et demi', 'D) 6 jours'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "les rythmes scolaires", les chercheurs recommandent que les enfants des petites classes aient au maximum :',
+      options: ['A) 3 heures de temps pédagogique par jour', 'B) 4 heures de temps pédagogique par jour', 'C) 5 heures de temps pédagogique par jour', 'D) 6 heures de temps pédagogique par jour'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── Charte approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", la DIRD (Dépense Intérieure Brute de Recherche et Développement) n\'a pas pu atteindre le seuil de 1% du PIB prescrit par la Charte, elle ne dépasse pas en 2010 :',
+      options: ['A) 0,5%', 'B) 0,73%', 'C) 1,2%', 'D) 1,5%'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", le Programme d\'urgence a été lancé en :',
+      options: ['A) 2000', 'B) 2005', 'C) 2009', 'D) 2012'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Résumé du rapport analytique", l\'université publique n\'échappe pas aux problèmes d\'incivisme, parfois même de violence, ce qui engendre :',
+      options: ['A) Une image positive de l\'université', 'B) Une image négative de l\'université', 'C) Une augmentation des effectifs', 'D) Une amélioration de la qualité de la formation'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    // ── Pensée pédagogique approfondi ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", l\'éducation négative selon Rousseau consiste à :',
+      options: ['A) Punir l\'enfant pour ses fautes', 'B) Écarter les éléments dénaturants pour les rendre analysables', 'C) Enseigner les fables de La Fontaine', 'D) Employer le raisonnement avec les enfants'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", Carl Rogers considère que le but de l\'enseignement est de :',
+      options: ['A) Transmettre un maximum de connaissances', 'B) Faciliter le changement et l\'apprentissage', 'C) Évaluer les performances des élèves', 'D) Sanctionner les erreurs'],
+      correctIndex: 1, // B
+        explanation: '',
+    ),
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "La pensée pédagogique", l\'autoformation est définie comme un mode d\'autodéveloppement des connaissances et des compétences par le sujet social lui-même, selon son rythme, avec l\'aide de ressources éducatives et de médiations les plus choisies possibles. Cette définition est de :',
+      options: ['A) J. Beillerot', 'B) B. Charlot', 'C) J. Dumazedier', 'D) C. Rogers'],
+      correctIndex: 2, // C
+        explanation: '',
+    ),
+    // ── Soutien pédagogique ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le document "Enseignement-apprentissage du FLE au primaire", le soutien pédagogique "institutionnel" s\'effectue :',
+      options: ['A) Dans le cadre du projet d\'établissement', 'B) Pendant les séquences d\'apprentissage', 'C) Lors des semaines de soutien propres à chaque unité', 'D) À l\'oral uniquement'],
+      correctIndex: 0, // A
+        explanation: '',
+    ),
+    // ── Question finale ──
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'D\'après l\'ensemble des documents officiels fournis, l\'enseignement du français au primaire se caractérise par :',
+      options: ['A) Une approche magistrale centrée sur le professeur', 'B) Des activités déconnectées du vécu des élèves', 'C) Une évaluation exclusivement sommative', 'D) Des projets sans lien avec les thèmes des unités'],
+      correctIndex: 0, // E
+        explanation: '',
+    ),
+    ],
+  };
+}

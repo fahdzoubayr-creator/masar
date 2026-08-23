@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/models/quiz_result.dart';
@@ -110,6 +111,7 @@ class _QuizScreenState extends State<QuizScreen> {
   void _submitByTime() {
     _saveResult();
     setState(() => finished = true);
+    playSfx(Sfx.complete);
   }
 
   void _select(int index) {
@@ -121,6 +123,8 @@ class _QuizScreenState extends State<QuizScreen> {
       answered = true;
       if (index == pool[current].correctIndex) score++;
     });
+    // نغمة حكم فورية: رنين دافئ للصواب وهمهمة لطيفة للخطأ.
+    playSfx(index == pool[current].correctIndex ? Sfx.success : Sfx.error);
   }
 
   void _next() {
@@ -130,6 +134,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (current == pool.length - 1) {
       _saveResult();
       setState(() => finished = true);
+      playSfx(Sfx.complete);
     } else {
       // فحص الحظر الفوري: إذا كانت نسبة الإجابات الصحيحة الحالية أقل من 30%
       // ولا يمكن للمترشح بلوغ 30% حتى لو أجاب صحيحاً على ما تبقى.
@@ -143,6 +148,7 @@ class _QuizScreenState extends State<QuizScreen> {
         setState(() {
           finished = true;
         });
+        playSfx(Sfx.complete);
         return;
       }
       setState(() {

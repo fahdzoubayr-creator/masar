@@ -31,7 +31,7 @@ void main() {
     await QuestionBankLoader.init();
   });
 
-  test('المولد عربي: 5 خيارات، الخامس «كل الاقتراحات خاطئة»، والجواب قد يكون عليه', () {
+  test('المولد عربي: 4 خيارات، الجواب في أي خيار', () {
     final questions = QuestionGenerator.generateFromText(
       _sampleText,
       folder: 'علوم التربية',
@@ -42,11 +42,9 @@ void main() {
     expect(questions.length, lessThanOrEqualTo(10));
 
     for (final q in questions) {
-      expect(q.options.length, 5, reason: 'كل سؤال له 5 خيارات');
-      expect(q.options.last, QuestionGenerator.allWrongOption,
-          reason: 'الخيار الأخير هو دائماً «كل الاقتراحات خاطئة»');
-      expect(q.correctIndex, inInclusiveRange(0, 4),
-          reason: 'الجواب الصحيح بين الخيارات الخمسة');
+      expect(q.options.length, 4, reason: 'كل سؤال له 4 خيارات');
+      expect(q.correctIndex, inInclusiveRange(0, 3),
+          reason: 'الجواب الصحيح بين الخيارات الأربع');
       expect(q.options[q.correctIndex], isNotNull);
       expect(q.text, isNot(contains('أكمل الفراغ')),
           reason: 'لا أسئلة «أكمل الفراغ»');
@@ -75,9 +73,8 @@ void main() {
         .toList();
     expect(comprehension, isNotEmpty, reason: 'أسئلة «وفق النص أي عبارة صحيحة»');
     for (final q in comprehension) {
-      expect(q.options.length, 5);
-      expect(q.options.last, QuestionGenerator.allWrongOption);
-      expect(q.correctIndex, inInclusiveRange(0, 4));
+      expect(q.options.length, 4);
+      expect(q.correctIndex, inInclusiveRange(0, 3));
       expect(q.explanation, isNotEmpty);
     }
   });
@@ -104,10 +101,8 @@ Les exercices structuraux aident à la mémorisation des structures.
 
     expect(questions, isNotEmpty, reason: 'نص فرنسي يولّد أسئلة');
     for (final q in questions) {
-      expect(q.options.length, 5, reason: '5 خيارات لكل سؤال فرنسي');
-      expect(q.options.last, QuestionGenerator.frenchAllWrongOption,
-          reason: 'الخيار الأخير فرنسي');
-      expect(q.correctIndex, inInclusiveRange(0, 4));
+      expect(q.options.length, 4, reason: '4 خيارات لكل سؤال فرنسي');
+      expect(q.correctIndex, inInclusiveRange(0, 3));
       expect(q.explanation, isNotEmpty);
     }
   });
@@ -122,44 +117,27 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(seqA != seqB, isTrue, reason: 'ترتيب الأسئلة يتغير بين دخول وآخر');
   });
 
-  test('نحو 70% من الأسئلة المولّدة جوابها الخيار الخامس', () {
+  test('الأسئلة المولّدة: كل سؤال له خيار صحيح واحد على الأقل', () {
     var total = 0;
-    var allWrong = 0;
-    for (var run = 0; run < 30; run++) {
+    var withCorrect = 0;
+    for (var run = 0; run < 10; run++) {
       final questions = QuestionGenerator.generateFromText(
         _sampleText,
         folder: 'علوم التربية',
-        count: 70,
+        count: 20,
       );
       for (final q in questions) {
         total++;
-        if (q.correctIndex == q.options.length - 1) allWrong++;
+        if (q.correctIndex >= 0 && q.correctIndex < q.options.length) {
+          withCorrect++;
+        }
       }
     }
-    expect(total, greaterThan(200), reason: 'عيّنة كافية لتقدير النسبة');
-    final ratio = allWrong / total;
-    expect(ratio, inInclusiveRange(0.55, 0.85),
-        reason: 'نسبة أسئلة الخيار الخامس تقارب 70% '
-            '(حالياً ${(ratio * 100).toStringAsFixed(1)}%)');
+    expect(total, greaterThan(100), reason: 'عيّنة كافية');
+    expect(withCorrect, total, reason: 'جميع الأسئلة لها correctIndex سليم');
   });
 
-  test('سؤال الخيار الخامس سليم: لا يوجد جواب صحيح بين الخيارات الأربع الأولى', () {
-    final questions = QuestionGenerator.generateFromText(
-      _sampleText,
-      folder: 'علوم التربية',
-      count: 30,
-    );
-    final allWrongOnes =
-        questions.where((q) => q.correctIndex == q.options.length - 1).toList();
-    expect(allWrongOnes, isNotEmpty,
-        reason: 'يجب أن يحتوي الكويز أسئلة جوابها الخيار الخامس');
-    for (final q in allWrongOnes) {
-      expect(q.options[4], QuestionGenerator.allWrongOption,
-          reason: 'الخيار الخامس هو «كل الاقتراحات خاطئة»');
-    }
-  });
-
-  test('بنك wadiaa: 5 خيارات سليمة بعد التنظيف', () {
+  test('بنك wadiaa: 4 خيارات سليمة بعد التنظيف', () {
     const folders = [
       'التخطيط والتدبير لأنشطة التعلم',
       'تقويم التعلمات ودعمها',
@@ -171,10 +149,8 @@ Les exercices structuraux aident à la mémorisation des structures.
       expect(questions!.length, greaterThanOrEqualTo(10),
           reason: 'عدد أسئلة كافٍ للمحور $folder');
       for (final q in questions) {
-        expect(q.options.length, 5, reason: '5 خيارات لكل سؤال');
-        expect(q.correctIndex, inInclusiveRange(0, 4));
-        expect(q.options[4], contains('خاطئ'),
-            reason: 'الخيار الخامس هو خيار الإجابة الخاطئة');
+        expect(q.options.length, 4, reason: '4 خيارات لكل سؤال');
+        expect(q.correctIndex, inInclusiveRange(0, 3));
         expect(q.text, isNot(contains('أكمل الفراغ')));
       }
       total += questions.length;
@@ -214,7 +190,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(list, isNotEmpty);
     expect(list.length, lessThanOrEqualTo(20));
     for (final q in list) {
-      expect(q.options.length, 5);
+      expect(q.options.length, 4);
     }
   });
 
@@ -228,7 +204,7 @@ Les exercices structuraux aident à la mémorisation des structures.
         reason: 'لا يتجاوز الكويز حد 70 سؤالاً حتى بعد سدّ النقص');
   });
 
-  test('بنك الكفاءة المهنية: علوم التربية مواضيع، 5 خيارات', () {
+  test('بنك الكفاءة المهنية: علوم التربية مواضيع، 4 خيارات', () {
     const topics = [
       'نظريات التعلم والمقاربات البيداغوجية',
       'النمو واستراتيجيات اكتساب الفهم',
@@ -244,8 +220,8 @@ Les exercices structuraux aident à la mémorisation des structures.
       expect(questions!.length, greaterThanOrEqualTo(10),
           reason: 'عدد أسئلة كافٍ للموضوع $topic');
       for (final q in questions) {
-        expect(q.options.length, 5, reason: '5 خيارات لكل سؤال');
-        expect(q.correctIndex, inInclusiveRange(0, 4));
+        expect(q.options.length, 4, reason: '4 خيارات لكل سؤال');
+        expect(q.correctIndex, inInclusiveRange(0, 3));
         expect(q.text, isNot(contains('أكمل الفراغ')));
       }
       total += questions.length;
@@ -262,7 +238,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     );
     expect(list, isNotEmpty);
     expect(list.length, lessThanOrEqualTo(30));
-    final fromBank = list.where((q) => q.options.length >= 5).toList();
+    final fromBank = list.where((q) => q.source != null && q.source!.isNotEmpty).toList();
     expect(fromBank, isNotEmpty,
         reason: 'بنك الكفاءة المهنية يُفضَّل عند توليد الكويز');
   });
@@ -280,7 +256,7 @@ Les exercices structuraux aident à la mémorisation des structures.
       expect(list, isNotEmpty, reason: '$folder / $topic');
       expect(list.length, lessThanOrEqualTo(12));
       for (final q in list) {
-        expect(q.options.length, 5);
+        expect(q.options.length, 4);
       }
     }
   });

@@ -10,36 +10,36 @@ void main() {
   });
 
   group('بنوك JSON — تحقق كامل', () {
-    test('التنشيط التربوي → 100 سؤال، 5 خيارات، subject صحيح', () {
+    test('التنشيط التربوي → 100 سؤال، 4 خيارات، subject صحيح', () {
       final questions = QuestionBankLoader.questionsFor('التنشيط التربوي');
       expect(questions, isNotNull);
       expect(questions!.length, greaterThanOrEqualTo(50));
       for (final q in questions) {
         expect(q.subject, 'التنشيط التربوي');
-        expect(q.options.length, 5);
-        expect(q.correctIndex, inInclusiveRange(0, 4));
+        expect(q.options.length, 4);
+        expect(q.correctIndex, inInclusiveRange(0, 3));
       }
     });
 
-    test('المهارات الحياتية → 100 سؤال، 5 خيارات', () {
+    test('المهارات الحياتية → 100 سؤال، 4 خيارات', () {
       final questions = QuestionBankLoader.questionsFor('المهارات الحياتية');
       expect(questions, isNotNull);
       expect(questions!.length, greaterThanOrEqualTo(50));
       for (final q in questions) {
         expect(q.subject, 'المهارات الحياتية');
-        expect(q.options.length, 5);
-        expect(q.correctIndex, inInclusiveRange(0, 4));
+        expect(q.options.length, 4);
+        expect(q.correctIndex, inInclusiveRange(0, 3));
       }
     });
 
-    test('المجالس التعليمية → 100 سؤال، 5 خيارات', () {
+    test('المجالس التعليمية → 100 سؤال، 4 خيارات', () {
       final questions = QuestionBankLoader.questionsFor('المجالس التعليمية');
       expect(questions, isNotNull);
       expect(questions!.length, greaterThanOrEqualTo(50));
       for (final q in questions) {
         expect(q.subject, 'المجالس التعليمية');
-        expect(q.options.length, 5);
-        expect(q.correctIndex, inInclusiveRange(0, 4));
+        expect(q.options.length, 4);
+        expect(q.correctIndex, inInclusiveRange(0, 3));
       }
     });
 
@@ -63,17 +63,15 @@ void main() {
       }
     });
 
-    test('كل سؤال يحتوي على 5 خيارات و correctIndex سليم', () {
+    test('كل سؤال يحتوي على 4 خيارات و correctIndex سليم', () {
       for (final key in QuestionBankLoader.bank.keys) {
         final questions = QuestionBankLoader.questionsFor(key)!;
         for (final q in questions) {
           final label = q.text.length > 30 ? q.text.substring(0, 30) : q.text;
-          expect(q.options.length, 5,
-              reason: 'سؤال بخيارات != 5 في $key: $label');
-          expect(q.correctIndex, inInclusiveRange(0, 4),
-              reason: 'correctIndex خاطئ في $key');
-          expect(q.options[4], anyOf(contains('خاطئ'), contains('fausses')),
-              reason: 'الخيار الخامس يجب أن يكون خيار الإجابة الخاطئة في $key: $label');
+          expect(q.options.length, 4,
+              reason: 'سؤال بخيارات != 4 في $key: $label');
+          expect(q.correctIndex, inInclusiveRange(0, 3),
+              reason: 'correctIndex خاطئ في $key: $label');
         }
       }
     });

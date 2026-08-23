@@ -42,8 +42,8 @@ class QuestionValidator {
     if (_garbledPattern.hasMatch(q.text)) return false;
     if (_mojibakeWords.hasMatch(q.text)) return false;
 
-    // 4. الخيارات موجودة وصحيحة العدد (4 أو 5)
-    if (q.options.length < 4 || q.options.length > 5) return false;
+    // 4. الخيارات موجودة وصحيحة العدد (4)
+    if (q.options.length != 4) return false;
 
     // 5. لا توجد خيارات مكررة (مطابقة تامة)
     final normalized = q.options.map((o) => _normalizeOption(o)).toList();
@@ -165,7 +165,7 @@ class QuestionValidator {
         reasons['garbled_text'] = reasons['garbled_text']! + 1;
         ok = false;
       }
-      if (q.options.length < 4 || q.options.length > 5) {
+      if (q.options.length != 4) {
         reasons['invalid_option_count'] = reasons['invalid_option_count']! + 1;
         ok = false;
       }

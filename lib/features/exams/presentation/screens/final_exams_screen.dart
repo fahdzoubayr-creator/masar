@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/exam_question_service.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
@@ -108,6 +109,7 @@ class _FinalExamsScreenState extends State<FinalExamsScreen> {
   }
 
   Future<void> _openExam(BuildContext context, _ExamOption option) async {
+    playSfx(Sfx.select);
     final locked = QuizAttemptService.isLocked(_attempts?[option.quizId]);
     if (locked) return;
     await Navigator.of(context).push(

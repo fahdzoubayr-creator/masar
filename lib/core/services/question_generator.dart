@@ -239,18 +239,15 @@ class QuestionGenerator {
 
   static Question _definitionQuestion(String folder, _Definition entry,
       List<String> distractors, bool french) {
-    final opts = [entry.definition, ...distractors]..shuffle(_random);
-    final options = [
-      ...opts.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
+    final opts = [entry.definition, ...distractors.take(3)]..shuffle(_random);
+    final options = opts.map(_cleanOption).toList();
     return Question(
       subject: folder,
       text: french
           ? 'D\'après le texte, que signifie « ${_cleanOption(entry.term)} » ?'
           : 'ما المقصود بمصطلح « ${_cleanOption(entry.term)} » وفق النص؟',
       options: options,
-      correctIndex: opts.indexOf(entry.definition),
+      correctIndex: options.indexOf(_cleanOption(entry.definition)),
       explanation:
           '${_cleanOption(entry.term)}: ${_cleanOption(entry.definition)}',
     );
@@ -258,18 +255,15 @@ class QuestionGenerator {
 
   static Question _termQuestion(String folder, _Definition entry,
       List<String> distractors, bool french) {
-    final opts = [entry.term, ...distractors]..shuffle(_random);
-    final options = [
-      ...opts.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
+    final opts = [entry.term, ...distractors.take(3)]..shuffle(_random);
+    final options = opts.map(_cleanOption).toList();
     return Question(
       subject: folder,
       text: french
           ? 'Selon le texte, quel terme désigne : « ${_cleanOption(entry.definition)} » ?'
           : 'وفق النص، ما المصطلح الذي يُقصد به: « ${_cleanOption(entry.definition)} »؟',
       options: options,
-      correctIndex: opts.indexOf(entry.term),
+      correctIndex: options.indexOf(_cleanOption(entry.term)),
       explanation:
           '${_cleanOption(entry.term)}: ${_cleanOption(entry.definition)}',
     );
@@ -277,74 +271,41 @@ class QuestionGenerator {
 
   static Question _comprehensionQuestion(
       String folder, String claim, List<String> distractors, bool french) {
-    final opts = [claim, ...distractors]..shuffle(_random);
-    final options = [
-      ...opts.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
+    final opts = [claim, ...distractors.take(3)]..shuffle(_random);
+    final options = opts.map(_cleanOption).toList();
     return Question(
       subject: folder,
       text: french
           ? 'D\'après le texte, laquelle de ces affirmations est correcte ?'
           : 'وفق النص، أي عبارة مما يلي صحيحة؟',
       options: options,
-      correctIndex: opts.indexOf(claim),
+      correctIndex: options.indexOf(_cleanOption(claim)),
       explanation: _cleanOption(claim),
     );
   }
 
   static Question _definitionAllWrongQuestion(String folder, _Definition entry,
       List<String> distractors, bool french) {
-    final options = [
-      ...distractors.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
-    return Question(
-      subject: folder,
-      text: french
-          ? 'D\'après le texte, que signifie « ${_cleanOption(entry.term)} » ?'
-          : 'ما المقصود بمصطلح « ${_cleanOption(entry.term)} » وفق النص؟',
-      options: options,
-      correctIndex: options.length - 1,
-      explanation:
-          'جميع الخيارات المذكورة خاطئة — ${_cleanOption(entry.term)}: ${_cleanOption(entry.definition)}',
-    );
+    // Convert to regular 4-option question (correct answer is the definition)
+    return _definitionQuestion(folder, entry, distractors, french);
   }
 
   static Question _termAllWrongQuestion(String folder, _Definition entry,
       List<String> distractors, bool french) {
-    final options = [
-      ...distractors.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
-    return Question(
-      subject: folder,
-      text: french
-          ? 'Selon le texte, quel terme désigne : « ${_cleanOption(entry.definition)} » ?'
-          : 'وفق النص، ما المصطلح الذي يُقصد به: « ${_cleanOption(entry.definition)} »؟',
-      options: options,
-      correctIndex: options.length - 1,
-      explanation:
-          'جميع الخيارات المذكورة خاطئة — ${_cleanOption(entry.term)}: ${_cleanOption(entry.definition)}',
-    );
+    // Convert to regular 4-option question (correct answer is the term)
+    return _termQuestion(folder, entry, distractors, french);
   }
 
   static Question _comprehensionAllWrongQuestion(String folder,
       List<String> falseOptions, List<String> trueClaims, bool french) {
-    final options = [
-      ...falseOptions.map(_cleanOption),
-      french ? frenchAllWrongOption : allWrongOption
-    ];
-    return Question(
-      subject: folder,
-      text: french
-          ? 'D\'après le texte, laquelle de ces affirmations est correcte ?'
-          : 'وفق النص، أي عبارة مما يلي صحيحة؟',
-      options: options,
-      correctIndex: options.length - 1,
-      explanation:
-          'جميع العبارات المذكورة خاطئة — الصحيح وفق النص: ${trueClaims.map(_cleanOption).join(' / ')}',
-    );
+    // Use first true claim as correct answer with 3 false options
+    if (trueClaims.isEmpty || falseOptions.length < 3) {
+      return _comprehensionQuestion(
+          folder, '', falseOptions.take(3).toList(), french);
+    }
+    final claim = trueClaims.first;
+    return _comprehensionQuestion(
+        folder, claim, falseOptions.take(3).toList(), french);
   }
 
   // ---------------- تنظيف الخيارات من الرموز المشوهة ----------------

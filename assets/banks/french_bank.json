@@ -8,11 +8,10 @@
         "linguistique, sociolinguistique et pragmatique",
         "linguistique et culturelle uniquement",
         "syntaxique et lexicale uniquement",
-        "phonétique et morphologique uniquement",
-        "كل الاقتراحات خاطئة"
+        "phonétique et morphologique uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "La compétence à communiquer langagièrement intègre trois composantes : linguistique, sociolinguistique et pragmatique, comme le rappellent les référentiels du CECRL.",
+      "explanation": "La compétence à communiquer langagièrement intègre trois composantes: linguistique, sociolinguistique et pragmatique, comme le rappellent les référentiels du CECRL.",
       "source": "Référentiel de compétences — Enseignement du FLE au primaire",
       "situation": null
     },
@@ -24,11 +23,10 @@
         "préparation, production, révision et édition",
         "production, préparation et notation",
         "dictée, copie et évaluation",
-        "lecture, copie et mémorisation",
-        "Toutes les réponses ci-dessus sont fausses."
+        "lecture, copie et mémorisation"
       ],
       "correctIndex": 0,
-      "explanation": "La production écrite suit une démarche en quatre moments : préparation (planification), production (mise en texte), révision (relecture) et édition (présentation du texte final).",
+      "explanation": "La production écrite suit une démarche en quatre moments: préparation (planification), production (mise en texte), révision (relecture) et édition (présentation du texte final).",
       "source": "Guide pédagogique — Production écrite au primaire",
       "situation": null
     },
@@ -40,8 +38,7 @@
         "la voie directe (adressage) et la voie indirecte (assemblage)",
         "la voie orale et la voie écrite",
         "la voie phonique et la voie visuelle uniquement",
-        "la voie globale et la voie syllabique uniquement",
-        "كل الاقتراحات خاطئة"
+        "la voie globale et la voie syllabique uniquement"
       ],
       "correctIndex": 0,
       "explanation": "Le lecteur identifie les mots par la voie directe (reconnaissance globale des mots fréquents) et par la voie indirecte (assemblage des graphèmes en phonèmes).",
@@ -56,11 +53,10 @@
         "la capacité à s'exprimer et à être compris en situation de communication",
         "تأكيد صحة القواعد النحوية بشكل منفرد",
         "قياس سرعة الكلام على وجه التحديد",
-        "الخيار 4: حصر التقييم في حفظ النصوص فقط",
-        "كل الاقتراحات خاطئة"
+        "حصر التقييم في حفظ النصوص فقط"
       ],
       "correctIndex": 0,
-      "explanation": "L'évaluation de l'oral évalue la capacité à communiquer : clarté du message, pertinence, intelligibilité, plutôt que la seule correction grammaticale.",
+      "explanation": "L'évaluation de l'oral évalue la capacité à communiquer: clarté du message, pertinence, intelligibilité, plutôt que la seule correction grammaticale.",
       "source": "Référentiel d'évaluation de l'oral",
       "situation": null
     },
@@ -72,8 +68,7 @@
         "d'observation, de manipulation et de conceptualisation de la règle",
         "purement déductive sans manipulation",
         "de mémorisation des règles par cœur",
-        "de dictées correctives uniquement",
-        "كل الاقتراحات خاطئة"
+        "de dictées correctives uniquement"
       ],
       "correctIndex": 0,
       "explanation": "La grammaire se construit par observation de faits de langue, manipulation d'énoncés puis conceptualisation de la règle, en passant par des activités de systématisation.",
@@ -88,8 +83,7 @@
         "chercher le COD et vérifier s'il est placé avant le verbe",
         "accorder toujours avec le sujet",
         "ne jamais faire l'accord",
-        "accorder avec le complément d'objet indirect",
-        "كل الاقتراحات خاطئة"
+        "accorder avec le complément d'objet indirect"
       ],
       "correctIndex": 0,
       "explanation": "Le participe passé employé avec « avoir » s'accorde avec le COD seulement si celui-ci est placé avant le verbe ; sinon il reste invariable.",
@@ -104,8 +98,7 @@
         "diagnostic et de remédiation des erreurs orthographiques",
         "sanction et de notation punitive",
         "mémorisation de textes longs",
-        "compétition entre élèves",
-        "كل الاقتراحات خاطئة"
+        "compétition entre élèves"
       ],
       "correctIndex": 0,
       "explanation": "La dictée est un support d'observation et de diagnostic des difficultés orthographiques, et non un instrument de sanction ; elle doit être suivie de remédiation.",
@@ -120,11 +113,10 @@
         "réutiliser les mots en contexte dans des situations de communication variées",
         "apprendre les listes de mots par cœur",
         "cacher les mots difficiles du texte",
-        "traduire chaque mot en langue maternelle uniquement",
-        "كل الاقتراحات خاطئة"
+        "traduire chaque mot en langue maternelle uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "Le vocabulaire s'acquiert par réinvestissement en contexte : lecture, expression orale et écrite, jeux de langage, plutôt que par simple mémorisation de listes.",
+      "explanation": "Le vocabulaire s'acquiert par réinvestissement en contexte: lecture, expression orale et écrite, jeux de langage, plutôt que par simple mémorisation de listes.",
       "source": "Guide pédagogique — Vocabulaire au primaire",
       "situation": null
     },
@@ -136,8 +128,7 @@
         "la compréhension du texte et l'acquisition de stratégies de lecture",
         "la seule évaluation notée de la lecture",
         "la lecture à voix haute sans compréhension",
-        "l'apprentissage de la poésie uniquement",
-        "كل الاقتراحات خاطئة"
+        "l'apprentissage de la poésie uniquement"
       ],
       "correctIndex": 0,
       "explanation": "La lecture suivie d'expression développe la compréhension, explicite les stratégies de lecture et favorise l'expression orale et écrite à partir du texte.",
@@ -152,11 +143,10 @@
         "la capacité à percevoir et manipuler les sons de la langue (syllabes, phonèmes)",
         "la capacité à copier sans erreur",
         "la connaissance de l'alphabet uniquement",
-        "la maîtrise de l'orthographe d'usage uniquement",
-        "كل الاقتراحات خاطئة"
+        "la maîtrise de l'orthographe d'usage uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "La conscience phonologique est la capacité à identifier et manipuler les unités sonores de la langue : mots, syllabes, rimes et phonèmes ; elle est un préalable à la lecture.",
+      "explanation": "La conscience phonologique est la capacité à identifier et manipuler les unités sonores de la langue: mots, syllabes, rimes et phonèmes ; elle est un préalable à la lecture.",
       "source": "Référentiel — Conscience phonologique et apprentissage de la lecture",
       "situation": null
     },
@@ -166,10 +156,9 @@
       "text": "L'approche actionnelle dans l'enseignement du FLE considère l'apprenant comme",
       "options": [
         "un acteur social accomplissant des tâches dans des situations de communication",
-        "بالطبع، إليك الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:",
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:",
         "يعتبر المتعلم في النهج العملي للتعليم اللغوي والثقافي وكيانا ثابتا يتلقى المعلومات والقواعد دون تفاعل مع مواقف التواصل.",
-        "ينحصر دور المتعلم في تقليد المعلم فقط دون المشاركة الفعّالة والتفاعل مع سياقات التواصل المتنوعة.",
-        "كل الاقتراحات خاطئة"
+        "ينحصر دور المتعلم في تقليد المعلم فقط دون المشاركة الفعّالة والتفاعل مع سياقات التواصل المتنوعة."
       ],
       "correctIndex": 0,
       "explanation": "Dans l'approche actionnelle, l'apprenant est un acteur social qui réalise des tâches (simples et complexes) mobilisant des activités langagières dans un contexte donné.",
@@ -184,8 +173,7 @@
         "mobiliser les compétences langagières autour d'une production collective",
         "réduire le temps de travail en classe",
         "remplacer entièrement les manuels scolaires",
-        "noter les élèves en continu sans objectif",
-        "كل الاقتراحات خاطئة"
+        "noter les élèves en continu sans objectif"
       ],
       "correctIndex": 0,
       "explanation": "Le projet de classe (journal, exposition, théâtre...) mobilise les compétences langagières dans une démarche de production collective motivante et finalisée.",
@@ -198,10 +186,9 @@
       "text": "L'exploitation de l'image fixe en classe de français au primaire sert à",
       "options": [
         "déclencher la parole et soutenir la compréhension et l'expression",
-        "بالطبع، سأقوم بإعادة صياغة الخيارات الخاطئة بطريقة أكثر تفصيلاً وتطبيقاً:",
+        "كل الاقتراحات خاطئة",
         "استخدام الصورة الثابتة في الفصل الدراسي للغة الفرنسية في المرحلة الابتدائية يقتصر على إضفاء لمسة جمالية على الكراسات فقط.",
-        "الهدف من توظيف الصورة الثابتة هو تزيين دفاتر التلاميذ دون أن يسهم ذلك في تحفيز الكلام وتعزيز الفهم والتواصل باللغة الفرنسية.",
-        "كل الاقتراحات خاطئة"
+        "الهدف من توظيف الصورة الثابتة هو تزيين دفاتر التلاميذ دون أن يسهم ذلك في تحفيز الكلام وتعزيز الفهم والتواصل باللغة الفرنسية."
       ],
       "correctIndex": 0,
       "explanation": "L'image est un support déclencheur de prise de parole et un appui à la compréhension ; elle favorise la description, la narration et l'interprétation.",
@@ -216,8 +203,7 @@
         "traiter les erreurs constatées par des activités ciblées",
         "refaire la même évaluation à l'identique",
         "noter à nouveau les élèves plus sévèrement",
-        "passer à un nouveau chapitre sans retour",
-        "كل الاقتراحات خاطئة"
+        "passer à un nouveau chapitre sans retour"
       ],
       "correctIndex": 0,
       "explanation": "La remédiation consiste à proposer des activités différenciées ciblant les erreurs repérées, afin de combler les lacunes avant d'avancer dans le programme.",
@@ -232,11 +218,10 @@
         "un locuteur, un interlocuteur, un message, un canal et un contexte",
         "un locuteur et un livre uniquement",
         "un enregistrement audio uniquement",
-        "un tableau noir et une craie uniquement",
-        "كل الاقتراحات خاطئة"
+        "un tableau noir et une craie uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "Toute situation de communication met en jeu : un émetteur, un récepteur, un message, un canal (oral/écrit) et un contexte ; ces éléments fondent le schéma de la communication.",
+      "explanation": "Toute situation de communication met en jeu: un émetteur, un récepteur, un message, un canal (oral/écrit) et un contexte ; ces éléments fondent le schéma de la communication.",
       "source": "Didactique du FLE — Schéma de la communication",
       "situation": null
     },
@@ -248,8 +233,7 @@
         "la motricité fine et à la tenue correcte de l'outil scripteur",
         "la vitesse de lecture uniquement",
         "la mémorisation de l'alphabet uniquement",
-        "la dictée quotidienne uniquement",
-        "كل الاقتراحات خاطئة"
+        "la dictée quotidienne uniquement"
       ],
       "correctIndex": 0,
       "explanation": "L'écriture demande un développement de la motricité fine, la maîtrise du geste, la posture et la tenue de l'outil, avant la formation correcte des lettres.",
@@ -264,8 +248,7 @@
         "l'utilisation en contexte puis la mémorisation des formes",
         "la mémorisation des tableaux de conjugaison sans contexte",
         "la théorie grammaticale abstraite",
-        "l'analyse morphologique savante",
-        "كل الاقتراحات خاطئة"
+        "l'analyse morphologique savante"
       ],
       "correctIndex": 0,
       "explanation": "On part d'usages en contexte (phrases, situations) pour amener l'élève à dégager et mémoriser progressivement les formes conjuguées des verbes au programme.",
@@ -280,11 +263,10 @@
         "des consignes, des ordres ou des conseils à suivre (recette, notice, règle)",
         "une argumentation avec thèse et exemples",
         "une narration avec personnages et péripéties",
-        "une description détaillée de lieux",
-        "Toutes les réponses ci-dessus sont fausses."
+        "une description détaillée de lieux"
       ],
       "correctIndex": 0,
-      "explanation": "Le texte injonctif vise à faire agir : recettes, notices, règles de jeu ; il emploie l'impératif ou l'infinitif et une organisation en étapes.",
+      "explanation": "Le texte injonctif vise à faire agir: recettes, notices, règles de jeu ; il emploie l'impératif ou l'infinitif et une organisation en étapes.",
       "source": "Typologie des textes — Guide pédagogique",
       "situation": null
     },
@@ -296,8 +278,7 @@
         "varier les supports, les consignes et les parcours selon les besoins des élèves",
         "donner le même travail identique à tous sans adaptation",
         "réduire le programme pour les élèves en difficulté",
-        "isoler les élèves en difficulté dans un coin de la classe",
-        "كل الاقتراحات خاطئة"
+        "isoler les élèves en difficulté dans un coin de la classe"
       ],
       "correctIndex": 0,
       "explanation": "La différenciation pédagogique adapte les démarches, les supports, les consignes et les rythmes aux besoins et profils des élèves, sans rompre le groupe-classe.",
@@ -310,13 +291,12 @@
       "text": "La compréhension orale en classe de FLE doit être évaluée par",
       "options": [
         "des tâches de repérage et de vérification de la compréhension du message entendu",
-        "بالطبع، إليك ثلاثة خيارات خاطئة مفصلة أكثر:",
+        "ثلاثة خيارات خاطئة مفصلة أكثر:",
         "التركيز فقط على تحديد الأفكار الرئيسية والثانوية دون التحقق من الفهم العام للنص المسموع.",
-        "تقييم الفهم من خلال قدرة الطلاب على استرجاع معلومات جزئية من النص دون التحقق من فهم الرسالة بأكملها.",
-        "كل الاقتراحات خاطئة"
+        "تقييم الفهم من خلال قدرة الطلاب على استرجاع معلومات جزئية من النص دون التحقق من فهم الرسالة بأكملها."
       ],
       "correctIndex": 0,
-      "explanation": "On évalue la compréhension orale par des activités qui exigent une réaction à ce qui est entendu : cocher, relier, répondre, reformuler, sans recours à la copie.",
+      "explanation": "On évalue la compréhension orale par des activités qui exigent une réaction à ce qui est entendu: cocher, relier, répondre, reformuler, sans recours à la copie.",
       "source": "Référentiel d'évaluation — Compréhension orale",
       "situation": null
     },
@@ -326,13 +306,12 @@
       "text": "La lecture documentaire au primaire vise à apprendre à l'élève à",
       "options": [
         "prélever et organiser des informations utiles dans des documents variés",
-        "بالطبع، إليكم الخيارات المعدلة الثلاثة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:",
+        "الخيارات المعدلة الثلاثة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:",
         "يقتصر على ترديد المعلومات من الوثيقة بلا فهم",
-        "يقرأ النص بصوت عال فقط دون استيعاب",
-        "كل الاقتراحات خاطئة"
+        "يقرأ النص بصوت عال فقط دون استيعاب"
       ],
       "correctIndex": 0,
-      "explanation": "La lecture documentaire développe des stratégies de recherche d'information : repérage, sélection, organisation et restitution, dans des supports variés.",
+      "explanation": "La lecture documentaire développe des stratégies de recherche d'information: repérage, sélection, organisation et restitution, dans des supports variés.",
       "source": "Guide pédagogique — Lecture documentaire",
       "situation": null
     },
@@ -344,11 +323,10 @@
         "je vais, tu vas, il/elle va, nous allons, vous allez, ils/elles vont",
         "je alle, tu alles, il alle, nous allons, vous allez, ils allent",
         "je vais, tu vas, il/elle va, nous allez, vous allons, ils/elles vont",
-        "je vais, tu vais, il/elle vait, nous allons, vous allez, ils/elles vont",
-        "كل الاقتراحات خاطئة"
+        "je vais, tu vais, il/elle vait, nous allons, vous allez, ils/elles vont"
       ],
       "correctIndex": 0,
-      "explanation": "Le verbe « aller » au présent : je vais, tu vas, il/elle va, nous allons, vous allez, ils/elles vont ; c'est un verbe du troisième groupe à la conjugaison irrégulière.",
+      "explanation": "Le verbe « aller » au présent: je vais, tu vas, il/elle va, nous allons, vous allez, ils/elles vont ; c'est un verbe du troisième groupe à la conjugaison irrégulière.",
       "source": "Conjugaison — Verbe « aller » au présent",
       "situation": null
     },
@@ -360,11 +338,10 @@
         "la plupart des noms en -al font leur pluriel en -aux, avec quelques exceptions (bals, carnavals)",
         "tous les noms en -al font leur pluriel en -als sans exception",
         "aucun nom en -al ne change de forme au pluriel",
-        "les noms en -al prennent toujours un -x au singulier",
-        "كل الاقتراحات خاطئة"
+        "les noms en -al prennent toujours un -x au singulier"
       ],
       "correctIndex": 0,
-      "explanation": "Règle : les noms en -al font leur pluriel en -aux (cheval→chevaux) ; exceptions notoires : bals, carnavals, festivals, chacals, récitals.",
+      "explanation": "Règle: les noms en -al font leur pluriel en -aux (cheval→chevaux) ; exceptions notoires: bals, carnavals, festivals, chacals, récitals.",
       "source": "Orthographe grammaticale — Pluriel des noms en -al",
       "situation": null
     },
@@ -376,11 +353,10 @@
         "une situation initiale, des péripéties et une situation finale",
         "une thèse et des arguments uniquement",
         "des consignes à suivre uniquement",
-        "une succession d'images sans texte",
-        "Toutes les réponses ci-dessus sont fausses."
+        "une succession d'images sans texte"
       ],
       "correctIndex": 0,
-      "explanation": "Le schéma narratif comprend généralement : situation initiale, élément perturbateur, péripéties, élément de résolution et situation finale.",
+      "explanation": "Le schéma narratif comprend généralement: situation initiale, élément perturbateur, péripéties, élément de résolution et situation finale.",
       "source": "Typologie des textes — Schéma narratif",
       "situation": null
     },
@@ -392,11 +368,10 @@
         "la négation (contraire de lisible)",
         "l'augmentation de la taille",
         "la répétition de l'action",
-        "le lieu d'origine",
-        "كل الاقتراحات خاطئة"
+        "le lieu d'origine"
       ],
       "correctIndex": 0,
-      "explanation": "Le préfixe « in- » (avec ses variantes il-, im-, ir-) marque la négation : illisible = qui ne peut pas être lu.",
+      "explanation": "Le préfixe « in- » (avec ses variantes il-, im-, ir-) marque la négation: illisible = qui ne peut pas être lu.",
       "source": "Vocabulaire — Préfixes de négation",
       "situation": null
     },
@@ -408,8 +383,7 @@
         "relire plusieurs fois un même texte à voix haute avec un modèle",
         "lire un texte nouveau chaque minute sans relecture",
         "lire le texte le plus vite possible sans articulation",
-        "éviter toute lecture à voix haute",
-        "كل الاقتراحات خاطئة"
+        "éviter toute lecture à voix haute"
       ],
       "correctIndex": 0,
       "explanation": "La fluidité s'améliore par la lecture répétée (relectures d'un même texte), la lecture avec modèle et les lectures chorales, sans négliger l'articulation.",
@@ -424,11 +398,10 @@
         "formuler, organiser et améliorer progressivement les idées",
         "recopier le texte définitif directement",
         "dessiner sans lien avec le texte",
-        "compter les mots sans les relire",
-        "كل الاقتراحات خاطئة"
+        "compter les mots sans les relire"
       ],
       "correctIndex": 0,
-      "explanation": "Le brouillon est un espace d'essai et de révision : on y cherche des idées, on les organise, on réécrit et on améliore avant de recopier la version finale.",
+      "explanation": "Le brouillon est un espace d'essai et de révision: on y cherche des idées, on les organise, on réécrit et on améliore avant de recopier la version finale.",
       "source": "Guide pédagogique — Production écrite et brouillon",
       "situation": null
     },
@@ -440,11 +413,10 @@
         "Est-ce que tu peux me prêter ton crayon, s'il te plaît ?",
         "Donne-moi ton crayon immédiatement !",
         "Tu es obligé de me prêter ton crayon",
-        "J'ai le droit de prendre ton crayon",
-        "كل الاقتراحات خاطئة"
+        "J'ai le droit de prendre ton crayon"
       ],
       "correctIndex": 0,
-      "explanation": "La politesse dans l'acte de demande passe par des formules interrogatives et conditionnelles : « Est-ce que tu peux... », « Pourrais-tu... », accompagnées de « s'il te plaît ».",
+      "explanation": "La politesse dans l'acte de demande passe par des formules interrogatives et conditionnelles: « Est-ce que tu peux... », « Pourrais-tu... », accompagnées de « s'il te plaît ».",
       "source": "Actes de langage — Demande polie",
       "situation": null
     },
@@ -456,11 +428,10 @@
         "un « p » et un « g » suivi de « n",
         "un « p » et un « j » suivi de « n",
         "deux « p » et un « g",
-        "un « b » et un « g",
-        "كل الاقتراحات خاطئة"
+        "un « b » et un « g"
       ],
       "correctIndex": 0,
-      "explanation": "« Champignon » : c-h-a-m-p-i-g-n-o-n ; la suite « gn » transcrit le son [ɲ] et le « p » est suivi de « i ».",
+      "explanation": "« Champignon »: c-h-a-m-p-i-g-n-o-n ; la suite « gn » transcrit le son [ɲ] et le « p » est suivi de « i ».",
       "source": "Orthographe d'usage — Mots difficiles",
       "situation": null
     },
@@ -472,11 +443,10 @@
         "le contenu, la structure, la syntaxe, le vocabulaire et l'orthographe",
         "عند تقييم التعبير الكتابي في المرحلة الابتدائية، غالباً ما نستخدم إطار تقييمي يأخذ بعين الاعتبار الجوانب التالية:",
         "المضمون: ندرس مدى صلة الأفكار المطروحة بالموضوع ومدى تطورها وتسلسلها.",
-        "البنية: نتحقق من تنظيم النص وتماسك أجزائه وترتيب الفقرات بشكل مناسب.",
-        "كل الاقتراحات خاطئة"
+        "البنية: نتحقق من تنظيم النص وتماسك أجزائه وترتيب الفقرات بشكل مناسب."
       ],
       "correctIndex": 0,
-      "explanation": "La grille d'évaluation de l'expression écrite repose sur des critères : adéquation au sujet, organisation, richesse du vocabulaire, correction syntaxique et orthographique.",
+      "explanation": "La grille d'évaluation de l'expression écrite repose sur des critères: adéquation au sujet, organisation, richesse du vocabulaire, correction syntaxique et orthographique.",
       "source": "Référentiel d'évaluation — Expression écrite",
       "situation": null
     },
@@ -486,10 +456,9 @@
       "text": "La séance de remédiation orthographique doit se fonder sur",
       "options": [
         "les erreurs réellement commises par les élèves lors des productions",
-        "بالطبع، ها هي الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
         "اختيار تمارين عشوائية دون ربطها بأخطاء الطلاب الفعلية",
-        "الاعتماد على إملاء نصوص خارج المنهاج المستخدم في الفصل الدراسي",
-        "كل الاقتراحات خاطئة"
+        "الاعتماد على إملاء نصوص خارج المنهاج المستخدم في الفصل الدراسي"
       ],
       "correctIndex": 0,
       "explanation": "La remédiation s'appuie sur l'analyse des erreurs constatées dans les productions et dictées des élèves, pour proposer des activités ciblées de traitement.",
@@ -504,11 +473,10 @@
         "raconter un événement vécu en respectant l'ordre des faits et en s'exprimant clairement",
         "إعادة سرد نص مكتوب من قبل المعلم دون توضيح الأحداث أو المشاعر المشاركة",
         "ترديد أبيات من الشعر عن ظهر قلب دون الربط بين الكلمات ومعاني القصيدة",
-        "الخيار 4: تكرار جمل عشوائية دون فهم المعاني أو السياق ودون تحسين مهارات النطق والتركيب اللغوي",
-        "كل الاقتراحات خاطئة"
+        "تكرار جمل عشوائية دون فهم المعاني أو السياق ودون تحسين مهارات النطق والتركيب اللغوي"
       ],
       "correctIndex": 0,
-      "explanation": "Le récit d'expérience vécue mobilise l'élève comme locuteur : il organise son propos, respecte la chronologie et développe son aisance à l'oral.",
+      "explanation": "Le récit d'expérience vécue mobilise l'élève comme locuteur: il organise son propos, respecte la chronologie et développe son aisance à l'oral.",
       "source": "Guide pédagogique — Expression orale",
       "situation": null
     },
@@ -520,8 +488,7 @@
         "l'incapacité à associer les graphèmes aux phonèmes correspondants",
         "la lecture très rapide sans erreur",
         "une écriture calligraphiée parfaite",
-        "une bonne compréhension orale",
-        "كل الاقتراحات خاطئة"
+        "une bonne compréhension orale"
       ],
       "correctIndex": 0,
       "explanation": "Le principe alphabétique est la correspondance entre les graphèmes (lettres) et les phonèmes (sons) ; sa non-maîtrise bloque le décodage.",
@@ -536,11 +503,10 @@
         "la compréhension de ce qui n'est pas dit explicitement (inférences)",
         "la compréhension littérale du texte",
         "la lecture des mots nouveaux uniquement",
-        "la connaissance du vocabulaire uniquement",
-        "كل الاقتراحات خاطئة"
+        "la connaissance du vocabulaire uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "La compréhension implicite exige de faire des inférences : combler des blancs du texte à partir d'indices et de ses connaissances, au-delà du sens littéral.",
+      "explanation": "La compréhension implicite exige de faire des inférences: combler des blancs du texte à partir d'indices et de ses connaissances, au-delà du sens littéral.",
       "source": "Didactique de la lecture — Compréhension implicite",
       "situation": null
     },
@@ -552,11 +518,10 @@
         "l'expression de l'ordre, du conseil et de la consigne avec trois personnes (tu, nous, vous)",
         "الخيارات الخاطئة المفصلة:",
         "تحليل الأفعال المساعدة: التركيز على توضيح دور الفعل المساعد \"être\" و \"avoir\" في تكوين المضارع التام.",
-        "استعراض الأزمنة المرتبطة: الغوص في تفاصيل الأزمنة المرتبطة بالمضارع التام مثل المضارع التام المستمر والمضارع التام التام المستمر.",
-        "كل الاقتراحات خاطئة"
+        "استعراض الأزمنة المرتبطة: الغوص في تفاصيل الأزمنة المرتبطة بالمضارع التام مثل المضارع التام المستمر والمضارع التام التام المستمر."
       ],
       "correctIndex": 0,
-      "explanation": "L'impératif présent ne se conjugue qu'à trois personnes : tu, nous, vous ; il sert à donner un ordre, un conseil ou une consigne.",
+      "explanation": "L'impératif présent ne se conjugue qu'à trois personnes: tu, nous, vous ; il sert à donner un ordre, un conseil ou une consigne.",
       "source": "Conjugaison — Impératif présent",
       "situation": null
     },
@@ -568,8 +533,7 @@
         "motiver et faire réinvestir la langue dans des situations ludiques et authentiques",
         "occuper les élèves sans objectif d'apprentissage",
         "récompenser uniquement les bons élèves",
-        "évaluer la concentration par le silence",
-        "كل الاقتراحات خاطئة"
+        "évaluer la concentration par le silence"
       ],
       "correctIndex": 0,
       "explanation": "Le jeu pédagogique crée un contexte motivant de communication authentique où l'élève réinvestit ses acquis langagiers en situation.",
@@ -584,8 +548,7 @@
         "installer le contexte et déclencher la prise de parole",
         "corriger toutes les erreurs en bloc",
         "donner la correction du devoir écrit",
-        "évaluer par une note chiffrée",
-        "كل الاقتراحات خاطئة"
+        "évaluer par une note chiffrée"
       ],
       "correctIndex": 0,
       "explanation": "La mise en situation crée un contexte motivant (image, question, situation vécue) qui déclenche l'envie et le besoin de parler.",
@@ -600,11 +563,10 @@
         "la possibilité (qui peut être lavé)",
         "l'action de laver",
         "le lieu où l'on lave",
-        "la personne qui lave",
-        "كل الاقتراحات خاطئة"
+        "la personne qui lave"
       ],
       "correctIndex": 0,
-      "explanation": "Le suffixe « -able »/« -ible » forme des adjectifs exprimant la possibilité : lavable = qui peut être lavé.",
+      "explanation": "Le suffixe « -able »/« -ible » forme des adjectifs exprimant la possibilité: lavable = qui peut être lavé.",
       "source": "Vocabulaire — Suffixes",
       "situation": null
     },
@@ -616,8 +578,7 @@
         "la mémorisation, le rythme, l'intonation et l'expression orale",
         "la production écrite uniquement",
         "la compréhension de textes argumentatifs uniquement",
-        "l'orthographe grammaticale uniquement",
-        "كل الاقتراحات خاطئة"
+        "l'orthographe grammaticale uniquement"
       ],
       "correctIndex": 0,
       "explanation": "La récitation travaille la mémoire, la diction, le rythme, l'intonation et la sensibilité esthétique ; elle participe de la maîtrise de l'oral.",
@@ -632,8 +593,7 @@
         "un code de correction et une grille de relecture pour guider l'élève",
         "une correction globale sans commentaire",
         "une réécriture complète du texte par l'enseignant",
-        "la seule annotation de la note finale",
-        "كل الاقتراحات خاطئة"
+        "la seule annotation de la note finale"
       ],
       "correctIndex": 0,
       "explanation": "La correction accompagnée (code d'erreurs, grille de relecture, commentaires ciblés) rend l'élève acteur de l'amélioration de son texte.",
@@ -648,11 +608,10 @@
         "l'imparfait de l'indicatif",
         "le passé composé",
         "le futur simple",
-        "le présent de l'indicatif",
-        "كل الاقتراحات خاطئة"
+        "le présent de l'indicatif"
       ],
       "correctIndex": 0,
-      "explanation": "« Je finissais » : imparfait de l'indicatif (terminaison -ais), marquant une action passée non achevée ou habituelle.",
+      "explanation": "« Je finissais »: imparfait de l'indicatif (terminaison -ais), marquant une action passée non achevée ou habituelle.",
       "source": "Conjugaison — Imparfait de l'indicatif",
       "situation": null
     },
@@ -664,8 +623,7 @@
         "la compréhension orale et la production orale en interaction",
         "la seule transcription écrite du dialogue",
         "la mémorisation du dialogue sans compréhension",
-        "la grammaire implicite sans activité orale",
-        "كل الاقتراحات خاطئة"
+        "la grammaire implicite sans activité orale"
       ],
       "correctIndex": 0,
       "explanation": "Le dialogue enregistré est un support pour travailler l'écoute (compréhension) puis l'interaction orale (rejouer, adapter, poursuivre le dialogue).",
@@ -680,8 +638,7 @@
         "l'organisation logique et l'enchaînement des idées dans le texte",
         "la calligraphie et la propreté de la copie",
         "le nombre de lignes écrites",
-        "la longueur des phrases uniquement",
-        "كل الاقتراحات خاطئة"
+        "la longueur des phrases uniquement"
       ],
       "correctIndex": 0,
       "explanation": "La cohérence textuelle concerne la progression logique des idées, l'usage des connecteurs, la reprise de l'information et l'absence de contradiction.",
@@ -694,10 +651,9 @@
       "text": "Pour introduire un nouveau texte en lecture, l'enseignant commencera par",
       "options": [
         "une phase d'anticipation : émettre des hypothèses à partir du titre et des illustrations",
-        "بالتأكيد، هنا ثلاثة خيارات خاطئة مفصلة:",
+        "كل الاقتراحات خاطئة",
         "تحديد المستوى القرائي المناسب بناءً على معرفة التلاميذ والطالب الجديد. يجب على المعلم تحديد مستوى النص التعليمي ليتناسب مع قدرات الطلاب.",
-        "إجراء اختبار تحليل النصوص الأدبية لتحديد مستوى الفهم والاستيعاب لدى الطلاب قبل البدء بالنص الجديد. هذا الخيار لا يتعلق مباشرة بتقديم النص الجديد في سياق التعلم.",
-        "كل الاقتراحات خاطئة"
+        "إجراء اختبار تحليل النصوص الأدبية لتحديد مستوى الفهم والاستيعاب لدى الطلاب قبل البدء بالنص الجديد. هذا الخيار لا يتعلق مباشرة بتقديم النص الجديد في سياق التعلم."
       ],
       "correctIndex": 0,
       "explanation": "La phase d'anticipation (à partir du titre, des images, des indices) éveille l'intérêt et prépare la compréhension en activant les connaissances de l'élève.",
@@ -712,8 +668,7 @@
         "des exercices de discrimination auditive et de prononciation contrastée",
         "في علم الفونيتيك العلاجي، تعمل التمارين على تفريق الأصوات [ب] و[ب] عبر:",
         "تدريبات التمييز السمعي: حيث يُطلب من المتعلمين التركيز على الفروقات بين الصوتين ومحاولة التفريق بينهما.",
-        "تمارين النطق المتناقضة: يقوم المتعلمون بممارسة إنتاج كلا الصوتين بشكل متباين لتعزيز وضوح التمييز بينهما.",
-        "كل الاقتراحات خاطئة"
+        "تمارين النطق المتناقضة: يقوم المتعلمون بممارسة إنتاج كلا الصوتين بشكل متباين لتعزيز وضوح التمييز بينهما."
       ],
       "correctIndex": 0,
       "explanation": "La correction phonétique repose sur la discrimination auditive (entendre la différence) puis sur la prononciation contrastée et la réutilisation en contexte.",
@@ -728,8 +683,7 @@
         "favoriser la réflexion et la participation de tous les élèves",
         "cibler uniquement les élèves en difficulté",
         "obtenir une réponse unique prédéterminée",
-        "faire avancer la leçon sans participation",
-        "كل الاقتراحات خاطئة"
+        "faire avancer la leçon sans participation"
       ],
       "correctIndex": 0,
       "explanation": "Un bon questionnement ouvre la réflexion, encourage l'expression personnelle et assure la participation large, sans se limiter à une réponse stéréotypée.",
@@ -742,10 +696,9 @@
       "text": "L'analyse des erreurs en production écrite permet à l'enseignant de",
       "options": [
         "repérer les difficultés récurrentes et planifier la remédiation",
-        "بالطبع، سأقوم بإعادة صياغة الخيارات الخاطئة بحيث تكون متساوية في الطول وتتسم بالتفاصيل مثلك، مع الحفاظ على كونها خاطئة. إليك الخيارات الثلاثة المعدلة:",
+        "كل الاقتراحات خاطئة",
         "تصنيف التلاميذ بدون متابعة أو تحليل",
-        "معاقبة التلاميذ الذين يرتكبون الأخطاء دون فهم أسبابهم وتحسين تعلمهم",
-        "كل الاقتراحات خاطئة"
+        "معاقبة التلاميذ الذين يرتكبون الأخطاء دون فهم أسبابهم وتحسين تعلمهم"
       ],
       "correctIndex": 0,
       "explanation": "L'erreur est une source d'information sur les acquis et les difficultés ; son analyse guide la planification des activités de remédiation.",
@@ -760,8 +713,7 @@
         "adapté à son âge, à son niveau et à des situations de communication plausibles",
         "يتجاهل مستوى الطالب ويتبع مستوى المقرر فقط",
         "يركز فقط على القواعد دون السياق الواقعي",
-        "الخيار 4: يترجم بشكل منهجي إلى العربية دون مراعاة مستوى الطالب والإمكانيات التعليمية",
-        "كل الاقتراحات خاطئة"
+        "يترجم بشكل منهجي إلى العربية دون مراعاة مستوى الطالب والإمكانيات التعليمية"
       ],
       "correctIndex": 0,
       "explanation": "Les situations de communication sont choisies en fonction de l'âge et du niveau des élèves, avec des énoncés authentiques et plausibles.",
@@ -771,16 +723,15 @@
     {
       "subject": "الفرنسية",
       "level": null,
-      "text": "En grammaire, « ils sont partis tôt » : le participe passé « partis » s'accorde avec",
+      "text": "En grammaire, « ils sont partis tôt »: le participe passé « partis » s'accorde avec",
       "options": [
         "le sujet « ils » (auxiliaire être)",
         "le COD placé avant le verbe",
         "le complément circonstanciel « tôt",
-        "le nom du verbe sans relation",
-        "كل الاقتراحات خاطئة"
+        "le nom du verbe sans relation"
       ],
       "correctIndex": 0,
-      "explanation": "Avec l'auxiliaire « être », le participe passé s'accorde en genre et en nombre avec le sujet : « ils » (masculin pluriel) → « partis ».",
+      "explanation": "Avec l'auxiliaire « être », le participe passé s'accorde en genre et en nombre avec le sujet: « ils » (masculin pluriel) → « partis ».",
       "source": "Orthographe grammaticale — Accord du participe passé",
       "situation": null
     },
@@ -792,11 +743,10 @@
         "utiliser des stratégies de dépannage : inférer, anticiper, survoler, repérer",
         "attendre toujours les explications du maître",
         "éviter tout texte non appris en classe",
-        "mémoriser les textes sans comprendre",
-        "كل الاقتراحات خاطئة"
+        "mémoriser les textes sans comprendre"
       ],
       "correctIndex": 0,
-      "explanation": "L'autonomie du lecteur passe par la maîtrise de stratégies : anticipation, repérage d'indices, inférences, retour en arrière, utilisation du contexte.",
+      "explanation": "L'autonomie du lecteur passe par la maîtrise de stratégies: anticipation, repérage d'indices, inférences, retour en arrière, utilisation du contexte.",
       "source": "Référentiel — Stratégies de lecture",
       "situation": null
     },
@@ -808,8 +758,7 @@
         "l'emploi de repères dans l'espace et de notations sensorielles (vue, ouïe, odeur...)",
         "يتم التعرف على النص الوصفي بشكل أساسي من خلال تسلسل الأحداث الزمنيّ",
         "النص الوصفي يتميز بشكل أساسي بتحديد التعليمات بصيغة الأمر",
-        "يتضمن النص الوصفي عادةً معلومات داعمة وأمثلة لتوضيح الفكرة",
-        "Toutes les réponses ci-dessus sont fausses."
+        "يتضمن النص الوصفي عادةً معلومات داعمة وأمثلة لتوضيح الفكرة"
       ],
       "correctIndex": 0,
       "explanation": "La description organise les éléments dans l'espace, emploie un vocabulaire précis et des perceptions sensorielles pour rendre compte d'un lieu, d'un objet ou d'un personnage.",
@@ -822,10 +771,9 @@
       "text": "Dans l'apprentissage précoce de la lecture, l'entraînement à la conscience syllabique consiste à",
       "options": [
         "segmenter les mots en syllabes et les manipuler (fusionner, supprimer, inverser)",
-        "بالطبع، إليك الخيارات المُحدّثة:",
+        "كل الاقتراحات خاطئة",
         "التركيز على التعرف على الحروف بدلاً من ربطها بالأصوات",
-        "نسخ جمل كاملة دون التعامل مع تحليل الكلمات إلى مقاطع",
-        "كل الاقتراحات خاطئة"
+        "نسخ جمل كاملة دون التعامل مع تحليل الكلمات إلى مقاطع"
       ],
       "correctIndex": 0,
       "explanation": "La conscience syllabique (segmentation, fusion, suppression de syllabes) prépare la conscience phonémique et facilite l'entrée dans la lecture.",
@@ -838,13 +786,12 @@
       "text": "La production orale en interaction se distingue de la production orale en continu par",
       "options": [
         "l'alternance des tours de parole entre deux ou plusieurs interlocuteurs",
-        "بالطبع، سأقدم ثلاثة خيارات خاطئة مع تفصيل أكثر:",
+        "ثلاثة خيارات خاطئة مع تفصيل أكثر:",
         "في الإنتاج الشفهي التفاعلي، تتميز المحادثات بتبادل الأدوار بين شخصين أو أكثر لتبادل الكلام ومناقشة موضوع معين. بينما في الإنتاج الشفهي المستمر، يتحدث شخص واحد دون مشاركة الآخرين ويتناول موضوعاً أقل تعقيداً.",
-        "يختلف الإنتاج الشفهي التفاعلي عن الإنتاج الشفهي المستمر في كون الأول يتطلب تعديل الجمل والفقرات بناءً على ردود أفعال وتجيب على استفسارات الآخرين. بينما في الإنتاج الشفهي المستمر، يركز المتحدث على إيصال معلوماته دون تفاعل مباشر مع المستمع أو الجمهور.",
-        "كل الاقتراحات خاطئة"
+        "يختلف الإنتاج الشفهي التفاعلي عن الإنتاج الشفهي المستمر في كون الأول يتطلب تعديل الجمل والفقرات بناءً على ردود أفعال وتجيب على استفسارات الآخرين. بينما في الإنتاج الشفهي المستمر، يركز المتحدث على إيصال معلوماته دون تفاعل مباشر مع المستمع أو الجمهور."
       ],
       "correctIndex": 0,
-      "explanation": "L'interaction orale implique un échange : prendre la parole, écouter, réagir, négocier le sens, contrairement au monologue de la production continue.",
+      "explanation": "L'interaction orale implique un échange: prendre la parole, écouter, réagir, négocier le sens, contrairement au monologue de la production continue.",
       "source": "CECRL — Activités langagières",
       "situation": null
     },
@@ -856,11 +803,10 @@
         "une activité de tri et de catégorisation à partir d'images et de mots",
         "une leçon magistrale de définitions à mémoriser",
         "une dictée des noms d'animaux sans support",
-        "une analyse morphologique des noms uniquement",
-        "كل الاقتراحات خاطئة"
+        "une analyse morphologique des noms uniquement"
       ],
       "correctIndex": 0,
-      "explanation": "Le vocabulaire se construit par des activités de manipulation : classer, catégoriser, apparier image-mot, créer des champs lexicaux.",
+      "explanation": "Le vocabulaire se construit par des activités de manipulation: classer, catégoriser, apparier image-mot, créer des champs lexicaux.",
       "source": "Guide pédagogique — Vocabulaire et activités de catégorisation",
       "situation": null
     },
@@ -872,8 +818,7 @@
         "une étape normale et une source d'information pour l'enseignement",
         "un échec définitif de l'apprenant",
         "un comportement à sanctionner systématiquement",
-        "une preuve d'inaptitude à la langue",
-        "كل الاقتراحات خاطئة"
+        "une preuve d'inaptitude à la langue"
       ],
       "correctIndex": 0,
       "explanation": "L'erreur est une trace du processus d'acquisition ; elle renseigne sur les stratégies de l'apprenant et oriente les activités de remédiation.",
@@ -888,11 +833,10 @@
         "le verbe « aller » au présent + infinitif",
         "le verbe « venir » au présent + infinitif",
         "l'auxiliaire « avoir » + participe passé",
-        "le verbe « aller » au futur + infinitif",
-        "كل الاقتراحات خاطئة"
+        "le verbe « aller » au futur + infinitif"
       ],
       "correctIndex": 0,
-      "explanation": "Le futur proche = aller (présent) + infinitif : « je vais manger » ; il exprime un événement proche du moment de parole.",
+      "explanation": "Le futur proche = aller (présent) + infinitif: « je vais manger » ; il exprime un événement proche du moment de parole.",
       "source": "Conjugaison — Futur proche",
       "situation": null
     },
@@ -902,10 +846,9 @@
       "text": "En lecture, le déchiffrage lent et syllabique sans accès au sens révèle",
       "options": [
         "une lecture non automatisée qui nécessite un entraînement à la fluidité",
-        "بالطبع، سأقوم بتعديل الخيارات الخاطئة لتكون بمساواة مع الإجابة الصحيحة من حيث الطول والتفاصيل، مع تأكيد أنها لا تزال خاطئة. إليك الخيارات الثلاثة المُحدّثة:",
+        "كل الاقتراحات خاطئة",
         "تجاهل متعمد للنص وعدم التفاعل مع المحتوى المقروء",
-        "اعتناق استراتيجية قراءة معمقة تعزز التحليل والنقد عوض التلقائية",
-        "كل الاقتراحات خاطئة"
+        "اعتناق استراتيجية قراءة معمقة تعزز التحليل والنقد عوض التلقائية"
       ],
       "correctIndex": 0,
       "explanation": "Le décodage non automatisé absorbe les ressources attentionnelles et gêne la compréhension ; il faut entraîner la fluidité par des relectures répétées.",
@@ -920,12 +863,11 @@
         "une situation de communication faisant apparaître la forme verbale à étudier",
         "la récitation du tableau de conjugaison sans contexte",
         "une interrogeration écrite de conjugaison",
-        "la correction d'une dictée précédente",
-        "كل الاقتراحات خاطئة"
+        "la correction d'une dictée précédente"
       ],
       "correctIndex": 0,
       "explanation": "On part d'une situation où la forme verbale est employée en contexte pour en dégager le sens, puis la conjugaison, puis la systématisation.",
-      "source": "Guide pédagogique — Conjugaison : démarche",
+      "source": "Guide pédagogique — Conjugaison: démarche",
       "situation": null
     },
     {
@@ -936,8 +878,7 @@
         "une thèse, des arguments et des exemples",
         "une recette de cuisine",
         "une liste de noms propres",
-        "des consignes de sécurité",
-        "كل الاقتراحات خاطئة"
+        "des consignes de sécurité"
       ],
       "correctIndex": 0,
       "explanation": "Le texte argumentatif défend une opinion (thèse) appuyée par des arguments et des exemples ; il vise à convaincre le lecteur.",
@@ -950,10 +891,9 @@
       "text": "La lecture à voix haute en classe de FLE doit être précédée de",
       "options": [
         "un travail de compréhension et de préparation (lecture silencieuse, repérage des mots difficiles)",
-        "بالطبع، إليك الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
         "إجراء اختبار فهم سريع عبر طرح أسئلة قبل القراءة الجهرية",
-        "تقييم فوري غير مُصنَّف للكلمات الصعبة المُكتشفة خلال القراءة الصامتة",
-        "كل الاقتراحات خاطئة"
+        "تقييم فوري غير مُصنَّف للكلمات الصعبة المُكتشفة خلال القراءة الصامتة"
       ],
       "correctIndex": 0,
       "explanation": "On ne lit à voix haute que ce que l'on a compris ; la préparation (lecture silencieuse, découpage, entraînement) est indispensable avant la lecture oralisée.",
@@ -966,10 +906,9 @@
       "text": "Pour évaluer le vocabulaire acquis, la tâche la plus révélatrice est",
       "options": [
         "la réutilisation des mots en production (orale ou écrite) dans des contextes variés",
-        "بالطبع، سأقوم بإعادة صياغة الخيارات الخاطئة الثلاثة لتكون أكثر تفصيلاً ومتناسقة مع الإجابة الصحيحة:",
+        "كل الاقتراحات خاطئة",
         "يمكن اعتبار \"التكرار الشفهي للمجموعات من الكلمات\" مهمة مميزة لتقييم المفردات المكتسبة، لكنها ليست الأكثر إيحاءً مقارنة بالاستخدام الفعلي للكلمات في سياقات متنوعة.",
-        "تحديد الكلمات في القاموس يعتبر خطوة مهمة لفهم معاني الكلمات، لكنه لا يعكس قدرة المتعلم على استخدام الكلمات بفعالية في التواصل والتعبير.",
-        "كل الاقتراحات خاطئة"
+        "تحديد الكلمات في القاموس يعتبر خطوة مهمة لفهم معاني الكلمات، لكنه لا يعكس قدرة المتعلم على استخدام الكلمات بفعالية في التواصل والتعبير."
       ],
       "correctIndex": 0,
       "explanation": "Un mot est vraiment acquis lorsqu'il est réutilisé spontanément en contexte ; l'évaluation du vocabulaire se fait donc surtout en production.",
@@ -984,11 +923,10 @@
         "a » est le verbe avoir (on peut dire « avait ») ; « à » est une préposition",
         "\"a\" يُستخدم عادةً للإشارة إلى الملكية والسببية، بينما \"à\" يُشير إلى الزمان والمكان والإضافة.",
         "\"à\" يمكن أن يكون فعلاً مساعداً في المضارع التام (comme \"ai\") ولكنه أيضاً يُستخدم كبديل عن \"a\" في سياقات معينة.",
-        "\"a\" يُعتبر فعلاً مساعداً في المضارع البسيط (comme \"aime\") بينما \"à\" تبقى دائماً بمثابة حرف جر.",
-        "كل الاقتراحات خاطئة"
+        "\"a\" يُعتبر فعلاً مساعداً في المضارع البسيط (comme \"aime\") بينما \"à\" تبقى دائماً بمثابة حرف جر."
       ],
       "correctIndex": 0,
-      "explanation": "Astuce : si l'on peut remplacer par « avait », c'est le verbe « a » ; sinon, c'est la préposition « à ».",
+      "explanation": "Astuce: si l'on peut remplacer par « avait », c'est le verbe « a » ; sinon, c'est la préposition « à ».",
       "source": "Orthographe grammaticale — Homophones « a/à »",
       "situation": null
     },
@@ -1000,11 +938,10 @@
         "une fiche de lecture ou un résumé organisé des informations retenues",
         "تلخيص المعلومات بشكل شفوي دون تسجيلها كتابيًا",
         "نسخ أجزاء عشوائية من الوثيقة دون اهتمام بالدقة",
-        "قراءة الوثيقة بصوت عالٍ دون محاولة لفهم المحتوى أو تدوين ملاحظات منظمة",
-        "كل الاقتراحات خاطئة"
+        "قراءة الوثيقة بصوت عالٍ دون محاولة لفهم المحتوى أو تدوين ملاحظات منظمة"
       ],
       "correctIndex": 0,
-      "explanation": "Après la lecture documentaire, l'élève reformule, organise et restitue l'information : fiche, résumé, schéma, affiche.",
+      "explanation": "Après la lecture documentaire, l'élève reformule, organise et restitue l'information: fiche, résumé, schéma, affiche.",
       "source": "Guide pédagogique — Lecture documentaire",
       "situation": null
     },
@@ -1016,8 +953,7 @@
         "les traiter avec bienveillance en privilégiant la reformulation et la reprise",
         "interrompre systématiquement l'élève pour tout corriger",
         "ignorer complètement l'erreur",
-        "sanctionner l'erreur par une punition",
-        "كل الاقتراحات خاطئة"
+        "sanctionner l'erreur par une punition"
       ],
       "correctIndex": 0,
       "explanation": "La correction bienveillante (reformulation, reprise correcte, autocorrection) encourage l'élève à s'exprimer sans crainte de l'erreur.",
@@ -1032,8 +968,7 @@
         "l'expression orale en situation simulée de communication",
         "la seule écriture de dialogues",
         "la compréhension de textes écrits uniquement",
-        "la conjugaison par cœur",
-        "كل الاقتراحات خاطئة"
+        "la conjugaison par cœur"
       ],
       "correctIndex": 0,
       "explanation": "Le jeu de rôle place l'élève dans une situation simulée (acheter, demander, saluer) où il mobilise la langue pour communiquer.",
@@ -1048,8 +983,7 @@
         "réactiver les acquis et créer une continuité dans l'apprentissage",
         "noter les élèves en début de chaque heure",
         "passer à une activité nouvelle sans lien",
-        "occuper le temps de la récréation",
-        "كل الاقتراحات خاطئة"
+        "occuper le temps de la récréation"
       ],
       "correctIndex": 0,
       "explanation": "Le rappel des acquis antérieurs (phase de réactivation) assure la continuité pédagogique et prépare l'intégration des nouveaux apprentissages.",
@@ -1064,11 +998,10 @@
         "les objectifs, le matériel, le déroulement et l'évaluation",
         "la liste des élèves de la classe",
         "le calendrier des vacances scolaires",
-        "le programme des réunions administratives",
-        "كل الاقتراحات خاطئة"
+        "le programme des réunions administratives"
       ],
       "correctIndex": 0,
-      "explanation": "La fiche de préparation structure la séance : compétences visées, objectifs, supports et matériel, déroulement détaillé des étapes et modalités d'évaluation.",
+      "explanation": "La fiche de préparation structure la séance: compétences visées, objectifs, supports et matériel, déroulement détaillé des étapes et modalités d'évaluation.",
       "source": "Guide pédagogique — Fiche de préparation",
       "situation": null
     }

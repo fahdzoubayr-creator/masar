@@ -1,0 +1,911 @@
+﻿import 'package:masar_app/core/models/question.dart';
+
+class FrenchDidacticsBank5Data {
+  FrenchDidacticsBank5Data._();
+
+  static const Map<String, List<Question>> bank = {
+    'ديداكتيك الفرنسية': [
+
+    // Q1
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon les orientations pédagogiques du projet « Agir autrement » (Guide 6AEP), quelle est la principale critique adressée à la logique de transmission des savoirs ?',
+      options: ['Elle ne permet pas de couvrir l’ensemble du programme annuel.', 'Elle favorise une construction active et finalisée des apprentissages.', 'Elle est trop coûteuse en termes de temps et de moyens matériels.', 'Elle est exclusivement centrée sur l’évaluation sommative.'],
+      correctIndex: 3, // D
+      explanation: '',
+    ),
+
+    // Q2
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 3ème année primaire (« L’Oasis des mots »), la rubrique « Je m’évalue » a pour objectif principal de :',
+      options: ['Permettre à l’enseignant de noter les élèves pour le bulletin scolaire.', 'Amener l’élève à prendre conscience de ses acquis et de ses difficultés.', 'Remplacer l’évaluation diagnostique en début d’année.', 'Servir d’exercice de copie supplémentaire à la maison.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q3
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le Guide de la 4ème année primaire (« Mon livre de français »), la planification annuelle des apprentissages doit impérativement s’articuler autour de :',
+      options: ['La progression linéaire du manuel scolaire, sans dérogation possible.', 'Les projets de classe, qui sont le cadre privilégié de l’opérationnalisation des compétences.', 'Les seules compétences linguistiques (grammaire et conjugaison).', 'Les évaluations certificatives de fin de semestre.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q4
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En lecture, la phase « Je lis et j’écris » proposée dans le guide « L’Oasis des mots » (3AP) vise spécifiquement à :',
+      options: ['Évaluer la vitesse de lecture des élèves.', 'Assurer une liaison fonctionnelle entre la compréhension de l’écrit et la production écrite.', 'Remplacer les séances de production d’écrit prévues en fin d’unité.', 'Permettre à l’enseignant de dicter un texte long.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q5
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'D’après le « Guide de français pratique » (6AEP), l’une des caractéristiques majeures de l’évaluation diagnostique est qu’elle doit :',
+      options: ['Être notée et comptabilisée dans la moyenne du semestre.', 'Permettre de dépister les forces et les faiblesses des élèves avant les apprentissages.', 'Être réservée uniquement aux élèves en difficulté.', 'Se dérouler obligatoirement sous forme de QCM.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q6
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 2ème année primaire préconise, pour l’apprentissage du code alphabétique, de :',
+      options: ['Mémoriser les règles orthographiques avant toute lecture.', 'Faire correspondre les graphèmes et les phonèmes (correspondance graphophonologique).', 'Se limiter à l’apprentissage de l’alphabet en chanson.', 'Utiliser exclusivement l’écriture en lettres capitales d’imprimerie.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q7
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans l’organisation de la semaine pédagogique en 4ème année primaire, quelle est la durée totale impartie aux activités de lecture ?',
+      options: ['60 minutes (2 séances).', '90 minutes (4 séances).', '45 minutes (1 séance).', '120 minutes (3 séances).'],
+      correctIndex: 3, // D
+      explanation: '',
+    ),
+
+    // Q8
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le projet « Agir autrement », la consolidation et la remédiation ne doivent pas consister à :',
+      options: ['Répéter les leçons déjà vues de manière mécanique.', 'Combler les lacunes enregistrées via un dispositif de groupes de besoins.', 'Aider les élèves à surmonter leurs difficultés spécifiques.', 'Proposer des activités de renforcement ciblées.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q9
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 3ème année primaire, les « rituels » en début de journée ont pour fonction principale de :',
+      options: ['Faire le cours de grammaire du jour.', 'Mettre les élèves à l’aise et dédramatiser l’appréhension de la langue.', 'Corriger les devoirs de la veille.', 'Évaluer les connaissances des élèves.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q10
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Pour le développement de la production orale en 4ème année, il est recommandé de :',
+      options: ['Corriger systématiquement chaque erreur de prononciation en temps réel.', 'Associer le verbal et le non-verbal (gestes, mimiques) pour communiquer.', 'Limiter la prise de parole aux seuls élèves volontaires.', 'Utiliser uniquement des dialogues écrits et appris par cœur.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q11
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide « Parcours de français » (6AEP) insiste sur le « décloisonnement » des activités. Cela signifie principalement que :',
+      options: ['Chaque activité (grammaire, lecture...) doit ête traitée dans une salle différente.', 'Les liens entre les activités (communication, lecture, langue, production) doivent être renforcés autour d’un thème unique.', 'Il faut supprimer les séances de grammaire et de conjugaison.', 'Les élèves doivent travailler en silence et sans interaction.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q12
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 2ème année primaire, pour l’activité de copie, l’enseignant est invité à :',
+      options: ['Dicter des phrases complexes pour évaluer l’orthographe.', 'Exiger une copie parfaite dès le premier essai.', 'Verbaliser son geste d’écriture devant les élèves pour modéliser le tracé.', 'Ignorer la posture des élèves et se concentrer uniquement sur le résultat.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q13
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’un des fondements de l’enseignement du français au Maroc, tel que mentionné dans les guides de la 4ème et de la 2ème année, est :',
+      options: ['L’attachement exclusif à la culture française.', 'L’ouverture sur les cultures, les valeurs et les droits humains universels.', 'L’interdiction totale d’utiliser la langue maternelle en classe.', 'La suppression des compétences transversales.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q14
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide « L’Oasis des mots » (3AP), l’activité de dictée doit être considérée comme :',
+      options: ['Un simple moment de sanction pour évaluer les fautes d’orthographe.', 'Une situation d’apprentissage de l’orthographe, où l’erreur est une occasion d’apprentissage.', 'Une activité exclusive de fin de semestre.', 'Un exercice de lecture à voix haute.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q15
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Pour la lecture d’un poème en 6AEP (« Lecture diction »), l’enseignant doit veiller à ce que les élèves :',
+      options: ['Apprennent le poème par cœur sans chercher à en comprendre le sens.', 'Récitent le poème avec une intonation et une expressivité appropriées.', 'Analysent la métrique et les rimes avant toute oralisation.', 'Récitent le poème le plus rapidement possible.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q16
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le projet de classe en 3ème année primaire (« Réaliser un dossier sur l’amitié ») a pour visée première de :',
+      options: ['Occuper les élèves pendant les heures de permanence.', 'Permettre aux élèves de mobiliser et de transférer leurs acquis dans une réalisation concrète.', 'Fournir une note supplémentaire en arts plastiques.', 'Remplacer les cours de français traditionnels.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q17
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 4ème année, la phrase exclamative est caractérisée par :',
+      options: ['La présence obligatoire du sujet inversé.', 'L’utilisation du point d’exclamation et souvent des mots introducteurs comme « Quel », « Comme ».', 'L’absence totale de verbe.', 'Le fait qu’elle ne sert qu’à donner des ordres.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q18
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le « Guide de français pratique » (6AEP), la compétence annuelle en 6ème année du primaire vise à rendre l’élève capable de comprendre et de produire :',
+      options: ['Uniquement des textes informatifs.', 'Des énoncés et des textes à visée informative, narrative et descriptive.', 'Des textes littéraires complexes de niveau collégial.', 'Uniquement des dialogues de la vie quotidienne.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q19
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En ce qui concerne l’évaluation formative dans le cycle primaire, laquelle des affirmations suivantes est correcte selon les guides ?',
+      options: ['Elle intervient uniquement en fin d’année.', 'Elle permet de mesurer le degré de réalisation des objectifs d’apprentissage pour réguler l’enseignement.', 'Elle est strictement identique à l’évaluation diagnostique.', 'Elle n’est pas prise en compte par l’enseignant.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q20
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 2ème année primaire insiste sur le fait que la maîtrise du principe alphabétique consiste à :',
+      options: ['Connaître l’ordre des lettres dans l’alphabet.', 'Comprendre que l’écriture transcrit les plus petites séquences sonores (phonèmes).', 'Savoir écrire en lettres attachées.', 'Mémoriser la liste des mots invariables.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q21
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 4ème année primaire, pour l’orthographe, l’étude des homonymes (a/à, est/et...) vise à :',
+      options: ['Enrichir le vocabulaire des élèves.', 'Éviter les confusions à l’écrit en différenciant leur nature et leur fonction.', 'Apprendre la conjugaison des verbes.', 'Préparer les élèves à la dictée de textes littéraires.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q22
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide de la 6AEP (« Parcours de français »), la rationalisation des apprentissages consiste à :',
+      options: ['Ajouter le plus de contenus possible pour enrichir l’élève.', 'Ne retenir que les ressources nécessaires et suffisantes pour l’acquisition de la compétence.', 'Supprimer toutes les activités artistiques et poétiques.', 'Allonger la durée des séances de cours.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q23
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans l’approche préconisée par « L’Oasis des mots » (3AP), la phase « Observation / Découverte » dans une séance de lecture a pour but de :',
+      options: ['Donner la réponse aux questions de compréhension.', 'Faire écrire un résumé du texte.', 'Amener les élèves à formuler des hypothèses de sens à partir du support iconique.', 'Évaluer la mémoire des élèves.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q24
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La semaine d’évaluation, de soutien et de consolidation en fin d’unité (6AEP) doit être considérée comme :',
+      options: ['Une semaine de vacances pour les élèves.', 'Une semaine de repos pour l’enseignant.', 'Un moment privilégié pour traiter les difficultés identifiées et renforcer les acquis.', 'Une semaine dédiée à l’apprentissage de nouveaux chapitres.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q25
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les propositions suivantes, laquelle ne constitue pas un objectif des « activités orales » en 2ème année primaire ?',
+      options: ['S’exprimer pour manifester sa compréhension d’un texte entendu.', 'Communiquer en respectant les règles de la communication.', 'Analyser la structure syntaxique des phrases complexes.', 'Mémoriser des comptines et des chansons.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q26
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En production d’écrit en 4ème année, pour la reconstitution d’un texte, l’enseignant doit guider l’élève à :',
+      options: ['Recopier le texte du tableau sans faute.', 'Remettre en ordre des phrases ou des mots pour former un texte cohérent.', 'Inventer un texte complètement nouveau sans rapport avec le thème.', 'Traduire un texte de l’arabe vers le français.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q27
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide de la 3ème année, les « jeux de rôles » dans les activités orales (semaine 2) servent à :',
+      options: ['Occuper les élèves en fin de journée.', 'Permettre une appropriation active des moyens langagiers dans des situations simulées.', 'Évaluer les compétences théâtrales des élèves.', 'Faire uniquement travailler les élèves les plus brillants.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q28
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’approche actionnelle, mentionnée dans le guide « Parcours de français » (6AEP), met l’accent sur :',
+      options: ['La passivité de l’apprenant face au savoir.', 'L’action et la réalisation de tâches communicatives concrètes.', 'L’enseignement magistral exclusif.', 'L’apprentissage individuel et non collaboratif.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q29
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 4ème année primaire, la compétence annuelle et les sous-compétences sont définies pour :',
+      options: ['Être affichées dans la salle des professeurs sans être utilisées.', 'Structurer la planification pédagogique et orienter les apprentissages vers des objectifs clairs.', 'Servir uniquement à l’évaluation administrative.', 'Limiter la créativité de l’enseignant.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q30
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En ce qui concerne l’écriture en 2ème année, l’enseignant doit veiller à ce que l’élève :',
+      options: ['Écrive le plus vite possible.', 'Respecte la forme, la dimension et l’orientation des lettres en cursive.', 'Utilise exclusivement des lettres majuscules.', 'Écrive sans tenir compte des lignes du cahier.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q31
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Quel est le rôle de l’enseignant dans le cadre de la différenciation pédagogique, tel que décrit dans les guides ?',
+      options: ['Proposer les mêmes exercices à tous les élèves, quel que soit leur niveau.', 'Donner plus de temps et des outils adaptés aux élèves en difficulté.', 'Isoler les élèves en échec pour ne pas perturber la classe.', 'Se concentrer uniquement sur les élèves performants.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q32
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le texte « Le premier jour de l’école » (évaluation diagnostique 6AEP) est utilisé pour évaluer principalement :',
+      options: ['La compétence en production orale.', 'La compréhension de l’écrit (repérage d’informations, type de texte).', 'La maîtrise des règles de la grammaire uniquement.', 'La capacité à dessiner.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q33
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide « L’Oasis des mots » (3AP) recommande, pour l’étude d’un poème, de :',
+      options: ['Demander aux élèves de l’analyser grammaticalement.', 'Procéder d’abord à la mémorisations avant la compréhension.', 'Mémoriser le poème de manière ludique (jeux de récitation, gestes) après en avoir compris le sens.', 'Lire le poème une seule fois.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q34
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En conjugaison, selon le guide de la 4ème année, le présent de l’impératif sert à exprimer :',
+      options: ['Une action en cours au moment où l’on parle.', 'Un ordre, un conseil ou une interdiction.', 'Une action future incertaine.', 'Une action passée achevée.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q35
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans l’organisation de l’unité didactique en 6AEP (« Parcours de français »), l’unité 1 est spécifiquement dédiée à :',
+      options: ['L’étude des textes narratifs.', 'L’évaluation diagnostique, la mise à niveau et le renforcement des acquis.', 'La préparation à l’examen de fin d’année.', 'Les sorties pédagogiques.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q36
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide de la 2ème année, la « conscience phonologique » est une compétence qui permet à l’élève de :',
+      options: ['Lire un texte en entier sans difficulté.', 'Écrire un texte dicté sans faute.', 'Repérer, découper et dénombrer les unités phonologiques de la chaîne parlée.', 'Maîtriser les règles de la grammaire.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q37
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En ce qui concerne l’enseignement de la grammaire en 4ème année primaire, quelle est la démarche préconisée ?',
+      options: ['Énoncer d’abord la règle, puis faire des exercices d’application (déductive).', 'Partir d’un corpus (observation) pour amener l’élève à déduire la règle (démarche inductive).', 'Se limiter à la mémorisations des tableaux de conjugaison.', 'Ne jamais aborder la grammaire en classe.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q38
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le projet de classe « Réaliser un album sur la vie culturelle et artistique » (4AP) permet de développer, chez l’élève, une compétence transversale essentielle qui est :',
+      options: ['La résolution d’équations mathématiques.', 'La capacité à travailler en groupe, à négocier et à coopérer.', 'La maîtrise parfaite de l’écriture en calligraphie.', 'La connaissance des capitales du monde.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q39
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide « Parcours de français » (6AEP), la fiche pédagogique type pour la lecture comprend obligatoirement des étapes telles que :',
+      options: ['Observation/découverte, Compréhension/conceptualisation, Application/transfert, Évaluation/remédiation.', 'Dictée, récitation, récréation.', 'Échauffement vocal, lecture silencieuse, résumé.', 'Jeux de rôles, chanson, coloriage.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q40
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Pour l’orthographe en 2ème année, l’étude de la lettre « s » entre deux voyelles ([z]) vise à :',
+      options: ['Apprendre une règle de prononciation.', 'Enrichir le vocabulaire thématique de l’école.', 'Distinguer la prononciation du « s » selon sa position dans le mot.', 'Apprendre à écrire les nombres en lettres.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q41
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’évaluation sommative, telle que définie dans les guides pédagogiques, intervient à la fin des apprentissages pour :',
+      options: ['Donner une note punitive.', 'Attester le degré d’acquisition des compétences et des connaissances.', 'Préparer les leçons futures.', 'Identifier les difficultés du début d’année.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q42
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 3ème année primaire, pour la copie, le passage progressif de l’ardoise au cahier puis au livret (fiche-type) a pour but de :',
+      options: ['Faire perdre du temps aux élèves.', 'Permettre un entraîtnement progressif et une correction avant le passage au propre.', 'Évaluer la propreté de l’écriture.', 'Utiliser tous les supports disponibles en classe.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q43
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les assertions suivantes concernant l’enseignement de la lecture en 6AEP, laquelle est erronée selon le Guide « Agir autrement » ?',
+      options: ['L’exploitation de l’image est essentielle pour permettre aux élèves d’établir des relations entre le texte et le paratexte.', 'La lecture silencieuse et sélective initie l’élève à la lecture rapide pour repérer des informations utiles.', 'Les textes doivent être longs et complexes pour préparer les élèves au collège.', 'La lecture expressive doit réinvestir les acquis en termes de prosodie (accentuation, intonation, rythme).'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q44
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 4ème année précise que pour le travail sur « Le genre et le nombre », l’élève doit comprendre que :',
+      options: ['Le déterminant (le, la, un, une...) donne des indices sur le genre et le nombre du nom.', 'Tous les noms au pluriel se terminent par -s.', 'Le genre et le nombre sont des concepts réservés au collège.', 'Seuls les noms d’animaux peuvent changer de genre.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q45
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans les « Activités orales » de la 3ème année, la séance « J’écoute et je comprends » se déroule :',
+      options: ['Sans support visuel pour ne pas distraire l’élève.', 'En s’appuyant sur les gestes, les mimiques et les illustrations pour faciliter la compréhension.', 'Exclusivement avec les livres fermés.', 'En demandant aux élèves de prendre des notes écrites.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q46
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le « Mon Livre de français » (4AP), la sous-compétence à développer pendant l’unité 5 (La forêt) porte sur les textes à caractère :',
+      options: ['Injonctif et narratif.', 'Explicatif et injonctif.', 'Descriptif et informatif.', 'Uniquement poétique.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q47
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 2ème année primaire, le découpage des mots en syllabes lors des activités de lecture et d’écriture aide l’élève à :',
+      options: ['Améliorer sa prononciation et à mieux comprendre le principe alphabétique.', 'Apprendre à compter.', 'Mémoriser les noms des couleurs.', 'Pratiquer le calcul mental.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q48
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La perspective entrepreneuriale et communautaire, citée dans les orientations pédagogiques, relie le projet de classe à :',
+      options: ['L’intérêt individuel de l’élève uniquement.', 'La communauté et l’environnement social de l’élève, donnant du sens aux apprentissages.', 'Les résultats financiers de l’école.', 'Les évaluations internationales.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q49
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'D’après les guides, quelle est la fonction principale du livret de l’élève en 6AEP (« Parcours de français ») ?',
+      options: ['Il est un espace strictement collectif pour les corrigés.', 'Il est un espace individuel pour agir, mais aussi collectif car il fédère la classe autour de supports communs.', 'Il sert uniquement à évaluer les élèves en fin d’unité.', 'Il est un support de remplacement pour les absents.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q50
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En grammaire, l’identification des compléments d’objet (COD/COI) est facilitée par la maîtrise de la question :',
+      options: ['Où ? Quand ? Comment ?', 'Qui ? Quoi ? / À qui ? À quoi ? De qui ? De quoi ?', 'Quel ? Quelle ?', 'Combien ?'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q51
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le cadre du soutien pédagogique, le « soutien institutionnel » est caractérisé par :',
+      options: ['Une intervention ponctuelle de l’enseignant en classe.', 'Une action menée dans le cadre du projet d’établissement pour les élèves en difficulté majeure.', 'Une simple répétition de la leçon.', 'Un moment de jeu libre.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q52
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon « L’Oasis des mots » (3AP), pour l’activité « J’observe et je m’exprime » en oral, l’enseignant doit :',
+      options: ['Lire la description au tableau et demander aux élèves de la recopier.', 'Guider la construction du sens à partir du support visuel en posant des consignes claires.', 'Demander aux élèves de fermer les yeux et d’imaginer la scène.', 'Évaluer les élèves en fin de séance uniquement.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q53
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La planification des apprentissages en 4ème année est structurée en périodes de 17 semaines pour permettre :',
+      options: ['D’avoir plus de semaines de vacances.', 'Un équilibre entre l’acquisition des savoirs et les évaluations/soutiens.', 'D’étudier davantage de langues étrangères.', 'De réduire le temps consacré au français.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q54
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En orthographe, la distinction entre « son » et « sont » (4AP) repose sur le fait que :',
+      options: ['Ce sont deux homophones qui s’écrivent de la même manière.', '« Son » est un adjectif possessif (remplaçable par « mon »), tandis que « sont » est le verbe « être » (remplaçable par « étaient »).', '« Son » est toujours au pluriel.', '« Sont » est un déterminant.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q55
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Quelle affirmation concernant l’évaluation diagnostique en 6ème année est fausse selon le guide ?',
+      options: ['Elle s’appuie sur un cadre de référence établi à partir des activités de la 5ème année.', 'Elle occupe toute la première unité de l’année.', 'Elle permet uniquement de sanctionner les lacunes des élèves.', 'Elle sert à la mise à niveau et au renforcement des acquis.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q56
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 3ème année primaire, la phrase « La maîtresse est ravie » est exploitée dans un texte sur le jardinage pour introduire un synonyme du mot « contente ». Cela vise à :',
+      options: ['Apprendre à conjuguer le verbe « être ».', 'Enrichir le lexique de l’élève en lui proposant des mots de sens proche.', 'Enseigner l’accord de l’adjectif qualificatif.', 'Évaluer la compréhension de la lecture.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q57
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’utilisation des TIC (Technologies de l’Information et de la Communication) dans l’enseignement du français est encouragée pour :',
+      options: ['Remplacer l’enseignant.', 'Rendre les apprentissages plus motivants et fonctionnels, et ouvrir l’élève sur des pratiques langagières variées.', 'Occuper les élèves en fin de cours.', 'Seulement pour la recherche d’images.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q58
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 2ème année primaire, l’activité de graphisme (tracer des lignes horizontales, verticales, etc.) prépare l’élève à :',
+      options: ['L’écriture des lettres et des chiffres.', 'La lecture rapide.', 'La mémorisations des poèmes.', 'L’apprentissage de la géographie.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q59
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Les « semaines de consolidation » intégrées dans la planification du « Français pratique » (6AEP) sont destinées à :',
+      options: ['Alléger les objectifs d’apprentissage en permettant de revoir les notions clés.', 'Introduire des thèmes supplémentaires non prévus au programme.', 'Préparer les examens blancs.', 'Organiser des sorties scolaires.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q60
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Pour l’enseignement de la conjugaison en 4AP, le passé composé est formé à l’aide des auxiliaires « avoir » ou « être ». L’accord du participe passé avec le sujet est obligatoire avec l’auxiliaire :',
+      options: ['Avoir.', 'Être.', 'Les deux auxiliaires sans exception.', 'Ni l’un ni l’autre.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q61
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon les instructions officielles, quelle est la place de l’erreur dans le processus d’apprentissage ?',
+      options: ['Elle doit être immédiatement sanctionnée pour éviter qu’elle ne se reproduise.', 'Elle est une nécessité didactique et un facteur inhérent à l’apprentissage.', 'Elle indique que l’élève est incapable d’apprendre.', 'Elle doit être systématiquement ignorée par l’enseignant.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q62
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La rubrique « J’observe et je découvre » dans les fiches pédagogiques de la 4ème année sert à :',
+      options: ['Donner la correction de l’exercice précédent.', 'Mettre en place une situation d’entrée pour amener l’élève à découvrir la notion du jour.', 'Remplacer la leçon du manuel.', 'Faire une dictée.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q63
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 3ème année primaire, les jeux de devinettes (ex. : « C’est un garçon, il a les cheveux noirs... ») lors des activités orales visent à :',
+      options: ['Évaluer la mémoire des élèves.', 'Développer l’écoute active et l’expression orale de manière ludique.', 'Faire pratiquer l’écriture descriptive.', 'Apprendre les règles de la grammaire.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q64
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La compétence transversale « apprendre à apprendre », favorisée par le projet de classe, permet à l’élève de :',
+      options: ['Devenir autonome dans la recherche d’informations et la résolution de problèmes.', 'Mémoriser plus facilement les règles de grammaire.', 'Améliorer uniquement son orthographe.', 'Se préparer aux examens nationaux.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q65
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide de la 2ème année, pour l’écriture de la lettre, la phase d’entraîtnement sur les ardoises a pour but de :',
+      options: ['Faire une évaluation formelle.', 'Permettre une première approche du tracé avec la possibilité de correction immédiate avant le passage au cahier.', 'Occuper les élèves pendant que l’enseignant corrige d’autres copies.', 'Apprendre à dessiner.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q66
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’enseignement du français au Maroc, selon les fondements présentés, vise à former des citoyens :',
+      options: ['Détachés de leur histoire et de leur culture.', 'Fiers de leur identité, conscients de leur histoire, socialement intégrés et actifs.', 'Uniquement bilingues (arabe-français).', 'Capables de s’exprimer uniquement en français.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q67
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les énoncés suivants concernant la production de l’écrit en 4ème année, lequel est correct ?',
+      options: ['Les activités de production écrite doivent être en rapport avec les thèmes et les objectifs de l’unité.', 'L’élève doit produire des textes longs dès le début de l’année.', 'Les supports utilisés doivent être éloignés des centres d’intérêt des élèves.', 'La production écrite est une activité indépendante des activités de lecture.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q68
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 6AEP, lors de la phase « Application/transfert » en lecture, l’élève est amené à :',
+      options: ['Écouter passivement l’enseignant.', 'Appliquer ce qu’il a appris de manière autonome en analysant, synthétisant ou transférant.', 'Recopier le texte.', 'Apprendre le texte par cœur.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q69
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’approche par compétences, mise en avant dans les guides, se distingue de la logique des contenus par le fait qu’elle :',
+      options: ['Se concentre sur la mémorisations des leçons.', 'Vise la mobilisation de ressources (savoirs, savoir-faire, savoir-être) pour faire face à des situations complexes.', 'Accorde moins d’importance aux valeurs.', 'Est plus facile à évaluer.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q70
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Pour la dictée en 3ème année primaire, le guide recommande de :',
+      options: ['Dicter un texte inconnu pour tester les élèves.', 'Traiter l’erreur comme une occasion d’apprentissage et de réflexion.', 'Ne pas corriger les dictées pour ne pas décourager les élèves.', 'Dicter uniquement des mots isolés.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q71
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide « Parcours de français » (6AEP), les activités de langue (grammaire, conjugaison, orthographe) doivent être :',
+      options: ['Étudiées séparément, sans lien avec le texte de lecture.', 'Approchées dans le texte afin que l’élève perçoive leur fonctionnement en contexte.', 'Uniquement réservées à la maison.', 'Supprimées au profit de l’oral.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q72
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 4ème année primaire, l’étude de l’adjectif qualificatif permet à l’élève de :',
+      options: ['Enrichir le nom en lui apportant des précisions (qualité, couleur, forme...).', 'Conjuguer les verbes.', 'Remplacer le nom dans une phrase.', 'Accorder les déterminants.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q73
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Quelle proposition concernant le projet de classe en primaire est fausse ?',
+      options: ['Il donne du sens aux apprentissages.', 'Il est une activité parascolaire facultative.', 'Il permet de concrétiser l’approche par les compétences.', 'Il permet aux élèves de prendre l’initiative et de coopérer.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q74
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le développement de la lecture en 2ème année, la discrimination visuelle (reconnaître la lettre dans les mots) sert à :',
+      options: ['Apprendre à compter les mots.', 'Établir le lien entre la forme écrite de la lettre et le son qu’elle produit.', 'Évaluer la mémoire visuelle.', 'Apprendre à dessiner la lettre.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q75
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 3ème année insiste sur la « diversité des approches » (chant, mime, chuchotement) lors de la mémorisations des poèmes pour :',
+      options: ['Satisfaire les goûts de l’enseignant.', 'Prendre en compte les différents styles d’apprentissage des élèves et rendre l’activité plus engageante.', 'Faire perdre du temps en classe.', 'Évaluer les compétences artistiques.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q76
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’emploi du temps hebdomadaire de la 6AEP (« Parcours de français ») alloue une durée de 45 minutes à la séance de Grammaire et de Communication. Ce choix organisationnel vise à :',
+      options: ['Réduire le temps de parole des élèves.', 'Permettre un traitement approfondi et des échanges interactifs sur les notions.', 'Se conformer aux contraintes horaires minimales.', 'Séparer définitivement l’oral de l’écrit.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q77
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 4ème année, l’étude des « connecteurs spatio-temporels » vise à permettre à l’élève de :',
+      options: ['Situer les actions dans le temps et dans l’espace pour structurer son récit ou sa description.', 'Apprendre la conjugaison du passé composé.', 'Enrichir son vocabulaire des couleurs.', 'Remplacer les noms par des pronoms.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q78
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le « Guide de français pratique » (6AEP), le décloisonnement entre la production de l’écrit et la lecture est renforcé par la rubrique :',
+      options: ['La copie sur le cahier.', 'La récitation du poème.', '« Je lis et j’écris ».', 'La dictée préparée.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q79
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 2ème année primaire, la progression en dictée (semaine 1 : mi, semaine 2 : ma...) est structurée de manière à :',
+      options: ['Suivre l’ordre alphabétique.', 'Progresser des syllabes simples vers les mots et les phrases, en fonction des graphèmes étudiés.', 'Dicter des textes littéraires dès le début.', 'Évaluer la mémoire des élèves.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q80
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Les 3 entrées stratégiques de la réforme (Approche par compétences, Éducation aux valeurs, Éducation au choix) visent à :',
+      options: ['Former des élèves passifs et dépendants.', 'Offrir une formation qualitative et citoyenne, en phase avec les besoins de l’élève.', 'Remplacer l’enseignement du français par d’autres matières.', 'Uniformiser les pratiques pédagogiques.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q81
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les propositions suivantes, laquelle n’est pas une caractéristique du texte descriptif selon les guides ?',
+      options: ['Il utilise souvent des indicateurs de lieu (à côté de, devant...).', 'Il a pour but de raconter une succession d’événements.', 'Il mobilise des adjectifs qualificatifs et des comparaisons.', 'Il décrit les caractéristiques d’un lieu, d’un personnage ou d’un objet.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q82
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Lors de l’apprentissage du code en 2AP, la décomposition de mots en syllabes (ex : ba-na-ne) aide l’élève à :',
+      options: ['Apprendre la signification du mot.', 'Mettre en relation les unités sonores et les unités graphiques pour le décodage.', 'Mémoriser la règle d’accord du participe passé.', 'Améliorer son écriture en cursive.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q83
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 3AP, dans l’activité « Je m’entraîtne à bien lire », l’enseignant invite les élèves à lire des phrases le plus vite possible (concours). L’objectif principal est de :',
+      options: ['Développer la fluidité de la lecture.', 'Évaluer la compréhension.', 'Apprendre à lire en silence.', 'Corriger les fautes d’orthographe.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q84
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 4ème année précise que la formation des mots par dérivation (préfixes et suffixes) est un objectif du domaine lexical pour :',
+      options: ['Aider les élèves à déduire le sens de mots inconnus et à enrichir leur vocabulaire.', 'Apprendre à conjuguer les verbes.', 'Maîtriser l’orthographe des nombres.', 'Étudier les types de phrases.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q85
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon les fiches pédagogiques de la 6AEP, la phase « Remédiation » ne doit pas consister à :',
+      options: ['Refaire la leçon de la même manière pour les élèves en difficulté.', 'Identifier les erreurs les plus fréquentes et les traiter de manière ciblée.', 'Proposer des exercices de consolidation adaptés.', 'Encourager l’auto-correction.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q86
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le projet de classe en 2ème année (« Réaliser l’album de mon école ») est conçu pour :',
+      options: ['Familiariser l’élève avec son environnement scolaire et renforcer la confiance.', 'Remplacer l’évaluation en fin d’année.', 'Apprendre les noms des pays du monde.', 'Évaluer les compétences en mathématiques.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q87
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En ce qui concerne l’évaluation sommative (fin d’unité), quelle affirmation est exacte ?',
+      options: ['Elle intervient au début des apprentissages pour dépister les forces et les faiblesses.', 'Elle est intégrée au processus d’apprentissage pour identifier les difficultés.', 'Elle permet d’attester le degré d’acquisition des apprentissages en fin de cycle.', 'Elle est uniquement orale.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q88
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 4AP, l’étude de la phrase impérative est liée à l’unité sur les « Loisirs » dans l’objectif de :',
+      options: ['Donner des ordres militaires.', 'Conseiller et recommander des activités sportives ou de lecture à ses camarades.', 'Raconter des souvenirs de vacances.', 'Décrire un paysage.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q89
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le guide de la 3ème année recommande, pour le traitement des difficultés phonétiques (articulation), de :',
+      options: ['Ignorer les erreurs pour ne pas frustrer l’élève.', 'Écrire les mots mal articulés au tableau, les décomposer en syllabes et entraîner les élèves à les prononcer correctement.', 'Punir l’élève qui fait des fautes de prononciation.', 'Demander aux parents de régler le problème à la maison.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q90
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans le guide « Parcours de français » (6AEP), la notion de « compétence annuelle » est formulée de manière à :',
+      options: ['Lister tous les chapitres du manuel.', 'Décrire ce que l’élève doit être capable de faire en fin d’année dans une situation de communication.', 'Fixer la note maximale à obtenir en fin d’année.', 'Définir les horaires des cours.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q91
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Les exercices de manipulation de la langue (outils) en bas de chaque texte de lecture en 3AP visent à :',
+      options: ['Sensibiliser les élèves aux notions de base de la langue (mot, phrase...) sans formaliser la règle.', 'Évaluer la grammaire des élèves.', 'Remplacer les séances de conjugaison.', 'Donner du travail à faire à la maison.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q92
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide de la 4ème année, pour la dictée, l’enseignant doit privilégier des stratégies telles que :',
+      options: ['La relecture guidée du texte dicté et l’exploitation pédagogique des erreurs.', 'La dictée de mots sans contexte.', 'La notation sévère sans correction collective.', 'La dictée de textes très longs.'],
+      correctIndex: 0, // A
+      explanation: '',
+    ),
+
+    // Q93
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Parmi les éléments suivants, lequel n’est pas considéré comme un objectif des activités poétiques en 3ème année primaire ?',
+      options: ['Rectifier les erreurs de prononciation.', 'Améliorer la mémorisations par le rythme.', 'Apprendre à analyser la structure des phrases complexes.', 'Prendre confiance en soi.'],
+      correctIndex: 2, // C
+      explanation: '',
+    ),
+
+    // Q94
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Le choix des thèmes des unités (ex : « La civilisation marocaine », « La forêt ») en 4AP vise à :',
+      options: ['Éloigner les élèves de leur réalité.', 'Constituer un univers de référence solide et motivant pour l’élève, en lien avec son environnement.', 'Se conformer aux thèmes imposés internationalement.', 'Uniquement enrichir le vocabulaire de l’élève.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q95
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'La technique du « jeu pigeon vole » utilisée en 2AP pour la discrimination auditive permet à l’élève de :',
+      options: ['Apprendre la conjugaison des verbes.', 'Identifier un son spécifique dans un flux de mots prononcés par l’enseignant.', 'Améliorer sa motricité fine.', 'Mémoriser les jours de la semaine.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q96
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'En 6AEP, le projet de classe « Elaborer un dossier sur la santé et l’hygiène » (UD4) a pour objectif de faire mobiliser à l’élève des compétences relevant des domaines :',
+      options: ['Artistiques uniquement.', 'Informatifs et injonctifs (expliquer, conseiller, interdire).', 'Historiques et géographiques.', 'Littéraires exclusivement.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q97
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon le guide de la 4ème année, l’enseignement de la conjugaison des verbes usuels au présent de l’indicatif doit permettre à l’élève de :',
+      options: ['Maîtriser la formation des temps composés.', 'Savoir accorder le verbe avec son sujet.', 'Remplacer les pronoms personnels.', 'Écrire des textes au passé.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q98
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Dans la fiche pédagogique de « L’Oasis des mots » (3AP), la phase « Évaluation » (en fin de séance d’oral) invite l’élève à :',
+      options: ['Recopier le dialogue.', 'S’auto-évaluer en écoutant les productions de ses camarades et en se corrigeant.', 'Écrire un résumé du texte.', 'Faire une dictée.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q99
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'L’une des grandes priorités du projet « Agir autrement » est de proposer à l’enseignant des outils concrets pour :',
+      options: ['Réduire son temps de préparation.', 'Faire développer un français fonctionnel répondant aux besoins spécifiques des apprenants.', 'Remplacer les manuels scolaires.', 'Uniformiser les leçons au niveau national.'],
+      correctIndex: 1, // B
+      explanation: '',
+    ),
+
+    // Q100
+    Question(
+      subject: 'ديداكتيك الفرنسية',
+      text: 'Selon l’ensemble des guides pédagogiques, quelle est l’affirmation correcte concernant le rôle de l’enseignant dans l’approche actionnelle ?',
+      options: ['L’enseignant est un simple transmetteur de connaissances.', 'L’enseignant est un animateur qui organise l’acte d’apprentissage et place l’éléve au cœur de l’action.', 'L’enseignant doit se limiter à corriger les fautes d’orthographe.', 'L’enseignant doit laisser les élèves travailler en totale autonomie sans intervention.'],
+      correctIndex: 3, // D
+      explanation: '',
+    ),
+
+    ],
+  };
+}

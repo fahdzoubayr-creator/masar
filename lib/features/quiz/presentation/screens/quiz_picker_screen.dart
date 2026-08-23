@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/subject_card.dart';
@@ -59,13 +60,16 @@ class QuizPickerScreen extends StatelessWidget {
               icon: '🎯',
               title: 'اختبار شامل — جميع المواد',
               subtitle: '${subjects.length} مادة · 70 سؤالاً عشوائياً',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (_) => const QuizScreen(
-                        subjectFilter: null,
-                        testType: 'اختبار تدريبي',
-                        axisName: 'جميع المواد')),
-              ),
+              onTap: () {
+                playSfx(Sfx.select);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => const QuizScreen(
+                          subjectFilter: null,
+                          testType: 'اختبار تدريبي',
+                          axisName: 'جميع المواد')),
+                );
+              },
             ),
             const SizedBox(height: 10),
             Text('اختر محوراً للتدريب (${subjects.length} متاح)',
@@ -77,13 +81,16 @@ class QuizPickerScreen extends StatelessWidget {
                 icon: _iconFor(s),
                 title: s,
                 subtitle: '$count سؤالاً متاحاً',
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => QuizScreen(
-                          subjectFilter: s,
-                          testType: 'اختبار تدريبي',
-                          axisName: s)),
-                ),
+                onTap: () {
+                  playSfx(Sfx.select);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (_) => QuizScreen(
+                            subjectFilter: s,
+                            testType: 'اختبار تدريبي',
+                            axisName: s)),
+                  );
+                },
               );
             }),
           ],

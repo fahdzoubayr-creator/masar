@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
@@ -72,14 +73,17 @@ class TopicFilesScreen extends StatelessWidget {
                           itemBuilder: (context, i) {
                             final file = files[i];
                             return InkWell(
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => PdfViewerScreen(
-                                    assetPath: file.assetPath,
-                                    title: _fileName(file),
+                              onTap: () {
+                                playSfx(Sfx.select);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => PdfViewerScreen(
+                                      assetPath: file.assetPath,
+                                      title: _fileName(file),
+                                    ),
                                   ),
-                                ),
-                              ),
+                                );
+                              },
                               borderRadius: BorderRadius.circular(14),
                               child: Ink(
                                 padding: const EdgeInsets.symmetric(
