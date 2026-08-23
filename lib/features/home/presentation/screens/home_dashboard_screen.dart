@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
@@ -17,14 +18,16 @@ class _DashboardItem {
   final String title;
   final String subtitle;
   final IconData icon;
-  final LinearGradient gradient;
+
+  /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة (الامتحانات التجريبية).
+  final bool featured;
   final WidgetBuilder builder;
   const _DashboardItem({
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.gradient,
     required this.builder,
+    this.featured = false,
   });
 }
 
@@ -32,71 +35,57 @@ class _DashboardItem {
 class HomeDashboardScreen extends StatelessWidget {
   const HomeDashboardScreen({super.key});
 
+  // شريط علوي موحّد لكل البطاقات — درجات زيتية هادئة من هوية التطبيق.
+  static const _headerGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF1E5F54), Color(0xFF12443C)],
+  );
+
+  // شريط ذهبي دافئ للبطاقة المميزة فقط.
+  static const _featuredHeaderGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFA8842F), Color(0xFF6E5520)],
+  );
+
+  // البطاقتان الرئيسيتان (Hero) أولاً — أكثر ما يقصده الأستاذ عند الفتح.
   static const List<_DashboardItem> _items = [
     _DashboardItem(
-      title: 'فضاء المراجعة والتحضير',
-      subtitle: 'ملفات وملخصات PDF',
-      icon: Icons.menu_book_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF2E6B6B), Color(0xFF134847)],
-      ),
+      title: 'حقيبة الملخصات',
+      subtitle: 'ملخصات شاملة بصيغة PDF',
+      icon: Icons.auto_stories_rounded,
       builder: _buildReviewSpace,
     ),
     _DashboardItem(
-      title: 'الكويزات والتدريبات',
-      subtitle: 'أسئلة متداولة وشائعة حسب المادة',
-      icon: Icons.quiz_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF3D6E5A), Color(0xFF1B4B3C)],
-      ),
+      title: 'بنك الأسئلة',
+      subtitle: 'اختبر معارفك حسب المحاور',
+      icon: Icons.gps_fixed_rounded,
       builder: _buildQuizPicker,
     ),
     _DashboardItem(
-      title: 'أفضل نسبة إنجاز',
-      subtitle: 'إحصائيات وتحليل',
-      icon: Icons.emoji_events_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF8A6F2F), Color(0xFF5C4A1E)],
-      ),
-      builder: _buildHistory,
-    ),
-    _DashboardItem(
-      title: 'الاختبارات النهائية العامة',
-      subtitle: 'نماذج شاملة بمؤقّت',
+      title: 'الامتحانات التجريبية',
+      subtitle: 'محاكاة للاختبار بمؤقت زمني',
       icon: Icons.timer_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF3D4E6E), Color(0xFF1E2B40)],
-      ),
+      featured: true,
       builder: _buildFinalExams,
     ),
     _DashboardItem(
-      title: 'الخطاطات الذهنية',
-      subtitle: 'ملخصات بصرية',
-      icon: Icons.hub_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF6E4E8A), Color(0xFF40295C)],
-      ),
+      title: 'مؤشر التقدم',
+      subtitle: 'لوحة قياس الأداء والإحصائيات',
+      icon: Icons.bar_chart_rounded,
+      builder: _buildHistory,
+    ),
+    _DashboardItem(
+      title: 'خرائط ذهنية',
+      subtitle: 'خطاطات بيداغوجية مركزة',
+      icon: Icons.psychology_rounded,
       builder: _buildMindMaps,
     ),
     _DashboardItem(
-      title: 'القاعات الصوتية',
-      subtitle: 'جلسات مباشرة صوت وشات',
-      icon: Icons.record_voice_over_rounded,
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [Color(0xFF3F5B8A), Color(0xFF1E2F4A)],
-      ),
+      title: 'المساحة الصوتية',
+      subtitle: 'دروس ومناقشات شفهية',
+      icon: Icons.mic_rounded,
       builder: _buildLiveRoom,
     ),
   ];
@@ -132,11 +121,14 @@ class HomeDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              AppColors.bgDeep.withValues(alpha: 0.80),
+              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: SafeArea(
@@ -221,12 +213,16 @@ class _DashboardCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final featured = item.featured;
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Material(
-          color: AppColors.cream.withValues(alpha: 0.07),
+          // البطاقة المميزة تحصل على توهج ذهبي كامل لإبرازها.
+          color: featured
+              ? AppColors.gold.withValues(alpha: 0.14)
+              : AppColors.cream.withValues(alpha: 0.07),
           borderRadius: BorderRadius.circular(20),
           child: InkWell(
             onTap: () => Navigator.of(context).push(
@@ -237,7 +233,11 @@ class _DashboardCard extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                    color: AppColors.cream.withValues(alpha: 0.14), width: 1),
+                  color: featured
+                      ? AppColors.gold.withValues(alpha: 0.55)
+                      : AppColors.cream.withValues(alpha: 0.14),
+                  width: featured ? 1.2 : 1,
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,23 +246,52 @@ class _DashboardCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
                     decoration: BoxDecoration(
-                      gradient: item.gradient,
+                      gradient: featured
+                          ? HomeDashboardScreen._featuredHeaderGradient
+                          : HomeDashboardScreen._headerGradient,
                       borderRadius:
                           const BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                     child: Row(
                       children: [
-                        Icon(item.icon, color: AppColors.goldSoft, size: 22),
-                        const Spacer(),
+                        // شارة دائرية هادئة حول الأيقونة — لمسة احترافية موحّدة.
                         Container(
-                          padding: const EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(7),
                           decoration: BoxDecoration(
-                            color: AppColors.cream.withValues(alpha: 0.15),
+                            color: AppColors.cream.withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.arrow_forward_ios,
-                              color: AppColors.goldSoft, size: 12),
+                          child: Icon(item.icon,
+                              color: AppColors.goldSoft, size: 21),
                         ),
+                        const Spacer(),
+                        if (featured)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withValues(alpha: 0.25),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                  color:
+                                      AppColors.goldSoft.withValues(alpha: 0.6)),
+                            ),
+                            child: const Text('مميز',
+                                style: TextStyle(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.goldSoft)),
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: AppColors.cream.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.arrow_forward_ios,
+                                color: AppColors.goldSoft, size: 12),
+                          ),
                       ],
                     ),
                   ),
@@ -276,12 +305,22 @@ class _DashboardCard extends StatelessWidget {
                           Text(item.title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTheme.displayFont(
-                                  size: 14, weight: FontWeight.w700)),
+                              style: GoogleFonts.tajawal(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.25,
+                                  color: featured
+                                      ? AppColors.goldSoft
+                                      : AppColors.cream)),
                           const SizedBox(height: 4),
                           Text(item.subtitle,
-                              style: const TextStyle(
-                                  fontSize: 11.5, color: AppColors.muted)),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.tajawal(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w400,
+                                  height: 1.35,
+                                  color: AppColors.muted)),
                         ],
                       ),
                     ),
