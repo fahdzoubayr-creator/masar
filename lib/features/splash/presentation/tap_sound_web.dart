@@ -1,9 +1,17 @@
 import 'package:web/web.dart' as web;
 
-/// نقرة الضغط على الويب — تُولَّد لحظياً عبر WebAudio دون ملف أو شبكة،
-/// وتعمل من أول لمسة لأنها تُستدعى داخل حدث مستخدم حقيقي.
+/// نقرة الضغط على الويب — تُولَّد لحظياً عبر WebAudio دون ملف أو شبكة.
+/// سياق واحد دائم يُنشأ عند أول ضغطة ويُعاد استعماله، مع استئنافه إن
+/// أوقفه المتصفح تلقائياً (سياسة التشغيل الذاتي).
+web.AudioContext? _ctx;
+
 void playTapSound() {
-  final ctx = web.AudioContext();
+  final ctx = _ctx ??= web.AudioContext();
+  // بعض المتصفحات تبدأ السياق «معلقاً» حتى أول تفاعل — نضمن تشغيله.
+  if (ctx.state == 'suspended') {
+    ctx.resume();
+  }
+
   final osc = ctx.createOscillator();
   final gain = ctx.createGain();
 
@@ -31,7 +39,4 @@ void playTapSound() {
   wGain.connect(ctx.destination);
   warmth.start(t);
   warmth.stop(t + 0.1);
-
-  // إغلاق السياق بعد انتهاء النقرة لتفادي تراكم سياقات صوتية.
-  ctx.close();
 }
