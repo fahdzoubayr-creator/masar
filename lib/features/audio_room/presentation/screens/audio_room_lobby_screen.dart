@@ -831,7 +831,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
             Text('قاعات خاصة',
                 style:
                     AppTheme.displayFont(size: 14, weight: FontWeight.w700)),
-            const Text(' (تحتاج لكود للانضمام)',
+            const Text(' (تحتاج كود دعوة)',
                 style: TextStyle(fontSize: 11, color: AppColors.muted)),
             const Spacer(),
             Text('${codedEntries.length}',
