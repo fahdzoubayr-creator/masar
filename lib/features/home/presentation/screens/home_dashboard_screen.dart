@@ -270,51 +270,99 @@ class _DashboardCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        // شارة دائرية هادئة حول الأيقونة — لمسة احترافية موحّدة.
-                        Container(
-                          padding: const EdgeInsets.all(7),
-                          decoration: BoxDecoration(
-                            color: AppColors.cream.withValues(alpha: 0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(item.icon,
-                              color: AppColors.goldSoft, size: 21),
-                        ),
-                        const Spacer(),
-                        if (featured)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: AppColors.gold.withValues(alpha: 0.25),
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(
-                                  color:
-                                      AppColors.goldSoft.withValues(alpha: 0.6)),
+                        if (featured) ...[
+                          // أيقونة البطاقة المميزة: شعلة لهب متدرج تحضن كلمة
+                          // «مميز» بخط غليظ — رمز الذروة والأهمية القصوى.
+                          SizedBox(
+                            width: 44,
+                            height: 44,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x73FF8A3C),
+                                        blurRadius: 14,
+                                        spreadRadius: 3,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ShaderMask(
+                                  shaderCallback: (bounds) =>
+                                      const LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Color(0xFFD2664F),
+                                      Color(0xFFFF9A3C),
+                                      AppColors.goldSoft,
+                                    ],
+                                  ).createShader(bounds),
+                                  child: const Icon(
+                                      Icons.local_fire_department_rounded,
+                                      size: 40,
+                                      color: Colors.white),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 9),
+                                  child: Text('مميز',
+                                      style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.white,
+                                          height: 1,
+                                          letterSpacing: 0.2,
+                                          shadows: [
+                                            Shadow(
+                                              color: const Color(0xFF5C1A00)
+                                                  .withValues(alpha: 0.55),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 0.5),
+                                            ),
+                                          ])),
+                                ),
+                              ],
                             ),
-                            child: const Text('مميز',
-                                style: TextStyle(
-                                    fontSize: 9.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.goldSoft)),
-                          )
-                        else
+                          ),
+                        ] else ...[
+                          // شارة دائرية هادئة حول الأيقونة — لمسة احترافية موحّدة.
+                          Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: AppColors.cream.withValues(alpha: 0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(item.icon,
+                                color: AppColors.goldSoft, size: 21),
+                          ),
+                        ],
+                        const Spacer(),
+                        if (locked)
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: locked
-                                  ? AppColors.err.withValues(alpha: 0.18)
-                                  : AppColors.cream.withValues(alpha: 0.15),
+                              color:
+                                  AppColors.err.withValues(alpha: 0.18),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                                locked
-                                    ? Icons.lock_rounded
-                                    : Icons.arrow_forward_ios,
-                                color: locked
-                                    ? AppColors.err
-                                    : AppColors.goldSoft,
-                                size: locked ? 13 : 12),
+                            child: const Icon(Icons.lock_rounded,
+                                color: AppColors.err, size: 13),
+                          )
+                        else
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: AppColors.cream.withValues(alpha: 0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.arrow_forward_ios,
+                                color: AppColors.goldSoft, size: 12),
                           ),
                       ],
                     ),
