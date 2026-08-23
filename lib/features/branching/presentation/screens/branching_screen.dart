@@ -243,16 +243,7 @@ class _BranchingScreenState extends State<BranchingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              _Slate.bgTop.withValues(alpha: 0.80),
-              _Slate.bgBottom.withValues(alpha: 0.85),
-            ],
-          ),
-        ),
+        // الخلفية الموحدة تُقدَّم من main.dart — لا طبقة معتمة هنا.
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 22),

@@ -23,10 +23,12 @@ class UnifiedBackground extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                // تعتيم مدروس: يُبقي روح الصورة ظاهرة ويضمن تباينًا كافيًا
+                // للأيقونات والنصوص في الأعلى والأسفل.
                 colors: [
-                  Color(0x800F3D3D),
-                  Color(0x730B2B2B),
-                  Color(0xB3061919),
+                  Color(0x990F3D3D),
+                  Color(0x8C0B2B2B),
+                  Color(0xBF061919),
                 ],
                 stops: [0.0, 0.5, 1.0],
               ),

@@ -70,16 +70,7 @@ class _BestScoresScreenState extends State<BestScoresScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('أفضل نسبة إنجاز')),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.bgDeep.withValues(alpha: 0.80),
-              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
-            ],
-          ),
-        ),
+        // الخلفية الموحدة تُقدَّم من main.dart — لا طبقة معتمة هنا.
         child: attempts == null || results == null
             ? const Center(
                 child: CircularProgressIndicator(color: AppColors.goldSoft))
