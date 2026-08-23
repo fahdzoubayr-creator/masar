@@ -756,8 +756,28 @@ async function handleLiveKitApi(req, res, urlPath) {
       return json(res, 429, { error: 'طلبات كثيرة — أعد المحاولة بعد قليل.' });
     }
     const body = await readBody(req);
-    const logicalRoom = String(body.room || '').trim().slice(0, 64);
+    let logicalRoom = String(body.room || '').trim().slice(0, 64);
     const name = String(body.name || '').trim().slice(0, 48) || '?????';
+    // توحيد مفتاح الغرفة: أي كود محلي/رمز دعوة/معرف دليل يُترجم إلى
+    // اسم القاعة المنشورة — حتى يجتمع المنشئ والمنضم في نفس الغرفة.
+    try {
+      const raw = logicalRoom;
+      const norm = (s) => String(s || '').trim().toLowerCase();
+      let stripped = raw.startsWith('Ehtiraf_') ? raw.slice(8) : raw;
+      if (stripped.endsWith('_Open')) stripped = stripped.slice(0, -5);
+      for (const r of roomRegistry.values()) {
+        if (
+          norm(raw) === norm(r.name) ||
+          raw === r.id ||
+          raw === `dir_${r.id}` ||
+          (r.inviteCode && r.inviteCode === raw.toUpperCase()) ||
+          norm(stripped) === norm(r.name)
+        ) {
+          logicalRoom = r.name;
+          break;
+        }
+      }
+    } catch {}
     let role = body.role === 'coordinator' ? 'coordinator' : 'member';
     if (!logicalRoom) {
       return json(res, 400, { error: '??? ?????? ?????.', });

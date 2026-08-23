@@ -54,7 +54,9 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
   void initState() {
     super.initState();
     _controller = AudioRoomController(
-      roomName: widget.room,
+      roomName: widget.roomName.isNotEmpty
+          ? widget.roomName
+          : widget.room,
       displayName: widget.displayName,
       isCoordinator: widget.isCoordinator,
     );
