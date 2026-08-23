@@ -24,6 +24,7 @@ dependencies:
   emoji_picker_flutter: ^3.0.0
   share_plus: ^10.0.2
   record: ^7.1.1
+  audioplayers: ^6.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,5 +34,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/sounds/
     - assets/review_files/
     - assets/banks/
