@@ -24,6 +24,9 @@ class _DashboardItem {
 
   /// فضاء غير جاهز بعد — يُعرض مقفلاً ولا يمكن الدخول إليه.
   final bool comingSoon;
+
+  /// ملاحظة بارزة تظهر تحت الوصف بلون أحمر.
+  final String? note;
   final WidgetBuilder builder;
   const _DashboardItem({
     required this.title,
@@ -32,6 +35,7 @@ class _DashboardItem {
     required this.builder,
     this.featured = false,
     this.comingSoon = false,
+    this.note,
   });
 }
 
@@ -65,6 +69,7 @@ class HomeDashboardScreen extends StatelessWidget {
       title: 'بنك الأسئلة',
       subtitle: 'اختبر معارفك حسب المحاور',
       icon: Icons.gps_fixed_rounded,
+      note: 'توليد تلقائي للأسئلة غير محدود',
       builder: _buildQuizPicker,
     ),
     _DashboardItem(
@@ -347,6 +352,18 @@ class _DashboardCard extends StatelessWidget {
                                     height: 1.35,
                                     color:
                                         AppColors.cream.withValues(alpha: 0.75))),
+                            if (item.note != null) ...[
+                              const SizedBox(height: 6),
+                              Text(item.note!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.tajawal(
+                                      fontSize: 10.5,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.3,
+                                      color: AppColors.err)),
+                            ],
                             if (locked) ...[
                               const SizedBox(height: 6),
                               Container(
