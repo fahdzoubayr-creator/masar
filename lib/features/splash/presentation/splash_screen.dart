@@ -133,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   'فضاؤك الشامل للتحضير لمباريات وامتحانات المنظومة التربوية',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 13, color: AppColors.muted, height: 1.6),
+                      fontSize: 13, color: Colors.white, height: 1.6),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
