@@ -21,6 +21,9 @@ class _DashboardItem {
 
   /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة (الامتحانات التجريبية).
   final bool featured;
+
+  /// فضاء غير جاهز بعد — يُعرض مقفلاً ولا يمكن الدخول إليه.
+  final bool comingSoon;
   final WidgetBuilder builder;
   const _DashboardItem({
     required this.title,
@@ -28,6 +31,7 @@ class _DashboardItem {
     required this.icon,
     required this.builder,
     this.featured = false,
+    this.comingSoon = false,
   });
 }
 
@@ -80,6 +84,7 @@ class HomeDashboardScreen extends StatelessWidget {
       title: 'خرائط ذهنية',
       subtitle: 'خطاطات بيداغوجية مركزة',
       icon: Icons.psychology_rounded,
+      comingSoon: true,
       builder: _buildMindMaps,
     ),
     _DashboardItem(
@@ -214,21 +219,27 @@ class _DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final featured = item.featured;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: Material(
-          // البطاقة المميزة تحصل على توهج ذهبي كامل لإبرازها.
-          color: featured
-              ? AppColors.gold.withValues(alpha: 0.14)
-              : AppColors.cream.withValues(alpha: 0.07),
-          borderRadius: BorderRadius.circular(20),
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: item.builder),
-            ),
+    final locked = item.comingSoon;
+    return Opacity(
+      opacity: locked ? 0.62 : 1,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Material(
+            // البطاقة المميزة تحصل على توهج ذهبي كامل لإبرازها.
+            color: featured
+                ? AppColors.gold.withValues(alpha: 0.14)
+                : AppColors.cream.withValues(alpha: 0.07),
             borderRadius: BorderRadius.circular(20),
+            child: InkWell(
+              // الفضاء غير الجاهز مقفل — لا فتح ولا استجابة للضغط.
+              onTap: locked
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: item.builder),
+                      ),
+              borderRadius: BorderRadius.circular(20),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -284,13 +295,21 @@ class _DashboardCard extends StatelessWidget {
                           )
                         else
                           Container(
-                            padding: const EdgeInsets.all(3),
+                            padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: AppColors.cream.withValues(alpha: 0.15),
+                              color: locked
+                                  ? AppColors.err.withValues(alpha: 0.18)
+                                  : AppColors.cream.withValues(alpha: 0.15),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.arrow_forward_ios,
-                                color: AppColors.goldSoft, size: 12),
+                            child: Icon(
+                                locked
+                                    ? Icons.lock_rounded
+                                    : Icons.arrow_forward_ios,
+                                color: locked
+                                    ? AppColors.err
+                                    : AppColors.goldSoft,
+                                size: locked ? 13 : 12),
                           ),
                       ],
                     ),
@@ -328,17 +347,38 @@ class _DashboardCard extends StatelessWidget {
                                     height: 1.35,
                                     color:
                                         AppColors.cream.withValues(alpha: 0.75))),
+                            if (locked) ...[
+                              const SizedBox(height: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 9, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color:
+                                      AppColors.err.withValues(alpha: 0.16),
+                                  borderRadius: BorderRadius.circular(999),
+                                  border: Border.all(
+                                      color: AppColors.err
+                                          .withValues(alpha: 0.55)),
+                                ),
+                                child: const Text('في طور الإعداد',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.err)),
+                              ),
+                            ],
                           ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+                 ],
+               ),
+             ),
+           ),
+         ),
+       ),
+     ),
+   );
   }
 }
