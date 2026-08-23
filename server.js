@@ -291,24 +291,35 @@ const handler = async (req, res) => {
     }
     // قاعدة صارمة: الحذف الفوري متاح دون خمسة أعضاء. عند خمسة
     // فأكثر يُرفض الحذف — على المنسق التسليم والمغادرة فقط.
+    // العدّ الأول من اتصالات هذه القاعة تحديداً (دقيق لغرفتها)،
+    // وإن لم تسجّل اتصالات نرجع لعدّ خادم البث شرط عدم تداخل أسماء.
+    const sockSet = rooms.get(foundId);
+    const occupants = sockSet ? sockSet.size : 0;
+    let blockedByLive = false;
     try {
-      if (lkConfigured()) {
-        const lr = await lkTwirp('ListRooms', {});
+      if (occupants === 0 && lkConfigured()) {
         const rn = lkRoomName(room.name);
-        const live = ((lr && lr.rooms) || []).find(
-          (x) => String(x.name || '') === rn
-        );
-        const cnt = live
-          ? Number(live.numParticipants ?? live.num_participants ?? 0)
-          : null;
-        if (cnt !== null && cnt >= 5) {
-          return json(res, 403, {
-            error:
-              'القاعة فيها ٥ أعضاء فأكثر — لا يمكن حذفها. سلّم التنسيق ثم غادر.',
-          });
+        const sameKeyCount = [...roomRegistry.values()].filter(
+          (r) => lkRoomName(r.name) === rn
+        ).length;
+        if (sameKeyCount === 1) {
+          const lr = await lkTwirp('ListRooms', {});
+          const live = ((lr && lr.rooms) || []).find(
+            (x) => String(x.name || '') === rn
+          );
+          const cnt = live
+            ? Number(live.numParticipants ?? live.num_participants ?? 0)
+            : 0;
+          if (cnt >= 5) blockedByLive = true;
         }
       }
     } catch {}
+    if (occupants >= 5 || blockedByLive) {
+      return json(res, 403, {
+        error:
+          'القاعة فيها ٥ أعضاء فأكثر — لا يمكن حذفها. سلّم التنسيق ثم غادر.',
+      });
+    }
     roomRegistry.delete(foundId);
     const set = rooms.get(foundId);
     if (set && set.size > 0) {

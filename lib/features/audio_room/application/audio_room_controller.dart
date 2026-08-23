@@ -132,6 +132,14 @@ class AudioRoomController extends ChangeNotifier {
   /// لحظة انضمامي — تُستخدم في قاعدة «الأقدم يقود» بعد رحيل المنسق.
   int _joinedAtMs = 0;
 
+  // ===== إجماع التنسيق الواحد =====
+  // توكنات قديمة قد تحمل دور «منسق» لعدة أعضاء؛ الحاكم الفعلي يُنتخب
+  // بالأقدمية بينهم، والتسليم الصريح/المزامنة تعلو على الانتخاب.
+  final Set<String> _metaCoordIds = {};
+  final Set<String> _coordOverrideIds = {};
+  String? _bossIdentity;
+  Timer? _electionTimer;
+
   List<RoomParticipant> get participants {
     final list = _participants.values.toList()
       ..sort((a, b) {
@@ -322,19 +330,34 @@ class AudioRoomController extends ChangeNotifier {
     if (room == null) return;
 
     _syncAllParticipants();
+    // أول استقرار: من الأقدم توكناً هو المنسق الوحيد.
+    _scheduleElection();
 
     room.events
       ..on<lk.ParticipantConnectedEvent>((event) {
         _syncAllParticipants();
-        // وصول منضم جديد → نخبره من يملك الكلمة والكاميرا.
-        if (isCoordinator) _broadcastPermissions();
+        _scheduleElection();
+        // وصول منضم جديد → نخبره من يملك الكلمة والكاميرا،
+        // ومن هو المنسق المعتمد فعلاً.
+        if (isCoordinator) {
+          unawaited(_publishCoordinator('syncRole', _myIdentity));
+          _broadcastPermissions();
+        }
       })
       ..on<lk.ParticipantDisconnectedEvent>((event) async {
         final sid = event.participant.sid;
+        final goneIdentity = event.participant.identity;
         _participants.remove(sid);
         _handRaised.remove(sid);
         _speaking.remove(sid);
         _muted.remove(sid);
+        _metaCoordIds.remove(goneIdentity);
+        if (_coordOverrideIds.remove(goneIdentity)) {
+          // رحيل الحاكم المعتمد → نفتح باب الانتخاب من جديد.
+          _bossIdentity = null;
+          _applyCoordFlags();
+        }
+        _scheduleElection();
         // قاعدة «الأقدم يقود»: إن رحل المنسق وبقيت أنت وآخرون،
         // يدّعي كل بادٍ القيادة بعد مهلة عشوائية — وأول إعلان يعتمد.
         if (!_isCoordinator &&
@@ -402,6 +425,8 @@ class AudioRoomController extends ChangeNotifier {
     final micOn = _muted.contains(p.sid)
         ? false
         : p.isMicrophoneEnabled();
+    final metaCoord = _roleFromMetadata(p.metadata) == 'coordinator';
+    if (metaCoord) _metaCoordIds.add(p.identity);
     _participants[p.sid] = RoomParticipant(
       id: p.sid,
       identity: p.identity,
@@ -413,9 +438,65 @@ class AudioRoomController extends ChangeNotifier {
       hasCamera: _cameraHolderSid == p.sid,
       handRaised: _handRaised.contains(p.sid),
       isSpeaking: _speaking.contains(p.sid),
-      isCoordinator: _roleFromMetadata(p.metadata) == 'coordinator',
+      isCoordinator:
+          metaCoord || _coordOverrideIds.contains(p.identity),
       joinedAtMs: p.joinedAt.millisecondsSinceEpoch,
     );
+  }
+
+  /// يعيد حساب راية التنسيق لكل مشارك وفق الإجماع الحالي.
+  void _applyCoordFlags() {
+    for (final e in _participants.entries.toList()) {
+      final p = e.value;
+      final coord = _metaCoordIds.contains(p.identity) ||
+          _coordOverrideIds.contains(p.identity);
+      if (coord != p.isCoordinator) {
+        _participants[e.key] = p.copyWith(isCoordinator: coord);
+      }
+    }
+  }
+
+  /// انتخاب مؤجل قصير — يستقر التركيب أولاً ثم يُعلن الحاكم.
+  void _scheduleElection() {
+    _electionTimer?.cancel();
+    _electionTimer = Timer(const Duration(milliseconds: 900), () {
+      _electCoordinator();
+      notifyListeners();
+    });
+  }
+
+  /// القاعدة: أقدم من يحمل دور منسق في التوكنات هو المنسق الوحيد.
+  /// تسليم صريح أو مزامنة سابقة (_bossIdentity) تعلو ولا نُعيد الانتخاب.
+  void _electCoordinator() {
+    if (isDemo || _bossIdentity != null) return;
+    String? boss;
+    int best = -1;
+    for (final p in _participants.values) {
+      if (!_metaCoordIds.contains(p.identity)) continue;
+      final j = p.joinedAtMs > 0 ? p.joinedAtMs : DateTime.now().year;
+      if (best < 0 || j < best) {
+        best = j;
+        boss = p.identity;
+      }
+    }
+    if (boss == null) return; // لا بذرة — مسار «الأقدم يدّعي» يتكفل
+    final me = _myIdentity;
+    if (boss == me) {
+      if (!_isCoordinator) {
+        _isCoordinator = true;
+        leaderNotice = 'أنت المنسق الفعلي لهذه القاعة';
+        unawaited(_openCoordinatorDevices());
+        _broadcastPermissions();
+      }
+    } else if (_isCoordinator) {
+      _isCoordinator = false;
+      leaderNotice = null;
+    }
+    _coordOverrideIds
+      ..clear()
+      ..add(boss);
+    _applyCoordFlags();
+    unawaited(_publishCoordinator('syncRole', boss));
   }
 
   /// يعيد بثّ الكاميرا الحقيقي للمشارك إذا كانت مفتوحة ومشتركة،
@@ -610,14 +691,21 @@ class AudioRoomController extends ChangeNotifier {
             _myCameraRequested = false;
             _refreshSelf();
           case 'transfer':
-            // تسليم القيادة صراحة من المنسق إلى عضو محدد.
-            if (target != null &&
-                (target == _myIdentity || target == me) &&
-                !_isCoordinator) {
-              _isCoordinator = true;
-              leaderNotice = 'أصبحت منسق هذه القاعة 🎖️';
-              await _openCoordinatorDevices();
-              _broadcastPermissions();
+            // تسليم القيادة صراحة من المنسق إلى عضو محدد — الجميع
+            // يتبنّى الحاكم الجديد فوراً فتصحّ النجوم عند الجميع.
+            if (target != null && target.isNotEmpty) {
+              _bossIdentity = target;
+              _coordOverrideIds
+                ..clear()
+                ..add(target);
+              _applyCoordFlags();
+              if ((target == _myIdentity || target == me) &&
+                  !_isCoordinator) {
+                _isCoordinator = true;
+                leaderNotice = 'أصبحت منسق هذه القاعة 🎖️';
+                await _openCoordinatorDevices();
+                _broadcastPermissions();
+              }
             }
           case 'claim':
             // أحدهم أعلن قيادته بعد رحيل المنسق — إن كنت مُدّعياً
@@ -625,6 +713,15 @@ class AudioRoomController extends ChangeNotifier {
             if (_isCoordinator && target == null) {
               _isCoordinator = false;
               leaderNotice = null;
+            }
+          case 'syncRole':
+            // مزامنة الحاكم المعتمد (انتخاب الأقدمية أو انضمام جديد).
+            if (target != null && target.isNotEmpty) {
+              _bossIdentity = target;
+              _coordOverrideIds
+                ..clear()
+                ..add(target);
+              _applyCoordFlags();
             }
           case 'kicked':
             // أمر طرد موجّه إليّ — أعرض السبب ثم أغادر القاعة.
@@ -923,6 +1020,11 @@ class AudioRoomController extends ChangeNotifier {
     if (_participants.values.any((p) => p.isCoordinator)) return;
     _isCoordinator = true;
     leaderNotice = 'أنت المنسق الآن 🎖️ — الأقدم في القاعة';
+    _bossIdentity = _myIdentity;
+    _coordOverrideIds
+      ..clear()
+      ..add(_myIdentity);
+    _applyCoordFlags();
     _publish(RoomDataTopics.coordinator,
         utf8.encode(jsonEncode({'action': 'claim', 'target': null})));
     await _openCoordinatorDevices();
@@ -1417,6 +1519,7 @@ class AudioRoomController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _electionTimer?.cancel();
     _stopDemoDevices();
     _room?.dispose();
     super.dispose();
