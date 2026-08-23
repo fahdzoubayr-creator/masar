@@ -757,10 +757,24 @@ async function handleLiveKitApi(req, res, urlPath) {
     }
     const body = await readBody(req);
     const logicalRoom = String(body.room || '').trim().slice(0, 64);
-    const name = String(body.name || '').trim().slice(0, 48) || 'مشارك';
-    const role = body.role === 'coordinator' ? 'coordinator' : 'member';
+    const name = String(body.name || '').trim().slice(0, 48) || '?????';
+    let role = body.role === 'coordinator' ? 'coordinator' : 'member';
     if (!logicalRoom) {
-      return json(res, 400, { error: 'رمز القاعة مطلوب.' });
+      return json(res, 400, { error: '??? ?????? ?????.', });
+    }
+    // مصدر الحقيقة: القاعة المنشورة ملك لمنشئها وحده. إن طلب دور
+    // المنسق لقاعة منشورة يملكها غيره نُنزَّله عضواً — لا نجمان.
+    if (role === 'coordinator') {
+      try {
+        const rn = lkRoomName(logicalRoom);
+        const viewerKey = String(body.name || '').trim().toLowerCase();
+        for (const r of roomRegistry.values()) {
+          if (lkRoomName(r.name) === rn && r.creatorKey !== viewerKey) {
+            role = 'member';
+            break;
+          }
+        }
+      } catch {}
     }
     const identity = `${role === 'coordinator' ? 'c' : 'm'}_${Date.now().toString(36)}${crypto.randomBytes(3).toString('hex')}`;
     const now = Math.floor(Date.now() / 1000);

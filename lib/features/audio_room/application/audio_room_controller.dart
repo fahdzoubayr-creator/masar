@@ -440,7 +440,11 @@ class AudioRoomController extends ChangeNotifier {
       isSpeaking: _speaking.contains(p.sid),
       isCoordinator:
           metaCoord || _coordOverrideIds.contains(p.identity),
-      joinedAtMs: p.joinedAt.millisecondsSinceEpoch,
+      // لحظتي الحقيقية للانضمام محفوظة محلياً — حزمة المشارك
+      // المحلي لا تحمل قيمة صالحة فتعود بـ«الآن» وتفسد الانتخاب.
+      joinedAtMs: p.sid == _meSid && _joinedAtMs > 0
+          ? _joinedAtMs
+          : p.joinedAt.millisecondsSinceEpoch,
     );
   }
 
@@ -1158,6 +1162,7 @@ class AudioRoomController extends ChangeNotifier {
   /// كتم مشارك (من قبل المنسق) — إنفاذ مزدوج: عبر قناة البيانات للواجهة
   /// وخادمياً عبر RoomService حتى لا يستطيع تجاوزه.
   Future<void> muteParticipant(String sid) async {
+    if (!isCoordinator) return;
     _muted.add(sid);
     _handRaised.remove(sid);
     _refreshMute(sid);

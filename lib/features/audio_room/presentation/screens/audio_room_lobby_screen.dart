@@ -381,14 +381,24 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   /// يدخل قاعة مفتوحة بضغطة واحدة (بدون رمز) — يبقى دور المستخدم منسقاً
   /// إن كانت قاعة أنشأها بنفسه، وإلا يصبح حاضراً.
-  Future<void> _enterPublicRoom(String code, String name) async {
+  Future<void> _enterPublicRoom(String code, String name,
+      {DirectoryRoom? dir}) async {
     if (_launching) return;
+    // قاعدة الملكية: إن كانت القاعة منشورة باسم منشئ غيرك فأنت عضو
+    // فيها ولو كان جهازك يحفظ نسخة قديمة تقول إنك منسقها.
+    final notMyRoom = dir != null &&
+        dir.creatorName.trim().toLowerCase() !=
+            _displayName.trim().toLowerCase();
     MasarRoom? existing;
     for (final r in _rooms) {
-      if (r.code == code) {
+      if (r.code == code || (notMyRoom && r.name == name)) {
         existing = r;
-        break;
+        if (!notMyRoom) break;
+        if (r.code == code) break;
       }
+    }
+    if (notMyRoom && existing != null && existing.isCoordinator) {
+      existing = null; // تجاهل سجلّ المنسق القديم — دخول عضو
     }
     if (existing == null) {
       final room = MasarRoom(
@@ -876,7 +886,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
             if (isLocked && dir != null) {
               _joinPrivateFromDirectory(dir);
             } else {
-              _enterPublicRoom(entry.key, entry.value.name);
+              _enterPublicRoom(entry.key, entry.value.name, dir: dir);
             }
           },
           borderRadius: BorderRadius.circular(14),
