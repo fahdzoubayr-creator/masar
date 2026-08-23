@@ -239,7 +239,8 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
             await _controller.transferLeadership(others.first.identity);
           }
         case 'delete':
-          await RoomDirectoryService.unpublish(widget.room);
+          await RoomDirectoryService.unpublish(widget.room,
+              creatorName: widget.displayName);
           unawaited(RoomStore.remove(widget.room));
       }
     } else {

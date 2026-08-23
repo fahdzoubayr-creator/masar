@@ -43,10 +43,14 @@ class RoomDirectoryService {
           .replace(queryParameters: query);
 
   /// حذف قاعة من الدليل — يُستدعى عند التراجع عن إنشاء خاطئ.
-  static Future<void> unpublish(String code) async {
+  /// الخادم يشترط اسم المنشئ مطابقاً لإثبات الملكية.
+  static Future<void> unpublish(String code, {String? creatorName}) async {
     try {
       await http
-          .delete(_uri('/api/rooms/${Uri.encodeComponent(code)}'))
+          .delete(_uri('/api/rooms/${Uri.encodeComponent(code)}',
+              (creatorName == null || creatorName.isEmpty)
+                  ? null
+                  : {'name': creatorName}))
           .timeout(_timeout);
     } catch (_) {
       // أفضل جهد — القاعة ستنقضي من تلقاء نفسها بلا نشاط.
