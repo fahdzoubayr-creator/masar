@@ -35,6 +35,9 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   /// القاعات المنشورة على دليل الخادم — تظهر لكل الأجهزة.
   List<DirectoryRoom> _directoryRooms = [];
+
+  /// حقل إدخال كود الدعوة للقاعات الخاصة.
+  final TextEditingController _inviteCtrl = TextEditingController();
   bool _loadingDirectory = false;
 
   @override
@@ -46,6 +49,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   @override
   void dispose() {
+    _inviteCtrl.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -239,7 +243,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
           mainAxisSize: MainAxisSize.min,
           children: [
             const Text(
-              'ستظهر قاعتك في قسم «قاعات مفتوحة» ليدخلها أي أحد بضغطة واحدة — دون رمز.',
+              'ستظهر قاعتك في قسم «القاعات العامة» ليدخلها أي أحد بضغطة واحدة — دون رمز.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12.5, color: AppColors.muted),
             ),
@@ -782,12 +786,12 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // ===== القسم الأول: قاعات بدون رمز =====
+        // ===== القسم الأول: القاعات العامة =====
         Row(
           children: [
             const Icon(Icons.public_rounded, size: 16, color: AppColors.ok),
             const SizedBox(width: 6),
-            Text('قاعات بدون رمز',
+            Text('قاعات عامة',
                 style:
                     AppTheme.displayFont(size: 14, weight: FontWeight.w700)),
             const Spacer(),
@@ -811,7 +815,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
         if (openEntries.isEmpty)
           const Padding(
             padding: EdgeInsets.only(bottom: 8),
-            child: Text('لا توجد قاعات مفتوحة حالياً.',
+            child: Text('لا توجد قاعات عامة حالياً.',
                 style: TextStyle(fontSize: 11.5, color: AppColors.muted)),
           )
         else
@@ -819,13 +823,13 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
         const SizedBox(height: 18),
 
-        // ===== القسم الثاني: قاعات برمز =====
+        // ===== القسم الثاني: القاعات الخاصة (كود دعوة) =====
         Row(
           children: [
             const Icon(Icons.lock_outline_rounded,
                 size: 16, color: AppColors.gold),
             const SizedBox(width: 6),
-            Text('قاعات برمز',
+            Text('قاعات خاصة',
                 style:
                     AppTheme.displayFont(size: 14, weight: FontWeight.w700)),
             const Spacer(),
@@ -834,16 +838,74 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
           ],
         ),
         const SizedBox(height: 10),
+        // دخول بكود دعوة مباشرة — حتى لو لم تظهر القاعة في القائمة.
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _inviteCtrl,
+                textCapitalization: TextCapitalization.characters,
+                style: const TextStyle(fontSize: 12.5, color: AppColors.cream),
+                decoration: InputDecoration(
+                  hintText: 'أدخل كود الدعوة...',
+                  hintStyle: const TextStyle(
+                      fontSize: 11.5, color: AppColors.muted),
+                  prefixIcon: const Icon(Icons.vpn_key_rounded,
+                      size: 17, color: AppColors.goldSoft),
+                  isDense: true,
+                  filled: true,
+                  fillColor: AppColors.cream.withValues(alpha: 0.05),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 9),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onSubmitted: (_) => _joinByInviteCode(),
+              ),
+            ),
+            const SizedBox(width: 8),
+            FilledButton.icon(
+              onPressed: _joinByInviteCode,
+              icon: const Icon(Icons.login_rounded, size: 17),
+              label: const Text('دخول'),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.gold,
+                foregroundColor: AppColors.bgDeep,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
         if (codedEntries.isEmpty)
           const Padding(
             padding: EdgeInsets.only(bottom: 8),
-            child: Text('لا توجد قاعات برمز حالياً.',
+            child: Text('لا توجد قاعات خاصة حالياً.',
                 style: TextStyle(fontSize: 11.5, color: AppColors.muted)),
           )
         else
           ...codedEntries.map((entry) => _buildPublicRoomTile(entry)),
       ],
     );
+  }
+
+  /// دخول قاعة خاصة بكود الدعوة المدخل يدوياً — يتحقق عبر الخادم.
+  Future<void> _joinByInviteCode() async {
+    final code = _inviteCtrl.text.trim();
+    if (code.isEmpty) {
+      _showSnack('اكتب كود الدعوة أولاً.');
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    try {
+      final dir = await RoomDirectoryService.findByCode(code);
+      if (!mounted) return;
+      _inviteCtrl.clear();
+      await _enterPrivateDirectoryRoom(dir);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnack('رمز غير صالح أو القاعة غير متاحة الآن.');
+    }
   }
 
   Widget _buildPublicRoomTile(
@@ -989,7 +1051,12 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
       return;
     }
     if (!mounted) return;
+    await _enterPrivateDirectoryRoom(dir);
+  }
 
+  /// إنشاء سجل قاعة خاصة من الدليل والدخول إليها كحاضر مباشرة.
+  Future<void> _enterPrivateDirectoryRoom(DirectoryRoom dir) async {
+    if (_launching) return;
     final room = MasarRoom(
       code: 'dir_${dir.id}',
       name: dir.name,
@@ -1131,8 +1198,8 @@ class _RoomTypeSelector extends StatelessWidget {
         _option(
           selected: value,
           icon: Icons.public_rounded,
-          title: 'قاعة مفتوحة للجميع',
-          subtitle: 'تظهر في قسم «قاعات مفتوحة» — يدخلها أي أحد بدون رمز',
+          title: 'قاعة عامة',
+          subtitle: 'تظهر في قسم «القاعات العامة» — يدخلها أي أحد بدون رمز',
           onTap: () => onChanged(true),
         ),
       ],
