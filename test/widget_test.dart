@@ -14,7 +14,7 @@ void main() {
     await tester.pumpWidget(const MasarApp());
     await tester.pump();
 
-    expect(find.textContaining('أهلاً بك في تطبيق احتراف'), findsOneWidget);
+    expect(find.textContaining('مرحباً بجميع الأستاذات والأساتذة'), findsOneWidget);
     expect(find.textContaining('اختر مباراتك وابدأ التحضير'), findsOneWidget);
   });
 }

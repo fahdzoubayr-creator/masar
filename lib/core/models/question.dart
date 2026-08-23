@@ -24,4 +24,29 @@ class Question {
     this.source,
     this.situation,
   });
+
+  factory Question.fromJson(Map<String, dynamic> j) => Question(
+        subject: j['subject'] as String? ?? '',
+        level: j['level'] as String?,
+        text: j['text'] as String? ?? '',
+        options: (j['options'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            [],
+        correctIndex: j['correctIndex'] as int? ?? 0,
+        explanation: j['explanation'] as String? ?? '',
+        source: j['source'] as String?,
+        situation: j['situation'] as String?,
+      );
+
+  Map<String, dynamic> toJson() => {
+        'subject': subject,
+        if (level != null) 'level': level,
+        'text': text,
+        'options': options,
+        'correctIndex': correctIndex,
+        'explanation': explanation,
+        if (source != null) 'source': source,
+        if (situation != null) 'situation': situation,
+      };
 }

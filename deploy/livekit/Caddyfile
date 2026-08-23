@@ -1,0 +1,25 @@
+# ============================================================
+#  وكيل Caddy العكسي — شهادة TLS تلقائية من Let's Encrypt
+#  شرط العمل: سجل DNS من نوع A يشير بهذا النطاق إلى IP الـ VPS،
+#  والمنفذان 80 و443 مفتوحان (Caddy يستخدم 80 لإصدار الشهادة).
+# ============================================================
+
+{$LIVEKIT_DOMAIN} {
+	# توجيه كل شيء إلى خادم LiveKit الداخلي (HTTP → HTTPS خارجياً)
+	reverse_proxy 127.0.0.1:7880
+
+	# رؤوس أمان أساسية
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	# تسجيل مختصر
+	log {
+		output file /data/access.log {
+		 roll_size 10mb
+		 roll_keep 3
+		}
+	}
+}

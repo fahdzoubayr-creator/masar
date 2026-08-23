@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class QuizAttemptService {
   static const _key = 'topic_attempts_v1';
 
-  /// عتبة النجاح: من يقل عن 50% يُعتبر فاشلاً ويُمنع من الكويز 3 ساعات.
-  static const int passThreshold = 50;
+  /// عتبة النجاح: من يقل عن 30% يُعتبر فاشلاً ويُمنع من الكويز 3 ساعات.
+  static const int passThreshold = 30;
 
   /// مدة الحظر بعد الفشل: 3 ساعات.
   static const Duration lockDuration = Duration(hours: 3);

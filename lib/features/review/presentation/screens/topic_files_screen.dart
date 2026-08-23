@@ -29,11 +29,14 @@ class TopicFilesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              AppColors.bgDeep.withValues(alpha: 0.80),
+              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: SafeArea(

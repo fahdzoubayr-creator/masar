@@ -6,6 +6,7 @@ import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/models/quiz_result.dart';
 import 'package:masar_app/core/services/progress_service.dart';
 import 'package:masar_app/core/services/question_repository.dart';
+import 'package:masar_app/core/services/question_validator.dart';
 import 'package:masar_app/features/quiz/presentation/screens/results_screen.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -81,11 +82,12 @@ class _QuizScreenState extends State<QuizScreen> {
             subject: widget.subjectFilter,
           );
     if (!mounted) return;
+    final filtered = QuestionValidator.filterValid(list);
     setState(() {
-      pool = list;
+      pool = filtered;
       _remaining = widget.examDuration ?? Duration.zero;
     });
-    if (widget.examDuration != null && list.isNotEmpty) _startTimer();
+    if (widget.examDuration != null && filtered.isNotEmpty) _startTimer();
   }
 
   void _startTimer() {
@@ -129,6 +131,20 @@ class _QuizScreenState extends State<QuizScreen> {
       _saveResult();
       setState(() => finished = true);
     } else {
+      // فحص الحظر الفوري: إذا كانت نسبة الإجابات الصحيحة الحالية أقل من 30%
+      // ولا يمكن للمترشح بلوغ 30% حتى لو أجاب صحيحاً على ما تبقى.
+      final answeredCount = current + 1;
+      final maxPossible = score + (pool.length - answeredCount);
+      final currentPct = ((score / answeredCount) * 100).round();
+      final bestPossiblePct = ((maxPossible / pool.length) * 100).round();
+      if (currentPct < 30 && bestPossiblePct < 30) {
+        // استبعاد فوري — لا يمكن بلوغ 30% مهما أجاب على ما تبقى.
+        _saveResult();
+        setState(() {
+          finished = true;
+        });
+        return;
+      }
       setState(() {
         current++;
         selectedIndex = null;
@@ -165,16 +181,16 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _restart() {
-    if (widget.onFinished != null && (_lastPct ?? 0) < 50) {
+    if (widget.onFinished != null && (_lastPct ?? 0) < 30) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
           const SnackBar(
             content: Text(
-                'لا يمكنك إعادة الكويز الآن — ارجع إلى المراجعة أولاً وانتظر انتهاء مدة الحظر.'),
+                'لم تتجاوز الحد الأدنى (30%). يرجى العودة لمراجعة ملفات المحور قبل إعادة الاختبار بعد 3 ساعات.'),
             backgroundColor: AppColors.err,
             behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
+            duration: Duration(seconds: 4),
           ),
         );
       return;
@@ -228,7 +244,7 @@ class _QuizScreenState extends State<QuizScreen> {
           score: score,
           total: pool.length,
           onRestart: _restart,
-          warning: (widget.failureNote != null && (_lastPct ?? 0) < 50)
+          warning: (widget.failureNote != null && (_lastPct ?? 0) < 30)
               ? widget.failureNote
               : null,
         ),
@@ -261,26 +277,6 @@ class _QuizScreenState extends State<QuizScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
-                    if (item.situation != null) ...[
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: AppColors.gold.withValues(alpha: 0.2),
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(item.situation!,
-                            style: const TextStyle(
-                                fontSize: 14,
-                                height: 1.8,
-                                color: AppColors.cream)),
-                      ),
-                      const SizedBox(height: 14),
-                    ],
                     Text(item.text,
                         style: AppTheme.displayFont(size: 18, weight: FontWeight.w700)),
                     const SizedBox(height: 24),

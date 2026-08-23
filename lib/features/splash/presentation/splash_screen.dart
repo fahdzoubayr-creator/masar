@@ -81,41 +81,61 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/خلفية_الترحيب.jpg'),
+            fit: BoxFit.cover,
+          ),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              Color(0xE611151B),
+              Color(0xD90A2A2A),
+              Color(0xE60A2A2A),
+            ],
           ),
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 14, 24, 22),
+            padding: const EdgeInsets.fromLTRB(24, 2, 24, 22),
             child: Column(
               children: [
-                const Spacer(flex: 2),
                 Image.asset(
-                  'assets/images/شعار التطبيق1.png',
-                  width: 140,
+                  'assets/images/bismillah.png',
+                  height: 64,
                   fit: BoxFit.contain,
                   filterQuality: FilterQuality.high,
                 ),
-                const SizedBox(height: 18),
-                const Text(
-                  'أهلاً بك في تطبيق احتراف',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.goldSoft),
+                const SizedBox(height: 14),
+                ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [
+                      Color(0xFFFFE9A8),
+                      Color(0xFFF5C542),
+                      Color(0xFFD4962A),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ).createShader(bounds),
+                  child: const Text(
+                    'مرحباً بجميع الأستاذات والأساتذة',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 27,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        height: 1.3,
+                        letterSpacing: 0.5),
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const Spacer(flex: 4),
                 const Text(
                   'فضاؤك الشامل للتحضير لمباريات وامتحانات المنظومة التربوية',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 13, color: AppColors.muted, height: 1.6),
                 ),
-                const Spacer(flex: 3),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

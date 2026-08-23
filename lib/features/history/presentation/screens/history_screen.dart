@@ -125,7 +125,7 @@ class _ResultGroup {
     return best;
   }
 
-  int get exclusionCount => attempts.where((a) => a.percentage < 50).length;
+  int get exclusionCount => attempts.where((a) => a.percentage < 30).length;
 }
 
 class _StatsCard extends StatelessWidget {
@@ -138,7 +138,7 @@ class _StatsCard extends StatelessWidget {
     int exclusions = 0;
     for (final r in results) {
       if (r.percentage > best) best = r.percentage;
-      if (r.percentage < 50) exclusions++;
+      if (r.percentage < 30) exclusions++;
     }
 
     return Container(
@@ -202,7 +202,7 @@ class _ResultGroupCardState extends State<_ResultGroupCard> {
     final lastPct = g.attempts.first.percentage;
     final color = lastPct >= 80
         ? AppColors.ok
-        : lastPct >= 50
+        : lastPct >= 30
             ? AppColors.gold
             : AppColors.err;
 
@@ -333,10 +333,10 @@ class _AttemptRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = attempt.percentage >= 80
         ? AppColors.ok
-        : attempt.percentage >= 50
+        : attempt.percentage >= 30
             ? AppColors.gold
             : AppColors.err;
-    final excluded = attempt.percentage < 50;
+    final excluded = attempt.percentage < 30;
 
     return Container(
       width: double.infinity,

@@ -23,21 +23,26 @@ class _Exam {
   final String title;
   final String subtitle;
   final IconData icon;
-  const _Exam(this.branch, this.title, this.subtitle, this.icon);
+  final bool enabled;
+  const _Exam(this.branch, this.title, this.subtitle, this.icon,
+      {this.enabled = true});
 }
 
 const List<_Exam> _exams = [
   _Exam(ExamBranch.competence, 'امتحانات الكفاءة المهنية',
       'اختر السلك التعليمي وابدأ التحضير', Icons.assignment_outlined),
   _Exam(ExamBranch.management, 'سلك الإدارة التربوية',
-      'اختر السلك الأصلي لتخصيص النماذج', Icons.account_balance_outlined),
+      'اختر السلك الأصلي لتخصيص النماذج', Icons.account_balance_outlined,
+      enabled: false),
   _Exam(ExamBranch.inspection, 'مباراة التفتيش التربوي',
-      'تخصصّ حسب السلك والمادة', Icons.verified_user_outlined),
+      'تخصصّ حسب السلك والمادة', Icons.verified_user_outlined,
+      enabled: false),
   _Exam(
       ExamBranch.planning,
       'مباراة التخطيط والتوجيه التربوي',
       'اختر المسلك (توجيه أو تخطيط) لتخصيص امتحانات الدخول',
-      Icons.route_outlined),
+      Icons.route_outlined,
+      enabled: false),
 ];
 
 class _PlanningTrack {
@@ -60,15 +65,16 @@ class _LevelOption {
   final String key;
   final String title;
   final IconData icon;
-  const _LevelOption(this.key, this.title, this.icon);
+  final bool enabled;
+  const _LevelOption(this.key, this.title, this.icon, {this.enabled = true});
 }
 
 const List<_LevelOption> _competenceLevels = [
   _LevelOption('primary', 'التعليم الابتدائي', Icons.school_outlined),
-  _LevelOption(
-      'middle', 'التعليم الثانوي الإعدادي', Icons.local_library_outlined),
-  _LevelOption(
-      'high', 'التعليم الثانوي التأهيلي', Icons.account_balance_outlined),
+  _LevelOption('middle', 'التعليم الثانوي الإعدادي', Icons.local_library_outlined,
+      enabled: false),
+  _LevelOption('high', 'التعليم الثانوي التأهيلي', Icons.account_balance_outlined,
+      enabled: false),
 ];
 
 const List<_LevelOption> _managementLevels = [
@@ -145,7 +151,37 @@ class _BranchingScreenState extends State<BranchingScreen> {
     );
   }
 
+  void _showComingSoon(String title) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.lock_outline_rounded,
+                  color: _Slate.accent, size: 18),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text('«$title» في طور الإعداد — سيتم تفعيلها قريباً',
+                    style: const TextStyle(
+                        fontSize: 13, color: _Slate.text)),
+              ),
+            ],
+          ),
+          backgroundColor: _Slate.card,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+  }
+
   Future<void> _selectExam(_Exam exam) {
+    if (!exam.enabled) {
+      _showComingSoon(exam.title);
+      return Future.value();
+    }
     return _tapCard(exam.title, () async {
       await SessionService.setTrack(exam.title);
       if (!mounted) return;
@@ -158,6 +194,10 @@ class _BranchingScreenState extends State<BranchingScreen> {
   }
 
   Future<void> _selectCompetenceLevel(_LevelOption level) {
+    if (!level.enabled) {
+      _showComingSoon(level.title);
+      return Future.value();
+    }
     return _tapCard(level.title, () async {
       await SessionService.setLevel(level.key);
       await _goRegistration();
@@ -203,11 +243,14 @@ class _BranchingScreenState extends State<BranchingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [_Slate.bgTop, _Slate.bgBottom],
+            colors: [
+              _Slate.bgTop.withValues(alpha: 0.80),
+              _Slate.bgBottom.withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: SafeArea(
@@ -312,8 +355,7 @@ class _BranchingScreenState extends State<BranchingScreen> {
               icon: e.icon,
               title: e.title,
               subtitle: e.subtitle,
-              badge:
-                  e.branch == ExamBranch.competence ? null : 'في طور الإعداد',
+              badge: e.enabled ? null : 'في طور الإعداد',
               highlighted: _selectedLabel == e.title,
               onTap: () => _selectExam(e),
             ),
@@ -351,7 +393,7 @@ class _BranchingScreenState extends State<BranchingScreen> {
             child: _optionCard(
               icon: l.icon,
               title: l.title,
-              badge: l.key == 'primary' ? null : 'في طور الإعداد',
+              badge: l.enabled ? null : 'في طور الإعداد',
               highlighted: _selectedLabel == l.title,
               onTap: () => _selectCompetenceLevel(l),
             ),

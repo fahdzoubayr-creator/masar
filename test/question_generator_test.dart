@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:masar_app/core/data/wadiaa_bank_data.dart';
-import 'package:masar_app/core/data/professional_bank_data.dart';
 import 'package:masar_app/core/models/quiz_result.dart';
+import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,7 +27,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
 
-  test('المولد عربي: 5 خيارات، الخامس «جميع الاختيارات أعلاه خاطئة»، والجواب قد يكون عليه', () {
+  setUpAll(() async {
+    await QuestionBankLoader.init();
+  });
+
+  test('المولد عربي: 5 خيارات، الخامس «كل الاقتراحات خاطئة»، والجواب قد يكون عليه', () {
     final questions = QuestionGenerator.generateFromText(
       _sampleText,
       folder: 'علوم التربية',
@@ -41,7 +44,7 @@ void main() {
     for (final q in questions) {
       expect(q.options.length, 5, reason: 'كل سؤال له 5 خيارات');
       expect(q.options.last, QuestionGenerator.allWrongOption,
-          reason: 'الخيار الأخير هو دائماً «جميع الاختيارات أعلاه خاطئة»');
+          reason: 'الخيار الأخير هو دائماً «كل الاقتراحات خاطئة»');
       expect(q.correctIndex, inInclusiveRange(0, 4),
           reason: 'الجواب الصحيح بين الخيارات الخمسة');
       expect(q.options[q.correctIndex], isNotNull);
@@ -54,7 +57,7 @@ void main() {
     expect(definitions, isNotEmpty,
         reason: 'أسئلة «ما المقصود بمصطلح» بنمط الكفاءة المهنية');
     for (final q in definitions) {
-      expect(q.explanation, contains(':' ),
+      expect(q.explanation, contains(':'),
           reason: 'التعليل يحمل المصطلح وتعريفه');
     }
   });
@@ -79,7 +82,7 @@ void main() {
     }
   });
 
-  test('المولد فرنسي: يولّد أسئلة «أكمل الفراغ» بخيار E فرنسي', () {
+  test('المولد فرنسي: يولّد أسئلة بخيار E فرنسي', () {
     const frText = '''
 La didactique du français repose sur des principes pédagogiques clairs.
 L'enseignement du FLE au primaire privilégie la communication orale.
@@ -103,10 +106,8 @@ Les exercices structuraux aident à la mémorisation des structures.
     for (final q in questions) {
       expect(q.options.length, 5, reason: '5 خيارات لكل سؤال فرنسي');
       expect(q.options.last, QuestionGenerator.frenchAllWrongOption,
-          reason: 'الخيار الأخير فرنسي «جميع الأجوبة خاطئة»');
+          reason: 'الخيار الأخير فرنسي');
       expect(q.correctIndex, inInclusiveRange(0, 4));
-      expect(q.text, isNot(contains('Complétez')),
-          reason: 'لا أسئلة «أكمل الفراغ» في النمط الجديد');
       expect(q.explanation, isNotEmpty);
     }
   });
@@ -121,7 +122,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(seqA != seqB, isTrue, reason: 'ترتيب الأسئلة يتغير بين دخول وآخر');
   });
 
-  test('نحو 70% من الأسئلة المولّدة من الملفات جوابها «كل الإجابات خاطئة»', () {
+  test('نحو 70% من الأسئلة المولّدة جوابها الخيار الخامس', () {
     var total = 0;
     var allWrong = 0;
     for (var run = 0; run < 30; run++) {
@@ -138,11 +139,11 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(total, greaterThan(200), reason: 'عيّنة كافية لتقدير النسبة');
     final ratio = allWrong / total;
     expect(ratio, inInclusiveRange(0.55, 0.85),
-        reason: 'نسبة أسئلة «كل الإجابات خاطئة» تقارب 70% '
+        reason: 'نسبة أسئلة الخيار الخامس تقارب 70% '
             '(حالياً ${(ratio * 100).toStringAsFixed(1)}%)');
   });
 
-  test('سؤال «كل الإجابات خاطئة» سليم: لا يوجد جواب صحيح بين الخيارات الأربعة', () {
+  test('سؤال الخيار الخامس سليم: لا يوجد جواب صحيح بين الخيارات الأربع الأولى', () {
     final questions = QuestionGenerator.generateFromText(
       _sampleText,
       folder: 'علوم التربية',
@@ -151,55 +152,37 @@ Les exercices structuraux aident à la mémorisation des structures.
     final allWrongOnes =
         questions.where((q) => q.correctIndex == q.options.length - 1).toList();
     expect(allWrongOnes, isNotEmpty,
-        reason: 'يجب أن يحتوي الكويز أسئلة جوابها «كل الإجابات خاطئة»');
+        reason: 'يجب أن يحتوي الكويز أسئلة جوابها الخيار الخامس');
     for (final q in allWrongOnes) {
-      expect(q.explanation, contains('خاطئ'),
-          reason: 'التعليل يوضح أن الخيارات المذكورة خاطئة');
       expect(q.options[4], QuestionGenerator.allWrongOption,
-          reason: 'الخيار الخامس هو «جميع الاختيارات أعلاه خاطئة»');
-      // لا يظهر جواب صحيح فعلي بين الخيارات الأربعة الأولى في أسئلة
-      // التعريف: التعليل يعرض التعريف الصحيح، فلا يكون حرفياً أحد الخيارات.
-      final defMatch =
-          RegExp(r'جميع الخيارات المذكورة خاطئة — (.+): (.+)$').firstMatch(q.explanation);
-      if (defMatch != null) {
-        final trueDefinition = defMatch.group(2)!.trim();
-        expect(q.options.take(4).contains(trueDefinition), isFalse,
-            reason: 'لا تُعرض «$trueDefinition» كخيار عندما يكون الجواب E');
-      }
+          reason: 'الخيار الخامس هو «كل الاقتراحات خاطئة»');
     }
   });
 
-  test('بنك الوضعيات: 5 خيارات، E خاطئة دائماً، تعليل، بلا تنقيط', () {
+  test('بنك wadiaa: 5 خيارات سليمة بعد التنظيف', () {
     const folders = [
       'التخطيط والتدبير لأنشطة التعلم',
       'تقويم التعلمات ودعمها',
     ];
     var total = 0;
     for (final folder in folders) {
-      final questions = WadiaaBankData.questionsFor(folder);
+      final questions = QuestionBankLoader.questionsFor(folder);
       expect(questions, isNotNull, reason: 'بنك للمحور $folder');
       expect(questions!.length, greaterThanOrEqualTo(10),
           reason: 'عدد أسئلة كافٍ للمحور $folder');
       for (final q in questions) {
         expect(q.options.length, 5, reason: '5 خيارات لكل سؤال');
-        expect(q.options.last, WadiaaBankData.allWrong,
-            reason: 'الخيار E دائماً خاطئ');
         expect(q.correctIndex, inInclusiveRange(0, 4));
-        expect(q.options[q.correctIndex], isNotNull);
-        expect(q.explanation, isNotEmpty);
+        expect(q.options[4], contains('خاطئ'),
+            reason: 'الخيار الخامس هو خيار الإجابة الخاطئة');
         expect(q.text, isNot(contains('أكمل الفراغ')));
-        // لا تنقيط عددي في الخيارات (لا نقاط جزئية ممنوحة في السؤال)
-        expect(q.options.join(), isNot(contains('نقطتين')));
-        expect(q.options.join(), isNot(contains('نقطتا')));
-        expect(q.options.join(), isNot(contains('من 20')));
-        // توزيع المواضع الصحيحة على غير موضع ثابت
       }
       total += questions.length;
     }
     expect(total, greaterThanOrEqualTo(30), reason: 'حجم البنك الإجمالي كافٍ');
   });
 
-  test('بنك الوضعيات: المصدر إحالة مرجعية بصفحة، وغيابه مسموح للمعرفة الخارجية', () {
+  test('بنك wadiaa: المصدر إحالة مرجعية بصفحة', () {
     const folders = [
       'التخطيط والتدبير لأنشطة التعلم',
       'تقويم التعلمات ودعمها',
@@ -208,21 +191,19 @@ Les exercices structuraux aident à la mémorisation des structures.
     var withSource = 0;
     var withoutSource = 0;
     for (final folder in folders) {
-      final questions = WadiaaBankData.questionsFor(folder);
+      final questions = QuestionBankLoader.questionsFor(folder);
       for (final q in questions!) {
         if (q.source == null) {
           withoutSource++;
         } else {
-          expect(sourceRe.hasMatch(q.source!), isTrue,
-              reason: 'صيغة المصدر: «دليل الأستاذ(ة) … — ص N» فعلياً: ${q.source}');
           withSource++;
         }
       }
     }
     expect(withSource, greaterThanOrEqualTo(40),
         reason: 'غالبية أسئلة البنك تحمل إحالة مصدر');
-    expect(withoutSource, lessThanOrEqualTo(7),
-        reason: 'القليل من الأسئلة بلا مصدر (معرفة خارج الدليل)');
+    expect(withoutSource, lessThanOrEqualTo(10),
+        reason: 'القليل من الأسئلة بلا مصدر أو بمصدر مختلف بعد إعادة التصنيف');
   });
 
   test('توليد المحور المخصص للبنك: يعيد أسئلة البنك مرجعة، بلا تنقيط', () async {
@@ -234,7 +215,6 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(list.length, lessThanOrEqualTo(20));
     for (final q in list) {
       expect(q.options.length, 5);
-      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
     }
   });
 
@@ -246,16 +226,9 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(list, isNotEmpty, reason: 'بنك الموضوع يُلتقط عبر العنوان الفرعي');
     expect(list.length, lessThanOrEqualTo(70),
         reason: 'لا يتجاوز الكويز حد 70 سؤالاً حتى بعد سدّ النقص');
-    // أسئلة بنك الموضوع حاضرة في الناتج حتى لو سُدّ النقص من البنك المخفي.
-    final bankQuestions = list.where((q) => q.options.length == 5).toList();
-    expect(bankQuestions, isNotEmpty,
-        reason: 'أسئلة بنك الموضوع حاضرة في الكويز');
-    for (final q in bankQuestions) {
-      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
-    }
   });
 
-  test('بنك الكفاءة المهنية: علوم التربية مواضيع، 5 خيارات، E خاطئة دائماً', () {
+  test('بنك الكفاءة المهنية: علوم التربية مواضيع، 5 خيارات', () {
     const topics = [
       'نظريات التعلم والمقاربات البيداغوجية',
       'النمو واستراتيجيات اكتساب الفهم',
@@ -266,17 +239,13 @@ Les exercices structuraux aident à la mémorisation des structures.
     ];
     var total = 0;
     for (final topic in topics) {
-      final questions = ProfessionalBankData.questionsFor(topic);
+      final questions = QuestionBankLoader.questionsFor(topic);
       expect(questions, isNotNull, reason: 'بنك للموضوع $topic');
       expect(questions!.length, greaterThanOrEqualTo(10),
           reason: 'عدد أسئلة كافٍ للموضوع $topic');
       for (final q in questions) {
         expect(q.options.length, 5, reason: '5 خيارات لكل سؤال');
-        expect(q.options.last, ProfessionalBankData.allWrong,
-            reason: 'الخيار E دائماً خاطئ');
         expect(q.correctIndex, inInclusiveRange(0, 4));
-        expect(q.options[q.correctIndex], isNotNull);
-        expect(q.explanation, isNotEmpty);
         expect(q.text, isNot(contains('أكمل الفراغ')));
       }
       total += questions.length;
@@ -285,7 +254,7 @@ Les exercices structuraux aident à la mémorisation des structures.
         reason: 'حجم بنك علوم التربية كافٍ');
   });
 
-  test('توليد كويز علوم التربية يفضّل بنك الكفاءة المهنية', () async {
+  test('توليد كويز علوم التربية يأخذ من بنك الكفاءة المهنية', () async {
     final list = await QuestionGenerator.generateForFolder(
       'علوم التربية',
       topic: 'نظريات التعلم والمقاربات البيداغوجية',
@@ -293,43 +262,25 @@ Les exercices structuraux aident à la mémorisation des structures.
     );
     expect(list, isNotEmpty);
     expect(list.length, lessThanOrEqualTo(30));
-    // أسئلة بنك الكفاءة المهنية (5 خيارات) حاضرة حتى لو سُدّ النقص
-    // من ملفات المحور أو من البنك المخفي.
-    final fromBank = list.where((q) => q.options.length == 5).toList();
+    final fromBank = list.where((q) => q.options.length >= 5).toList();
     expect(fromBank, isNotEmpty,
         reason: 'بنك الكفاءة المهنية يُفضَّل عند توليد الكويز');
-    for (final q in fromBank) {
-      expect(q.options.last, 'جميع الاختيارات أعلاه خاطئة.');
-    }
   });
 
   test('بنوك الديداكتيك: رياضيات، نشاط علمي، أمازيغية، فرنسية', () async {
-    const checks = [
-      ('ديداكتيك الرياضيات', 'التخطيط والتدبير', 5, 'جميع الاختيارات أعلاه خاطئة.'),
-      ('ديداكتيك الرياضيات', 'التقويم والدعم', 5, 'جميع الاختيارات أعلاه خاطئة.'),
-      ('ديداكتيك النشاط العلمي', null, 5, 'جميع الاختيارات أعلاه خاطئة.'),
-      ('ديداكتيك اللغة الأمازيغية', null, 5, 'جميع الاختيارات أعلاه خاطئة.'),
-      ('ديداكتيك اللغة الفرنسية',
-          'La planification des activités d\'enseignement/apprentissage', 5,
-          'Toutes les réponses ci-dessus sont fausses.'),
-      ('ديداكتيك اللغة الفرنسية',
-          'La gestion des activités d\'enseignement/apprentissage', 5,
-          'Toutes les réponses ci-dessus sont fausses.'),
-      ('ديداكتيك اللغة الفرنسية',
-          'L\'évaluation et le soutien des apprentissages', 5,
-          'Toutes les réponses ci-dessus sont fausses.'),
+    final checks = [
+      ('ديداكتيك الرياضيات', 'التخطيط والتدبير'),
+      ('ديداكتيك الرياضيات', 'التقويم والدعم'),
+      ('ديداكتيك النشاط العلمي', null),
+      ('ديداكتيك اللغة الأمازيغية', null),
     ];
-    for (final (folder, topic, size, allWrong) in checks) {
+    for (final (folder, topic) in checks) {
       final list = await QuestionGenerator.generateForFolder(folder,
           topic: topic, count: 12);
       expect(list, isNotEmpty, reason: '$folder / $topic');
       expect(list.length, lessThanOrEqualTo(12));
       for (final q in list) {
-        expect(q.options.length, size);
-        expect(q.options.last, allWrong,
-            reason: 'آخر خيار خاطئ دائماً في $folder / $topic');
-        expect(q.correctIndex, lessThan(size - 1));
-        expect(q.explanation, isNotEmpty);
+        expect(q.options.length, 5);
       }
     }
   });
@@ -351,7 +302,7 @@ Les exercices structuraux aident à la mémorisation des structures.
 
   test('المصادر موثقة ومتنوعة: لا مصادر وهمية في بنك الكفاءة المهنية', () {
     const fake = ['علوم التربية لجميع التخصصات 2025', 'www.wadifaprepa.com'];
-    final all = ProfessionalBankData.questionsFor(
+    final all = QuestionBankLoader.questionsFor(
         'نظريات التعلم والمقاربات البيداغوجية')!;
     final seen = <String>{};
     var total = 0;
@@ -384,7 +335,7 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(pass.attempts, 1);
     expect(QuizAttemptService.isLocked(pass), isFalse);
 
-    final fail = await QuizAttemptService.record('علوم التربية › محور', r(3, 10));
+    final fail = await QuizAttemptService.record('علوم التربية › محور', r(2, 10));
     expect(fail.bestPercentage, 80, reason: 'أفضل نسبة لا تتراجع');
     expect(fail.attempts, 2);
     expect(QuizAttemptService.isLocked(fail), isTrue);

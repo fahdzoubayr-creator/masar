@@ -1,0 +1,53 @@
+# ============================================================
+#  نشر خادم LiveKit للإنتاج (صوت + صورة) — تطبيق مسار Ehtiraf
+#  المكوّنات: LiveKit Server + Redis + Caddy (TLS تلقائي)
+#  الاستخدام: انسخ مجلد deploy/livekit إلى الـ VPS ثم:
+#     cp .env.example .env   ← عدّل القيم
+#     docker compose up -d
+# ============================================================
+
+services:
+  # ---------- Redis: حالة الغرف والمشاركين (مستقر وموزع) ----------
+  redis:
+    image: redis:7-alpine
+    container_name: masar-livekit-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    ports:
+      - "127.0.0.1:6379:6379"   # محلي فقط — لا يُفتح على الإنترنت
+
+  # ---------- LiveKit Server ----------
+  livekit:
+    image: livekit/livekit-server:v1.8
+    container_name: masar-livekit
+    restart: unless-stopped
+    command: --config /etc/livekit.yaml
+    # شبكة المضيف مباشرة: أبسط وأثبت لمنافذ UDP الإعلامية على VPS واحد
+    network_mode: host
+    depends_on:
+      - redis
+    environment:
+      # المفاتيح تُقرأ من ملف .env ولا تُكتب في أي ملف آخر
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY}: ${LIVEKIT_API_SECRET}"
+    volumes:
+      - ./livekit.yaml:/etc/livekit.yaml:ro
+
+  # ---------- Caddy: وكيل عكسي + شهادة TLS تلقائية (wss/https) ----------
+  caddy:
+    image: caddy:2-alpine
+    container_name: masar-livekit-caddy
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      LIVEKIT_DOMAIN: ${LIVEKIT_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  redis-data:
+  caddy-data:
+  caddy-config:

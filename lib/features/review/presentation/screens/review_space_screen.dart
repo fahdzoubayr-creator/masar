@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masar_app/core/data/professional_bank_data.dart';
+import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
@@ -48,11 +48,14 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              AppColors.bgDeep.withValues(alpha: 0.80),
+              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: SafeArea(
@@ -534,7 +537,7 @@ class _TopicRowState extends State<_TopicRow> {
   Future<void> _load() async {
     final folder = widget.folder;
     if (folder == null) {
-      final bank = ProfessionalBankData.questionsFor(widget.topic.title);
+      final bank = QuestionBankLoader.questionsFor(widget.topic.title);
       if (!mounted) return;
       setState(() {
         _quizCount = (bank == null || bank.isEmpty) ? 0 : bank.length;

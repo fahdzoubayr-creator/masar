@@ -1,21 +1,15 @@
 import 'dart:math';
 
-import 'package:masar_app/core/data/french_bank_data.dart';
-import 'package:masar_app/core/data/popular_bank_data.dart';
-import 'package:masar_app/core/data/questions_data.dart';
-import 'package:masar_app/core/data/science_bank_data.dart';
-import 'package:masar_app/core/data/statutory_bank_data.dart';
 import 'package:masar_app/core/models/question.dart';
-import 'package:masar_app/core/services/question_generator.dart';
+import 'package:masar_app/core/services/question_bank_loader.dart';
+import 'package:masar_app/core/services/question_validator.dart';
 
 /// يبني نماذج الاختبارات النهائية العامة (70 سؤالاً لكل اختبار).
 ///
 /// القاعدة المعتمدة: كل اختبار نهائي يتكوّن من 70 سؤالاً بالضبط.
-///  - تُثري كل سؤال بوضعية تلقائية.
-///  - المادة التي لها بنك أسئلة شائعة (PopularBankData) تُفضَّل منه أولاً،
-///    ثم يُسدّد النقص من البنك الثابت (questions_data.dart) ومن البنوك
-///    اليدوية المخصصة (التشريع، الفرنسية، النشاط العلمي) حتى بلوغ 70.
+///  - يأخذ من بنوك JSON المحملة عبر QuestionBankLoader.
 ///  - الاختبار الشامل يخلط أسئلة كل المواد.
+///  - لا تُضاف وضعيات — الأسئلة تبقى كما هي من البنك.
 class ExamQuestionService {
   /// عدد أسئلة أي اختبار نهائي.
   static const int examQuestionCount = 70;
@@ -36,31 +30,24 @@ class ExamQuestionService {
       }
     }
 
-    addAll(PopularBankData.questionsFor(subject) ?? const []);
-    addAll(questionsFor(subject));
-    addAll(_bankForSubject(subject));
+    // 1) بنك الأسئلة الشائعة للمادة.
+    addAll(QuestionBankLoader.questionsFor(subject) ?? const []);
 
-    // إثراء جميع الأسئلة بوضعيات تلقائية.
-    final enriched = QuestionGenerator.enrichWithSituations(pool);
-
-    enriched.shuffle(_random);
-    if (enriched.length > examQuestionCount) {
-      return enriched.take(examQuestionCount).toList();
+    // 2) إذا لم يُعثر على أسئلة بالمفتاح الدقيق، نبحث بمفتاح جزئي.
+    if (pool.isEmpty) {
+      for (final key in QuestionBankLoader.bank.keys) {
+        if (key.contains(subject) || subject.contains(key)) {
+          addAll(QuestionBankLoader.questionsFor(key) ?? const []);
+        }
+      }
     }
-    return enriched;
-  }
 
-  /// البنوك اليدوية المخصصة لمادة [subject].
-  static List<Question> _bankForSubject(String subject) {
-    switch (subject) {
-      case StatutoryBankData.subject:
-        return StatutoryBankData.questions;
-      case FrenchBankData.subject:
-        return FrenchBankData.questions;
-      case ScienceBankData.subject:
-        return ScienceBankData.questions;
+    final validPool = QuestionValidator.filterValid(pool);
+    validPool.shuffle(_random);
+    if (validPool.length > examQuestionCount) {
+      return validPool.take(examQuestionCount).toList();
     }
-    return const [];
+    return validPool;
   }
 
   /// يبني اختباراً نهائياً شاملاً يخلط أسئلة كل المواد (70 سؤالاً).
@@ -74,21 +61,15 @@ class ExamQuestionService {
       }
     }
 
-    for (final questions in PopularBankData.bank.values) {
+    for (final questions in QuestionBankLoader.bank.values) {
       addAll(questions);
     }
-    addAll(questionsBank);
-    addAll(StatutoryBankData.questions);
-    addAll(FrenchBankData.questions);
-    addAll(ScienceBankData.questions);
 
-    // إثراء جميع الأسئلة بوضعيات تلقائية.
-    final enriched = QuestionGenerator.enrichWithSituations(pool);
-
-    enriched.shuffle(_random);
-    if (enriched.length > examQuestionCount) {
-      return enriched.take(examQuestionCount).toList();
+    final validPool = QuestionValidator.filterValid(pool);
+    validPool.shuffle(_random);
+    if (validPool.length > examQuestionCount) {
+      return validPool.take(examQuestionCount).toList();
     }
-    return enriched;
+    return validPool;
   }
 }

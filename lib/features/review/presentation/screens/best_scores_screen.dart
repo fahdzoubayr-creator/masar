@@ -70,11 +70,14 @@ class _BestScoresScreenState extends State<BestScoresScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('أفضل نسبة إنجاز')),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              AppColors.bgDeep.withValues(alpha: 0.80),
+              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: attempts == null || results == null
@@ -229,7 +232,7 @@ class _TopicScoreRowState extends State<_TopicScoreRow> {
         ? AppColors.err
         : (attempt != null && attempt.bestPercentage >= 80)
             ? AppColors.ok
-            : (attempt != null && attempt.bestPercentage >= 50)
+            : (attempt != null && attempt.bestPercentage >= 30)
                 ? AppColors.gold
                 : AppColors.muted;
 
@@ -310,11 +313,11 @@ class _TopicScoreRowState extends State<_TopicScoreRow> {
                             padding: const EdgeInsets.only(top: 6),
                             child: Row(
                               children: [
-                                Icon(pct >= 50
+                                Icon(pct >= 30
                                     ? Icons.check_circle_rounded
                                     : Icons.cancel_rounded,
                                     size: 15,
-                                    color: pct >= 50
+                                    color: pct >= 30
                                         ? AppColors.ok
                                         : AppColors.err),
                                 const SizedBox(width: 8),
@@ -329,7 +332,7 @@ class _TopicScoreRowState extends State<_TopicScoreRow> {
                                     style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w700,
-                                        color: pct >= 50
+                                        color: pct >= 30
                                             ? AppColors.ok
                                             : AppColors.err)),
                               ],

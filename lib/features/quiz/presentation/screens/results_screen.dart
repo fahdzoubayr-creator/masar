@@ -25,7 +25,7 @@ class ResultsScreen extends StatelessWidget {
     if (pct >= 80) {
       title = 'ممتاز! أنت جاهز';
       text = 'مستواك قوي في هذا المحور. حافظ على هذا الإيقاع وانتقل إلى محور جديد.';
-    } else if (pct >= 50) {
+    } else if (pct >= 30) {
       title = 'جيد، تحتاج مراجعة بسيطة';
       text = 'راجع الأسئلة التي أخطأت فيها قبل الانتقال إلى محور آخر.';
     } else {

@@ -42,7 +42,7 @@ class AppTheme {
           ),
         );
     return base.copyWith(
-      scaffoldBackgroundColor: AppColors.bgDeep,
+      scaffoldBackgroundColor: Colors.transparent,
       colorScheme: base.colorScheme.copyWith(
         primary: AppColors.gold,
         secondary: AppColors.goldSoft,
@@ -53,7 +53,8 @@ class AppTheme {
       visualDensity: VisualDensity.compact,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.bgSurface,
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(size: 18, color: AppColors.cream),
