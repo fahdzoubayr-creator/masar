@@ -1,9 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
+import 'tap_sound_stub.dart'
+    if (dart.library.js_interop) 'tap_sound_web.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
 import 'package:masar_app/features/home/presentation/screens/home_dashboard_screen.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_screen.dart';
@@ -21,9 +22,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  /// مشغل نقرة الضغط — ثابت يعيش مع الشاشة ويُعاد استعماله في كل ضغطة.
-  static final AudioPlayer _tapPlayer = AudioPlayer();
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _startBranching() {
     // نقرة ضغط مسموعة فور اللمس ثم الانتقال — الصوت لا يعيق التنقل.
-    _tapPlayer.play(AssetSource('sounds/button_tap.wav'));
+    playTapSound();
     Navigator.of(context).push(fadeRoute(const BranchingScreen()));
   }
 
