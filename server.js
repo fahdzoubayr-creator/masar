@@ -151,6 +151,19 @@ const handler = async (req, res) => {
       new URL(req.url, 'http://localhost').searchParams.get('stage') || ''
     );
     const viewerKey = viewerName.trim().toLowerCase();
+    // عدد الحاضرين الفعلي لكل قاعة من خادم البث — أفضل جهد عند تعذره.
+    let lkCounts = new Map();
+    try {
+      if (lkConfigured()) {
+        const lr = await lkTwirp('ListRooms', {});
+        for (const r of (lr && lr.rooms) || []) {
+          lkCounts.set(
+            String(r.name || ''),
+            Number(r.numParticipants ?? r.num_participants ?? 0)
+          );
+        }
+      }
+    } catch {}
     const roomsList = [];
     for (const [id, room] of roomRegistry) {
       // عزل صارم للمراحل: عند اختيار مرحلة تُعرض قاعات تلك المرحلة فقط،
@@ -162,7 +175,10 @@ const handler = async (req, res) => {
         !!viewerKey &&
         (room.creatorKey === viewerKey ||
           room.coordinators.some((c) => c.key === viewerKey));
-      roomsList.push(roomInfo(id, room, isMember));
+      roomsList.push({
+        ...roomInfo(id, room, isMember),
+        participants: lkCounts.get(lkRoomName(room.name)) ?? 0,
+      });
     }
     roomsList.sort((a, b) => b.createdAt - a.createdAt);
     return json(res, 200, { rooms: roomsList });
@@ -240,30 +256,53 @@ const handler = async (req, res) => {
     });
   }
   if (req.method === 'DELETE' && urlPath.startsWith('/api/rooms/')) {
-    const id = decodeURIComponent(urlPath.slice('/api/rooms/'.length));
+    const key = decodeURIComponent(urlPath.slice('/api/rooms/'.length));
     const queryName =
       new URL(req.url, 'http://localhost').searchParams.get('name') || '';
-    const room = roomRegistry.get(id);
-    if (!room) return json(res, 404, { error: 'القاعة غير موجودة.' });
+    // نقبل المعرّف الداخلي أو رمز الدعوة أو اسم القاعة — العميل لا
+    // يملك بالضرورة المعرّف الداخلي للقاعة.
+    let foundId = null;
+    let room = null;
+    if (roomRegistry.has(key)) {
+      foundId = key;
+      room = roomRegistry.get(key);
+    } else {
+      const upKey = key.trim().toUpperCase();
+      const lowKey = key.trim().toLowerCase();
+      for (const [rid, r] of roomRegistry) {
+        if (
+          (r.inviteCode && r.inviteCode === upKey) ||
+          String(r.name || '')
+            .trim()
+            .toLowerCase() === lowKey
+        ) {
+          foundId = rid;
+          room = r;
+          break;
+        }
+      }
+    }
+    if (!foundId || !room)
+      return json(res, 404, { error: 'القاعة غير موجودة.' });
     if (queryName.trim().toLowerCase() !== room.creatorKey) {
       return json(res, 403, {
         error: 'يمكن للمنشئ حذف القاعة فقط.',
       });
     }
-    roomRegistry.delete(id);
-    const set = rooms.get(id);
+    roomRegistry.delete(foundId);
+    const set = rooms.get(foundId);
     if (set && set.size > 0) {
-      broadcast(id, { type: 'room-deleted' });
+      broadcast(foundId, { type: 'room-deleted' });
       for (const c of [...set]) disconnect(c);
     } else {
-      rooms.delete(id);
-      voiceRooms.delete(id);
-      roomHosts.delete(id);
-      chatLogs.delete(id);
-      chatHistory.delete(id);
+      rooms.delete(foundId);
+      voiceRooms.delete(foundId);
+      roomHosts.delete(foundId);
+      chatLogs.delete(foundId);
+      chatHistory.delete(foundId);
     }
     saveRegistry();
-    console.log(`[room-deleted] ${id} «${room.name}»`);
+    console.log(`[room-deleted] ${foundId} «${room.name}»`);
     return json(res, 200, { ok: true });
   }
 

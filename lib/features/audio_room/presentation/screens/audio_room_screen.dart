@@ -240,6 +240,7 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
           }
         case 'delete':
           await RoomDirectoryService.unpublish(widget.room,
+              name: _controller.roomName,
               creatorName: widget.displayName);
           unawaited(RoomStore.remove(widget.room));
       }

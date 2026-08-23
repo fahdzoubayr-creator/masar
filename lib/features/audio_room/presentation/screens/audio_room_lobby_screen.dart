@@ -35,6 +35,9 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   /// القاعات المنشورة على دليل الخادم — تظهر لكل الأجهزة.
   List<DirectoryRoom> _directoryRooms = [];
+
+  /// تحديث دوري لعدّاد الحاضرين أثناء بقاء اللوبي مفتوحاً.
+  Timer? _countTicker;
   bool _loadingDirectory = false;
 
   @override
@@ -46,6 +49,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   @override
   void dispose() {
+    _countTicker?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -70,6 +74,11 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
       _loading = false;
     });
     unawaited(_refreshDirectory());
+    // نبض دوري لتحديث عدّاد الحاضرين ما دامت اللوبي ظاهرة.
+    _countTicker =
+        Timer.periodic(const Duration(seconds: 20), (_) {
+      if (mounted) unawaited(_refreshDirectory());
+    });
   }
 
   /// يجلب القاعات المنشورة على الخادم لعرضها في قسم «قاعات مفتوحة» —
@@ -219,7 +228,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     final messenger = ScaffoldMessenger.of(context);
     await RoomStore.remove(room.code);
     unawaited(RoomDirectoryService.unpublish(room.code,
-        creatorName: _displayName));
+        name: room.name, creatorName: _displayName));
     if (!mounted) return;
     final rooms = await RoomStore.load();
     setState(() => _rooms = rooms);
@@ -902,15 +911,56 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                         style: AppTheme.displayFont(size: 13.5),
                       ),
                       const SizedBox(height: 3),
-                      Text(
-                        isLocked
-                            ? 'قاعة خاصة — أدخل رمز الدعوة للدخول'
-                            : 'دخول مباشر — بدون رمز',
-                        style: TextStyle(
-                            fontSize: 10.5,
-                            color: isLocked
-                                ? AppColors.goldSoft
-                                : AppColors.muted),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              isLocked
+                                  ? 'قاعة خاصة — أدخل رمز الدعوة للدخول'
+                                  : 'دخول مباشر — بدون رمز',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 10.5,
+                                  color: isLocked
+                                      ? AppColors.goldSoft
+                                      : AppColors.muted),
+                            ),
+                          ),
+                          // شارة الحاضرين الفعليين من خادم البث.
+                          if (entry.value.dir != null &&
+                              entry.value.dir!.participants > 0) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 7, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: (isLocked
+                                        ? AppColors.gold
+                                        : AppColors.ok)
+                                    .withValues(alpha: 0.16),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.groups_rounded,
+                                      size: 12,
+                                      color: isLocked
+                                          ? AppColors.goldSoft
+                                          : AppColors.ok),
+                                  const SizedBox(width: 3),
+                                  Text('الحاضرون ${entry.value.dir!.participants}',
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                          color: isLocked
+                                              ? AppColors.goldSoft
+                                              : AppColors.ok)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),

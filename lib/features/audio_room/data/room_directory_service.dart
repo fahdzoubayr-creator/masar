@@ -12,6 +12,9 @@ class DirectoryRoom {
   final String creatorName;
   final String access; // 'public' أو 'code'
 
+  /// عدد الحاضرين فعلياً الآن (من خادم البث) — 0 عند تعذّر الجلب.
+  final int participants;
+
   /// رمز الدعوة — يظهر فقط لمنشئ القاعة أو منسقيها (يعيده الخادم لهم).
   final String? inviteCode;
 
@@ -20,6 +23,7 @@ class DirectoryRoom {
     required this.name,
     required this.creatorName,
     required this.access,
+    this.participants = 0,
     this.inviteCode,
   });
 
@@ -28,6 +32,7 @@ class DirectoryRoom {
         name: '${json['name'] ?? ''}',
         creatorName: '${json['creatorName'] ?? ''}',
         access: '${json['access'] ?? 'public'}',
+        participants: (json['participants'] as num?)?.toInt() ?? 0,
         inviteCode: json['inviteCode'] as String?,
       );
 }
@@ -42,18 +47,31 @@ class RoomDirectoryService {
       Uri.parse('${AudioRoomConfig.apiBase}$path')
           .replace(queryParameters: query);
 
-  /// حذف قاعة من الدليل — يُستدعى عند التراجع عن إنشاء خاطئ.
-  /// الخادم يشترط اسم المنشئ مطابقاً لإثبات الملكية.
-  static Future<void> unpublish(String code, {String? creatorName}) async {
-    try {
-      await http
-          .delete(_uri('/api/rooms/${Uri.encodeComponent(code)}',
-              (creatorName == null || creatorName.isEmpty)
-                  ? null
-                  : {'name': creatorName}))
-          .timeout(_timeout);
-    } catch (_) {
-      // أفضل جهد — القاعة ستنقضي من تلقاء نفسها بلا نشاط.
+  /// حذف قاعة من الدليل — عند التراجع عن إنشاء أو مغادرة المنسق
+  /// بخيار الحذف. الخادم يشترط اسم المنشئ، ويقبل المعرّف الداخلي أو
+  /// كود الدعوة أو الاسم؛ وإن فشل الكود نعيد المحاولة بالاسم.
+  static Future<void> unpublish(
+    String code, {
+    String? name,
+    String? creatorName,
+  }) async {
+    final query = (creatorName == null || creatorName.isEmpty)
+        ? null
+        : {'name': creatorName};
+    Future<void> del(String key) async {
+      try {
+        await http
+            .delete(_uri('/api/rooms/${Uri.encodeComponent(key)}', query))
+            .timeout(_timeout);
+      } catch (_) {
+        // أفضل جهد — القاعة ستنقضي من تلقاء نفسها بلا نشاط.
+      }
+    }
+
+    await del(code);
+    final n = name?.trim() ?? '';
+    if (n.isNotEmpty && n.toLowerCase() != code.trim().toLowerCase()) {
+      await del(n);
     }
   }
 
