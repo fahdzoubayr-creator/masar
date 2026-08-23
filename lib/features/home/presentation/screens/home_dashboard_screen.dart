@@ -83,8 +83,8 @@ class HomeDashboardScreen extends StatelessWidget {
       builder: _buildMindMaps,
     ),
     _DashboardItem(
-      title: 'المساحة الصوتية',
-      subtitle: 'دروس ومناقشات شفهية',
+      title: 'قاعات الجلسات',
+      subtitle: 'دروس - تفاعل - مناقشات - بين الأساتذة',
       icon: Icons.mic_rounded,
       builder: _buildLiveRoom,
     ),
@@ -298,32 +298,38 @@ class _DashboardCard extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(item.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.tajawal(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.3,
-                                  color: featured
-                                      ? AppColors.goldSoft
-                                      : AppColors.cream)),
-                          const SizedBox(height: 5),
-                          Text(item.subtitle,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.tajawal(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.35,
-                                  color: AppColors.cream.withValues(alpha: 0.75))),
-                        ],
+                      // عرض كامل إلزامي حتى يتمدد عمود النص على كامل البطاقة
+                      // وإلا انكمش على عرض النص وبطل التوسيط بلا أثر.
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(item.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.tajawal(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.3,
+                                    color: featured
+                                        ? AppColors.goldSoft
+                                        : AppColors.cream)),
+                            const SizedBox(height: 5),
+                            Text(item.subtitle,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.tajawal(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.35,
+                                    color:
+                                        AppColors.cream.withValues(alpha: 0.75))),
+                          ],
+                        ),
                       ),
                     ),
                   ),
