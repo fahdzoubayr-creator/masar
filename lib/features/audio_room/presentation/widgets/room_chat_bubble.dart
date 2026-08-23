@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/file_saver.dart';
 import '../../domain/audio_room_models.dart';
 import 'room_palette.dart';
 
@@ -69,7 +70,56 @@ class RoomChatBubble extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 3),
-            Text(
+            if (m.isFile) ...[
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: RoomPalette.bg.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(10),
+                  border:
+                      Border.all(color: RoomPalette.border.withValues(alpha: 0.6)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.insert_drive_file_rounded,
+                        size: 26, color: RoomPalette.green),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            m.fileName ?? 'ملف',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              color: RoomPalette.text,
+                            ),
+                          ),
+                          Text(
+                            _fileSizeLabel(m.fileSize ?? 0),
+                            style: const TextStyle(
+                                fontSize: 10, color: RoomPalette.muted),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    IconButton(
+                      onPressed: () =>
+                          saveReceivedFile(m.fileName ?? 'ملف', m.fileBytes!),
+                      tooltip: 'تنزيل',
+                      visualDensity: VisualDensity.compact,
+                      icon: const Icon(Icons.download_rounded,
+                          size: 20, color: RoomPalette.green),
+                    ),
+                  ],
+                ),
+              ),
+            ] else
+              Text(
               m.text,
               style: const TextStyle(
                 fontSize: 13,
@@ -81,6 +131,12 @@ class RoomChatBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _fileSizeLabel(int bytes) {
+    if (bytes < 1024) return '$bytes ب';
+    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} ك.ب';
+    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} م.ب';
   }
 
   Color _nameColor(String name) {

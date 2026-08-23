@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/features/audio_room/config/audio_room_config.dart';
+import 'package:masar_app/features/audio_room/data/room_directory_service.dart';
 import 'package:masar_app/features/audio_room/data/room_store.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_screen.dart';
 
@@ -30,6 +33,10 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
   bool _loading = true;
   bool _launching = false;
 
+  /// القاعات المنشورة على دليل الخادم — تظهر لكل الأجهزة.
+  List<DirectoryRoom> _directoryRooms = [];
+  bool _loadingDirectory = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +56,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _reloadRooms();
+      unawaited(_refreshDirectory());
     }
   }
 
@@ -61,6 +69,23 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
       _rooms = rooms;
       _loading = false;
     });
+    unawaited(_refreshDirectory());
+  }
+
+  /// يجلب القاعات المنشورة على الخادم لعرضها في قسم «قاعات مفتوحة» —
+  /// بهذا يرى كل جهاز قاعات بقية الأجهزة لا قاعاته فقط.
+  Future<void> _refreshDirectory() async {
+    setState(() => _loadingDirectory = true);
+    try {
+      final rooms = await RoomDirectoryService.fetchRooms();
+      if (!mounted) return;
+      // نعرض الجميع: المفتوحة تدخل بضغطة، والخاصة بقفل ورمز.
+      setState(() => _directoryRooms = rooms);
+    } catch (_) {
+      // الخادم غير متاح الآن — تبقى القوائم المحلية كما هي.
+    } finally {
+      if (mounted) setState(() => _loadingDirectory = false);
+    }
   }
 
   Future<void> _reloadRooms() async {
@@ -75,7 +100,9 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
 
   Future<void> _createRoom() async {
     final nameController = TextEditingController();
-    var isPublic = false;
+    // الافتراضي مفتوحة — فالتجربة أظهر أن المستخدمين يتركون الاختيار كما هو
+    // ثم يتساءلون لماذا لا يرى الآخرون قاعاتهم.
+    var isPublic = true;
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -139,6 +166,20 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     nameController.dispose();
     if (result != true || !mounted) return;
 
+    // نشر القاعة على دليل الخادم أولاً — لنجلب رمز الدعوة الرسمي
+    // للقاعات الخاصة قبل عرضه على المنسق للمشاركة.
+    String? serverInvite;
+    try {
+      serverInvite = await RoomDirectoryService.publish(
+        name: roomName,
+        creatorName: _displayName,
+        isPublic: isPublic,
+      );
+    } catch (_) {
+      // الخادم غير متاح — تعمل القاعة محلياً برمزها المحلي.
+    }
+    if (!mounted) return;
+
     final room = MasarRoom(
       code: isPublic
           ? AudioRoomConfig.generateOpenRoomCode(roomName)
@@ -146,6 +187,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
       name: roomName,
       role: MasarRoomRole.coordinator,
       isPublic: isPublic,
+      inviteCode: serverInvite,
       createdAt: DateTime.now(),
       lastUsedAt: DateTime.now(),
     );
@@ -153,24 +195,43 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     final rooms = await RoomStore.upsert(room);
     if (!mounted) return;
     setState(() => _rooms = rooms);
+    unawaited(_refreshDirectory());
 
     if (isPublic) {
       final enter = await _showOpenRoomCreated(room);
       if (enter == true && mounted) {
         await _enterRoom(room);
+      } else if (enter == false && mounted) {
+        await _undoCreate(room);
       }
     } else {
       final enter = await _showShareCode(room);
       if (enter == true && mounted) {
         await _enterRoom(room, skipCode: true);
+      } else if (enter == false && mounted) {
+        await _undoCreate(room);
       }
     }
+  }
+
+  /// تراجع عن إنشاء قاعة خاطئة: تُحذف محلياً ومن دليل الخادم.
+  Future<void> _undoCreate(MasarRoom room) async {
+    final messenger = ScaffoldMessenger.of(context);
+    await RoomStore.remove(room.code);
+    unawaited(RoomDirectoryService.unpublish(room.code));
+    if (!mounted) return;
+    final rooms = await RoomStore.load();
+    setState(() => _rooms = rooms);
+    unawaited(_refreshDirectory());
+    messenger.showSnackBar(const SnackBar(
+      content: Text('تراجعت عن الإنشاء — اختر النوع الصحيح من جديد.'),
+    ));
   }
 
   Future<bool?> _showOpenRoomCreated(MasarRoom room) {
     return showDialog<bool>(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.bgSurface,
         title: const Text('قاعتك مفتوحة للجميع'),
@@ -213,6 +274,10 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
           ],
         ),
         actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('رجوع'),
+          ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: FilledButton.styleFrom(
@@ -231,7 +296,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
   Future<bool?> _showShareCode(MasarRoom room) {
     return showDialog<bool>(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.bgSurface,
         title: const Text('قاعتك جاهزة'),
@@ -260,7 +325,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                     Border.all(color: AppColors.gold.withValues(alpha: 0.45)),
               ),
               child: SelectableText(
-                room.code,
+                room.shareCode,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontSize: 13.5, color: AppColors.goldSoft, height: 1.5),
@@ -276,10 +341,14 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
         ),
         actions: [
           TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('رجوع'),
+          ),
+          TextButton(
             onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: room.code));
-              if (!context.mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
+              final messenger = ScaffoldMessenger.of(context);
+              await Clipboard.setData(ClipboardData(text: room.shareCode));
+              messenger.showSnackBar(
                 const SnackBar(content: Text('تم نسخ رمز القاعة')),
               );
             },
@@ -423,7 +492,7 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     controller.dispose();
     if (!mounted) return false;
     if (code == null || code.isEmpty) return false;
-    if (code != room.code) {
+    if (code != room.shareCode) {
       _showSnack('رمز غير صحيح — تأكد من الرمز الذي شاركه المنسق.');
       return false;
     }
@@ -470,11 +539,14 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.bgDeep, Color(0xFF0A2A2A)],
+            colors: [
+              AppColors.bgDeep.withValues(alpha: 0.80),
+              const Color(0xFF0A2A2A).withValues(alpha: 0.85),
+            ],
           ),
         ),
         child: SafeArea(
@@ -663,70 +735,152 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
     );
   }
 
-  // ===== القاعات المفتوحة للجميع =====
+  // ===== قسمَي القاعات: بدون رمز / برمز =====
 
   Widget _buildOpenRoomsSection() {
     const fixed = AudioRoomConfig.publicRooms;
     final locallyPublic = _rooms.where((r) => r.isPublic).toList();
-    final merged = <String, ({String name, String icon})>{};
+    final merged =
+        <String, ({String name, String icon, DirectoryRoom? dir})>{};
     for (final room in locallyPublic) {
       merged[room.code] = (
         name: room.name.isEmpty ? AudioRoomConfig.friendlyRoomLabel(room.code) : room.name,
         icon: '🟢',
+        dir: null,
       );
     }
     for (final room in fixed) {
-      merged[room.code] = (name: room.name, icon: room.icon);
+      merged[room.code] = (name: room.name, icon: room.icon, dir: null);
     }
-    if (merged.isEmpty) return const SizedBox.shrink();
+    // قاعات بقية الأجهزة المنشورة على الخادم — المفتوحة تدخل بضغطة،
+    // والخاصة تظهر بقفل وتطلب رمز الدعوة عند الدخول.
+    for (final dir in _directoryRooms) {
+      final code = dir.access == 'public'
+          ? AudioRoomConfig.generateOpenRoomCode(dir.name)
+          : 'dir_${dir.id}';
+      if (!merged.containsKey(code)) {
+        merged[code] =
+            (name: dir.name, icon: dir.access == 'public' ? '🌐' : '🔒', dir: dir);
+      }
+    }
 
-    final entries = merged.entries.toList()
-      ..sort((a, b) => a.value.name.compareTo(b.value.name));
+    // التقسيم: قاعة بلا رمز (دخول مباشر) وقاعة برمز (قفل).
+    final openEntries = <MapEntry<String, ({String name, String icon, DirectoryRoom? dir})>>[];
+    final codedEntries = <MapEntry<String, ({String name, String icon, DirectoryRoom? dir})>>[];
+    for (final entry in merged.entries) {
+      final d = entry.value.dir;
+      (d != null && d.access == 'code' ? codedEntries : openEntries).add(entry);
+    }
+    int byName(MapEntry<String, ({String name, String icon, DirectoryRoom? dir})> a,
+            MapEntry<String, ({String name, String icon, DirectoryRoom? dir})> b) =>
+        a.value.name.compareTo(b.value.name);
+    openEntries.sort(byName);
+    codedEntries.sort(byName);
+
+    if (merged.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // ===== القسم الأول: قاعات بدون رمز =====
         Row(
           children: [
             const Icon(Icons.public_rounded, size: 16, color: AppColors.ok),
             const SizedBox(width: 6),
-            Text('قاعات مفتوحة للجميع',
+            Text('قاعات بدون رمز',
                 style:
                     AppTheme.displayFont(size: 14, weight: FontWeight.w700)),
             const Spacer(),
-            Text('${entries.length}',
+            Text('${openEntries.length}',
+                style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+            IconButton(
+              onPressed: _loadingDirectory ? null : _refreshDirectory,
+              icon: _loadingDirectory
+                  ? const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.refresh_rounded, size: 20),
+              color: AppColors.ok,
+              tooltip: 'تحديث قائمة القاعات',
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (openEntries.isEmpty)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text('لا توجد قاعات مفتوحة حالياً.',
+                style: TextStyle(fontSize: 11.5, color: AppColors.muted)),
+          )
+        else
+          ...openEntries.map((entry) => _buildPublicRoomTile(entry)),
+
+        const SizedBox(height: 18),
+
+        // ===== القسم الثاني: قاعات برمز =====
+        Row(
+          children: [
+            const Icon(Icons.lock_outline_rounded,
+                size: 16, color: AppColors.gold),
+            const SizedBox(width: 6),
+            Text('قاعات برمز',
+                style:
+                    AppTheme.displayFont(size: 14, weight: FontWeight.w700)),
+            const Spacer(),
+            Text('${codedEntries.length}',
                 style: const TextStyle(fontSize: 12, color: AppColors.muted)),
           ],
         ),
         const SizedBox(height: 10),
-        ...entries.map((entry) => _buildPublicRoomTile(entry)),
+        if (codedEntries.isEmpty)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: Text('لا توجد قاعات برمز حالياً.',
+                style: TextStyle(fontSize: 11.5, color: AppColors.muted)),
+          )
+        else
+          ...codedEntries.map((entry) => _buildPublicRoomTile(entry)),
       ],
     );
   }
 
   Widget _buildPublicRoomTile(
-      MapEntry<String, ({String name, String icon})> entry) {
+      MapEntry<String, ({String name, String icon, DirectoryRoom? dir})>
+          entry) {
+    final isLocked = entry.value.dir != null &&
+        entry.value.dir!.access == 'code';
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: AppColors.bgSurface.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(14),
         child: InkWell(
-          onTap: () => _enterPublicRoom(entry.key, entry.value.name),
+          onTap: () {
+            final dir = entry.value.dir;
+            if (isLocked && dir != null) {
+              _joinPrivateFromDirectory(dir);
+            } else {
+              _enterPublicRoom(entry.key, entry.value.name);
+            }
+          },
           borderRadius: BorderRadius.circular(14),
           child: Container(
             padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                  color: AppColors.ok.withValues(alpha: 0.35)),
+                  color: (isLocked ? AppColors.gold : AppColors.ok)
+                      .withValues(alpha: 0.35)),
             ),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.ok.withValues(alpha: 0.18),
+                    color: (isLocked ? AppColors.gold : AppColors.ok)
+                        .withValues(alpha: 0.18),
                     shape: BoxShape.circle,
                   ),
                   child: Text(entry.value.icon,
@@ -743,22 +897,111 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                         style: AppTheme.displayFont(size: 13.5),
                       ),
                       const SizedBox(height: 3),
-                      const Text(
-                        'دخول مباشر — بدون رمز',
-                        style:
-                            TextStyle(fontSize: 10.5, color: AppColors.muted),
+                      Text(
+                        isLocked
+                            ? 'قاعة خاصة — أدخل رمز الدعوة للدخول'
+                            : 'دخول مباشر — بدون رمز',
+                        style: TextStyle(
+                            fontSize: 10.5,
+                            color: isLocked
+                                ? AppColors.goldSoft
+                                : AppColors.muted),
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_left_rounded,
-                    color: AppColors.ok, size: 22),
+                Icon(
+                  isLocked
+                      ? Icons.lock_outline_rounded
+                      : Icons.chevron_left_rounded,
+                  color: isLocked ? AppColors.gold : AppColors.ok,
+                  size: 22,
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  /// دخول قاعة خاصة منشورة على الخادم من جهاز آخر — يطلب رمز الدعوة
+  /// ويتحقق منه عبر الخادم قبل الدخول كحاضر.
+  Future<void> _joinPrivateFromDirectory(DirectoryRoom dir) async {
+    if (_launching) return;
+    final controller = TextEditingController();
+    final code = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.bgSurface,
+        title: Text('دخول قاعة «${dir.name}»'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('هذه قاعة خاصة أنشأها ${dir.creatorName} — أدخل رمز الدعوة:',
+                style:
+                    const TextStyle(fontSize: 12.5, color: AppColors.muted)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              textCapitalization: TextCapitalization.characters,
+              style: const TextStyle(color: AppColors.cream),
+              decoration: InputDecoration(
+                labelText: 'رمز الدعوة',
+                labelStyle: const TextStyle(color: AppColors.muted),
+                filled: true,
+                fillColor: AppColors.cream.withValues(alpha: 0.05),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onSubmitted: (v) => Navigator.of(context).pop(v),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('إلغاء'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(context).pop(controller.text.trim()),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.gold,
+              foregroundColor: AppColors.bgDeep,
+            ),
+            child: const Text('تحقق ودخول'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (code == null || code.isEmpty || !mounted) return;
+
+    try {
+      await RoomDirectoryService.findByCode(code);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnack('رمز غير صالح أو القاعة غير متاحة الآن.');
+      return;
+    }
+    if (!mounted) return;
+
+    final room = MasarRoom(
+      code: 'dir_${dir.id}',
+      name: dir.name,
+      role: MasarRoomRole.member,
+      isPublic: false,
+      createdAt: DateTime.now(),
+      lastUsedAt: DateTime.now(),
+    );
+    final rooms = await RoomStore.upsert(room);
+    if (!mounted) return;
+    setState(() => _rooms = rooms);
+    await _enterRoom(room, skipCode: true);
   }
 
   Widget _buildRoomTile(MasarRoom room) {

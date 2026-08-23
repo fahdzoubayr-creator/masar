@@ -7,6 +7,7 @@ abstract class RoomDataTopics {
   static const String hand = 'masar_hand';
   static const String coordinator = 'masar_coordinator';
   static const String request = 'masar_request';
+  static const String file = 'masar_file';
 }
 
 /// مشارك داخل القاعة الصوتية (صوت وصورة).
@@ -14,6 +15,10 @@ abstract class RoomDataTopics {
 class RoomParticipant {
   /// المعرف الفريد للمشارك (sid في LiveKit / معرف محلي في الوضع التجريبي).
   final String id;
+
+  /// هوية المشارك في LiveKit (identity) — تُستخدم في طلبات الإشراف
+  /// خادمياً (كتم/طرد) لأن RoomService يستهدفها لا الـ sid.
+  final String identity;
 
   final String name;
   final bool isMe;
@@ -41,6 +46,7 @@ class RoomParticipant {
 
   const RoomParticipant({
     required this.id,
+    this.identity = '',
     required this.name,
     this.isMe = false,
     this.micEnabled = false,
@@ -53,6 +59,7 @@ class RoomParticipant {
   });
 
   RoomParticipant copyWith({
+    String? identity,
     String? name,
     bool? isMe,
     bool? micEnabled,
@@ -65,6 +72,7 @@ class RoomParticipant {
   }) {
     return RoomParticipant(
       id: id,
+      identity: identity ?? this.identity,
       name: name ?? this.name,
       isMe: isMe ?? this.isMe,
       micEnabled: micEnabled ?? this.micEnabled,
@@ -91,6 +99,13 @@ class RoomChatMessage {
 
   final DateTime sentAt;
 
+  /// ملف مرفق (نقل الملفات بين المشاركين) — null للرسائل النصية.
+  final Uint8List? fileBytes;
+  final String? fileName;
+  final int? fileSize;
+
+  bool get isFile => fileBytes != null;
+
   const RoomChatMessage({
     required this.id,
     required this.senderId,
@@ -98,5 +113,8 @@ class RoomChatMessage {
     required this.text,
     required this.isMe,
     required this.sentAt,
+    this.fileBytes,
+    this.fileName,
+    this.fileSize,
   });
 }

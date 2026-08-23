@@ -1,9 +1,20 @@
+import 'dart:async';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 
 import 'package:livekit_client/livekit_client.dart' as lk;
 
 import '../../config/audio_room_config.dart';
+import '../../../../core/log/app_log.dart';
 import '../../application/audio_room_controller.dart';
+import '../../data/room_directory_service.dart';
+import '../../data/room_store.dart';
+import '../../data/voice_bytes.dart';
 import '../../domain/audio_room_models.dart';
 import '../widgets/room_chat_bubble.dart';
 import '../widgets/room_palette.dart';
@@ -47,17 +58,101 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
       displayName: widget.displayName,
       isCoordinator: widget.isCoordinator,
     );
+    _inputFocus.addListener(() {
+      if (mounted && _inputFocus.hasFocus && !_chatFull) {
+        setState(() => _chatFull = true);
+      }
+    });
     _controller.connect();
   }
 
   @override
   void dispose() {
+    _recTick?.cancel();
+    _recorder.dispose();
     _controller.disconnect();
     _controller.dispose();
     _input.dispose();
+    _inputFocus.dispose();
     _chatScroll.dispose();
     super.dispose();
   }
+
+  // ===== منطق التسجيل الصوتي =====
+
+  String get _recLabel =>
+      '${(_recSeconds ~/ 60)}:${(_recSeconds % 60).toString().padLeft(2, '0')}';
+
+  Future<void> _toggleRecord() async {
+    if (_recording) {
+      await _finishRecording(send: true);
+      return;
+    }
+    try {
+      // على الويب نتجاوز hasPermission — قد يتعلق الاستعلام رغم أن
+      // إذن المايك ممنوح أصلاً لجلسة الصوت؛ البدء مباشرة أدق.
+      if (!kIsWeb && !await _recorder.hasPermission()) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('امنح إذن المايك ليتم التسجيل.')));
+        return;
+      }
+      final path = kIsWeb
+          ? 'masar_voice.webm'
+          : '${(await getTemporaryDirectory()).path}/masar_voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+      await _recorder.start(
+        const RecordConfig(
+            encoder: kIsWeb ? AudioEncoder.opus : AudioEncoder.aacLc,
+            bitRate: 64000),
+        path: path,
+      );
+      if (!mounted) return;
+      setState(() {
+        _recording = true;
+        _recSeconds = 0;
+      });
+      _recTick = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (!mounted) return;
+        setState(() => _recSeconds++);
+        if (_recSeconds >= 120) _finishRecording(send: true);
+      });
+    } catch (e) {
+      AppLog.error('voice record start failed: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+                Text('تعذر بدء التسجيل: $e'.length > 90 ? 'تعذر بدء التسجيل' : 'تعذر بدء التسجيل: $e')));
+      }
+    }
+  }
+
+  Future<void> _finishRecording({required bool send}) async {
+    _recTick?.cancel();
+    String? source;
+    try {
+      source = await _recorder.stop();
+    } catch (e) {
+      AppLog.error('voice record stop failed: $e');
+    }
+    if (mounted) setState(() => _recording = false);
+    if (!send || source == null || _recSeconds < 1) return;
+    final bytes = await readRecordedBytes(source);
+    if (bytes == null || bytes.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('التسجيل فارغ أو تعذر قراءته — أعد المحاولة.')));
+      }
+      return;
+    }
+    const ext = kIsWeb ? 'webm' : 'm4a';
+    await _controller.sendFile('صوت_$_recSeconds ثانية.$ext', bytes);
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('تم إرسال التسجيل 🎙️')));
+    }
+  }
+
+  Future<void> _cancelRecording() => _finishRecording(send: false);
 
   Future<void> _send() async {
     final text = _input.text;
@@ -71,50 +166,350 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
     });
   }
 
-  Future<void> _leave() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: RoomPalette.surface,
-        title: const Text('مغادرة القاعة؟',
-            style: TextStyle(color: RoomPalette.text)),
-        content: const Text(
-          'ستخرج من القاعة الصوتية.',
-          style: TextStyle(color: RoomPalette.muted),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('البقاء'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('مغادرة',
-                style: TextStyle(color: RoomPalette.red)),
-          ),
-        ],
-      ),
+  bool _showEmoji = false;
+
+  /// وضع «الشات في المقدمة»: يغطي الكاميرا عند لمس الرسائل أو الكتابة،
+  /// ويعود الكاميرا بمكانها بزر الإظهار.
+  bool _chatFull = false;
+  final FocusNode _inputFocus = FocusNode();
+  final Set<String> _knownIds = {};
+  bool _idsInitialized = false;
+  String? _lastLeaderNotice;
+
+  // ===== تسجيل صوتي (كالواتساب — بحد دقيقتين) =====
+  final AudioRecorder _recorder = AudioRecorder();
+  bool _recording = false;
+  int _recSeconds = 0;
+  Timer? _recTick;
+
+  void _appendEmoji(Category? cat, Emoji emoji) {
+    final ctrl = _input;
+    final pos = ctrl.selection.baseOffset < 0
+        ? ctrl.text.length
+        : ctrl.selection.baseOffset;
+    final text = ctrl.text;
+    final next = text.substring(0, pos) + emoji.emoji + text.substring(pos);
+    ctrl.value = TextEditingValue(
+      text: next,
+      selection: TextSelection.collapsed(offset: pos + emoji.emoji.length),
     );
-    if (confirmed != true || !mounted) return;
+    // كما في واتساب: اختيار الإيموجي يغلق اللوحة فوراً.
+    if (_showEmoji) setState(() => _showEmoji = false);
+  }
+
+  /// اختيار ملف وإرساله لكل من في القاعة (حتى 40 ميغابايت).
+  Future<void> _pickAndSendFile() async {
+    if (_controller.isSendingFile) return;
+    if (_controller.isDemo) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content:
+            Text('نقل الملفات متاح في القاعات الحقيقية فقط — ليس الوضع التجريبي.'),
+      ));
+      return;
+    }
+    final res = await FilePicker.platform.pickFiles(withData: true);
+    final f = res?.files.singleOrNull;
+    if (f == null || f.bytes == null) return;
+    if (f.size > 40 * 1024 * 1024) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('حجم الملف يتجاوز 40 ميغابايت — اختر ملفاً أصغر.')));
+      return;
+    }
+    await _controller.sendFile(f.name, f.bytes!);
+  }
+
+  Future<void> _leave() async {
+    // المنسق يواجه قرارات القيادة والقاعة قبل المغادرة.
+    if (_controller.isCoordinator) {
+      final action = await _coordinatorLeaveDialog();
+      if (action == null || !mounted) return; // بقي في القاعة
+      final others =
+          _controller.participants.where((p) => !p.isMe).toList();
+      switch (action) {
+        case 'appoint':
+          if (others.isEmpty) break;
+          final pick = await _pickSuccessor(others);
+          if (pick == null || !mounted) return;
+          await _controller.transferLeadership(pick.identity);
+        case 'keep':
+          // القاعدة: إن لم يعيّن خليفاً انتقلت القيادة للأقدم —
+          // نسلّمها صراحة لأول من انضم (ترتيب الدخول).
+          if (others.isNotEmpty) {
+            await _controller.transferLeadership(others.first.identity);
+          }
+        case 'delete':
+          await RoomDirectoryService.unpublish(widget.room);
+          unawaited(RoomStore.remove(widget.room));
+      }
+    } else {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: RoomPalette.surface,
+          title: const Text('مغادرة القاعة؟',
+              style: TextStyle(color: RoomPalette.text)),
+          content: const Text(
+            'ستخرج من القاعة الصوتية.',
+            style: TextStyle(color: RoomPalette.muted),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('البقاء'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('مغادرة',
+                  style: TextStyle(color: RoomPalette.red)),
+            ),
+          ],
+        ),
+      );
+      if (confirmed != true || !mounted) return;
+    }
     await _controller.disconnect();
     if (!mounted) return;
     Navigator.of(context).maybePop();
   }
 
+  /// خيارات المنسق عند المغادرة.
+  Future<String?> _coordinatorLeaveDialog() {
+    final memberCount = _controller.participants.length - 1;
+    final canDelete = memberCount <= 5;
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: RoomPalette.surface,
+        title: const Text('أنت منسق هذه القاعة',
+            style: TextStyle(color: RoomPalette.text)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'ماذا تفعل قبل مغادرتك؟',
+              style: TextStyle(color: RoomPalette.muted, fontSize: 12.5),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'القاعة فيها $memberCount عضو — الحذف النهائي متاح حتى 5 أعضاء فقط.',
+              style:
+                  const TextStyle(color: RoomPalette.muted, fontSize: 11),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop('appoint'),
+            child: const Text('تعيين منسق جديد…',
+                style: TextStyle(color: RoomPalette.amber)),
+          ),
+          TextButton(
+            onPressed: canDelete
+                ? () => Navigator.of(context).pop('delete')
+                : null,
+            child: Text('حذف القاعة نهائياً',
+                style: TextStyle(
+                    color: canDelete
+                        ? RoomPalette.red
+                        : RoomPalette.muted.withValues(alpha: 0.5))),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop('keep'),
+            style: FilledButton.styleFrom(
+              backgroundColor: RoomPalette.green,
+              foregroundColor: Colors.black,
+            ),
+            child: const Text('إبقاء القاعة والمغادرة'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// اختيار الخليف من الأعضاء الحاضرين.
+  Future<RoomParticipant?> _pickSuccessor(
+    List<RoomParticipant> others,
+  ) {
+    return showDialog<RoomParticipant>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: RoomPalette.surface,
+        title: const Text('من يخلفك منسقاً؟',
+            style: TextStyle(color: RoomPalette.text)),
+        content: SizedBox(
+          width: 260,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: others.length,
+            itemBuilder: (context, i) => ListTile(
+              dense: true,
+              leading: const Icon(Icons.person_rounded,
+                  color: RoomPalette.green, size: 20),
+              title: Text(others[i].name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style:
+                      const TextStyle(color: RoomPalette.text, fontSize: 13)),
+              onTap: () => Navigator.of(context).pop(others[i]),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('إلغاء'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RoomPalette.bg,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: ListenableBuilder(
           listenable: _controller,
           builder: (context, _) {
+            // إشعار قيادة لمرة واحدة (ترقية بعد الرحيل / تسليم صريح).
+            final notice = _controller.leaderNotice;
+            if (notice != null && notice != _lastLeaderNotice) {
+              _lastLeaderNotice = notice;
+              _controller.leaderNotice = null;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(notice),
+                  duration: const Duration(seconds: 4),
+                ));
+              });
+            }
+            // طرد: حوار لا يُغلق إلا بالموافقة ثم خروج من القاعة.
+            final kickNotice = _controller.kickNotice;
+            if (kickNotice != null) {
+              _controller.kickNotice = null;
+              final nav = Navigator.of(context);
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                await showDialog<void>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (ctx) => AlertDialog(
+                    backgroundColor: RoomPalette.surface,
+                    title: const Row(children: [
+                      Icon(Icons.block_rounded, color: RoomPalette.red),
+                      SizedBox(width: 8),
+                      Text('تم إخراجك',
+                          style: TextStyle(color: RoomPalette.text)),
+                    ]),
+                    content: Text(kickNotice,
+                        style: const TextStyle(
+                            color: RoomPalette.muted, fontSize: 13)),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(),
+                        child: const Text('حسناً',
+                            style: TextStyle(color: RoomPalette.text)),
+                      ),
+                    ],
+                  ),
+                );
+                if (nav.canPop()) nav.pop();
+              });
+            }
+            // إشعار انضمام مشارك جديد — يكشف أيضاً إن لم تظهران
+            // في القاعة نفسها (اختلاف الاسم يعني قاعتين مختلفتين).
+            final ids = _controller.participants.map((p) => p.id).toSet();
+            final same = _knownIds.length == ids.length &&
+                ids.every(_knownIds.contains);
+            if (!_idsInitialized) {
+              _idsInitialized = true;
+              _knownIds
+                ..clear()
+                ..addAll(ids);
+            } else if (!same) {
+              final fresh = ids.difference(_knownIds).toList();
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                for (final id in fresh) {
+                  for (final p in _controller.participants) {
+                    if (p.id != id || p.isMe) continue;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('🔔 انضم «${p.name}» إلى القاعة'),
+                      duration: const Duration(seconds: 3),
+                    ));
+                  }
+                }
+              });
+              _knownIds
+                ..clear()
+                ..addAll(ids);
+            }
             return Stack(
               children: [
-                Column(
+                  Column(
                   children: [
                     _buildTopBar(),
                     Expanded(child: _buildBody()),
+                    if (_showEmoji)
+                      SizedBox(
+                        height: 250,
+                        child: EmojiPicker(
+                          onEmojiSelected: _appendEmoji,
+                          config: const Config(
+                            emojiViewConfig: EmojiViewConfig(
+                              columns: 8,
+                              emojiSizeMax: 28.0,
+                              backgroundColor: Color(0xFF10150F),
+                            ),
+                            categoryViewConfig: CategoryViewConfig(
+                              // الوجوه الصفراء أول ما يظهر عند الفتح.
+                              initCategory: Category.SMILEYS,
+                              backgroundColor: Color(0xFF10150F),
+                              indicatorColor: RoomPalette.green,
+                              iconColor: RoomPalette.muted,
+                              iconColorSelected: RoomPalette.green,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (_recording)
+                      Container(
+                        margin:
+                            const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: RoomPalette.red.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                              color: RoomPalette.red.withValues(alpha: 0.5)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.fiber_manual_record_rounded,
+                                size: 14, color: RoomPalette.red),
+                            const SizedBox(width: 8),
+                            Text('$_recLabel / 2:00',
+                                style: const TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: RoomPalette.text)),
+                            const Spacer(),
+                            TextButton.icon(
+                              onPressed: _cancelRecording,
+                              icon: const Icon(Icons.close_rounded,
+                                  size: 16, color: RoomPalette.muted),
+                              label: const Text('إلغاء',
+                                  style: TextStyle(
+                                      fontSize: 11.5,
+                                      color: RoomPalette.muted)),
+                            ),
+                          ],
+                        ),
+                      ),
                     _buildControlBar(),
                   ],
                 ),
@@ -145,7 +540,6 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
 
   Widget _buildTopBar() {
     final count = _controller.participants.length;
-    final coordinatorName = _controller.coordinatorName;
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 10, 8, 10),
       decoration: BoxDecoration(
@@ -156,6 +550,13 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
       ),
       child: Row(
         children: [
+          // زر رجوع صريح — يعود للوبي دون مغادرة صامتة.
+          IconButton(
+            onPressed: _leave,
+            tooltip: 'رجوع إلى اللوبي',
+            icon: const Icon(Icons.arrow_forward_rounded,
+                color: RoomPalette.text, size: 22),
+          ),
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -184,15 +585,21 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
                 const SizedBox(height: 2),
                 Row(
                   children: [
-                    const Icon(Icons.star_rounded,
-                        size: 12, color: RoomPalette.amber),
-                    const SizedBox(width: 4),
+                    if (_controller.isCoordinator) ...[
+                      const Icon(Icons.star_rounded,
+                          size: 13, color: RoomPalette.amber),
+                      const SizedBox(width: 4),
+                    ],
                     Flexible(
                       child: Text(
-                        coordinatorName ?? 'منسق القاعة',
+                        _controller.isCoordinator ? 'منسق' : 'عضو',
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 10.5, color: RoomPalette.muted),
+                        style: TextStyle(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            color: _controller.isCoordinator
+                                ? RoomPalette.amber
+                                : RoomPalette.muted),
                       ),
                     ),
                   ],
@@ -210,8 +617,30 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.people_alt_rounded,
-                    size: 13, color: RoomPalette.muted),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Icon(Icons.people_alt_rounded,
+                        size: 13, color: RoomPalette.muted),
+                    // نقطة حمراء عند وجود طلبات مايك/كاميرا معلّقة.
+                    if (_controller.micRequests.isNotEmpty ||
+                        _controller.cameraRequests.isNotEmpty)
+                      Positioned(
+                        top: -4,
+                        right: -5,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color: RoomPalette.surface, width: 1.2),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
                 const SizedBox(width: 4),
                 Text('$count',
                     style: const TextStyle(
@@ -289,8 +718,16 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
         final wide = constraints.maxWidth >= 760;
         return Column(
           children: [
-            _buildVideoSection(wide: wide),
-            Expanded(child: _buildChat()),
+            if (!_chatFull) _buildVideoSection(wide: wide),
+            Expanded(
+              child: GestureDetector(
+                // لمس منطقة الرسائل يجعلها في المقدمة فوق الكاميرا.
+                onTap: () {
+                  if (!_chatFull) setState(() => _chatFull = true);
+                },
+                child: _buildChat(),
+              ),
+            ),
           ],
         );
       },
@@ -406,6 +843,36 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
     final messages = _controller.messages;
     return Column(
       children: [
+        // مفتاح دائم: إخفاء/إظهار منطقة الكاميرا.
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => setState(() => _chatFull = !_chatFull),
+            child: Container(
+              width: double.infinity,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: RoomPalette.surface.withValues(alpha: 0.7),
+                border: const Border(
+                    bottom: BorderSide(color: RoomPalette.border)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(_chatFull ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                      size: 18, color: RoomPalette.muted),
+                  const SizedBox(width: 4),
+                  Text(
+                      _chatFull ? 'إظهار الكاميرا' : 'إخفاء الكاميرا',
+                      style: const TextStyle(
+                          fontSize: 11.5, color: RoomPalette.muted)),
+                ],
+              ),
+            ),
+          ),
+        ),
         Expanded(
           child: messages.isEmpty
               ? const Center(
@@ -419,7 +886,8 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
               : ListView.builder(
                   controller: _chatScroll,
                   reverse: true,
-                  padding: const EdgeInsets.all(14),
+                  padding:
+                      const EdgeInsets.fromLTRB(14, 14, 14, 30),
                   itemCount: messages.length,
                   itemBuilder: (context, index) => RoomChatBubble(
                     message: messages[messages.length - 1 - index],
@@ -436,80 +904,141 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
     final speaking = _controller.micEnabled && _controller.isMeSpeaking;
     final canMic = _controller.canSpeak;
     final canCam = _controller.canUseCamera;
+    final micBtn = _MicButton(
+      active: _controller.micEnabled,
+      speaking: speaking,
+      enabled: canMic,
+      requesting: !_controller.isCoordinator,
+      requestPending: _controller.myMicRequested,
+      holder: _controller.micHolderName,
+      onPressed: _controller.toggleMic,
+      onRequest: _controller.requestCoordinatorMic,
+    );
+    final camBtn = _CameraButton(
+      active: _controller.cameraEnabled,
+      enabled: canCam,
+      requesting: !_controller.isCoordinator,
+      requestPending: _controller.myCameraRequested,
+      holder: _controller.cameraHolderName,
+      onPressed: _controller.toggleCamera,
+      onRequest: _controller.requestCoordinatorCamera,
+    );
+    // زر الطالب ينبض وهو «بانتظار الموافقة».
+    final Widget micSlot =
+        _controller.myMicRequested ? _Pulsing(child: micBtn) : micBtn;
+    final Widget camSlot =
+        _controller.myCameraRequested ? _Pulsing(child: camBtn) : camBtn;
     return Container(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       decoration: BoxDecoration(
         color: RoomPalette.surface.withValues(alpha: 0.95),
         border: const Border(top: BorderSide(color: RoomPalette.border)),
       ),
-      child: Row(
+      // صفّان للزائر حتى لا يفيض الشريط ويختفي حقل الكتابة؛
+      // والمنسق صف واحد لأن أزراره أقل.
+      child: Column(
         children: [
-          _MicButton(
-            active: _controller.micEnabled,
-            speaking: speaking,
-            enabled: canMic,
-            requesting: !_controller.isCoordinator,
-            requestPending: _controller.myMicRequested,
-            holder: _controller.micHolderName,
-            onPressed: _controller.toggleMic,
-            onRequest: _controller.requestCoordinatorMic,
+          Row(
+            children: [
+              micSlot,
+              const SizedBox(width: 10),
+              camSlot,
+              const SizedBox(width: 10),
+              if (!_controller.isCoordinator) ...[
+                Expanded(
+                  child: _RequestWordButton(
+                    pending: _controller.myMicRequested,
+                    onTap: _controller.requestCoordinatorMic,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _HandButton(
+                  active: _controller.handRaised,
+                  onPressed: _controller.toggleHand,
+                ),
+              ],
+            ],
           ),
-          const SizedBox(width: 10),
-          _CameraButton(
-            active: _controller.cameraEnabled,
-            enabled: canCam,
-            requesting: !_controller.isCoordinator,
-            requestPending: _controller.myCameraRequested,
-            holder: _controller.cameraHolderName,
-            onPressed: _controller.toggleCamera,
-            onRequest: _controller.requestCoordinatorCamera,
-          ),
-          const SizedBox(width: 10),
-          if (!_controller.isCoordinator) ...[
-            _HandButton(
-              active: _controller.handRaised,
-              onPressed: _controller.toggleHand,
-            ),
-            const SizedBox(width: 12),
-          ],
-          Expanded(
-            child: TextField(
-              controller: _input,
-              onSubmitted: (_) => _send(),
-              textInputAction: TextInputAction.send,
-              style: const TextStyle(color: RoomPalette.text, fontSize: 13),
-              decoration: InputDecoration(
-                hintText: 'اكتب رسالة إلى الحاضرين...',
-                hintStyle:
-                    const TextStyle(color: RoomPalette.muted, fontSize: 12),
-                filled: true,
-                fillColor: RoomPalette.bg.withValues(alpha: 0.7),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide:
-                      BorderSide(color: RoomPalette.border.withValues(alpha: 0.5)),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              IconButton(
+                onPressed: _pickAndSendFile,
+                tooltip: 'إرسال ملف (حتى 40 ميغابايت)',
+                visualDensity: VisualDensity.compact,
+                icon: Icon(
+                  Icons.attach_file_rounded,
+                  size: 21,
+                  color: _controller.isSendingFile
+                      ? RoomPalette.amber
+                      : RoomPalette.muted,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide:
-                      BorderSide(color: RoomPalette.border.withValues(alpha: 0.5)),
+              ),
+              IconButton(
+                onPressed: () => setState(() => _showEmoji = !_showEmoji),
+                tooltip: 'الإيموجي',
+                visualDensity: VisualDensity.compact,
+                icon: Icon(
+                  Icons.emoji_emotions_outlined,
+                  size: 22,
+                  color: _showEmoji ? RoomPalette.amber : RoomPalette.muted,
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(22),
-                  borderSide: const BorderSide(color: RoomPalette.green),
+              ),
+              IconButton(
+                onPressed: _toggleRecord,
+                tooltip:
+                    _recording ? 'إرسال التسجيل' : 'تسجيل صوتي (حتى دقيقتين)',
+                visualDensity: VisualDensity.compact,
+                icon: Icon(
+                  _recording ? Icons.send_rounded : Icons.mic_none_rounded,
+                  size: 22,
+                  color: _recording ? RoomPalette.green : RoomPalette.muted,
                 ),
-                suffixIcon: IconButton(
-                  onPressed: _send,
-                  icon: const Icon(
-                    Icons.send_rounded,
-                    color: RoomPalette.green,
-                    size: 19,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: TextField(
+                  controller: _input,
+                  focusNode: _inputFocus,
+                  onSubmitted: (_) => _send(),
+                  textInputAction: TextInputAction.send,
+                  style:
+                      const TextStyle(color: RoomPalette.text, fontSize: 13),
+                  decoration: InputDecoration(
+                    hintText: 'اكتب رسالة إلى الحاضرين...',
+                    hintStyle: const TextStyle(
+                        color: RoomPalette.muted, fontSize: 12),
+                    filled: true,
+                    fillColor: RoomPalette.bg.withValues(alpha: 0.7),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide(
+                          color: RoomPalette.border.withValues(alpha: 0.5)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide: BorderSide(
+                          color: RoomPalette.border.withValues(alpha: 0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(22),
+                      borderSide:
+                          const BorderSide(color: RoomPalette.green),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: _send,
+                      icon: const Icon(
+                        Icons.send_rounded,
+                        color: RoomPalette.green,
+                        size: 19,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ],
       ),
@@ -876,6 +1405,52 @@ class _VideoTile extends StatelessWidget {
   }
 }
 
+class _RequestWordButton extends StatelessWidget {
+  const _RequestWordButton({required this.pending, required this.onTap});
+
+  final bool pending;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = pending ? RoomPalette.green : RoomPalette.amber;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: pending
+              ? RoomPalette.green.withValues(alpha: 0.18)
+              : RoomPalette.bg.withValues(alpha: 0.7),
+          border: Border.all(color: color, width: 2),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              pending ? Icons.hourglass_top_rounded : Icons.record_voice_over,
+              color: color,
+              size: 20,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              pending ? 'بانتظار الموافقة' : 'طلب الكلمة',
+              style: TextStyle(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _HandButton extends StatelessWidget {
   const _HandButton({required this.active, required this.onPressed});
 
@@ -941,7 +1516,14 @@ class _GivePanel extends StatelessWidget {
     final micHolder = controller.micHolderName;
     final camHolder = controller.cameraHolderName;
 
-    final ordered = [...members]..sort((a, b) {
+    // من لديه طلب معلّق يُعرض أعلى في صندوق الطلبات — لا نكرره هنا.
+    final requested = {
+      ...controller.micRequests.map((e) => e.key),
+      ...controller.cameraRequests.map((e) => e.key),
+    };
+    final ordered = [...members]
+      ..removeWhere((p) => requested.contains(p.identity))
+      ..sort((a, b) {
         if (a.handRaised != b.handRaised) return a.handRaised ? -1 : 1;
         if (a.isMe != b.isMe) return a.isMe ? -1 : 1;
         return a.name.compareTo(b.name);
@@ -1002,11 +1584,14 @@ class _GivePanel extends StatelessWidget {
                   icon: Icons.record_voice_over_rounded,
                   text: micHolder != null ? 'الكلمة مع $micHolder' : 'لا أحد يتكلم',
                   color: micHolder != null ? RoomPalette.green : RoomPalette.muted,
+                  // نبض = أحدهم يطلب الكلمة الآن
+                  pulse: controller.micRequests.isNotEmpty,
                 ),
                 _pill(
                   icon: Icons.videocam_rounded,
                   text: camHolder != null ? 'الكاميرا مع $camHolder' : 'لا أحد يبثّ',
                   color: camHolder != null ? RoomPalette.green : RoomPalette.muted,
+                  pulse: controller.cameraRequests.isNotEmpty,
                 ),
               ],
             ),
@@ -1029,26 +1614,31 @@ class _GivePanel extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'طلبات فتح أجهزة المنسق',
+                      'طلبات المشاركين — استجب لمن تريد أن يتكلم',
                       style: TextStyle(
                         fontSize: 10.5,
                         color: RoomPalette.amber,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    if (controller.micRequests.isNotEmpty)
+                    for (final r in controller.micRequests)
                       _requestRow(
                         icon: Icons.record_voice_over_rounded,
-                        label:
-                            'المايك: ${controller.micRequests.join('، ')}',
-                        onOpen: controller.openMyMic,
+                        label: r.value,
+                        onOpen: () {
+                          controller.approveMicRequest(r.key);
+                          // الموافقة أتمّت مهمتها — تُغلق اللوحة فوراً.
+                          onClose();
+                        },
                       ),
-                    if (controller.cameraRequests.isNotEmpty)
+                    for (final r in controller.cameraRequests)
                       _requestRow(
                         icon: Icons.videocam_rounded,
-                        label:
-                            'الكاميرا: ${controller.cameraRequests.join('، ')}',
-                        onOpen: controller.openMyCamera,
+                        label: r.value,
+                        onOpen: () {
+                          controller.approveCameraRequest(r.key);
+                          onClose();
+                        },
                       ),
                   ],
                 ),
@@ -1059,18 +1649,24 @@ class _GivePanel extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(8),
               children: [
-                for (final p in ordered)
-                  _giveRow(
-                    p: p,
-                    enabled: isCoordinator && !p.isMe,
-                    onMute: () => controller.muteParticipant(p.id),
-                    onMic: () => p.hasMic
-                        ? controller.revokeMic(p.id)
-                        : controller.grantMic(p.id),
-                    onCamera: () => p.hasCamera
-                        ? controller.revokeCamera(p.id)
-                        : controller.grantCamera(p.id),
-                  ),
+                 for (final p in ordered)
+                   _giveRow(
+                     p: p,
+                     enabled: isCoordinator && !p.isMe,
+                     onMute: () => controller.muteParticipant(p.id),
+                     onMic: () => p.hasMic
+                         ? controller.revokeMic(p.id)
+                         : controller.grantMic(p.id),
+                     onCamera: () => p.hasCamera
+                         ? controller.revokeCamera(p.id)
+                         : controller.grantCamera(p.id),
+                     onKick: (isCoordinator && !p.isMe && !p.isCoordinator)
+                         ? () => _confirmKick(context, controller, p)
+                         : null,
+                     onLead: (isCoordinator && !p.isMe && !p.isCoordinator)
+                         ? () => _confirmHandover(context, controller, p)
+                         : null,
+                   ),
               ],
             ),
           ),
@@ -1089,12 +1685,121 @@ class _GivePanel extends StatelessWidget {
     );
   }
 
+  /// تأكيد طرد المشارك قبل التنفيذ — مع كتابة السبب (إلزامي).
+  Future<void> _confirmKick(
+    BuildContext context,
+    AudioRoomController controller,
+    RoomParticipant p,
+  ) async {
+    final reasonCtrl = TextEditingController();
+    var canKick = false;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialog) => AlertDialog(
+          backgroundColor: RoomPalette.surface,
+          title: Text('طرد «${p.name}»؟',
+              style: const TextStyle(color: RoomPalette.text)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'سيُخرج من القاعة فوراً ولا يستطيع العودة إلا بدعوة جديدة.',
+                style: TextStyle(color: RoomPalette.muted, fontSize: 12.5),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: reasonCtrl,
+                autofocus: true,
+                maxLines: 2,
+                style: const TextStyle(
+                    color: RoomPalette.text, fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: 'سبب الطرد (إلزامي)',
+                  hintStyle:
+                      const TextStyle(color: RoomPalette.muted, fontSize: 12),
+                  filled: true,
+                  fillColor: RoomPalette.bg.withValues(alpha: 0.6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(color: RoomPalette.border),
+                  ),
+                ),
+                onChanged: (v) =>
+                    setDialog(() => canKick = v.trim().isNotEmpty),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('إلغاء'),
+            ),
+            TextButton(
+              onPressed: canKick ? () => Navigator.of(context).pop(true) : null,
+              child: const Text('طرد', style: TextStyle(color: RoomPalette.red)),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await controller.removeParticipant(p.id, reason: reasonCtrl.text.trim());
+    } catch (e) {
+      final msg = '$e'.replaceFirst(RegExp(r'^Exception:\s*'), '').trim();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('تعذّر الطرد: $msg'),
+          duration: const Duration(seconds: 4),
+        ));
+      }
+    }
+  }
+
+  /// تأكيد تسليم القيادة لعضو — يصبح منسقاً وتتحول أنت إلى عضو.
+  Future<void> _confirmHandover(
+    BuildContext context,
+    AudioRoomController controller,
+    RoomParticipant p,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: RoomPalette.surface,
+        title: const Text('تسليم القيادة؟',
+            style: TextStyle(color: RoomPalette.text)),
+        content: Text(
+          'سيصبح «${p.name}» منسق القاعة ويملك الكلمة والكاميرا، وتبقى أنت عضواً.',
+          style: const TextStyle(color: RoomPalette.muted, fontSize: 12.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child:
+                const Text('سلّم', style: TextStyle(color: RoomPalette.amber)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await controller.transferLeadership(p.identity);
+    onClose();
+  }
+
   Widget _giveRow({
     required RoomParticipant p,
     required bool enabled,
     required VoidCallback onMute,
     required VoidCallback onMic,
     required VoidCallback onCamera,
+    VoidCallback? onKick,
+    VoidCallback? onLead,
   }) {
     final isSelf = p.isMe;
     final nameColor =
@@ -1119,9 +1824,25 @@ class _GivePanel extends StatelessWidget {
             child: Row(
               children: [
                 if (p.handRaised) ...[
-                  const Icon(Icons.back_hand_rounded,
-                      size: 14, color: RoomPalette.amber),
+                  if (enabled)
+                    GestureDetector(
+                      onTap: () =>
+                          controller.approveMicRequest(p.identity),
+                      child: const Tooltip(
+                        message: 'استجاب — منح الكلمة',
+                        child: Icon(Icons.back_hand_rounded,
+                            size: 14, color: RoomPalette.amber),
+                      ),
+                    )
+                  else
+                    const Icon(Icons.back_hand_rounded,
+                        size: 14, color: RoomPalette.amber),
                   const SizedBox(width: 4),
+                ],
+                if (p.isCoordinator) ...[
+                  const Icon(Icons.star_rounded,
+                      size: 14, color: RoomPalette.amber),
+                  const SizedBox(width: 3),
                 ],
                 Flexible(
                   child: Text(
@@ -1170,6 +1891,28 @@ class _GivePanel extends StatelessWidget {
               color: p.hasCamera ? RoomPalette.green : RoomPalette.muted,
             ),
           ),
+          if (onKick != null)
+            IconButton(
+              onPressed: onKick,
+              iconSize: 17,
+              visualDensity: VisualDensity.compact,
+              tooltip: 'طرد من القاعة',
+              icon: const Icon(
+                Icons.person_remove_rounded,
+                color: RoomPalette.red,
+              ),
+            ),
+          if (onLead != null)
+            IconButton(
+              onPressed: onLead,
+              iconSize: 18,
+              visualDensity: VisualDensity.compact,
+              tooltip: 'تسليم القيادة لهذا العضو',
+              icon: const Icon(
+                Icons.workspace_premium_rounded,
+                color: RoomPalette.amber,
+              ),
+            ),
         ],
       ),
     );
@@ -1201,15 +1944,20 @@ class _GivePanel extends StatelessWidget {
               foregroundColor: RoomPalette.green,
               backgroundColor: RoomPalette.green.withValues(alpha: 0.12),
             ),
-            child: const Text('فتح', style: TextStyle(fontSize: 11)),
+          child: const Text('استجاب', style: TextStyle(fontSize: 11)),
           ),
         ],
       ),
     );
   }
 
-  Widget _pill({required IconData icon, required String text, required Color color}) {
-    return Container(
+  Widget _pill({
+    required IconData icon,
+    required String text,
+    required Color color,
+    bool pulse = false,
+  }) {
+    final pill = Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.14),
@@ -1227,6 +1975,57 @@ class _GivePanel extends StatelessWidget {
           ),
         ],
       ),
+    );
+    return pulse ? _Pulsing(color: color, child: pill) : pill;
+  }
+}
+
+/// ينبض بلطف لجذب الانتباه — يُستعمل على ما طُلب من الأجهزة أو على
+/// زر «بانتظار الموافقة» لدى الطالب.
+class _Pulsing extends StatefulWidget {
+  const _Pulsing({required this.child, this.color});
+
+  final Widget child;
+  final Color? color;
+
+  @override
+  State<_Pulsing> createState() => _PulsingState();
+}
+
+class _PulsingState extends State<_Pulsing>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
+        ..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, child) {
+        final t = Curves.easeInOut.transform(_c.value);
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: (widget.color ?? RoomPalette.amber)
+                    .withValues(alpha: 0.45 * t),
+                blurRadius: 14 * t + 4,
+                spreadRadius: 3 * t,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: widget.child,
     );
   }
 }

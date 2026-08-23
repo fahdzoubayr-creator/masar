@@ -15,6 +15,11 @@ class MasarRoom {
   final String name;
   final MasarRoomRole role;
   final bool isPublic;
+
+  /// رمز الدعوة الرسمي من خادم دليل القاعات للقاعات الخاصة —
+  /// هو ما يُشارك خارجياً ويتحقق منه الخادم عند انضمام الأجهزة الأخرى.
+  /// null للمفتوحة أو عندما يكون الخادم غير متاح.
+  final String? inviteCode;
   final DateTime createdAt;
   DateTime lastUsedAt;
 
@@ -23,17 +28,22 @@ class MasarRoom {
     required this.name,
     required this.role,
     this.isPublic = false,
+    this.inviteCode,
     required this.createdAt,
     required this.lastUsedAt,
   });
 
   bool get isCoordinator => role == MasarRoomRole.coordinator;
 
+  /// الرمز الفعلي للمشاركة مع الحاضرين لقاعة خاصة.
+  String get shareCode => inviteCode ?? code;
+
   MasarRoom copyWith({DateTime? lastUsedAt}) => MasarRoom(
         code: code,
         name: name,
         role: role,
         isPublic: isPublic,
+        inviteCode: inviteCode,
         createdAt: createdAt,
         lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       );
@@ -43,6 +53,7 @@ class MasarRoom {
         'name': name,
         'role': role.name,
         'isPublic': isPublic,
+        if (inviteCode != null) 'inviteCode': inviteCode,
         'createdAt': createdAt.toIso8601String(),
         'lastUsedAt': lastUsedAt.toIso8601String(),
       };
@@ -54,6 +65,7 @@ class MasarRoom {
             ? MasarRoomRole.coordinator
             : MasarRoomRole.member,
         isPublic: json['isPublic'] == true,
+        inviteCode: json['inviteCode'] as String?,
         createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
             DateTime.now(),
         lastUsedAt: DateTime.tryParse(json['lastUsedAt'] as String? ?? '') ??

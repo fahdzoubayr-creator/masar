@@ -18,31 +18,37 @@ class PublicRoom {
 
 /// إعدادات القاعة (صوت وصورة) عبر LiveKit.
 ///
-/// تعمل الجلسات على خادم LiveKit (Cloud أو ذاتي الاستضافة) للصوت والفيديو.
-/// طالما كانت بيانات الاتصال فارغة يعمل التطبيق في **وضع تجريبي** يحاكي
-/// الحاضرين والشات والفيديو محلياً حتى تدخل بياناتك من لوحة
-/// https://cloud.livekit.io/projects → Settings → Keys:
-///  - `livekitUrl` (يبدأ بـ `wss://...livekit.cloud`)
-///  - `apiKey` (مفتاح API)
-///  - `apiSecret` (السر الذي يولّد التوكن)
+/// تعمل الجلسات على خادم LiveKit (ذاتي الاستضافة عبر Docker) للصوت والفيديو.
+/// **لا يحمل التطبيق أي سرّ إطلاقاً**: يطلب توكنه من خدمة التوكنات في
+/// الخادم الخفي ([tokenEndpoint])، والخادم هو من يوقّعه بمفاتيح الإنتاج
+/// المخزنة في ملف البيئة `.env` لديه.
+///
+/// طالما كان [tokenEndpoint] فارغاً يعمل التطبيق في **وضع تجريبي** يحاكي
+/// الحاضرين والشات والفيديو محلياً.
 class AudioRoomConfig {
   AudioRoomConfig._();
 
-  // ===== بيانات LiveKit — املأها من لوحة LiveKit Cloud للتفعيل =====
+  // ===== رابط خدمة التوكنات في الخادم الخفي =====
 
-  /// رابط خادم LiveKit (WebSocket) مثل `wss://masar-xxxx.livekit.cloud`.
-  static const String livekitUrl = '';
+  /// نقطة النهاية التي تصدر توكنات الانضمام، مثال:
+  /// `https://api.ehtiraf-app.com/api/livekit/token`
+  ///
+  /// اتركها فارغة لتشغيل الوضع التجريبي المحلي.
+  ///
+  /// ⚙️ حالياً: خادم تجربة محلي على شبكة المنزل (نفس الواي فاي) —
+  /// عند الانتقال للإنتاج استبدلها برابط الخادم الرسمي.
+  static const String tokenEndpoint =
+      'http://192.168.0.129:8123/api/livekit/token';
 
-  /// مفتاح API من لوحة LiveKit Cloud.
-  static const String apiKey = '';
+  /// عنوان خادم دليل القاعات — يجعل قاعات كل جهاز مرئية لبقية الأجهزة
+  /// في قسم «قاعات مفتوحة» بدل الاكتفاء بالتخزين المحلي.
+  ///
+  /// ⚙️ حالياً: الخادم المحلي للتجربة — عند الإنتاج استبدله برابط الخادم الرسمي.
+  static const String apiBase = 'http://192.168.0.129:8123';
 
-  /// سر API (يُولّد منه التوكن محلياً).
-  static const String apiSecret = '';
-
-  /// هل بيانات LiveKit مكتملة؟ عندها نتصل بالخادم فعلياً، وإلا نعمل
+  /// هل خدمة التوكنات مضبوطة؟ عندها نتصل بخادم البث فعلياً، وإلا نعمل
   /// في الوضع التجريبي (محاكاة داخلية دون إنترنت).
-  static bool get isConfigured =>
-      livekitUrl.isNotEmpty && apiKey.isNotEmpty && apiSecret.isNotEmpty;
+  static bool get isConfigured => tokenEndpoint.isNotEmpty;
 
   /// اسم قاعة LiveKit — يُسبق ببادئة ثابتة ويُطهَّر ليكون صالحاً.
   static String liveKitRoomName(String room) => '$roomPrefix${sanitizeRoom(room)}';

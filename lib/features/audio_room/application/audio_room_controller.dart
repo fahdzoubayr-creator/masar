@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart' as jwt;
+import 'package:http/http.dart' as http;
 import 'package:livekit_client/livekit_client.dart' as lk;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/log/app_log.dart';
 import '../config/audio_room_config.dart';
 import '../data/demo_link_stub.dart'
     if (dart.library.js_interop) '../data/demo_link_web.dart';
+import '../data/room_keep_alive_stub.dart'
+    if (dart.library.io) '../data/room_keep_alive_io.dart';
 import '../domain/audio_room_models.dart';
 
 /// حالة الاتصال بالقاعة.
@@ -25,14 +28,18 @@ class AudioRoomController extends ChangeNotifier {
   AudioRoomController({
     required this.roomName,
     required this.displayName,
-    required this.isCoordinator,
-  });
+    required bool isCoordinator,
+  }) : _isCoordinator = isCoordinator;
 
   /// رمز القاعة (اسم الغرفة في LiveKit).
   final String roomName;
 
   final String displayName;
-  final bool isCoordinator;
+
+  /// الدور قابل للتغيير: أول من يدخل قاعة مفتوحة فارغة يُرقّى منسقاً
+  /// تلقائياً حتى لو دخلها كزائر (قاعدة «أول من يدخل يدير»).
+  bool _isCoordinator;
+  bool get isCoordinator => _isCoordinator;
 
   AudioRoomStatus _status = AudioRoomStatus.disconnected;
   AudioRoomStatus get status => _status;
@@ -54,6 +61,10 @@ class AudioRoomController extends ChangeNotifier {
   final Set<String> _handRaised = {};
   final Set<String> _speaking = {};
   final Set<String> _muted = {};
+
+  /// بيانات جلستنا الصادرة من الخادم — التوكن يُرفق مع طلبات الإشراف
+  /// (كتم/طرد) ليثبت الخادم أن الطالب منسق.
+  String? _sessionToken;
 
   bool _micEnabled = false;
   bool get micEnabled => _micEnabled;
@@ -96,16 +107,30 @@ class AudioRoomController extends ChangeNotifier {
   bool get handRaised => _handRaisedLocal;
 
   /// طلبات الحاضرين فتحَ مايك/كاميرا المنسق (أسماء مقدمي الطلبات).
-  final Set<String> _micRequests = {};
-  final Set<String> _cameraRequests = {};
-  List<String> get micRequests => List.unmodifiable(_micRequests);
-  List<String> get cameraRequests => List.unmodifiable(_cameraRequests);
+  /// طلبات المايك/الكاميرا الجارية: identity الطالب ← اسمه للعرض.
+  /// المفتاح هو الهوية (لا الاسم) حتى لا تتداخل طلبات المتشابهين،
+  /// ولا يبدو طلب أحدهم وكأنه من الجميع.
+  final Map<String, String> _micRequests = {};
+  final Map<String, String> _cameraRequests = {};
+  List<MapEntry<String, String>> get micRequests =>
+      List.unmodifiable(_micRequests.entries);
+  List<MapEntry<String, String>> get cameraRequests =>
+      List.unmodifiable(_cameraRequests.entries);
 
   /// هل طلب الزائر فتح مايك/كاميرا المنسق؟ (يُلغى «بانتظار» عند التلبية).
   bool _myMicRequested = false;
   bool _myCameraRequested = false;
   bool get myMicRequested => _myMicRequested;
   bool get myCameraRequested => _myCameraRequested;
+
+  /// إشعار قيادة يُعرض مرة واحدة في الواجهة (ترقية/تسليم).
+  String? leaderNotice;
+
+  /// إشعار طرد موجّه للعضو المطرود — تعرضه الشاشة مرة واحدة.
+  String? kickNotice;
+
+  /// لحظة انضمامي — تُستخدم في قاعدة «الأقدم يقود» بعد رحيل المنسق.
+  int _joinedAtMs = 0;
 
   List<RoomParticipant> get participants {
     final list = _participants.values.toList()
@@ -155,43 +180,116 @@ class AudioRoomController extends ChangeNotifier {
       await Future<void>.delayed(const Duration(milliseconds: 800));
       if (_status != AudioRoomStatus.connecting) return;
       _startDemo();
+      await _claimCoordinatorIfFirst();
       _applyDefaultPermissions();
       _status = AudioRoomStatus.connected;
       notifyListeners();
       _startDemoSync();
-      if (isCoordinator) {
-        await _setCamera(true);
-      }
+      await _openCoordinatorDevices();
       return;
     }
 
     try {
-      final token = _buildToken();
+      // التوكن يصدره الخادم الخفي — لا توقيع ولا أسرار داخل التطبيق.
+      final session = await _fetchSession();
       final room = lk.Room(
         roomOptions:
             const lk.RoomOptions(adaptiveStream: true, dynacast: true),
       );
-      await room.connect(AudioRoomConfig.livekitUrl, token);
+      await room.connect(session.url, session.token);
       _room = room;
+      _sessionToken = session.token;
+      _joinedAtMs = DateTime.now().millisecondsSinceEpoch;
+      await _claimCoordinatorIfFirst(room);
+      await _loadPersistedChat();
       _wireRoomEvents();
       _applyDefaultPermissions();
       _status = AudioRoomStatus.connected;
       notifyListeners();
-      if (isCoordinator) {
-        await _setCamera(true);
-      }
+      // أندرويد: خدمة الواجهة الأمامية تُبقي الصوت حياً عند إغلاق الشاشة.
+      await RoomKeepAlive.start(roomName);
+      await _openCoordinatorDevices();
     } catch (e) {
       _status = AudioRoomStatus.disconnected;
-      _error = e.toString();
+      _error = e is RoomSessionException ? e.message : e.toString();
       AppLog.error('LiveKit connect failed: $e');
     }
     notifyListeners();
+  }
+
+  /// قاعدة «أول من يدخل يدير»: من دخل قاعة مفتوحة لا يوجد فيها أحد
+  /// قبلها يصبح منسقها تلقائياً ولو انضم بصفته زائراً.
+  Future<void> _claimCoordinatorIfFirst([lk.Room? liveRoom]) async {
+    if (_isCoordinator) return;
+    final empty = liveRoom == null
+        ? true
+        : liveRoom.remoteParticipants.isEmpty;
+    if (empty) {
+      _isCoordinator = true;
+      AppLog.info('promoted to coordinator: first in an empty room');
+    }
+  }
+
+  /// المنسق يدخل ومايكه وكاميرته مفتوحان — ويغلقها متى شاء بالأزرار.
+  Future<void> _openCoordinatorDevices() async {
+    if (!_isCoordinator) return;
+    try {
+      if (!_micEnabled) await _setMic(true);
+    } catch (_) {}
+    try {
+      if (!_cameraEnabled && !_cameraFailed) await _setCamera(true);
+    } catch (_) {}
+    notifyListeners();
+  }
+
+  /// يطلب جلسة انضمام (رابط + توكن) من خدمة التوكنات في الخادم.
+  Future<_RoomSession> _fetchSession() async {
+    const endpoint = AudioRoomConfig.tokenEndpoint;
+    try {
+      final response = await http
+          .post(
+            Uri.parse(endpoint),
+            headers: const {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'room': roomName,
+              'name': displayName,
+              'role': isCoordinator ? 'coordinator' : 'member',
+            }),
+          )
+          .timeout(const Duration(seconds: 15));
+      if (response.statusCode == 200) {
+        final map = jsonDecode(response.body) as Map<String, dynamic>;
+        final url = (map['url'] as String?) ?? '';
+        final token = (map['token'] as String?) ?? '';
+        if (url.isEmpty || token.isEmpty) {
+          throw const RoomSessionException('استجابة غير مكتملة من خدمة القاعات');
+        }
+        return _RoomSession(
+          url: url,
+          token: token,
+          identity: (map['identity'] as String?) ?? displayName,
+        );
+      }
+      String message = 'خدمة القاعات غير متاحة (${response.statusCode})';
+      try {
+        final err = jsonDecode(response.body);
+        if (err is Map && err['error'] is String) message = err['error'] as String;
+      } catch (_) {}
+      throw RoomSessionException(message);
+    } on RoomSessionException {
+      rethrow;
+    } on TimeoutException {
+      throw const RoomSessionException('انتهت مهلة الاتصال بخدمة القاعات');
+    } catch (_) {
+      throw const RoomSessionException('تعذر الوصول إلى خدمة القاعات — تحقق من الإنترنت');
+    }
   }
 
   Future<void> disconnect() async {
     _status = AudioRoomStatus.disconnected;
     _micHolderSid = null;
     _cameraHolderSid = null;
+    await RoomKeepAlive.stop();
     _publishDemoLeave();
     DemoLink.unsubscribe();
     await _stopDemoDevices();
@@ -209,31 +307,6 @@ class AudioRoomController extends ChangeNotifier {
     _demoMicTrack = null;
   }
 
-  /// يولّد توكن الدخول HS256 من مفتاح API وسره — بنفس صيغة LiveKit.
-  String _buildToken() {
-    final now = DateTime.now().toUtc();
-    final payload = <String, Object?>{
-      'exp': now.add(const Duration(hours: 6)).millisecondsSinceEpoch ~/ 1000,
-      'nbf': now.millisecondsSinceEpoch ~/ 1000,
-      'iat': now.millisecondsSinceEpoch ~/ 1000,
-      'iss': AudioRoomConfig.apiKey,
-      'sub': '${displayName}_${now.millisecondsSinceEpoch}',
-      'name': displayName,
-      'metadata': jsonEncode({'role': isCoordinator ? 'coordinator' : 'member'}),
-      'video': {
-        'room': AudioRoomConfig.liveKitRoomName(roomName),
-        'roomJoin': true,
-        'canPublish': true,
-        'canSubscribe': true,
-        'canPublishData': true,
-      },
-    };
-    return jwt.JWT(payload, header: const {'alg': 'HS256', 'typ': 'JWT'})
-        .sign(jwt.SecretKey(AudioRoomConfig.apiSecret),
-            algorithm: jwt.JWTAlgorithm.HS256)
-        .toString();
-  }
-
   // ===== أحداث LiveKit =====
 
   void _wireRoomEvents() {
@@ -248,12 +321,23 @@ class AudioRoomController extends ChangeNotifier {
         // وصول منضم جديد → نخبره من يملك الكلمة والكاميرا.
         if (isCoordinator) _broadcastPermissions();
       })
-      ..on<lk.ParticipantDisconnectedEvent>((event) {
+      ..on<lk.ParticipantDisconnectedEvent>((event) async {
         final sid = event.participant.sid;
         _participants.remove(sid);
         _handRaised.remove(sid);
         _speaking.remove(sid);
         _muted.remove(sid);
+        // قاعدة «الأقدم يقود»: إن رحل المنسق وبقيت أنت وآخرون،
+        // يدّعي كل بادٍ القيادة بعد مهلة عشوائية — وأول إعلان يعتمد.
+        if (!_isCoordinator &&
+            _status == AudioRoomStatus.connected &&
+            _room != null &&
+            !_participants.values.any((p) => p.isCoordinator)) {
+          Future<void>.delayed(
+            Duration(milliseconds: 300 + _joinedAtMs % 700),
+            () => claimLeadershipAfterDropout(),
+          );
+        }
         notifyListeners();
       })
       ..on<lk.ActiveSpeakersChangedEvent>((event) {
@@ -312,6 +396,7 @@ class AudioRoomController extends ChangeNotifier {
         : p.isMicrophoneEnabled();
     _participants[p.sid] = RoomParticipant(
       id: p.sid,
+      identity: p.identity,
       name: p.name.isNotEmpty ? p.name : p.identity,
       isMe: p.sid == _room?.localParticipant?.sid,
       micEnabled: micOn,
@@ -355,6 +440,67 @@ class AudioRoomController extends ChangeNotifier {
     }
   }
 
+  // ===== نقل الملفات بين المشاركين (حتى 40MB عبر قناة البيانات) =====
+
+  final Map<String, _IncomingFile> _incomingFiles = {};
+  bool _fileSending = false;
+
+  bool get isSendingFile => _fileSending;
+
+  /// يرسل ملفاً لكل من في القاعة مقسماً إلى قطع base64 عبر قناة البيانات.
+  Future<void> sendFile(String name, Uint8List bytes) async {
+    if (_fileSending || isDemo) return;
+    if (bytes.lengthInBytes > 40 * 1024 * 1024) return;
+    _fileSending = true;
+    notifyListeners();
+    try {
+      const chunkRaw = 12000;
+      final id = 'f${DateTime.now().microsecondsSinceEpoch}';
+      final n = (bytes.lengthInBytes / chunkRaw).ceil();
+      await _publish(
+        RoomDataTopics.file,
+        utf8.encode(jsonEncode({
+          'a': 'meta',
+          'id': id,
+          'name': name,
+          'size': bytes.lengthInBytes,
+          'n': n,
+          'sender': displayName,
+        })),
+      );
+      for (var i = 0; i < n; i++) {
+        final start = i * chunkRaw;
+        final end =
+            (start + chunkRaw) < bytes.lengthInBytes ? (start + chunkRaw) : bytes.lengthInBytes;
+        await _publish(
+          RoomDataTopics.file,
+          utf8.encode(jsonEncode({
+            'a': 'c',
+            'id': id,
+            'i': i,
+            'd': base64Encode(bytes.sublist(start, end)),
+          })),
+        );
+      }
+      await _publish(RoomDataTopics.file,
+          utf8.encode(jsonEncode({'a': 'done', 'id': id})));
+      _messages.add(RoomChatMessage(
+        id: 'lf_$id',
+        senderId: _meSid,
+        senderName: displayName,
+        text: '',
+        isMe: true,
+        sentAt: DateTime.now(),
+        fileBytes: bytes,
+        fileName: name,
+        fileSize: bytes.lengthInBytes,
+      ));
+    } finally {
+      _fileSending = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> _onDataReceived(lk.DataReceivedEvent event) async {
     final sid = event.participant?.sid;
     switch (event.topic) {
@@ -378,10 +524,50 @@ class AudioRoomController extends ChangeNotifier {
             if (target == me) {
               await _setMic(false);
               _handRaisedLocal = false;
-              _refreshHand('self');
+              _refreshSelf();
             } else if (target != null) {
               _muted.add(target);
               _refreshMute(target);
+            }
+          case 'approveMic':
+            // استجابة المنسق لطلب كلمة: الطالب يملك الكلمة حصرياً.
+            if (target != null) {
+              _micRequests.remove(target);
+              final tSid = _sidForIdentity(target);
+              if (tSid != null) {
+                _handRaised.remove(tSid);
+                _refreshHand(tSid);
+                _muted.remove(tSid);
+                _micHolderSid = tSid;
+              }
+              if (target == _myIdentity || target == me) {
+                _myMicRequested = false;
+                _handRaisedLocal = false;
+                await _setMic(true);
+              } else if (!isCoordinator && me != null) {
+                await _setMic(false);
+              }
+            }
+          case 'approveCamera':
+            if (target != null) {
+              _cameraRequests.remove(target);
+              final tSid = _sidForIdentity(target);
+              if (tSid != null) {
+                _handRaised.remove(tSid);
+                _refreshHand(tSid);
+                _cameraHolderSid = tSid;
+              }
+              if (target == _myIdentity || target == me) {
+                _myCameraRequested = false;
+                _handRaisedLocal = false;
+                await _setCamera(true);
+              } else if (!isCoordinator &&
+                  me != null &&
+                  me != tSid &&
+                  _cameraEnabled) {
+                // قاعدة القاعة: كاميرا واحدة فقط — من ليس صاحبها ينطفئ.
+                await _setCamera(false);
+              }
             }
           case 'grant':
             if (target != null) {
@@ -414,24 +600,103 @@ class AudioRoomController extends ChangeNotifier {
           case 'cameraFulfilled':
             _myCameraRequested = false;
             _refreshSelf();
+          case 'transfer':
+            // تسليم القيادة صراحة من المنسق إلى عضو محدد.
+            if (target != null &&
+                (target == _myIdentity || target == me) &&
+                !_isCoordinator) {
+              _isCoordinator = true;
+              leaderNotice = 'أصبحت منسق هذه القاعة 🎖️';
+              await _openCoordinatorDevices();
+              _broadcastPermissions();
+            }
+          case 'claim':
+            // أحدهم أعلن قيادته بعد رحيل المنسق — إن كنت مُدّعياً
+            // أيضاً فأنتذعن لأول إعلان وصلني.
+            if (_isCoordinator && target == null) {
+              _isCoordinator = false;
+              leaderNotice = null;
+            }
+          case 'kicked':
+            // أمر طرد موجّه إليّ — أعرض السبب ثم أغادر القاعة.
+            if (target == _myIdentity || target == me) {
+              final r = (map?['reason'] as String?)?.trim() ?? '';
+              kickNotice = r.isEmpty
+                  ? 'تم إخراجك من القاعة'
+                  : 'تم إخراجك من القاعة\nالسبب: $r';
+            }
         }
         _updateTokens();
         notifyListeners();
       case RoomDataTopics.request:
         final map = _decodeJson(event.data);
         final action = map?['action'];
-        final requester = _nameForSid(sid) ??
-            event.participant?.identity ??
-            'مشارك';
+        // المفتاح هو هوية الطالب — والاسم للعرض فقط.
+        final requesterId = '${map?['id'] ?? event.participant?.identity ?? sid ?? 'مجهول'}';
+        final requesterName = '${map?['name'] ?? _nameForSid(sid) ?? event.participant?.identity ?? 'مشارك'}';
         switch (action) {
           case 'requestMic':
-            _micRequests.add(requester);
+            _micRequests[requesterId] = requesterName;
           case 'requestCamera':
-            _cameraRequests.add(requester);
+            _cameraRequests[requesterId] = requesterName;
           case 'cancelMic':
-            _micRequests.remove(requester);
+            _micRequests.remove(requesterId);
           case 'cancelCamera':
-            _cameraRequests.remove(requester);
+            _cameraRequests.remove(requesterId);
+        }
+        notifyListeners();
+      case RoomDataTopics.file:
+        // إعادة تجميع الملفات الواردة قطعةً قطعة.
+        final map = _decodeJson(event.data);
+        if (map == null) return;
+        final action = '${map['a']}';
+        final id = '${map['id'] ?? ''}';
+        if (id.isEmpty) return;
+        switch (action) {
+          case 'meta':
+            final size = (map['size'] as num?)?.toInt() ?? 0;
+            if (size > 45 * 1024 * 1024) return;
+            _incomingFiles[id] = _IncomingFile(
+              name: '${map['name'] ?? 'ملف'}',
+              size: size,
+              chunks: (map['n'] as num?)?.toInt() ?? 0,
+              sender:
+                  '${map['sender'] ?? _nameForSid(sid) ?? event.participant?.identity ?? 'مشارك'}',
+            );
+          case 'c':
+            final f = _incomingFiles[id];
+            if (f == null) return;
+            final i = (map['i'] as num?)?.toInt() ?? -1;
+            if (i < 0 || i >= f.chunks) return;
+            f.parts[i] = '${map['d']}';
+            f.got++;
+          case 'done':
+            final f = _incomingFiles[id];
+            if (f == null) return;
+            _incomingFiles.remove(id);
+            if (f.got < f.chunks || f.chunks <= 0) return;
+            final out = BytesBuilder();
+            var ok = true;
+            for (final part in f.parts) {
+              if (part == null) {
+                ok = false;
+                break;
+              }
+              out.add(base64Decode(part));
+            }
+            if (!ok) return;
+            final data = out.takeBytes();
+            _messages.add(RoomChatMessage(
+              id: 'rf_$id',
+              senderId: sid ?? 'remote',
+              senderName: f.sender,
+              text: '',
+              isMe: false,
+              sentAt: DateTime.now(),
+              fileBytes: data,
+              fileName: f.name,
+              fileSize: f.size,
+            ));
         }
         notifyListeners();
       case RoomDataTopics.chat:
@@ -447,12 +712,23 @@ class AudioRoomController extends ChangeNotifier {
           sentAt: DateTime.now(),
         ));
         notifyListeners();
+        unawaited(_persistChat());
     }
   }
 
   String? _nameForSid(String? sid) {
     if (sid == null) return null;
     return _participants[sid]?.name;
+  }
+
+  /// يجد sid المشارك من هويته (identity) — العكس يلزم لأن رسائل
+  /// الإشراف تتنقل بالهوية المستقرة بينما الواجهة تعمل بـsid.
+  String? _sidForIdentity(String? identity) {
+    if (identity == null || identity.isEmpty) return null;
+    for (final e in _participants.entries) {
+      if (e.value.identity == identity) return e.key;
+    }
+    return null;
   }
 
   Map<String, dynamic>? _decodeJson(List<int> data) {
@@ -582,25 +858,100 @@ class AudioRoomController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// (الزائر) يطلب/يلغي طلب فتح مايك المنسق.
+  /// (الزائر) يطلب/يلغي طلب الكلمة — يُرفق معه هوية الطالب واسمه
+  /// حتى يعرض المنسق الطلب باسم صاحبه ويستجيب له تحديداً.
   Future<void> requestCoordinatorMic() async {
     _myMicRequested = !_myMicRequested;
     _publish(
         RoomDataTopics.request,
-        utf8.encode(
-            jsonEncode({'action': _myMicRequested ? 'requestMic' : 'cancelMic'})));
+        utf8.encode(jsonEncode({
+          'action': _myMicRequested ? 'requestMic' : 'cancelMic',
+          'id': isDemo ? displayName : _myIdentity,
+          'name': displayName,
+        })));
     _publishDemoSnapshot();
     notifyListeners();
   }
 
-  /// (الزائر) يطلب/يلغي طلب فتح كاميرا المنسق.
+  /// (الزائر) يطلب/يلغي طلب الكاميرا — فور الطلب تشتغل كاميرته عنده
+  /// (معاينة ذاتية)، وعند موافقة المنسق تصبح البثّ الرسمي الوحيد.
   Future<void> requestCoordinatorCamera() async {
     _myCameraRequested = !_myCameraRequested;
+    if (!isDemo) {
+      try {
+        await _setCamera(_myCameraRequested);
+      } catch (_) {}
+    }
     _publish(
         RoomDataTopics.request,
-        utf8.encode(jsonEncode(
-            {'action': _myCameraRequested ? 'requestCamera' : 'cancelCamera'})));
+        utf8.encode(jsonEncode({
+          'action': _myCameraRequested ? 'requestCamera' : 'cancelCamera',
+          'id': isDemo ? displayName : _myIdentity,
+          'name': displayName,
+        })));
     _publishDemoSnapshot();
+    notifyListeners();
+  }
+
+  /// هوية المستخدم المحلي في القاعة الحية.
+  String get _myIdentity => _room?.localParticipant?.identity ?? '';
+
+  /// (منسق) يسلّم القيادة لعضو محدد دون مغادرة القاعة.
+  Future<void> transferLeadership(String identity) async {
+    if (!isCoordinator || isDemo) return;
+    if (identity.isEmpty || identity == _myIdentity) return;
+    _publish(RoomDataTopics.coordinator,
+        utf8.encode(jsonEncode({'action': 'transfer', 'target': identity})));
+    _isCoordinator = false;
+    leaderNotice = 'سُلّمت القيادة — أنت عضو الآن';
+    notifyListeners();
+  }
+
+  /// (بعد رحيل المنسق فجأة) إعلان القيادة — أول إعلان يعتمده الباقون.
+  Future<void> claimLeadershipAfterDropout() async {
+    if (_isCoordinator || isDemo || _room == null) return;
+    if (_status != AudioRoomStatus.connected) return;
+    if (_participants.values.any((p) => p.isCoordinator)) return;
+    _isCoordinator = true;
+    leaderNotice = 'أنت المنسق الآن 🎖️ — الأقدم في القاعة';
+    _publish(RoomDataTopics.coordinator,
+        utf8.encode(jsonEncode({'action': 'claim', 'target': null})));
+    await _openCoordinatorDevices();
+    _broadcastPermissions();
+    notifyListeners();
+  }
+
+  /// (المنسق) استجابة لطلب كلمة مشارك محدد — تمنحه هو الكلمة مباشرة
+  /// (وليس فتح مايك المنسق)، وتُنزل يده تلقائياً.
+  Future<void> approveMicRequest(String identity) async {
+    if (!isCoordinator) return;
+    _micRequests.remove(identity);
+    final tSid = _sidForIdentity(identity);
+    if (tSid != null) {
+      _handRaised.remove(tSid);
+      _refreshHand(tSid);
+      _muted.remove(tSid);
+      _micHolderSid = tSid;
+    }
+    _publishCoordinator('approveMic', identity);
+    notifyListeners();
+  }
+
+  /// (المنسق) استجابة لطلب كاميرا مشارك محدد — مع تسليمها: تُغلق
+  /// كاميرا المنسق ليظهر بثّ الطالب وحده في المسرح.
+  Future<void> approveCameraRequest(String identity) async {
+    if (!isCoordinator) return;
+    _cameraRequests.remove(identity);
+    final tSid = _sidForIdentity(identity);
+    if (tSid != null) {
+      _handRaised.remove(tSid);
+      _refreshHand(tSid);
+      _cameraHolderSid = tSid;
+    }
+    if (_cameraEnabled && tSid != _meSid) {
+      await revokeCamera(_meSid);
+    }
+    _publishCoordinator('approveCamera', identity);
     notifyListeners();
   }
 
@@ -636,9 +987,65 @@ class AudioRoomController extends ChangeNotifier {
     _publish(RoomDataTopics.chat,
         utf8.encode(jsonEncode({'text': clean, 'sender': displayName})));
     notifyListeners();
+    unawaited(_persistChat());
   }
 
-  /// كتم مشارك (من قبل المنسق).
+  // ===== استمرار الرسائل 24 ساعة لكل قاعة =====
+
+  static const Duration _chatTtl = Duration(hours: 24);
+
+  String get _chatKey => 'room_chat_$roomName';
+
+  Future<void> _persistChat() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      final cutoff =
+          DateTime.now().subtract(_chatTtl).millisecondsSinceEpoch;
+      final list = _messages
+          .where((m) => !m.isFile && m.sentAt.millisecondsSinceEpoch >= cutoff)
+          .toList();
+      if (list.length > 300) list.removeRange(0, list.length - 300);
+      await sp.setString(
+        _chatKey,
+        jsonEncode([
+          for (final m in list)
+            {
+              's': m.senderName,
+              't': m.text,
+              'me': m.isMe,
+              'ms': m.sentAt.millisecondsSinceEpoch,
+            }
+        ]),
+      );
+    } catch (_) {}
+  }
+
+  Future<void> _loadPersistedChat() async {
+    try {
+      final sp = await SharedPreferences.getInstance();
+      final raw = sp.getString(_chatKey);
+      if (raw == null || raw.isEmpty) return;
+      final arr = jsonDecode(raw) as List;
+      final cutoff =
+          DateTime.now().subtract(_chatTtl).millisecondsSinceEpoch;
+      for (final e in arr) {
+        if (e is! Map) continue;
+        final ms = (e['ms'] as num?)?.toInt() ?? 0;
+        if (ms < cutoff) continue;
+        _messages.add(RoomChatMessage(
+          id: 'p_${ms}_${_messages.length}',
+          senderId: 'persist',
+          senderName: '${e['s'] ?? 'مشارك'}',
+          text: '${e['t'] ?? ''}',
+          isMe: e['me'] == true,
+          sentAt: DateTime.fromMillisecondsSinceEpoch(ms),
+        ));
+      }
+    } catch (_) {}
+  }
+
+  /// كتم مشارك (من قبل المنسق) — إنفاذ مزدوج: عبر قناة البيانات للواجهة
+  /// وخادمياً عبر RoomService حتى لا يستطيع تجاوزه.
   Future<void> muteParticipant(String sid) async {
     _muted.add(sid);
     _handRaised.remove(sid);
@@ -648,8 +1055,92 @@ class AudioRoomController extends ChangeNotifier {
         utf8.encode(jsonEncode({'action': 'mute', 'target': sid})));
     if (isDemo && sid != _meSid) {
       _speaking.remove(sid);
+    } else {
+      final identity = _participants[sid]?.identity;
+      if (identity != null && identity.isNotEmpty) {
+        try {
+          await _serverAdmin('mute', identity);
+        } catch (e) {
+          AppLog.error('mute enforcement failed: $e');
+        }
+      }
     }
     notifyListeners();
+  }
+
+  /// طرد مشارك من القاعة (من قبل المنسق) — يُنفَّذ خادمياً عبر
+  /// RemoveParticipant مع إشعار موجّه يحمل السبب، ويُحاكى محلياً
+  /// في الوضع التجريبي. يرمي استثناء برسالة عربية عند الفشل.
+  Future<void> removeParticipant(String sid, {String? reason}) async {
+    if (!isCoordinator) return;
+    if (isDemo) {
+      final gone = _participants.remove(sid);
+      _handRaised.remove(sid);
+      _speaking.remove(sid);
+      _muted.remove(sid);
+      if (gone != null) {
+        _micRequests.remove(gone.identity);
+        _cameraRequests.remove(gone.identity);
+      }
+    } else {
+      final identity = _participants[sid]?.identity;
+      if (identity == null || identity.isEmpty) return;
+      // إشعار موجّه للمعنيّ بالسبب قبل الخروج القسري.
+      await _publishTo(identity, {'action': 'kicked', 'reason': reason});
+      await Future.delayed(const Duration(milliseconds: 250));
+      await _serverAdmin('remove', identity, reason: reason);
+    }
+    notifyListeners();
+  }
+
+  /// نشر رسالة على قناة المنسق لمشارك محدد بهويته.
+  Future<void> _publishTo(
+      String identity, Map<String, dynamic> payload) async {
+    try {
+      await _room?.localParticipant?.publishData(
+        utf8.encode(jsonEncode(payload)),
+        reliable: true,
+        topic: RoomDataTopics.coordinator,
+        destinationIdentities: [identity],
+      );
+    } catch (_) {}
+  }
+
+  /// استدعاء نقطة الإشراف في الخادم الخفي — يرمي استثناء عند فشل
+  /// الاستدعاء أو رفض الخادم حتى تعرف الواجهة وتُخبر المنسق.
+  Future<void> _serverAdmin(String action, String identity,
+      {String? reason}) async {
+    const base = AudioRoomConfig.tokenEndpoint;
+    if (base.isEmpty || _sessionToken == null) {
+      throw Exception('لا يوجد اتصال بالخادم');
+    }
+    final url = base.endsWith('/token')
+        ? base.substring(0, base.length - '/token'.length)
+        : base;
+    final resp = await http
+        .post(
+          Uri.parse('$url/admin/$action'),
+          headers: const {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            'room': roomName,
+            'identity': identity,
+            'token': _sessionToken,
+            if (reason != null && reason.isNotEmpty) 'reason': reason,
+          }),
+        )
+        .timeout(const Duration(seconds: 10));
+    if (resp.statusCode != 200) {
+      String msg = 'فشل الإجراء (${resp.statusCode})';
+      try {
+        final j = jsonDecode(resp.body);
+        final e = j['error'];
+        final d = j['detail'];
+        if (e is String && e.isNotEmpty) msg = e;
+        if (d != null && '$d'.isNotEmpty) msg = '$msg ($d)';
+      } catch (_) {}
+      AppLog.error('server admin $action failed: $msg');
+      throw Exception(msg);
+    }
   }
 
   Future<void> _publish(String topic, List<int> data) async {
@@ -840,8 +1331,8 @@ class AudioRoomController extends ChangeNotifier {
     if (map['left'] == true) {
       final gone = _participants.remove(winId);
       if (gone != null) {
-        _micRequests.remove(gone.name);
-        _cameraRequests.remove(gone.name);
+        _micRequests.remove(gone.identity);
+        _cameraRequests.remove(gone.identity);
       }
       notifyListeners();
       return;
@@ -885,11 +1376,13 @@ class AudioRoomController extends ChangeNotifier {
     notifyListeners();
   }
 
-  static void _applyRequest(String name, bool requested, Set<String> set) {
+  /// في الوضع التجريبي تُستخدم الاسم نفسه هويةً لمفاتيح الطلبات.
+  static void _applyRequest(
+      String name, bool requested, Map<String, String> map) {
     if (requested) {
-      set.add(name);
+      map[name] = name;
     } else {
-      set.remove(name);
+      map.remove(name);
     }
   }
 
@@ -919,4 +1412,45 @@ class AudioRoomController extends ChangeNotifier {
     _room?.dispose();
     super.dispose();
   }
+}
+
+/// جلسة انضمام صادرة من خدمة التوكنات في الخادم الخفي.
+class _RoomSession {
+  final String url;
+  final String token;
+  final String identity;
+
+  const _RoomSession({
+    required this.url,
+    required this.token,
+    required this.identity,
+  });
+}
+
+/// فشل في الحصول على جلسة من خدمة التوكنات — برسالة عربية جاهزة للعرض.
+class RoomSessionException implements Exception {
+  final String message;
+
+  const RoomSessionException(this.message);
+
+  @override
+  String toString() => message;
+}
+
+
+/// حالة ملف قيد الاستلام من مشارك.
+class _IncomingFile {
+  _IncomingFile({
+    required this.name,
+    required this.size,
+    required this.chunks,
+    required this.sender,
+  });
+
+  final String name;
+  final int size;
+  final int chunks;
+  final String sender;
+  late final List<String?> parts = List<String?>.filled(chunks, null);
+  int got = 0;
 }

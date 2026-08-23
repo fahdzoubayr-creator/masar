@@ -91,6 +91,36 @@ const handler = async (req, res) => {
     return json(res, 200, { ok: true });
   }
 
+  // رابط تحميل تطبيق الأندرويد — يقرأ آخر APK مبني من مجلد البناء مباشرة،
+  // فلا حاجة لنسخ الملف يدوياً بعد كل بناء.
+  //   http://<ip>:8123/download-app            ← الهواتف الحديثة (arm64)
+  //   http://<ip>:8123/download-app?arch=armeabi ← الهواتف القديمة قبل 2018 تقريباً
+  if ((req.method === 'GET' || req.method === 'HEAD') &&
+      (urlPath === '/download-app' || urlPath === '/app-release.apk')) {
+    const wantOld = new URL(req.url, 'http://localhost')
+      .searchParams.get('arch') === 'armeabi';
+    const apkPath = path.join(__dirname,
+      'build', 'app', 'outputs', 'flutter-apk',
+      wantOld ? 'app-armeabi-v7a-release.apk' : 'app-arm64-v8a-release.apk');
+    if (!fs.existsSync(apkPath)) {
+      return json(res, 404, { error: 'لم يُبنَ التطبيق بعد — نفّذ flutter build apk --split-per-abi' });
+    }
+    res.writeHead(200, {
+      'Content-Type': 'application/vnd.android.package-archive',
+      'Content-Length': fs.statSync(apkPath).size,
+      'Content-Disposition':
+        `attachment; filename="masar-app${wantOld ? '-old' : ''}.apk"`,
+      'Cache-Control': 'no-cache',
+    });
+    return fs.createReadStream(apkPath).pipe(res);
+  }
+
+  // ===== خدمة توكنات LiveKit — مفاتيح الإنتاج في متغيرات البيئة فقط =====
+  // التطبيق لا يحمل أي سر؛ يطلب توكنه من هنا، والخادم هو من يوقّعه.
+  if (urlPath.startsWith('/api/livekit')) {
+    return handleLiveKitApi(req, res, urlPath);
+  }
+
   // تحويل صفحات المتصفح من HTTP إلى HTTPS — لأن الميكروفون والكاميرا
   // محجوبان على http غير المشفّر. يُطبَّق على صفحة القاعات فقط (وليس على
   // /ws أو /uploads أو /api التي يعتمد عليها تطبيق الهاتف ويبقى عليها HTTP).
@@ -561,6 +591,302 @@ function json(res, code, obj) {
   });
   res.end(buf);
 }
+
+// ================================================================
+// ==================== LiveKit (إنتاج) ===========================
+// ================================================================
+
+/** إعدادات LiveKit — لا قيم افتراضية للأسرار: تُقرأ من البيئة حصراً. */
+const LK = {
+  apiKey: process.env.LIVEKIT_API_KEY || '',
+  apiSecret: process.env.LIVEKIT_API_SECRET || '',
+  url: process.env.LIVEKIT_URL || '',
+  roomPrefix: process.env.LIVEKIT_ROOM_PREFIX || 'Ehtiraf_',
+  maxParticipants: Number(process.env.LIVEKIT_MAX_PARTICIPANTS) || 50,
+  /** حد الكاميرات المتزامنة في القاعة (1-2 وفق اشتراطات المشروع). */
+  maxCameras: Math.min(2, Math.max(1, Number(process.env.MAX_CAMERA_PUBLISHERS) || 2)),
+};
+
+const lkConfigured = () => !!(LK.apiKey && LK.apiSecret && LK.url);
+
+const b64urlJson = (obj) =>
+  Buffer.from(JSON.stringify(obj), 'utf8').toString('base64url');
+
+/** يوقّع توكن HS256 بنفس صيغة LiveKit. */
+function lkSign(payload) {
+  const header = b64urlJson({ alg: 'HS256', typ: 'JWT' });
+  const body = b64urlJson(payload);
+  const sig = crypto
+    .createHmac('sha256', LK.apiSecret)
+    .update(`${header}.${body}`)
+    .digest('base64url');
+  return `${header}.${body}.${sig}`;
+}
+
+/** يتحقق من توكن صادر عن هذا الخادم ويعيد حمولته أو null. */
+function lkVerify(token) {
+  if (typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const expected = crypto
+    .createHmac('sha256', LK.apiSecret)
+    .update(`${parts[0]}.${parts[1]}`)
+    .digest('base64url');
+  const a = Buffer.from(expected);
+  const b = Buffer.from(parts[2]);
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
+    if (!payload.exp || payload.exp * 1000 < Date.now()) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+/** ينظّف اسم القاعة المنطقي ويضيف البادئة — المرجعية للخادم لا للعميل. */
+function sanitizeRoomName(input) {
+  const cleaned = String(input || '')
+    .trim()
+    .replace(/[^A-Za-z0-9_-]/g, '_')
+    .replace(/_+/g, '_');
+  return cleaned || 'Room';
+}
+const lkRoomName = (logical) => LK.roomPrefix + sanitizeRoomName(logical);
+
+/** حد معدل بسيط: 30 طلب توكن في الدقيقة لكل عنوان IP. */
+const tokenRate = new Map();
+function tokenRateLimited(ip) {
+  const now = Date.now();
+  const arr = (tokenRate.get(ip) || []).filter((t) => now - t < 60000);
+  if (arr.length >= 30) {
+    tokenRate.set(ip, arr);
+    return true;
+  }
+  arr.push(now);
+  tokenRate.set(ip, arr);
+  if (tokenRate.size > 5000) tokenRate.clear();
+  return false;
+}
+
+async function handleLiveKitApi(req, res, urlPath) {
+  // فحص جاهزية الخدمة.
+  if (req.method === 'GET' && urlPath === '/api/livekit/health') {
+    return json(res, 200, { ok: true, configured: lkConfigured() });
+  }
+
+  if (!lkConfigured()) {
+    return json(res, 503, { error: 'خدمة القاعات غير مهيأة على الخادم بعد.' });
+  }
+
+  // إصدار توكن انضمام — البديل الآمن للتوقيع داخل التطبيق.
+  if (req.method === 'POST' && urlPath === '/api/livekit/token') {
+    const ip = req.socket.remoteAddress || '?';
+    if (tokenRateLimited(ip)) {
+      return json(res, 429, { error: 'طلبات كثيرة — أعد المحاولة بعد قليل.' });
+    }
+    const body = await readBody(req);
+    const logicalRoom = String(body.room || '').trim().slice(0, 64);
+    const name = String(body.name || '').trim().slice(0, 48) || 'مشارك';
+    const role = body.role === 'coordinator' ? 'coordinator' : 'member';
+    if (!logicalRoom) {
+      return json(res, 400, { error: 'رمز القاعة مطلوب.' });
+    }
+    const identity = `${role === 'coordinator' ? 'c' : 'm'}_${Date.now().toString(36)}${crypto.randomBytes(3).toString('hex')}`;
+    const now = Math.floor(Date.now() / 1000);
+    const ttl = 6 * 3600;
+    const payload = {
+      exp: now + ttl,
+      nbf: now - 10,
+      iat: now,
+      iss: LK.apiKey,
+      sub: identity,
+      name,
+      metadata: JSON.stringify({ role }),
+      video: {
+        room: lkRoomName(logicalRoom),
+        roomJoin: true,
+        canPublish: true,
+        canSubscribe: true,
+        canPublishData: true,
+        roomConfig: { maxParticipants: LK.maxParticipants },
+      },
+    };
+    return json(res, 200, {
+      url: LK.url,
+      token: lkSign(payload),
+      room: payload.video.room,
+      identity,
+      expiresIn: ttl,
+    });
+  }
+
+  // إجراءات إشرافية (كتم/طرد): تتطلب توكن منسق صادراً من هذا الخادم
+  // لنفس القاعة — التوقيع يثبت الصدور، والحمولة تثبت الدور.
+  if (
+    req.method === 'POST' &&
+    (urlPath === '/api/livekit/admin/mute' ||
+      urlPath === '/api/livekit/admin/remove')
+  ) {
+    const body = await readBody(req);
+    const claims = lkVerify(body.token);
+    const targetRoom = lkRoomName(String(body.room || ''));
+    const identity = String(body.identity || '').slice(0, 128);
+    if (!claims || !claims.video || claims.video.room !== targetRoom) {
+      return json(res, 403, { error: 'توكن غير صالح لهذه القاعة.' });
+    }
+    let role = 'member';
+    try {
+      role = JSON.parse(claims.metadata || '{}').role || 'member';
+    } catch {}
+    if (role !== 'coordinator') {
+      return json(res, 403, { error: 'الإجراء متاح للمنسق فقط.' });
+    }
+    if (!identity) return json(res, 400, { error: 'معرف المشارك مطلوب.' });
+    try {
+      if (urlPath.endsWith('/mute')) {
+        await lkTwirp('MutePublishedTrack', {
+          room: targetRoom,
+          identity,
+          muted: true,
+        });
+      } else {
+        await lkTwirp('RemoveParticipant', { room: targetRoom, identity });
+      }
+      return json(res, 200, { ok: true });
+    } catch (e) {
+      return json(res, 502, {
+        error: 'تعذر تنفيذ الإجراء على خادم البث.',
+        detail: String((e && e.message) || e).slice(0, 300),
+      });
+    }
+  }
+
+  return json(res, 404, { error: 'غير موجود.' });
+}
+
+/**
+ * نداء Twirp إلى RoomService عبر HTTPS — يُستخدم للكتم والطرد
+ * وحدّ الكاميرات، بتوكن إداري قصير العمر يوقّعه الخادم نفسه.
+ */
+function lkTwirp(method, bodyObj) {
+  return new Promise((resolve, reject) => {
+    const hostPart = LK.url.replace(/^wss?:\/\//, '').replace(/\/+$/, '');
+    const host = hostPart.split(':')[0];
+    const port = Number(hostPart.split(':')[1]) || 443;
+    // ws:// محلي يعني HTTP عادي — wss:// فقط يستخدم TLS.
+    const transport = LK.url.startsWith('ws://') ? http : https;
+    const adminToken = lkSign({
+      exp: Math.floor(Date.now() / 1000) + 120,
+      iss: LK.apiKey,
+      sub: 'masar_backend',
+      video: { roomAdmin: true, roomCreate: true, roomList: true },
+    });
+    const data = Buffer.from(JSON.stringify(bodyObj), 'utf8');
+    const r2 = transport.request(
+      {
+        host,
+        port,
+        path: `/twirp/livekit.RoomService/${method}`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminToken}`,
+          'Content-Length': data.length,
+        },
+        timeout: 8000,
+      },
+      (resp) => {
+        const chunks = [];
+        resp.on('data', (c) => chunks.push(c));
+        resp.on('end', () => {
+          const text = Buffer.concat(chunks).toString('utf8');
+          if (resp.statusCode >= 200 && resp.statusCode < 300) {
+            resolve(text);
+          } else {
+            reject(new Error(`HTTP ${resp.statusCode}: ${text.slice(0, 300)}`));
+          }
+        });
+      }
+    );
+    r2.on('error', reject);
+    r2.on('timeout', () => r2.destroy(new Error('timeout')));
+    r2.end(data);
+  });
+}
+
+/**
+ * مراقبة حد الكاميرات: لا يبثّ صورته أكثر من LK.maxCameras مشاركين
+ * في القاعة الواحدة — أولوية للمنسق ثم الأقدم دخولاً، ويُكتم بثّ
+ * الزوائد خادمياً (إنفاذ حقيقي لا اعتماداً على واجهة التطبيق).
+ */
+let camSweepRunning = false;
+async function sweepCameraLimits() {
+  if (camSweepRunning || !lkConfigured()) return;
+  camSweepRunning = true;
+  try {
+    const rooms = JSON.parse(await lkTwirp('ListRooms', {})).rooms || [];
+    for (const room of rooms) {
+      const name = room.name || '';
+      if (!name.startsWith(LK.roomPrefix)) continue; // قاعاتنا فقط
+      let participants = [];
+      try {
+        const out = await lkTwirp('ListParticipants', { room: name });
+        participants = JSON.parse(out).participants || [];
+      } catch {
+        continue; // القاعة أُغلقت ربما
+      }
+      const publishers = [];
+      for (const p of participants) {
+        const hasCam = (p.tracks || []).some(
+          (t) => t.type === 'VIDEO' && !t.muted
+        );
+        if (hasCam) publishers.push(p);
+      }
+      if (publishers.length <= LK.maxCameras) continue;
+
+      const roleOf = {};
+      publishers.forEach((p) => {
+        try {
+          roleOf[p.identity] =
+            (JSON.parse(p.metadata || '{}').role) || 'member';
+        } catch {
+          roleOf[p.identity] = 'member';
+        }
+      });
+      publishers.sort((a, b) => {
+        const ra = roleOf[a.identity] === 'coordinator' ? 0 : 1;
+        const rb = roleOf[b.identity] === 'coordinator' ? 0 : 1;
+        if (ra !== rb) return ra - rb;
+        return (a.joinedAt || 0) - (b.joinedAt || 0);
+      });
+
+      for (const p of publishers.slice(LK.maxCameras)) {
+        for (const t of p.tracks || []) {
+          if (t.type === 'VIDEO' && !t.muted) {
+            await lkTwirp('MutePublishedTrack', {
+              room: name,
+              identity: p.identity,
+              trackSid: t.sid,
+              muted: true,
+            }).catch(() => {});
+          }
+        }
+        console.log(`[livekit] camera-limit enforced in ${name} on ${p.identity}`);
+      }
+    }
+  } catch {
+    // خادم البث غير متاح مؤقتاً — نحاول في الدورة التالية بصمت.
+  } finally {
+    camSweepRunning = false;
+  }
+}
+setInterval(sweepCameraLimits, 60 * 1000).unref();
+
+// ================================================================
+// ================== /LiveKit (إنتاج) ============================
+// ================================================================
+
 
 function roomInfo(id, room, includeInviteCode) {
   const set = rooms.get(id);
