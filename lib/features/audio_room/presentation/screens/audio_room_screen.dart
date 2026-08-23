@@ -1579,10 +1579,11 @@ class _GivePanel extends StatelessWidget {
                 const Icon(Icons.group_rounded,
                     size: 16, color: RoomPalette.green),
                 const SizedBox(width: 6),
-                const Expanded(
+                Expanded(
+                  // العضو لا يرى عبارة «منح الصلاحيات» — تظهر للمنسق فقط.
                   child: Text(
-                    'الأعضاء ومنح الصلاحيات',
-                    style: TextStyle(
+                    isCoordinator ? 'الأعضاء ومنح الصلاحيات' : 'الأعضاء',
+                    style: const TextStyle(
                       fontSize: 13,
                       color: RoomPalette.text,
                       fontWeight: FontWeight.w800,
@@ -1898,28 +1899,30 @@ class _GivePanel extends StatelessWidget {
                 color: p.micEnabled ? RoomPalette.red : RoomPalette.muted,
               ),
             ),
-          IconButton(
-            onPressed: enabled ? onMic : null,
-            iconSize: 18,
-            visualDensity: VisualDensity.compact,
-            tooltip: p.hasMic ? 'سحب الكلمة' : 'منح الكلمة',
-            icon: Icon(
-              p.hasMic
-                  ? Icons.record_voice_over_rounded
-                  : Icons.mic_none_rounded,
-              color: p.hasMic ? RoomPalette.green : RoomPalette.muted,
+          if (enabled) ...[
+            IconButton(
+              onPressed: onMic,
+              iconSize: 18,
+              visualDensity: VisualDensity.compact,
+              tooltip: p.hasMic ? 'سحب الكلمة' : 'منح الكلمة',
+              icon: Icon(
+                p.hasMic
+                    ? Icons.record_voice_over_rounded
+                    : Icons.mic_none_rounded,
+                color: p.hasMic ? RoomPalette.green : RoomPalette.muted,
+              ),
             ),
-          ),
-          IconButton(
-            onPressed: enabled ? onCamera : null,
-            iconSize: 18,
-            visualDensity: VisualDensity.compact,
-            tooltip: p.hasCamera ? 'سحب الكاميرا' : 'منح الكاميرا',
-            icon: Icon(
-              p.hasCamera ? Icons.videocam_rounded : Icons.videocam_outlined,
-              color: p.hasCamera ? RoomPalette.green : RoomPalette.muted,
+            IconButton(
+              onPressed: onCamera,
+              iconSize: 18,
+              visualDensity: VisualDensity.compact,
+              tooltip: p.hasCamera ? 'سحب الكاميرا' : 'منح الكاميرا',
+              icon: Icon(
+                p.hasCamera ? Icons.videocam_rounded : Icons.videocam_outlined,
+                color: p.hasCamera ? RoomPalette.green : RoomPalette.muted,
+              ),
             ),
-          ),
+          ],
           if (onKick != null)
             IconButton(
               onPressed: onKick,
