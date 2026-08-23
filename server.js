@@ -289,6 +289,26 @@ const handler = async (req, res) => {
         error: 'يمكن للمنشئ حذف القاعة فقط.',
       });
     }
+    // قاعدة صارمة: الحذف الفوري متاح دون خمسة أعضاء. عند خمسة
+    // فأكثر يُرفض الحذف — على المنسق التسليم والمغادرة فقط.
+    try {
+      if (lkConfigured()) {
+        const lr = await lkTwirp('ListRooms', {});
+        const rn = lkRoomName(room.name);
+        const live = ((lr && lr.rooms) || []).find(
+          (x) => String(x.name || '') === rn
+        );
+        const cnt = live
+          ? Number(live.numParticipants ?? live.num_participants ?? 0)
+          : null;
+        if (cnt !== null && cnt >= 5) {
+          return json(res, 403, {
+            error:
+              'القاعة فيها ٥ أعضاء فأكثر — لا يمكن حذفها. سلّم التنسيق ثم غادر.',
+          });
+        }
+      }
+    } catch {}
     roomRegistry.delete(foundId);
     const set = rooms.get(foundId);
     if (set && set.size > 0) {

@@ -44,6 +44,10 @@ class RoomParticipant {
   /// هل المستخدم نفسه منسق القاعة؟
   final bool isCoordinator;
 
+  /// لحظة انضمامه للقاعة (ميلّي ثانية) — أساس ترتيب الأقدمية
+  /// في خلافة التنسيق عند مغادرة المنسق دون تعيين.
+  final int joinedAtMs;
+
   const RoomParticipant({
     required this.id,
     this.identity = '',
@@ -56,6 +60,7 @@ class RoomParticipant {
     this.handRaised = false,
     this.isSpeaking = false,
     this.isCoordinator = false,
+    this.joinedAtMs = 0,
   });
 
   RoomParticipant copyWith({
@@ -69,6 +74,7 @@ class RoomParticipant {
     bool? handRaised,
     bool? isSpeaking,
     bool? isCoordinator,
+    int? joinedAtMs,
   }) {
     return RoomParticipant(
       id: id,
@@ -82,6 +88,7 @@ class RoomParticipant {
       handRaised: handRaised ?? this.handRaised,
       isSpeaking: isSpeaking ?? this.isSpeaking,
       isCoordinator: isCoordinator ?? this.isCoordinator,
+      joinedAtMs: joinedAtMs ?? this.joinedAtMs,
     );
   }
 }

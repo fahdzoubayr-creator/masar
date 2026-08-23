@@ -137,10 +137,18 @@ class AudioRoomController extends ChangeNotifier {
       ..sort((a, b) {
         if (a.isMe != b.isMe) return a.isMe ? -1 : 1;
         if (a.isCoordinator != b.isCoordinator) return a.isCoordinator ? -1 : 1;
+        // داخل الفئة نفسها: الأقدم دخولاً أولاً (أعلى قائمة الأعضاء).
+        final x = a.joinedAtMs, y = b.joinedAtMs;
+        if (x > 0 && y > 0 && x != y) return x.compareTo(y);
         return a.name.compareTo(b.name);
       });
     return list;
   }
+
+  /// غيري مرتبين بالأقدمية — أساس خلافة التنسيق التلقائية.
+  List<RoomParticipant> get othersBySeniority => participants
+      .where((p) => !p.isMe)
+      .toList();
 
   /// اسم منسق القاعة (صاحب شارة «منسق») — يظهر تحت اسم القاعة في الأعلى.
   String? get coordinatorName {
@@ -406,6 +414,7 @@ class AudioRoomController extends ChangeNotifier {
       handRaised: _handRaised.contains(p.sid),
       isSpeaking: _speaking.contains(p.sid),
       isCoordinator: _roleFromMetadata(p.metadata) == 'coordinator',
+      joinedAtMs: p.joinedAt.millisecondsSinceEpoch,
     );
   }
 

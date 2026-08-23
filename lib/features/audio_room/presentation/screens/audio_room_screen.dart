@@ -224,8 +224,7 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
     if (_controller.isCoordinator) {
       final action = await _coordinatorLeaveDialog();
       if (action == null || !mounted) return; // بقي في القاعة
-      final others =
-          _controller.participants.where((p) => !p.isMe).toList();
+      final others = _controller.othersBySeniority;
       switch (action) {
         case 'appoint':
           if (others.isEmpty) break;
@@ -233,16 +232,27 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
           if (pick == null || !mounted) return;
           await _controller.transferLeadership(pick.identity);
         case 'keep':
-          // القاعدة: إن لم يعيّن خليفاً انتقلت القيادة للأقدم —
-          // نسلّمها صراحة لأول من انضم (ترتيب الدخول).
+          // القاعدة: إن لم يعيّن خليفاً انتقل التنسيق لأقدم عضو
+          // في القاعة (أعلى قائمة الأعضاء).
           if (others.isNotEmpty) {
             await _controller.transferLeadership(others.first.identity);
           }
         case 'delete':
-          await RoomDirectoryService.unpublish(widget.room,
+          final ok = await RoomDirectoryService.unpublish(widget.room,
               name: _controller.roomName,
               creatorName: widget.displayName);
           unawaited(RoomStore.remove(widget.room));
+          if (!ok && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  'تعذّر حذف القاعة — فيها 5 أعضاء فأكثر. سلّم التنسيق ثم غادر.'),
+              duration: Duration(seconds: 4),
+            ));
+            if (!mounted) return;
+            // لا نغادر: أعِد المحاولة بخيار آخر.
+            unawaited(_leave());
+            return;
+          }
       }
     } else {
       final confirmed = await showDialog<bool>(
@@ -277,8 +287,11 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
 
   /// خيارات المنسق عند المغادرة.
   Future<String?> _coordinatorLeaveDialog() {
+    // القاعدة المعتمدة: عدد الأعضاء (دون المنسق نفسه).
+    // دون 5 → الحذف الفوري متاح. خمسة فأكثر → لا حذف، بل
+    // تسليم القيادة أو المغادرة فيرث التنسيق أقدم عضو.
     final memberCount = _controller.participants.length - 1;
-    final canDelete = memberCount <= 5;
+    final canDelete = memberCount < 5;
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -290,12 +303,14 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'ماذا تفعل قبل مغادرتك؟',
+              'ماذا تفعل قبل مغادتك؟',
               style: TextStyle(color: RoomPalette.muted, fontSize: 12.5),
             ),
             const SizedBox(height: 6),
             Text(
-              'القاعة فيها $memberCount عضو — الحذف النهائي متاح حتى 5 أعضاء فقط.',
+              canDelete
+                  ? 'القاعة فيها $memberCount أعضاء — يمكنك حذفها نهائياً الآن.'
+                  : 'القاعة فيها $memberCount عضواً (5 فأكثر) — لا يُسمح بحذفها؛ سلّم التنسيق لمن تريد أو غادر ويتولاه أقدم عضو.',
               style:
                   const TextStyle(color: RoomPalette.muted, fontSize: 11),
             ),
@@ -307,6 +322,16 @@ class _AudioRoomScreenState extends State<AudioRoomScreen> {
             child: const Text('تعيين منسق جديد…',
                 style: TextStyle(color: RoomPalette.amber)),
           ),
+          if (!canDelete)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text('🔒 الحذف معطّل — 5 أعضاء فأكثر',
+                    style: TextStyle(
+                        fontSize: 10.5, color: RoomPalette.muted)),
+              ),
+            ),
           TextButton(
             onPressed: canDelete
                 ? () => Navigator.of(context).pop('delete')

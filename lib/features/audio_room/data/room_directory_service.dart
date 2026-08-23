@@ -50,7 +50,8 @@ class RoomDirectoryService {
   /// حذف قاعة من الدليل — عند التراجع عن إنشاء أو مغادرة المنسق
   /// بخيار الحذف. الخادم يشترط اسم المنشئ، ويقبل المعرّف الداخلي أو
   /// كود الدعوة أو الاسم؛ وإن فشل الكود نعيد المحاولة بالاسم.
-  static Future<void> unpublish(
+  /// يعيد `true` فقط إذا أكد الخادم الحذف فعلاً.
+  static Future<bool> unpublish(
     String code, {
     String? name,
     String? creatorName,
@@ -58,21 +59,25 @@ class RoomDirectoryService {
     final query = (creatorName == null || creatorName.isEmpty)
         ? null
         : {'name': creatorName};
-    Future<void> del(String key) async {
+    Future<int> del(String key) async {
       try {
-        await http
+        final res = await http
             .delete(_uri('/api/rooms/${Uri.encodeComponent(key)}', query))
             .timeout(_timeout);
+        return res.statusCode;
       } catch (_) {
-        // أفضل جهد — القاعة ستنقضي من تلقاء نفسها بلا نشاط.
+        return -1;
       }
     }
 
-    await del(code);
-    final n = name?.trim() ?? '';
-    if (n.isNotEmpty && n.toLowerCase() != code.trim().toLowerCase()) {
-      await del(n);
+    var status = await del(code);
+    if (status != 200) {
+      final n = name?.trim() ?? '';
+      if (n.isNotEmpty && n.toLowerCase() != code.trim().toLowerCase()) {
+        status = await del(n);
+      }
     }
+    return status == 200;
   }
 
   /// كل القاعات المنشورة على الخادم (العامة + الخاصة بقفل).
