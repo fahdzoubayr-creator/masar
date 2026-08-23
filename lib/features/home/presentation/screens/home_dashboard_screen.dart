@@ -270,12 +270,35 @@ class _DashboardCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        if (featured) ...[
-                          // أيقونة البطاقة المميزة: شعلة لهب متدرج تحضن كلمة
-                          // «مميز» بخط غليظ — رمز الذروة والأهمية القصوى.
+                        // شارة دائرية هادئة حول الأيقونة — لمسة احترافية موحّدة
+                        // (بقيت في مكانها الأصلي لكل البطاقات بما فيها المميزة).
+                        Container(
+                          padding: const EdgeInsets.all(7),
+                          decoration: BoxDecoration(
+                            color: AppColors.cream.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(item.icon,
+                              color: AppColors.goldSoft, size: 21),
+                        ),
+                        const Spacer(),
+                        if (locked)
+                          Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color:
+                                  AppColors.err.withValues(alpha: 0.18),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.lock_rounded,
+                                color: AppColors.err, size: 13),
+                          )
+                        else if (featured) ...[
+                          // شارة «مميز» بخط غليظ أبيض وسط شعلة لهب متدرج —
+                          // رمز الذروة والأهمية القصوى، مع هالة توهج دافئة.
                           SizedBox(
-                            width: 44,
-                            height: 44,
+                            width: 48,
+                            height: 46,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
@@ -306,18 +329,18 @@ class _DashboardCard extends StatelessWidget {
                                   ).createShader(bounds),
                                   child: const Icon(
                                       Icons.local_fire_department_rounded,
-                                      size: 40,
+                                      size: 42,
                                       color: Colors.white),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 9),
+                                  padding: const EdgeInsets.only(top: 10),
                                   child: Text('مميز',
                                       style: TextStyle(
-                                          fontSize: 9,
+                                          fontSize: 11,
                                           fontWeight: FontWeight.w900,
                                           color: Colors.white,
                                           height: 1,
-                                          letterSpacing: 0.2,
+                                          letterSpacing: 0.3,
                                           shadows: [
                                             Shadow(
                                               color: const Color(0xFF5C1A00)
@@ -330,31 +353,7 @@ class _DashboardCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                        ] else ...[
-                          // شارة دائرية هادئة حول الأيقونة — لمسة احترافية موحّدة.
-                          Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              color: AppColors.cream.withValues(alpha: 0.12),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(item.icon,
-                                color: AppColors.goldSoft, size: 21),
-                          ),
-                        ],
-                        const Spacer(),
-                        if (locked)
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color:
-                                  AppColors.err.withValues(alpha: 0.18),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.lock_rounded,
-                                color: AppColors.err, size: 13),
-                          )
-                        else
+                        ] else
                           Container(
                             padding: const EdgeInsets.all(3),
                             decoration: BoxDecoration(
