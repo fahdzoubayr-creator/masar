@@ -155,10 +155,10 @@
       "level": null,
       "text": "L'approche actionnelle dans l'enseignement du FLE considère l'apprenant comme",
       "options": [
-        "بدائل أخرى خاطئة (1)",
-        "بدائل أخرى خاطئة (2)",
+        "un étudiant qui mémorise uniquement",
+        "un récepteur passif recevant des informations",
         "un acteur social accomplissant des tâches dans des situations de communication",
-        "بدائل أخرى خاطئة (4)"
+        "un observateur sans interaction"
       ],
       "correctIndex": 2,
       "explanation": "Dans l'approche actionnelle, l'apprenant est un acteur social qui réalise des tâches (simples et complexes) mobilisant des activités langagières dans un contexte donné.",
@@ -185,12 +185,12 @@
       "level": null,
       "text": "L'exploitation de l'image fixe en classe de français au primaire sert à",
       "options": [
-        "بدائل أخرى خاطئة (1)",
-        "بدائل أخرى خاطئة (2)",
+        "enseigner la grammaire de façon isolée",
         "déclencher la parole et soutenir la compréhension et l'expression",
-        "بدائل أخرى خاطئة (4)"
+        "développer la capacité d'écriture uniquement",
+        "évaluer la mémorisation des faits historiques"
       ],
-      "correctIndex": 2,
+      "correctIndex": 1,
       "explanation": "L'image est un support déclencheur de prise de parole et un appui à la compréhension ; elle favorise la description, la narration et l'interprétation.",
       "source": "Guide pédagogique — Support image",
       "situation": null
@@ -290,12 +290,12 @@
       "level": null,
       "text": "La compréhension orale en classe de FLE doit être évaluée par",
       "options": [
-        "التركيز فقط على تحديد الأفكار الرئيسية والثانوية دون التحقق من الفهم العام للنص المسموع.",
-        "تقييم الفهم من خلال قدرة الطلاب على استرجاع معلومات جزئية من النص دون التحقق من فهم الرسالة بأكملها.",
+        "tests de prononciation individuelle",
         "des tâches de repérage et de vérification de la compréhension du message entendu",
-        "ثلاثة خيارات خاطئة مفصلة أكثر:"
+        "exercices de traduction écrite",
+        "questionnaires de vocabulaire isolé"
       ],
-      "correctIndex": 2,
+      "correctIndex": 1,
       "explanation": "On évalue la compréhension orale par des activités qui exigent une réaction à ce qui est entendu: cocher, relier, répondre, reformuler, sans recours à la copie.",
       "source": "Référentiel d'évaluation — Compréhension orale",
       "situation": null
@@ -305,10 +305,10 @@
       "level": null,
       "text": "La lecture documentaire au primaire vise à apprendre à l'élève à",
       "options": [
-        "يقتصر على ترديد المعلومات من الوثيقة بلا فهم",
-        "يقرأ النص بصوت عال فقط دون استيعاب",
+        "lire à haute voix sans compréhension",
+        "copier textuellement les documents",
         "prélever et organiser des informations utiles dans des documents variés",
-        "الخيارات المعدلة الثلاثة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:"
+        "ignorer les sources et les dates"
       ],
       "correctIndex": 2,
       "explanation": "La lecture documentaire développe des stratégies de recherche d'information: repérage, sélection, organisation et restitution, dans des supports variés.",
@@ -440,12 +440,12 @@
       "level": null,
       "text": "Pour évaluer l'expression écrite au primaire, on utilise généralement une grille prenant en compte",
       "options": [
+        "la longueur du texte uniquement",
+        "la couleur de la police utilisée",
         "le contenu, la structure, la syntaxe, le vocabulaire et l'orthographe",
-        "عند تقييم التعبير الكتابي في المرحلة الابتدائية، غالباً ما نستخدم إطار تقييمي يأخذ بعين الاعتبار الجوانب التالية:",
-        "المضمون: ندرس مدى صلة الأفكار المطروحة بالموضوع ومدى تطورها وتسلسلها.",
-        "البنية: نتحقق من تنظيم النص وتماسك أجزائه وترتيب الفقرات بشكل مناسب."
+        "le nombre de pages imprimées"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "La grille d'évaluation de l'expression écrite repose sur des critères: adéquation au sujet, organisation, richesse du vocabulaire, correction syntaxique et orthographique.",
       "source": "Référentiel d'évaluation — Expression écrite",
       "situation": null
@@ -455,12 +455,12 @@
       "level": null,
       "text": "La séance de remédiation orthographique doit se fonder sur",
       "options": [
-        "بدائل أخرى خاطئة (1)",
+        "les résultats d'un test théorique",
+        "les préférences de l'enseignant",
         "les erreurs réellement commises par les élèves lors des productions",
-        "بدائل أخرى خاطئة (3)",
-        "بدائل أخرى خاطئة (4)"
+        "les thèmes populaires du moment"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "La remédiation s'appuie sur l'analyse des erreurs constatées dans les productions et dictées des élèves, pour proposer des activités ciblées de traitement.",
       "source": "Référentiel — Remédiation orthographique",
       "situation": null
@@ -470,10 +470,10 @@
       "level": null,
       "text": "En expression orale au primaire, le récit d'expérience vécue permet à l'élève de",
       "options": [
-        "بدائل أخرى خاطئة (1)",
-        "بدائل أخرى خاطئة (2)",
+        "décrire un personnage imaginaire",
+        "réciter un poème appris par cœur",
         "raconter un événement vécu en respectant l'ordre des faits et en s'exprimant clairement",
-        "بدائل أخرى خاطئة (4)"
+        "expliquer une règle grammaticale"
       ],
       "correctIndex": 2,
       "explanation": "Le récit d'expérience vécue mobilise l'élève comme locuteur: il organise son propos, respecte la chronologie et développe son aisance à l'oral.",
@@ -515,10 +515,10 @@
       "level": null,
       "text": "Pour enseigner « le présent de l'impératif », l'enseignant mettra l'accent sur",
       "options": [
-        "استعراض الأزمنة المرتبطة: الغوص في تفاصيل الأزمنة المرتبطة بالمضارع التام مثل المضارع التام المستمر والمضارع التام التام المستمر.",
+        "enseigner les formes du subjonctif",
         "l'expression de l'ordre, du conseil et de la consigne avec trois personnes (tu, nous, vous)",
-        "تحليل الأفعال المساعدة: التركيز على توضيح دور الفعل المساعد \"être\" و \"avoir\" في تكوين المضارع التام.",
-        "الخيارات الخاطئة المفصلة:"
+        "pratiquer la conjugaison du futur simple",
+        "expliquer les temps du passé"
       ],
       "correctIndex": 1,
       "explanation": "L'impératif présent ne se conjugue qu'à trois personnes: tu, nous, vous ; il sert à donner un ordre, un conseil ou une consigne.",
@@ -651,9 +651,9 @@
       "text": "Pour introduire un nouveau texte en lecture, l'enseignant commencera par",
       "options": [
         "une phase d'anticipation : émettre des hypothèses à partir du titre et des illustrations",
-        "إجراء اختبار تحليل النصوص الأدبية لتحديد مستوى الفهم والاستيعاب لدى الطلاب قبل البدء بالنص الجديد. هذا الخيار لا يتعلق مباشرة بتقديم النص الجديد في سياق التعلم.",
-        "تحديد المستوى القرائي المناسب بناءً على معرفة التلاميذ والطالب الجديد. يجب على المعلم تحديد مستوى النص التعليمي ليتناسب مع قدرات الطلاب.",
-        "كل الاقتراحات خاطئة"
+        "lecture intégrale du texte",
+        "exercice de grammaire avant le texte",
+        "discussion sur les réponses du test"
       ],
       "correctIndex": 0,
       "explanation": "La phase d'anticipation (à partir du titre, des images, des indices) éveille l'intérêt et prépare la compréhension en activant les connaissances de l'élève.",
@@ -665,9 +665,9 @@
       "level": null,
       "text": "En phonétique corrective, la confusion entre les sons [b] et [p] se travaille par",
       "options": [
-        "تمارين النطق المتناقضة: يقوم المتعلمون بممارسة إنتاج كلا الصوتين بشكل متباين لتعزيز وضوح التمييز بينهما.",
-        "في علم الفونيتيك العلاجي، تعمل التمارين على تفريق الأصوات [ب] و[ب] عبر:",
-        "تدريبات التمييز السمعي: حيث يُطلب من المتعلمين التركيز على الفروقات بين الصوتين ومحاولة التفريق بينهما.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
         "des exercices de discrimination auditive et de prononciation contrastée"
       ],
       "correctIndex": 3,
@@ -906,9 +906,9 @@
       "text": "Pour évaluer le vocabulaire acquis, la tâche la plus révélatrice est",
       "options": [
         "la réutilisation des mots en production (orale ou écrite) dans des contextes variés",
-        "يمكن اعتبار \"التكرار الشفهي للمجموعات من الكلمات\" مهمة مميزة لتقييم المفردات المكتسبة، لكنها ليست الأكثر إيحاءً مقارنة بالاستخدام الفعلي للكلمات في سياقات متنوعة.",
-        "تحديد الكلمات في القاموس يعتبر خطوة مهمة لفهم معاني الكلمات، لكنه لا يعكس قدرة المتعلم على استخدام الكلمات بفعالية في التواصل والتعبير.",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "Un mot est vraiment acquis lorsqu'il est réutilisé spontanément en contexte ; l'évaluation du vocabulaire se fait donc surtout en production.",
@@ -920,10 +920,10 @@
       "level": null,
       "text": "En orthographe grammaticale, les homophones « a/à » se distinguent par",
       "options": [
-        "\"a\" يُستخدم عادةً للإشارة إلى الملكية والسببية، بينما \"à\" يُشير إلى الزمان والمكان والإضافة.",
+        "بدائل أخرى خاطئة (1)",
         "a » est le verbe avoir (on peut dire « avait ») ; « à » est une préposition",
-        "\"a\" يُعتبر فعلاً مساعداً في المضارع البسيط (comme \"aime\") بينما \"à\" تبقى دائماً بمثابة حرف جر.",
-        "\"à\" يمكن أن يكون فعلاً مساعداً في المضارع التام (comme \"ai\") ولكنه أيضاً يُستخدم كبديل عن \"a\" في سياقات معينة."
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "Astuce: si l'on peut remplacer par « avait », c'est le verbe « a » ; sinon, c'est la préposition « à ».",

@@ -233,9 +233,9 @@
       "text": "Qu'appelle-t-on « pédagogie du projet » (projet de classe) au cycle primaire ?",
       "options": [
         "Un choix pédagogique ancré dans l'action qui donne du sens aux apprentissages et ouvre la classe sur son environnement",
-        "Une modalité qui consiste à faire réaliser chaque semaine un exercice d'entraînement",
-        "Une technique de gestion du temps réservée aux grandes classes",
-        "Une méthode d'évaluation des acquis en fin d'unité didactique"
+        "التركيز على الاختبارات المتعددة الاختيارات",
+        "إعطاء واجبات منزلية يومية",
+        "استخدام الكتب المدرسية فقط"
       ],
       "correctIndex": 0,
       "explanation": "Le projet de classe concrétise l'approche par compétences et l'approche actionnelle: il permet à l'apprenant d'apprendre par l'action et de développer des compétences communicatives et sociales.",
@@ -292,12 +292,12 @@
       "level": null,
       "text": "Qu'appelle-t-on « tutorat » dans la gestion des activités de classe ?",
       "options": [
-        "Une situation où l'enseignant suit individuellement chaque élève pendant toute la séance",
-        "Un groupe de soutien organisé après les heures de classe",
         "Une organisation où un élève plus avancé apporte une aide à un camarade en difficulté",
-        "Une technique de correction collective des cahiers d'exercices"
+        "تطبيق نظام النقاط للانضباط",
+        "توزيع الأدوار حسب العمر",
+        "إجراء مسابقات جماعية أسبوعية"
       ],
-      "correctIndex": 2,
+      "correctIndex": 0,
       "explanation": "Le tutorat est une modalité d'entraide entre pairs: l'élève tuteur accompagne un camarade, ce qui favorise la coopération et l'apprentissage mutuel.",
       "source": "Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)",
       "situation": null
@@ -414,12 +414,12 @@
       "level": null,
       "text": "Quelle est la différence entre une évaluation critériée et une évaluation normative ?",
       "options": [
-        "L'évaluation critériée se fait à l'oral, l'évaluation normative à l'écrit",
-        "L'évaluation critériée compare l'élève à la moyenne de la classe, l'évaluation normative aux critères de réussite",
-        "L'évaluation critériée compare la production de l'élève à des critères de réussite prédéfinis, l'évaluation normative à la moyenne du groupe",
-        "L'évaluation critériée est réservée aux sciences, l'évaluation normative aux langues"
+        "L'évaluation critériée mesure la vitesse d'exécution",
+        "L'évaluation normative compare l'élève à un expert",
+        "بديل خاطئ آخر",
+        "L'évaluation critériée compare la production de l'élève à des critères de réussite prédéfinis, l'évaluation normative à la moyenne du groupe"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "L'évaluation critériée mesure la production par rapport à des critères et indicateurs fixés à l'avance ; l'évaluation normative situe l'élève par rapport au groupe (moyenne de la classe).",
       "source": "Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)",
       "situation": null
@@ -430,9 +430,9 @@
       "text": "L'évaluation d'une compétence à l'école primaire consiste à vérifier la capacité de l'élève à",
       "options": [
         "mobiliser des ressources (savoirs, savoir-faire, savoir-être) pour réaliser une tâche dans une situation de communication",
-        "نسخ النص المدرس دون فهم البنية الأدبية أو تطوير مهارات التحليل والنقد.",
-        "استرجاع المعلومات من الذاكرة طويلة الأمد لتقديم تعريفات ومفاهيم الدرس دون القدرة على تطبيقها في سيناريو حقيقي.",
-        "اختيار الإجابات المناسبة في أسئلة الاختيار من متعدد دون مراعاة السياق والأهداف التعليمية للمادة ومستوى فهم الطالب للمادة."
+        "reproduire exactement le texte du manuel",
+        "mémoriser des listes de mots isolés",
+        "résoudre des équations avancées sans aide"
       ],
       "correctIndex": 0,
       "explanation": "La compétence est une capacité à mobiliser des ressources dans des situations de communication ; son évaluation passe donc par des tâches et des situations d'intégration, non par une simple restitution.",
@@ -459,10 +459,10 @@
       "level": null,
       "text": "Quelle est la différence entre « consolidation » et « approfondissement » dans le soutien ?",
       "options": [
-        "La consolidation se fait à l'écrit, l'approfondissement à l'oral",
-        "La consolidation enrichit les connaissances, l'approfondissement les refait",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "La consolidation vise à renforcer et fixer les acquis, l'approfondissement à les dépasser et aller plus loin",
-        "La consolidation s'adresse aux élèves en difficulté, l'approfondissement à toute la classe"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "La consolidation renforce et fixe ce qui a été appris ; l'approfondissement propose des situations plus complexes pour dépasser les acquis et développer davantage la compétence.",

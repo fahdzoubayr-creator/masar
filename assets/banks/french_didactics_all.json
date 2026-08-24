@@ -230,12 +230,12 @@
       "level": null,
       "text": "Qu'appelle-t-on « pédagogie du projet » (projet de classe) au cycle primaire ?",
       "options": [
-        "Une méthode d'évaluation des acquis en fin d'unité didactique",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Un choix pédagogique ancré dans l'action qui donne du sens aux apprentissages et ouvre la classe sur son environnement",
-        "Une technique de gestion du temps réservée aux grandes classes",
-        "Une modalité qui consiste à faire réaliser chaque semaine un exercice d'entraînement"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "Le projet de classe concrétise l'approche par compétences et l'approche actionnelle: il permet à l'apprenant d'apprendre par l'action et de développer des compétences communicatives et sociales.",
       "source": "Didactique du français au primaire (Lamgouni)",
       "situation": null
@@ -455,10 +455,10 @@
       "level": null,
       "text": "Quelle est la différence entre « consolidation » et « approfondissement » dans le soutien ?",
       "options": [
-        "La consolidation se fait à l'écrit, l'approfondissement à l'oral",
+        "بدائل أخرى خاطئة (1)",
         "La consolidation vise à renforcer et fixer les acquis, l'approfondissement à les dépasser et aller plus loin",
-        "La consolidation s'adresse aux élèves en difficulté, l'approfondissement à toute la classe",
-        "La consolidation enrichit les connaissances, l'approfondissement les refait"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "La consolidation renforce et fixe ce qui a été appris ; l'approfondissement propose des situations plus complexes pour dépasser les acquis et développer davantage la compétence.",
@@ -560,12 +560,12 @@
       "level": null,
       "text": "D'après le document \"Didactique du français\" (Najimi), les fondements de l'enseignement du français au Maroc permettent de",
       "options": [
-        "Développer uniquement la compétence grammaticale",
-        "Définir uniquement les profils d'entrée",
-        "Définir les profils, orienter le choix des contenus et les démarches pédagogiques",
-        "Choisir les contenus sans tenir compte des démarches"
+        "لا يستند إلى أي دليل",
+        "هذا لا ينطبق على الموضوع",
+        "لا علاقة له بالموضوع",
+        "Développer uniquement la compétence grammaticale"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1850,10 +1850,10 @@
       "level": null,
       "text": "Le projet de classe de l'unité 5 inclut une étape de sensibilisation à",
       "options": [
-        "التقاليد والتراث المغربي: يتناول هذا الخيار تقاليد المملكة المغربية وثقافتها، وليس موضوع البيئة وإعادة التدوير.",
-        "الألعاب الشعبية المغربية: يركز هذا الخيار على الألعاب التقليدية التي تلعب في المغرب، وليس على تعزيز مفهوم إعادة التدوير وحماية البيئة.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "L'intérêt du recyclage pour la protection de l'environnement",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -1971,9 +1971,9 @@
       "text": "Selon le document \"Démarche méthodologique\" (5ème/6ème), la phase \"Évaluation/Soutien\" en production écrite consiste à",
       "options": [
         "Présenter les erreurs et animer la correction",
-        "تنظيم ورشة عمل لتقييم الأداء: توفير مساحة للطلاب لتطبيق مهاراتهم وإنتاج أعمال كتابية، ثم مناقشة أدائهم وتحديد النقاط القوية والضعفاء.",
-        "إجراء مناظرة بين الطلاب حول مواضيع متعلقة بالإنتاج الكتابي: يعزز ذلك مهارات التفكير النقدي والحجاج، لكن ليس بشكل مباشر على الأخطاء وطرق التصحيح.",
-        "ثلاثة خيارات خاطئة مفصلة بنفس طول الإجابة الصحيحة ومستوى التفصيل:"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -2120,10 +2120,10 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", l'apprentissage de la lecture en 1ère, 2ème et 3ème années s'appuie sur les activités de la communication orale et sur l'acquisition du vocabulaire. Les habiletés de base en lecture sont",
       "options": [
-        "تطوير القواعد النحوية والصرفية والترقيم والتأليف: رغم أهمية هذه الجوانب في تعلم اللغة، إلا أن هذا الخيار يركز على مهارات معينة ويتجاهل الجوانب الأخرى الضرورية لفهم النصوص والقراءة بسلاسة.",
-        "التركيز حصراً على القواعد الإملائية والترقيم والتأليف والمفردات: هذا الخيار يركز على جوانب محددة ويغفل عن مهارات أخرى مهمة مثل الفهم القرائي والسيولة اللغوية.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "La conscience phonologique, la correspondance phonique-graphique, l'identification des mots, la compréhension et la fluidité",
-        "الخيارات المعدلة ثلاث لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -2480,10 +2480,10 @@
       "level": null,
       "text": "Selon le document \"didactique français Hamdi\", les disciplines enseignées en français au primaire incluent",
       "options": [
-        "Les exercices écrits, la production de l'écrit, le projet de classe",
+        "يعتمد على معلومات غير دقيقة",
         "Les activités orales, la lecture, l'écriture/copie, la dictée",
-        "Les activités de langue (grammaire, conjugaison, orthographe, lexique)",
-        "Les activités orales, la lecture, l'écriture/copie, la dictée, les exercices écrits, la production de l'écrit, le projet de classe et les activités de langue"
+        "خاطئ تماماً ومجرد تخمين",
+        "لا يوجد ما يبرر هذا الخيار"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -2720,12 +2720,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", les thèmes choisis pour les unités en 4ème AEP incluent",
       "options": [
-        "La civilisation marocaine, la vie culturelle artistique, les loisirs, l'agriculture/l'industrie et le commerce, la forêt et le tourisme",
-        "La civilisation marocaine et la vie culturelle artistique",
+        "هذا لا ينطبق على الموضوع",
         "La forêt et le tourisme",
-        "Les loisirs et l'agriculture/l'industrie et le commerce"
+        "谬误 None of the above",
+        "لا يستند إلى أي دليل"
       ],
-      "correctIndex": 2,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2735,12 +2735,12 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", l'évaluation sommative (ou certificative) a pour fonction de",
       "options": [
-        "Dépister les forces et les faiblesses des apprenants",
-        "Adapter l'enseignement aux besoins des apprenants",
+        "الخيار غير مرتبط بالسياق",
         "Réguler les apprentissages en cours de route",
-        "Vérifier les acquis des apprenants et décider du passage dans la classe supérieure"
+        "لا علاقة له بالموضوع",
+        "خيار مخالف للمنهج التعليمي"
       ],
-      "correctIndex": 2,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2765,12 +2765,12 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", les trois pôles essentiels du modèle pédagogique de la réforme sont",
       "options": [
+        "يعتمد على معلومات غير دقيقة",
+        "خاطئ تماماً ومجرد تخمين",
         "La maîtrise des connaissances de base, la maîtrise des langues et l'amélioration de l'offre scolaire",
-        "La formation de qualité, la socialisation et l'épanouissement des apprenants",
-        "La maîtrise des mathématiques, la maîtrise des sciences et la maîtrise des langues",
-        "L'éducation aux valeurs, l'éducation au choix et l'approche par compétences"
+        "لا يستند إلى أي دليل"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2840,10 +2840,10 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la production de l'écrit en 5ème AEP/6ème AEP comporte les étapes suivantes",
       "options": [
-        "يتضمن \"المرحلة التمهيدية للاستماع\" جذب انتباه المتعلمين وتقديم السياق والمفردات الأساسية المتعلقة بموضوع الاستماع. خلال \"المرحلة الرئيسية للاستماع\"، يركز المعلم على فهم النص المسموع وتعزيز المفردات والمهارات اللغوية. بعد الاستماع، يعمل المتعلمين على تقييم فهمهم ومناقشة المحتوى.",
-        "في مرحلة \"التأمل والتجريب\" يتم تشجيع المتعلمين على التفكير في عمليات التعلم وتطبيق المعرفة والمهارات المكتسبة في سياقات جديدة.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Observation et découverte, Compréhension, Application et transfert, Production, Évaluation, Soutien, Approfondissement",
-        "ثلاث خيارات خاطئة مفصلة بنفس مستوى الإجابة الصحيحة ولكن تبقى غير صحيحة:"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -2855,12 +2855,12 @@
       "level": null,
       "text": "Parmi les affirmations suivantes concernant le soutien pédagogique (document \"Enseignement-apprentissage du FLE au primaire\"), laquelle est correcte ?",
       "options": [
-        "Le soutien immédiat s'effectue dans le cadre du projet d'établissement",
-        "Le soutien institutionnel fait appel à l'intervention de toute l'équipe pédagogique",
-        "Le soutien différé/périodique accompagne le processus d'enseignement/apprentissage",
-        "Le soutien immédiat s'effectue lors des semaines de soutien propres à chaque unité"
+        "الدعم المستمر طوال العام الدراسي",
+        "الدعم الجماعي في الفصول المفتوحة",
+        "Le soutien immédiat s'effectue lors des semaines de soutien propres à chaque unité",
+        "الدعم المتأخر بعد الاختبارات النهائية"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2870,12 +2870,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", les thèmes choisis pour les unités en 5ème AEP incluent",
       "options": [
-        "Les Marocains du monde, les devoirs et droits, les TIC, les inventions et les créations, le monde des océans et de l'espace et les jeux et les sports",
-        "Les TIC et les inventions et les créations",
-        "Les Marocains du monde et les devoirs et droits",
-        "Le monde des océans et de l'espace et les jeux et les sports"
+        "التاريخ المحلي والثقافة الشعبية",
+        "Le monde des océans et de l'espace et les jeux et les sports",
+        "العلوم الطبيعية والرياضيات التطبيقية",
+        "الفنون الموسيقية والدراما المدرسية"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2885,12 +2885,12 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", l'évaluation à dimension \"écologique\" se caractérise par",
       "options": [
-        "Une évaluation qui se centre sur les processus mentaux du traitement de l'information",
-        "Une évaluation qui découle d'une pédagogie différenciée",
         "Une évaluation en situation authentique",
-        "Une évaluation qui se veut dynamique, interactionnelle et authentique"
+        "تقييم شفهي بعد الدرس فقط",
+        "تقييم كتابي ثابت في الصف",
+        "اختبار متعدد الخيارات عبر الإنترنت"
       ],
-      "correctIndex": 2,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2931,9 +2931,9 @@
       "text": "D'après le document \"didactique français Hamdi\", les compétences annuelles en 6ème AEP stipulent que l'apprenant doit être capable de produire un texte de",
       "options": [
         "3 à 5 phrases",
-        "10 lignes au moins",
-        "7 lignes au moins à caractère narratif, descriptif, informatif, injonctif, explicatif et/ou argumentatif",
-        "5 lignes au moins"
+        "10 إلى 12 كلمة",
+        "سطر واحد فقط",
+        "فقرة كاملة من عشرة جمل"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3065,12 +3065,12 @@
       "level": null,
       "text": "D'après le document \"Enseignement-apprentissage du FLE au primaire\", les fonctions de l'évaluation diffèrent selon les moments. On distingue",
       "options": [
-        "La fonction prédictive, la fonction pédagogique et la fonction sociale",
-        "بدائل أخرى خاطئة (2)",
-        "بدائل أخرى خاطئة (3)",
-        "بدائل أخرى خاطئة (4)"
+        "وظيفة إحصائية وتقييمية",
+        "وظيفة إدارية وتخطيطية",
+        "وظيفة إرشادية فقط",
+        "La fonction prédictive, la fonction pédagogique et la fonction sociale"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3080,12 +3080,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", les thèmes choisis pour les unités en 6ème AEP incluent",
       "options": [
-        "بدائل أخرى خاطئة (1)",
-        "بدائل أخرى خاطئة (2)",
-        "بدائل أخرى خاطئة (3)",
-        "Des civilisations universelles et la citoyenneté et le comportement civique"
+        "التاريخ المحلي واللغة العربية",
+        "Des civilisations universelles et la citoyenneté et le comportement civique",
+        "العلوم الطبيعية والبيئة",
+        "الرياضة والأنشطة الترفيهية"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3125,12 +3125,12 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", les outils d'évaluation ouverts incluent",
       "options": [
-        "Le texte induit (rédaction d'un texte à partir de consignes claires)",
-        "مهمة السرد الروائي (تدوين قصة بناءً على توجيهات واضحة)",
-        "نشاط المقارنة والمطابقة (مطابقة صور أو نصوص بناءً على خصائص مشتركة)",
-        "الخيارات المعدلة الثلاثة كبدائل للإجابة الصحيحة:"
+        "الاختبار المتعدد الخيارات",
+        "الملف الشخصي للطالب",
+        "المقابلة الشفوية الفردية",
+        "Le texte induit (rédaction d'un texte à partir de consignes claires)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3170,12 +3170,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la poésie en 4ème AEP comporte les étapes suivantes",
       "options": [
+        "تحليل النص فقط",
+        "تطبيق القواعد ثم اختبار",
         "Observation et découverte, Compréhension et conceptualisation, Application et transfert, Évaluation et soutien",
-        "تحليل النص والتعرف على الأنماط، فهم المعاني والأفكار، تكوين العلاقات بين العناصر والمفاهيم",
-        "ممارسة مهارات التلخيص وكتابة الملخصات، تطوير القدرة على تقييم المصادر والمعلومات، تعزيز مهارات البحث والاستقصاء",
-        "ثلاثة خيارات خاطئة مفصّلة بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها غير صحيحة:"
+        "مراجعة الأخطاء ثم تصحيح"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3186,9 +3186,9 @@
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", la production de l'écrit en 1ère année vise à",
       "options": [
         "Produire des textes longs",
-        "Préparer l'apprenant à l'écriture et développer des habiletés perceptives et motrices",
-        "Produire des textes argumentatifs",
-        "Analyser des textes littéraires"
+        "إنتاج قصص خيالية قصيرة",
+        "كتابة جمل بسيطة فقط",
+        "إكمال تمارين إملائية قصيرة"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3260,12 +3260,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la production de l'écrit en 4ème AEP comporte les étapes suivantes",
       "options": [
+        "قراءة النص ثم تلخيصه",
+        "كتابة مسودة ثم مراجعتها",
         "Observation et découverte, Compréhension et conceptualisation, Application et transfert, Évaluation et soutien",
-        "بدائل أخرى خاطئة (2)",
-        "بدائل أخرى خاطئة (3)",
-        "بدائل أخرى خاطئة (4)"
+        "تدريب على النطق ثم كتابة"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3665,12 +3665,12 @@
       "level": null,
       "text": "Dans le guide de la 3ème année primaire, les « rituels » en début de journée ont pour fonction principale de",
       "options": [
+        "لا يوجد ما يبرر هذا الخيار",
+        "谬误 None of the above",
         "Mettre les élèves à l’aise et dédramatiser l’appréhension de la langue",
-        "مناقشة الأحداث والأخبار المحلية والعالمية",
-        "تطبيق تمارين القواعد النحوية المقررة لليوم",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "الخيار غير مرتبط بالسياق"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3695,12 +3695,12 @@
       "level": null,
       "text": "Le guide « Parcours de français » (6AEP) insiste sur le « décloisonnement » des activités. Cela signifie principalement que",
       "options": [
-        "Les élèves doivent travailler en silence et sans interaction",
-        "Chaque activité (grammaire, lecture...) doit ête traitée dans une salle différente",
         "Les liens entre les activités (communication, lecture, langue, production) doivent être renforcés autour d’un thème unique",
-        "Il faut supprimer les séances de grammaire et de conjugaison"
+        "لا يوجد ما يبرر هذا الخيار",
+        "يعتمد على معلومات غير دقيقة",
+        "غير صحيح من الناحية العلمية"
       ],
-      "correctIndex": 2,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3740,12 +3740,12 @@
       "level": null,
       "text": "Selon le guide « L’Oasis des mots » (3AP), l’activité de dictée doit être considérée comme",
       "options": [
+        "لا علاقة له بالموضوع",
+        "خاطئ تماماً ومجرد تخمين",
         "Un simple moment de sanction pour évaluer les fautes d’orthographe",
-        "Une activité exclusive de fin de semestre",
-        "Une situation d’apprentissage de l’orthographe, où l’erreur est une occasion d’apprentissage",
-        "Un exercice de lecture à voix haute"
+        "谬误 None of the above"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4055,10 +4055,10 @@
       "level": null,
       "text": "Dans l’organisation de l’unité didactique en 6AEP (« Parcours de français »), l’unité 1 est spécifiquement dédiée à",
       "options": [
-        "دراسة النصوص الإعلامية: يركز هذا الخيار على تحليل ودراسة النصوص غير الروائية، بدلاً من التركيز على النصوص الروائية كما في الخيار الصحيح.",
-        "تقويم الفصل الدراسي الثاني: يتعلق الأمر بتقويم أداء الطلاب خلال الفصل الدراسي الثاني وليس حول تقييم التشخيص وتحسين المكتسبات.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "L’évaluation diagnostique, la mise à niveau et le renforcement des acquis",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4115,10 +4115,10 @@
       "level": null,
       "text": "Dans le guide « Parcours de français » (6AEP), la fiche pédagogique type pour la lecture comprend obligatoirement des étapes telles que",
       "options": [
-        "تتضمن هذه الخطوة تشجيع التلاميذ على تكرار النص المنقط وتحسين قدراتهم الصوتية والنطق. تعتبر هذه المرحلة بمثابة تسخين صوتي قبل الغوص في أنشطة الفهم والتحليل.",
-        "تهدف هذه الأنشطة إلى تعزيز التفاعل والتعاون بين التلاميذ. يمكن أن تشمل هذه الأنشطة أداء أدوار لشخصيات القصة، الغناء لأغنية تتناسب مع النص، أو القيام بأنشطة تلوين ترتبط بموضوع النص. تعتبر هذه الأنشطة مكملة لعملية التعلم وتساعد في تعزيز المفاهيم المستفادة من القراءة.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Observation/découverte, Compréhension/conceptualisation, Application/transfert, Évaluation/remédiation",
-        "تهدف هذه الخطوة إلى تجهيز التلاميذ للقراءة الصامتة، حيث يمارسون مهارات القراءة السريعة والتفكير العميق حول النص المقروء. يتم تشجيع التلاميذ على تلخيص الأفكار الرئيسية للنص دون النطق بها."
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4146,9 +4146,9 @@
       "text": "L’évaluation sommative, telle que définie dans les guides pédagogiques, intervient à la fin des apprentissages pour",
       "options": [
         "Attester le degré d’acquisition des compétences et des connaissances",
-        "تقديم تغذية راجعة فورية للطلبة والمعلم لتحسين الفهم والتعلم.",
-        "تركيز على تطوير المنهاج الدراسي بناءً على نتائج التقييم.",
-        "الخيارات المُحدّثة بكونها خاطئة ومفصلة:"
+        "الخيار غير مرتبط بالسياق",
+        "يعتمد على معلومات غير دقيقة",
+        "خيار مخالف للمنهج التعليمي"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4160,12 +4160,12 @@
       "level": null,
       "text": "En 3ème année primaire, pour la copie, le passage progressif de l’ardoise au cahier puis au livret (fiche-type) a pour but de",
       "options": [
-        "تشجيع الإسراف والتبذير في توفير الموارد المدرسية",
         "Permettre un entraîtnement progressif et une correction avant le passage au propre",
-        "تجاهل التطور التكنولوجي والتركيز على الأدوات التقليدية فقط",
-        "ثلاثة خيارات خاطئة مفصلة تعادل الإجابة الصحيحة من حيث الطول والتفصيل مع بقاءها خاطئة:"
+        "لا يوجد ما يبرر هذا الخيار",
+        "لا يستند إلى أي دليل",
+        "هذا لا ينطبق على الموضوع"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4175,10 +4175,10 @@
       "level": null,
       "text": "Parmi les assertions suivantes concernant l’enseignement de la lecture en 6AEP, laquelle est erronée selon le Guide « Agir autrement » ?",
       "options": [
-        "Les textes doivent être longs et complexes pour préparer les élèves au collège",
+        "بدائل أخرى خاطئة (1)",
         "La lecture silencieuse et sélective initie l’élève à la lecture rapide pour repérer des informations utiles",
-        "L’exploitation de l’image est essentielle pour permettre aux élèves d’établir des relations entre le texte et le paratexte",
-        "La lecture expressive doit réinvestir les acquis en termes de prosodie (accentuation, intonation, rythme)"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4250,10 +4250,10 @@
       "level": null,
       "text": "La perspective entrepreneuriale et communautaire, citée dans les orientations pédagogiques, relie le projet de classe à",
       "options": [
-        "إغفال دور المتعلم في المساهمة بإيجابية تجاه بيئته الاجتماعية وتعزيز قيم التعاون والمشاركة مع الآخرين.",
-        "التركيز فقط على التطور المهني والشخصي للمتعلم دون الأخذ بعين الاعتبار احتياجات وموارد مجتمعه.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "La communauté et l’environnement social de l’élève, donnant du sens aux apprentissages",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4265,10 +4265,10 @@
       "level": null,
       "text": "D’après les guides, quelle est la fonction principale du livret de l’élève en 6AEP (« Parcours de français ») ?",
       "options": [
-        "الخيار 1 المعدل: يعتبر الدفتر مساحة حصرية للتعاون بين المعلمين للتحقق من تقدم التلاميذ وليس كمساحة فردية للتفاعل.",
-        "الخيار 4 المعدل: يعمل الدفتر كبديل للكتب المدرسية في حالة الغياب، بينما تكمن وظيفته الأساسية في تعزيز التفاعل والنشاط داخل الفصل الدراسي.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Il est un espace individuel pour agir, mais aussi collectif car il fédère la classe autour de supports communs",
-        "الخيار 3 المعدل: الهدف الرئيسي للدفتر هو تقييم الطلاب في نهاية الوحدة التعليمية فقط ولا يساهم في تنمية مهاراتهم خلال باقي الوحدات."
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4280,10 +4280,10 @@
       "level": null,
       "text": "En grammaire, l’identification des compléments d’objet (COD/COI) est facilitée par la maîtrise de la question",
       "options": [
-        "الموقع والزمن: تركز هذه الفئة على السؤال عن مكان حدوث الفعل وزمن وقوعه.",
+        "بدائل أخرى خاطئة (1)",
         "Qui ? Quoi ? / À qui ? À quoi ? De qui ? De quoi ?",
-        "السببيّة والغائيّة: تتناول هذه الفئة السؤال حول الأسباب والنتائج المرتبطة بالفعل الرئيسي أو الجملة.",
-        "الخيارات المعدلة لتصبح بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4295,10 +4295,10 @@
       "level": null,
       "text": "Dans le cadre du soutien pédagogique, le « soutien institutionnel » est caractérisé par",
       "options": [
-        "إجراء تدخّلٍ مؤقتٍ من قِبل المُعلّم داخل الصف الدراسي",
+        "لا يوجد ما يبرر هذا الخيار",
         "Une action menée dans le cadre du projet d’établissement pour les élèves en difficulté majeure",
-        "تكرار بسيط للدرس دون التركيز على احتياجات المتعلمين الصعبة",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "لا يستند إلى أي دليل",
+        "لا علاقة له بالموضوع"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4310,12 +4310,12 @@
       "level": null,
       "text": "Selon « L’Oasis des mots » (3AP), pour l’activité « J’observe et je m’exprime » en oral, l’enseignant doit",
       "options": [
-        "Guider la construction du sens à partir du support visuel en posant des consignes claires",
-        "Lire la description au tableau et demander aux élèves de la recopier",
-        "Demander aux élèves de fermer les yeux et d’imaginer la scène",
-        "Évaluer les élèves en fin de séance uniquement"
+        "يعتمد على معلومات غير دقيقة",
+        "خاطئ تماماً ومجرد تخمين",
+        "خيار مخالف للمنهج التعليمي",
+        "Lire la description au tableau et demander aux élèves de la recopier"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4340,9 +4340,9 @@
       "level": null,
       "text": "En orthographe, la distinction entre « son » et « sont » (4AP) repose sur le fait que",
       "options": [
-        "\"son\" يُستخدَم دائمًا بصيغة الجمع ولا يفرق بين المفرد والجمع.",
-        "عند الحديث عن متجانسين متشابهين في الكتابة، من الضروري التركيز على الفروقات اللغوية والدلالية بينهما. في هذه الحالة، يتعلق الأمر بالتمييز بين الصفة الملكية والفعل \"يكونون\".",
-        "بالرغم من أنهما متجانسان يُكتَبان بنفس الشكل، إلا أن \"son\" يُستخدَم كصفة ملكية ويمكن استبدالها بـ\"mon\"، بينما \"sont\" ليس متجانسًا بل هو ضمير الجمع \"يكونون\".",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
         "Son » est un adjectif possessif (remplaçable par « mon »), tandis que « sont » est le verbe « être » (remplaçable par « étaient »)"
       ],
       "correctIndex": 3,
@@ -4355,12 +4355,12 @@
       "level": null,
       "text": "Quelle affirmation concernant l’évaluation diagnostique en 6ème année est fausse selon le guide ?",
       "options": [
-        "Elle occupe toute la première unité de l’année",
-        "Elle sert à la mise à niveau et au renforcement des acquis",
-        "Elle permet uniquement de sanctionner les lacunes des élèves",
-        "Elle s’appuie sur un cadre de référence établi à partir des activités de la 5ème année"
+        "يعتمد على معلومات غير دقيقة",
+        "غير صحيح من الناحية العلمية",
+        "لا يستند إلى أي دليل",
+        "Elle occupe toute la première unité de l’année"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4386,9 +4386,9 @@
       "text": "L’utilisation des TIC (Technologies de l’Information et de la Communication) dans l’enseignement du français est encouragée pour",
       "options": [
         "Rendre les apprentissages plus motivants et fonctionnels, et ouvrir l’élève sur des pratiques langagières variées",
-        "تحويل وقت التعلّم إلى مُجرد تطبيق للمعرفة اللغوية من خلال البحث عن الصور دون تطوير مهارات استخدام التكنولوجيا والتواصل.",
-        "تَقْليص دور المعلّم كمُيسّر للتعلّم وناقل للمعرفة ليصبح مُحاوِر ومُواكِب للتكنولوجيا المعلوماتية والاتصالية.",
-        "الخيارات المُحدّثة والمفصّلة كخيارات خاطئة:"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4461,9 +4461,9 @@
       "text": "La rubrique « J’observe et je découvre » dans les fiches pédagogiques de la 4ème année sert à",
       "options": [
         "Mettre en place une situation d’entrée pour amener l’élève à découvrir la notion du jour",
-        "تشجيع الطلبة على المشاركة النشطة وتقديم فرصة لهم لتعلم مفهوم اليوم من خلال تجارب عملية.",
-        "توضيح الفكرة الرئيسية وراء النشاط التعليمي وتعزيز فهم التلاميذ للدرس السابق.",
-        "كل الاقتراحات خاطئة"
+        "الخيار غير مرتبط بالسياق",
+        "يعتمد على معلومات غير دقيقة",
+        "لا يوجد ما يبرر هذا الخيار"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4520,12 +4520,12 @@
       "level": null,
       "text": "L’enseignement du français au Maroc, selon les fondements présentés, vise à former des citoyens",
       "options": [
-        "Fiers de leur identité, conscients de leur histoire, socialement intégrés et actifs",
-        "Uniquement bilingues (arabe-français)",
-        "Capables de s’exprimer uniquement en français",
-        "Détachés de leur histoire et de leur culture"
+        "Détachés de leur histoire et de leur culture",
+        "الخيار غير مرتبط بالسياق",
+        "هذا لا ينطبق على الموضوع",
+        "لا يوجد ما يبرر هذا الخيار"
       ],
-      "correctIndex": 3,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4550,12 +4550,12 @@
       "level": null,
       "text": "En 6AEP, lors de la phase « Application/transfert » en lecture, l’élève est amené à",
       "options": [
-        "تكرار النص بشكل ميكانيكي دون تحليل أو تركيب أو نقل للمعرفة.",
+        "谬误 None of the above",
+        "لا علاقة له بالموضوع",
         "Appliquer ce qu’il a appris de manière autonome en analysant, synthétisant ou transférant",
-        "الاعتماد بشكل سلبي على المعلم للاستماع.",
-        "في مستوى 6AEP، خلال مرحلة \"التطبيق / النقل\" في القراءة، يُطلب من الطالب القيام بالآتي عوض الإجابة الصحيحة المذكورة:"
+        "هذا لا ينطبق على الموضوع"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4595,12 +4595,12 @@
       "level": null,
       "text": "Selon le guide « Parcours de français » (6AEP), les activités de langue (grammaire, conjugaison, orthographe) doivent être",
       "options": [
+        "谬误 None of the above",
+        "الخيار غير مرتبط بالسياق",
         "Étudiées séparément, sans lien avec le texte de lecture",
-        "Uniquement réservées à la maison",
-        "Supprimées au profit de l’oral",
-        "Approchées dans le texte afin que l’élève perçoive leur fonctionnement en contexte"
+        "لا علاقة له بالموضوع"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4610,10 +4610,10 @@
       "level": null,
       "text": "En 4ème année primaire, l’étude de l’adjectif qualificatif permet à l’élève de",
       "options": [
-        "في السنة الرابعة من التعليم الابتدائي، دراسة الصفة الكاشفة تساعد التلميذ على: توسيع فهم الموضوع من خلال إضافة تفاصيل أكثر حول الموضوع (الجانب، اللون، الشكل...)",
-        "في السنة الرابعة من التعليم الابتدائي، دراسة الصفة الكاشفة تساعد التلميذ على: تعلم كيفية تغيير صيغة الفعل في الأزمنة المختلفة دون فهم المغزى العميق للأفعال وتطورها عبر الزمن.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Enrichir le nom en lui apportant des précisions (qualité, couleur, forme...)",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4640,10 +4640,10 @@
       "level": null,
       "text": "Dans le développement de la lecture en 2ème année, la discrimination visuelle (reconnaître la lettre dans les mots) sert à",
       "options": [
-        "تعزيز فهم العلاقات بين الحروف والأصوات المرتبطة بها دون التركيز على التمييز البصري.",
+        "تعزيز الفهم القرائي للنصوص",
         "Établir le lien entre la forme écrite de la lettre et le son qu’elle produit",
-        "تدريب القدرة على تحليل الكلمات إلى وحداتها الصوتية الأساسية.",
-        "كل الاقتراحات خاطئة"
+        "تطوير القدرة على حفظ الكلمات",
+        "تحسين مهارة الكتابة السريعة"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4655,12 +4655,12 @@
       "level": null,
       "text": "Le guide de la 3ème année insiste sur la « diversité des approches » (chant, mime, chuchotement) lors de la mémorisations des poèmes pour",
       "options": [
-        "هدر الوقت داخل الفصل",
-        "إرضاء أذواق المدرس",
-        "في هذا الخيار، نؤكد على أهمية تلبية تفضيلات المدرس وأسلوبه الشخصي في التدريس. هذا التوجه لا يتوافق مع الهدف الأساسي من تنويع المقاربات لمساعدة جميع المتعلمين على تذكر القصائد وجعلها أكثر جاذبية لهم.",
-        "Prendre en compte les différents styles d’apprentissage des élèves et rendre l’activité plus engageante"
+        "تقليل وقت التدريب على الإيقاع",
+        "Prendre en compte les différents styles d’apprentissage des élèves et rendre l’activité plus engageante",
+        "زيادة عدد الحروف المتعلمة",
+        "إجبار الطلاب على حفظ النصوص"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4685,10 +4685,10 @@
       "level": null,
       "text": "En 4ème année, l’étude des « connecteurs spatio-temporels » vise à permettre à l’élève de",
       "options": [
-        "في السنة الرابعة، دراسة \"المتصلين المكانيين الزمنيين\" تهدف إلى تمكين التلميذ من:",
+        "بدائل أخرى خاطئة (1)",
         "Situer les actions dans le temps et dans l’espace pour structurer son récit ou sa description",
-        "تعزيز رصيد التلميذ اللغوي بمفردات تتعلق بالصفات والألوان والمفاهيم المرتبطة بها، مما يساعده على التعبير بشكل أدق عن وصفه للأشياء والأحداث.",
-        "توسيع معرفة التلميذ بأنواع الأفعال وصيغها وقواعد تصريفها، وهذا يتعدى موضوع الماضي المركب إلى فهم أعمق لمعاني الأفعال وتصريفاتها في الأزمنة المختلفة."
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4715,9 +4715,9 @@
       "level": null,
       "text": "En 2ème année primaire, la progression en dictée (semaine 1: mi, semaine 2: ma...) est structurée de manière à",
       "options": [
-        "ترديد نصوص أدبية منذ بداية السنة دون تدرج.",
-        "في السنة الثانية من التعليم الابتدائي، يجب أن تتبع مهارة الترديد (التهجي) تسلسل معين:",
-        "الالتزام بالتسلسل الأبجدي في ترديد الكلمات والجمل.",
+        "إدخال القراءة المتقدمة مبكراً",
+        "تدريس الحروف الأبجدية بترتيب عشوائي",
+        "التركيز على القواعد النحوية فقط",
         "Progresser des syllabes simples vers les mots et les phrases, en fonction des graphèmes étudiés"
       ],
       "correctIndex": 3,
@@ -4835,12 +4835,12 @@
       "level": null,
       "text": "En ce qui concerne l’évaluation sommative (fin d’unité), quelle affirmation est exacte ?",
       "options": [
-        "Elle est uniquement orale",
         "Elle permet d’attester le degré d’acquisition des apprentissages en fin de cycle",
-        "Elle intervient au début des apprentissages pour dépister les forces et les faiblesses",
-        "Elle est intégrée au processus d’apprentissage pour identifier les difficultés"
+        "تحدد مستوى الذكاء العام للمتعلم",
+        "تقيس مدى رضا الطالب عن المادة",
+        "تقيم مشاركة الطالب في الأنشطة"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4865,10 +4865,10 @@
       "level": null,
       "text": "Le guide de la 3ème année recommande, pour le traitement des difficultés phonétiques (articulation), de",
       "options": [
-        "معاقبة الطالب الذي يرتكب أخطاء في النطق: العقاب قد يؤدي إلى توتر العلاقة بين الطالب والمعلم، لكن لا يعالج مشكلة النطق مباشرةً.",
+        "بدائل أخرى خاطئة (1)",
         "Écrire les mots mal articulés au tableau, les décomposer en syllabes et entraîner les élèves à les prononcer correctement",
-        "تجاهل الأخطاء لتجنب إحباط الطالب: يمكن اعتماد هذا الأسلوب ظاهريًا، إلا أنه قد لا يساعد الطالب على تحسين نطقه.",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4896,9 +4896,9 @@
       "text": "Les exercices de manipulation de la langue (outils) en bas de chaque texte de lecture en 3AP visent à",
       "options": [
         "Sensibiliser les élèves aux notions de base de la langue (mot, phrase...) sans formaliser la règle",
-        "مُركّزٌ على تطوير مهارات القراءة والفهم لدى التلاميذ من خلال تعزيز قدراتهم على تحديد الأفكار الرئيسة والتفاصيل.",
-        "تهدف هذه التمارين إلى اختبار مدى استيعاب التلاميذ لقواعد اللغة والبناء النحوي للنصوص المقروءة.",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -5000,12 +5000,12 @@
       "level": null,
       "text": "Dans la fiche pédagogique de « L’Oasis des mots » (3AP), la phase « Évaluation » (en fin de séance d’oral) invite l’élève à",
       "options": [
-        "S’auto-évaluer en écoutant les productions de ses camarades et en se corrigeant",
-        "اختيار كلمات عشوائية من النص أو الإجابة بناءً على الحفظ",
-        "إعادة سرد الأحداث الرئيسية بالنص دون فهم عميق",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع كونها خاطئة:"
+        "تقيم أداء المعلم في الشرح",
+        "تكتب ملخصاً عن الدرس للمعلم",
+        "تستمع إلى تسجيلات صوتية فقط",
+        "S’auto-évaluer en écoutant les productions de ses camarades et en se corrigeant"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -5015,12 +5015,12 @@
       "level": null,
       "text": "L’une des grandes priorités du projet « Agir autrement » est de proposer à l’enseignant des outils concrets pour",
       "options": [
-        "تحسين جودة البنية التحتية للمدارس والمنشآت التعليمية",
-        "Faire développer un français fonctionnel répondant aux besoins spécifiques des apprenants",
-        "تعزيز كفاءة المعلمين من خلال توفير موارد تعليمية مُحدَّثة",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "تدريس الأدب الفرنسي الكلاسيكي",
+        "إعداد اختبارات معيارية دولية",
+        "تعزيز مهارات الرياضيات المتقدمة",
+        "Faire développer un français fonctionnel répondant aux besoins spécifiques des apprenants"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -5030,9 +5030,9 @@
       "level": null,
       "text": "Selon l’ensemble des guides pédagogiques, quelle est l’affirmation correcte concernant le rôle de l’enseignant dans l’approche actionnelle ?",
       "options": [
-        "L’enseignant est un simple transmetteur de connaissances",
-        "L’enseignant est un animateur qui organise l’acte d’apprentissage et place l’éléve au cœur de l’action",
-        "L’enseignant doit laisser les élèves travailler en totale autonomie sans intervention",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
         "L’enseignant doit se limiter à corriger les fautes d’orthographe"
       ],
       "correctIndex": 3,
