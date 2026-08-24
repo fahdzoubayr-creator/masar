@@ -554,7 +554,7 @@ class _OptionTile extends StatelessWidget {
       border = AppColors.quizOk;
       bg = AppColors.quizOk.withValues(alpha: 0.16);
       letterBg = AppColors.quizOk;
-      letterColor = const Color(0xFF3A2B00);
+      letterColor = const Color(0xFF06203A);
     } else if (state == _OptionState.wrong) {
       border = AppColors.quizErr;
       bg = AppColors.quizErr.withValues(alpha: 0.15);
