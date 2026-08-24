@@ -12,6 +12,9 @@ class AppColors {
   static const cream = Color(0xFFF4EEDF);
   static const ok = Color(0xFF5FAE82);
   static const err = Color(0xFFD2664F);
+  // ألوان حكم الكويز: أصفر واضح للإجابة الصحيحة، أحمر نقي للخاطئة.
+  static const quizOk = Color(0xFFFFC94A);
+  static const quizErr = Color(0xFFE5484D);
   static const muted = Color(0xFF8FB5AE);
 }
 

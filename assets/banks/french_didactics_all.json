@@ -290,9 +290,9 @@
       "level": null,
       "text": "Qu'appelle-t-on « tutorat » dans la gestion des activités de classe ?",
       "options": [
-        "Une technique de correction collective des cahiers d'exercices",
-        "Une situation où l'enseignant suit individuellement chaque élève pendant toute la séance",
-        "Un groupe de soutien organisé après les heures de classe",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
         "Une organisation où un élève plus avancé apporte une aide à un camarade en difficulté"
       ],
       "correctIndex": 3,
@@ -410,12 +410,12 @@
       "level": null,
       "text": "Quelle est la différence entre une évaluation critériée et une évaluation normative ?",
       "options": [
-        "L'évaluation critériée est réservée aux sciences, l'évaluation normative aux langues",
-        "L'évaluation critériée compare l'élève à la moyenne de la classe, l'évaluation normative aux critères de réussite",
-        "L'évaluation critériée compare la production de l'élève à des critères de réussite prédéfinis, l'évaluation normative à la moyenne du groupe",
-        "L'évaluation critériée se fait à l'oral, l'évaluation normative à l'écrit"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "L'évaluation critériée compare la production de l'élève à des critères de réussite prédéfinis, l'évaluation normative à la moyenne du groupe"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "L'évaluation critériée mesure la production par rapport à des critères et indicateurs fixés à l'avance ; l'évaluation normative situe l'élève par rapport au groupe (moyenne de la classe).",
       "source": "Enseignement-apprentissage du FLE — curriculum 2021 (Bonaga/Boukhanker)",
       "situation": null
@@ -1925,12 +1925,12 @@
       "level": null,
       "text": "Selon le canevas méthodologique, la séance d'\"Écriture/Copie\" en 1ère année inclut une phase préparatoire où l'enseignant",
       "options": [
-        "يُعنَى بتحديد الأهداف التعليمية الخاصة بمهارة الكتابة ونسخ النصوص.",
-        "Trace le graphème au tableau en minuscule cursive",
-        "يُرَكِّز على تنمية مهارات الخط العربي وتحسينه لدى التلاميذ.",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Trace le graphème au tableau en minuscule cursive"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1955,12 +1955,12 @@
       "level": null,
       "text": "D'après le document \"Didactique du français\" (Najimi), l'apprentissage de la lecture en 2ème année s'appuie sur",
       "options": [
-        "نسخ النصوص الطويلة: بالرغم من أن نسخ النصوص يمكن أن يكون جزءاً من العملية التعليمية، إلا أنه ليس العامل الرئيسي لتعلم القراءة في الصف الثاني الابتدائي وفقاً للمصدر المعطى.",
-        "دراسة القواعد النحوية: بينما تعلم القواعد النحوية مهم في تعلم اللغة الفرنسية، إلا أن التركيز في الصف الثاني الابتدائي يجب أن يكون على الأنشطة المتعلقة بالتواصل الشفهي واكتساب المفردات.",
         "Les activités de communication orale et l'acquisition du vocabulaire",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 2,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2510,9 +2510,9 @@
       "level": null,
       "text": "Selon le document \"didactique français Hamdi\", la séance de \"Grammaire\" en 4ème AEP se déroule en deux phases principales",
       "options": [
-        "الملاحظة والاكتشاف (Observation et découverte)",
-        "تتمثل الجلسة المخصصة لـ\"Grammaire\" في المستوى الرابع من التعليم الابتدائي في مرحلتين رئيسيتين. الإجابة الصحيحة هي:",
-        "التطبيق والنقل (Application et transfert)",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
         "Observation et découverte, et Application et transfert"
       ],
       "correctIndex": 3,
@@ -2525,12 +2525,12 @@
       "level": null,
       "text": "D'après le document \"Enseignement-apprentissage du FLE au primaire\", l'évaluation diagnostique a pour fonction principale de",
       "options": [
-        "Dépister les forces et les faiblesses ainsi que le degré de préparation des apprenants",
         "Mesurer le degré de réalisation des objectifs en fin d'apprentissage",
-        "Attribuer une note chiffrée",
-        "Certifier les acquis des apprenants"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3065,12 +3065,12 @@
       "level": null,
       "text": "D'après le document \"Enseignement-apprentissage du FLE au primaire\", les fonctions de l'évaluation diffèrent selon les moments. On distingue",
       "options": [
-        "La fonction d'orientation, la fonction de régulation et la fonction de certification",
-        "La fonction d'adaptation, la fonction de facilitation et la fonction de vérification",
-        "La fonction diagnostique, la fonction formative et la fonction sommative",
-        "La fonction prédictive, la fonction pédagogique et la fonction sociale"
+        "La fonction prédictive, la fonction pédagogique et la fonction sociale",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 3,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3080,12 +3080,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", les thèmes choisis pour les unités en 6ème AEP incluent",
       "options": [
-        "Les défis de la vie contemporaine et Art et Créativité",
-        "Des civilisations universelles, la citoyenneté et le comportement civique, Sciences et Technologies, l'énergie dans notre vie, les défis de la vie contemporaine et Art et Créativité",
-        "Des civilisations universelles et la citoyenneté et le comportement civique",
-        "Sciences et Technologies et l'énergie dans notre vie"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Des civilisations universelles et la citoyenneté et le comportement civique"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3261,9 +3261,9 @@
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la production de l'écrit en 4ème AEP comporte les étapes suivantes",
       "options": [
         "Observation et découverte, Compréhension et conceptualisation, Application et transfert, Évaluation et soutien",
-        "تتضمن هذه المرحلة التمهيدية لعملية الكتابة خطوات عدة:",
-        "استخلاص الفكرة الرئيسية: يتم توجيه التلاميذ لتحديد الفكرة الرئيسية التي يرغبون في تناولها في كتابتهم.",
-        "ثلاثة خيارات خاطئة مفصلة وبنفس مستوى الإجابة الصحيحة:"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3320,12 +3320,12 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique du projet de classe en 1ère AEP comporte les étapes suivantes",
       "options": [
-        "في هذا السياق، تتضمن العملية التعليمية تحديد المشروع من خلال فهم احتياجات التلاميذ وأهداف المنهاج. بعد ذلك، يأتي مرحلة استيعاب المحتوى المتعلق بالمشروع والتي تشمل القراءة والكتابة والقواعد والنحو. تليها مرحلة تطبيق المعرفة المكتسبة من خلال التمارين والأعمال الكتابية. وأخيراً، تأتي مرحلة تقييم المشروع وفهم النتائج المترتبة عليه وتعديل الخطط التعليمية بناءً على ذلك.",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "Identification du projet, Réalisation du projet, Réalisation du projet (suite), Réalisation du projet, Présentation du projet",
-        "تتضمن العملية التعليمية تقديم مادة تعليمية محددة للتلاميذ مثل الإملاء والنسخ والأنشطة التدريبية على القواعد اللغوية والتدرب على كتابة نصوص بسيطة. بعد ذلك، يتم توجيه التلاميذ لتطوير مهارات التواصل من خلال التحدث والاستماع والأنشطة الجماعية. تنتهي المرحلة بتقييم",
-        "تبدأ العملية التعليمية بإجراء ملاحظات حول بيئة التلاميذ واهتماماتهم وسلوكياتهم. بعد ذلك، يتم مساعدة التلاميذ على فهم المحتوى المعرفي للمشروع من خلال تمارين الفهم القرائي وتحليل النصوص الكتابية والدراسات الاجتماعية. ينتقل التلاميذ بعدها إلى مرحلة ممارسة المهارات اللغوية من خلال الأنشطة الكتابية والشفهية والمناقشات الجماعية. تنتهي العملية التعليمية بتقييم أداء التلاميذ وتقديم التغذية الراجعة لتحسين الفهم والتطبيق."
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3441,9 +3441,9 @@
       "text": "D'après le document \"didactique français Hamdi\", les compétences annuelles en 2ème AEP stipulent que l'apprenant doit être capable de",
       "options": [
         "Copier et écrire sous dictée une phrase courte et simple",
-        "Comprendre et produire des énoncés courts, simples et variés",
-        "Comprendre et produire des énoncés courts, simples et variés, lire des syllabes, des mots et des phrases simples, copier et écrire sous dictée une phrase courte et simple",
-        "Lire des syllabes, des mots et des phrases simples"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3470,10 +3470,10 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", la réforme du curriculum s'inscrit dans la continuité des réformes en cours, notamment pour ce qui concerne les trois entrées stratégiques",
       "options": [
-        "La maîtrise des connaissances de base, la maîtrise des langues et l'amélioration de l'offre scolaire",
+        "بدائل أخرى خاطئة (1)",
         "L'approche par compétences, l'éducation aux valeurs et l'éducation au choix",
-        "La formation de qualité, la socialisation et l'épanouissement des apprenants",
-        "La communication, l'action et la réflexion"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -3500,10 +3500,10 @@
       "level": null,
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la poésie en 3ème AEP comporte les étapes suivantes",
       "options": [
-        "في مستوى الملاحظة والاكتشاف، يمكن للتلميذ استكشاف الأشكال الشعرية المختلفة وقراءة بعض النصوص الشعرية لفهم البنية الأساسية للقصيدة.",
+        "بدائل أخرى خاطئة (1)",
         "Observation et découverte, Étude du fond et mémorisation du début, Étude de la forme et mémorisation de la fin, Récitation",
-        "بعد مرحلة الملاحظة والاكتشاف، يمكن للتلميذ ممارسة مهارة الكتابة والشعر الحر للتعبير عن أفكارهم ومشاعرهم بأبيات شعرية بسيطة.",
-        "الخيارات المُحدّثة والتي تكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -3515,10 +3515,10 @@
       "level": null,
       "text": "Selon le document \"Enseignement-apprentissage du FLE au primaire\", les compétences à évaluer en didactique des langues sont généralement au nombre de",
       "options": [
-        "2 (compréhension et production)",
+        "بدائل أخرى خاطئة (1)",
         "3 (compréhension, production et interaction)",
-        "4 (compréhension orale, compréhension écrite, production orale et production écrite)",
-        "5 (compréhension orale, compréhension écrite, production orale, production écrite et interaction)"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -3575,12 +3575,12 @@
       "level": null,
       "text": "Selon le Guide de la 4ème année primaire (« Mon livre de français »), la planification annuelle des apprentissages doit impérativement s’articuler autour de",
       "options": [
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "La progression linéaire du manuel scolaire, sans dérogation possible",
-        "Les projets de classe, qui sont le cadre privilégié de l’opérationnalisation des compétences",
-        "Les seules compétences linguistiques (grammaire et conjugaison)",
-        "Les évaluations certificatives de fin de semestre"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3785,12 +3785,12 @@
       "level": null,
       "text": "Dans le guide de la 4ème année, la phrase exclamative est caractérisée par",
       "options": [
-        "في دليل الصف الرابع، تتميز العبارة التعجبية ب:",
         "L’utilisation du point d’exclamation et souvent des mots introducteurs comme « Quel », « Comme",
-        "استخدام علامة التعجب بشكل إلزامي وغالباً ما تكون الكلمات التمهيدية مثل \"أي\" و\"كم\".",
-        "عدم وجود فعل ضروري في العادة وغالباً ما تكون الكلمات التمهيدية مثل \"أي\" أو \"كم\"."
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3815,12 +3815,12 @@
       "level": null,
       "text": "En ce qui concerne l’évaluation formative dans le cycle primaire, laquelle des affirmations suivantes est correcte selon les guides ?",
       "options": [
-        "Elle n’est pas prise en compte par l’enseignant",
-        "Elle permet de mesurer le degré de réalisation des objectifs d’apprentissage pour réguler l’enseignement",
-        "Elle intervient uniquement en fin d’année",
-        "Elle est strictement identique à l’évaluation diagnostique"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Elle intervient uniquement en fin d’année"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3860,12 +3860,12 @@
       "level": null,
       "text": "Selon le guide de la 6AEP (« Parcours de français »), la rationalisation des apprentissages consiste à",
       "options": [
-        "Ne retenir que les ressources nécessaires et suffisantes pour l’acquisition de la compétence",
-        "Allonger la durée des séances de cours",
         "Ajouter le plus de contenus possible pour enrichir l’élève",
-        "Supprimer toutes les activités artistiques et poétiques"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 2,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3875,12 +3875,12 @@
       "level": null,
       "text": "Dans l’approche préconisée par « L’Oasis des mots » (3AP), la phase « Observation / Découverte » dans une séance de lecture a pour but de",
       "options": [
-        "تشجيع الطلاب على صياغة افتراضات حول المعنى من خلال الدعم التصويري والإيكونوغرافي.",
-        "تعزيز مهارات تحليل الرموز والإشارات لفهم المحتوى المقروء بشكل أعمق.",
-        "تهدف مرحلة \"الملاحظة / الاكتشاف\" خلال جلسة القراءة إلى:",
-        "Amener les élèves à formuler des hypothèses de sens à partir du support iconique"
+        "Amener les élèves à formuler des hypothèses de sens à partir du support iconique",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 3,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3935,12 +3935,12 @@
       "level": null,
       "text": "Selon le guide de la 3ème année, les « jeux de rôles » dans les activités orales (semaine 2) servent à",
       "options": [
-        "Faire uniquement travailler les élèves les plus brillants",
         "Occuper les élèves en fin de journée",
-        "Permettre une appropriation active des moyens langagiers dans des situations simulées",
-        "Évaluer les compétences théâtrales des élèves"
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4205,12 +4205,12 @@
       "level": null,
       "text": "Dans les « Activités orales » de la 3ème année, la séance « J’écoute et je comprends » se déroule",
       "options": [
-        "En s’appuyant sur les gestes, les mimiques et les illustrations pour faciliter la compréhension",
-        "تجاهل استخدام الوسائل المرئية والإيماءات لتوضيح الفهم، مما قد يشتت انتباه الطالب.",
-        "استخدام الكتب المغلقة فقط دون اللجوء إلى الصور والإشارات المبسطة لفهم المحتوى.",
-        "في أنشطة الاستماع والفهم خلال السنة الثالثة من التعليم الابتدائي، تُجرى جلسة \"أنا أستمع وأفهم\" بالاعتماد على:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "En s’appuyant sur les gestes, les mimiques et les illustrations pour faciliter la compréhension"
       ],
-      "correctIndex": 0,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4235,12 +4235,12 @@
       "level": null,
       "text": "En 2ème année primaire, le découpage des mots en syllabes lors des activités de lecture et d’écriture aide l’élève à",
       "options": [
-        "تعزيز مهارات التفكير النقدي والتحليل",
-        "استيعاب مبادئ القواعد النحوية الأساسية",
-        "Améliorer sa prononciation et à mieux comprendre le principe alphabétique",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Améliorer sa prononciation et à mieux comprendre le principe alphabétique"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4760,12 +4760,12 @@
       "level": null,
       "text": "Lors de l’apprentissage du code en 2AP, la décomposition de mots en syllabes (ex: ba-na-ne) aide l’élève à",
       "options": [
-        "تطوير القدرة على تحديد الحالات الإعرابية للفعل",
-        "تعلم كيفية تهجئة الكلمة وإمكانياتها الصوتية المتعددة",
-        "Mettre en relation les unités sonores et les unités graphiques pour le décodage",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Mettre en relation les unités sonores et les unités graphiques pour le décodage"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4790,12 +4790,12 @@
       "level": null,
       "text": "Le guide de la 4ème année précise que la formation des mots par dérivation (préfixes et suffixes) est un objectif du domaine lexical pour",
       "options": [
-        "تعلم كيفية توظيف القواعد النحوية للتحكم في ترتيب الكلمات والبناء اللغوي للجملة",
-        "Aider les élèves à déduire le sens de mots inconnus et à enrichir leur vocabulaire",
-        "تعزيز قدرة الطلاب على التعرف على الأنماط الصوتية وتطبيقها على مفردات جديدة",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Aider les élèves à déduire le sens de mots inconnus et à enrichir leur vocabulaire"
       ],
-      "correctIndex": 1,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4910,12 +4910,12 @@
       "level": null,
       "text": "Selon le guide de la 4ème année, pour la dictée, l’enseignant doit privilégier des stratégies telles que",
       "options": [
-        "سماع كلمات بشكل منفصل دون سياق مناسب وكتابة عشوائية",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "La relecture guidée du texte dicté et l’exploitation pédagogique des erreurs",
-        "التركيز فقط على السرعة والدقة دون توجيه للمراجعة والتحقّق المشترك",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4940,12 +4940,12 @@
       "level": null,
       "text": "Le choix des thèmes des unités (ex: « La civilisation marocaine », « La forêt ») en 4AP vise à",
       "options": [
-        "تشجيع الطلاب على الانفصال عن واقعهم والتفاعل مع موضوعات لا ترتبط ببيئتهم أو تاريخهم.",
-        "اتباع موضوعات محددة دولياً بشكل ميكانيكي دون مراعاة السياق المغربي والثقافة المحلية.",
-        "Constituer un univers de référence solide et motivant pour l’élève, en lien avec son environnement",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
+        "بدائل أخرى خاطئة (3)",
+        "Constituer un univers de référence solide et motivant pour l’élève, en lien avec son environnement"
       ],
-      "correctIndex": 2,
+      "correctIndex": 3,
       "explanation": "",
       "source": null,
       "situation": null

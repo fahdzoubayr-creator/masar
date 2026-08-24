@@ -155,12 +155,12 @@
       "level": null,
       "text": "L'approche actionnelle dans l'enseignement du FLE considère l'apprenant comme",
       "options": [
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "un acteur social accomplissant des tâches dans des situations de communication",
-        "يعتبر المتعلم في النهج العملي للتعليم اللغوي والثقافي وكيانا ثابتا يتلقى المعلومات والقواعد دون تفاعل مع مواقف التواصل.",
-        "ينحصر دور المتعلم في تقليد المعلم فقط دون المشاركة الفعّالة والتفاعل مع سياقات التواصل المتنوعة.",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "Dans l'approche actionnelle, l'apprenant est un acteur social qui réalise des tâches (simples et complexes) mobilisant des activités langagières dans un contexte donné.",
       "source": "CECRL — Approche actionnelle",
       "situation": null
@@ -185,12 +185,12 @@
       "level": null,
       "text": "L'exploitation de l'image fixe en classe de français au primaire sert à",
       "options": [
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "déclencher la parole et soutenir la compréhension et l'expression",
-        "استخدام الصورة الثابتة في الفصل الدراسي للغة الفرنسية في المرحلة الابتدائية يقتصر على إضفاء لمسة جمالية على الكراسات فقط.",
-        "الهدف من توظيف الصورة الثابتة هو تزيين دفاتر التلاميذ دون أن يسهم ذلك في تحفيز الكلام وتعزيز الفهم والتواصل باللغة الفرنسية.",
-        "كل الاقتراحات خاطئة"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "L'image est un support déclencheur de prise de parole et un appui à la compréhension ; elle favorise la description, la narration et l'interprétation.",
       "source": "Guide pédagogique — Support image",
       "situation": null
@@ -455,10 +455,10 @@
       "level": null,
       "text": "La séance de remédiation orthographique doit se fonder sur",
       "options": [
-        "اختيار تمارين عشوائية دون ربطها بأخطاء الطلاب الفعلية",
+        "بدائل أخرى خاطئة (1)",
         "les erreurs réellement commises par les élèves lors des productions",
-        "الاعتماد على إملاء نصوص خارج المنهاج المستخدم في الفصل الدراسي",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
       "correctIndex": 1,
       "explanation": "La remédiation s'appuie sur l'analyse des erreurs constatées dans les productions et dictées des élèves, pour proposer des activités ciblées de traitement.",
@@ -470,12 +470,12 @@
       "level": null,
       "text": "En expression orale au primaire, le récit d'expérience vécue permet à l'élève de",
       "options": [
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "raconter un événement vécu en respectant l'ordre des faits et en s'exprimant clairement",
-        "تكرار جمل عشوائية دون فهم المعاني أو السياق ودون تحسين مهارات النطق والتركيب اللغوي",
-        "إعادة سرد نص مكتوب من قبل المعلم دون توضيح الأحداث أو المشاعر المشاركة",
-        "ترديد أبيات من الشعر عن ظهر قلب دون الربط بين الكلمات ومعاني القصيدة"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 2,
       "explanation": "Le récit d'expérience vécue mobilise l'élève comme locuteur: il organise son propos, respecte la chronologie et développe son aisance à l'oral.",
       "source": "Guide pédagogique — Expression orale",
       "situation": null
@@ -785,12 +785,12 @@
       "level": null,
       "text": "La production orale en interaction se distingue de la production orale en continu par",
       "options": [
+        "بدائل أخرى خاطئة (1)",
         "l'alternance des tours de parole entre deux ou plusieurs interlocuteurs",
-        "يختلف الإنتاج الشفهي التفاعلي عن الإنتاج الشفهي المستمر في كون الأول يتطلب تعديل الجمل والفقرات بناءً على ردود أفعال وتجيب على استفسارات الآخرين. بينما في الإنتاج الشفهي المستمر، يركز المتحدث على إيصال معلوماته دون تفاعل مباشر مع المستمع أو الجمهور.",
-        "في الإنتاج الشفهي التفاعلي، تتميز المحادثات بتبادل الأدوار بين شخصين أو أكثر لتبادل الكلام ومناقشة موضوع معين. بينما في الإنتاج الشفهي المستمر، يتحدث شخص واحد دون مشاركة الآخرين ويتناول موضوعاً أقل تعقيداً.",
-        "ثلاثة خيارات خاطئة مع تفصيل أكثر:"
+        "بدائل أخرى خاطئة (3)",
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 0,
+      "correctIndex": 1,
       "explanation": "L'interaction orale implique un échange: prendre la parole, écouter, réagir, négocier le sens, contrairement au monologue de la production continue.",
       "source": "CECRL — Activités langagières",
       "situation": null
@@ -890,12 +890,12 @@
       "level": null,
       "text": "La lecture à voix haute en classe de FLE doit être précédée de",
       "options": [
-        "تقييم فوري غير مُصنَّف للكلمات الصعبة المُكتشفة خلال القراءة الصامتة",
+        "بدائل أخرى خاطئة (1)",
+        "بدائل أخرى خاطئة (2)",
         "un travail de compréhension et de préparation (lecture silencieuse, repérage des mots difficiles)",
-        "إجراء اختبار فهم سريع عبر طرح أسئلة قبل القراءة الجهرية",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
+        "بدائل أخرى خاطئة (4)"
       ],
-      "correctIndex": 1,
+      "correctIndex": 2,
       "explanation": "On ne lit à voix haute que ce que l'on a compris ; la préparation (lecture silencieuse, découpage, entraînement) est indispensable avant la lecture oralisée.",
       "source": "Didactique de la lecture — Lecture à voix haute",
       "situation": null

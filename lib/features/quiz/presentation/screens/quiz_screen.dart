@@ -551,15 +551,15 @@ class _OptionTile extends StatelessWidget {
     Color letterColor = AppColors.goldSoft;
 
     if (state == _OptionState.correct) {
-      border = AppColors.ok;
-      bg = AppColors.ok.withValues(alpha: 0.15);
-      letterBg = AppColors.ok;
-      letterColor = const Color(0xFF06201F);
+      border = AppColors.quizOk;
+      bg = AppColors.quizOk.withValues(alpha: 0.16);
+      letterBg = AppColors.quizOk;
+      letterColor = const Color(0xFF3A2B00);
     } else if (state == _OptionState.wrong) {
-      border = AppColors.err;
-      bg = AppColors.err.withValues(alpha: 0.15);
-      letterBg = AppColors.err;
-      letterColor = const Color(0xFF06201F);
+      border = AppColors.quizErr;
+      bg = AppColors.quizErr.withValues(alpha: 0.15);
+      letterBg = AppColors.quizErr;
+      letterColor = Colors.white;
     }
 
     return Opacity(
@@ -573,7 +573,13 @@ class _OptionTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: border, width: 1.5),
+            border: Border.all(
+              color: border,
+              width: (state == _OptionState.correct ||
+                      state == _OptionState.wrong)
+                  ? 2.4
+                  : 1.5,
+            ),
           ),
           child: Row(
             children: [
