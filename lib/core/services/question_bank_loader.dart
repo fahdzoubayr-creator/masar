@@ -14,7 +14,6 @@ class QuestionBankLoader {
   static Map<String, List<Question>>? _bank;
 
   static const _bankPaths = <String>[
-    'assets/banks/amazigh_didactics.json',
     'assets/banks/animation.json',
     'assets/banks/arabic_didactics.json',
     'assets/banks/development_psychology.json',

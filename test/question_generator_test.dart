@@ -243,12 +243,11 @@ Les exercices structuraux aident à la mémorisation des structures.
         reason: 'بنك الكفاءة المهنية يُفضَّل عند توليد الكويز');
   });
 
-  test('بنوك الديداكتيك: رياضيات، نشاط علمي، أمازيغية، فرنسية', () async {
+  test('بنوك الديداكتيك: رياضيات، نشاط علمي، فرنسية', () async {
     final checks = [
       ('ديداكتيك الرياضيات', 'التخطيط والتدبير'),
       ('ديداكتيك الرياضيات', 'التقويم والدعم'),
       ('ديداكتيك النشاط العلمي', null),
-      ('ديداكتيك اللغة الأمازيغية', null),
     ];
     for (final (folder, topic) in checks) {
       final list = await QuestionGenerator.generateForFolder(folder,
@@ -261,19 +260,13 @@ Les exercices structuraux aident à la mémorisation des structures.
     }
   });
 
-  test('النشاط العلمي والأمازيغية: بنك المجلد لا يُخلط', () async {
+  test('النشاط العلمي: بنك المجلد لا يُخلط', () async {
     final science = await QuestionGenerator.generateForFolder(
         'ديداكتيك النشاط العلمي',
         topic: 'التخطيط والتدبير الديدكتيكي',
         count: 8);
-    final amazigh = await QuestionGenerator.generateForFolder(
-        'ديداكتيك اللغة الأمازيغية',
-        topic: 'التخطيط والتدبير الديدكتيكي',
-        count: 8);
     expect(science, isNotEmpty);
-    expect(amazigh, isNotEmpty);
     expect(science.every((q) => q.subject == 'ديداكتيك النشاط العلمي'), isTrue);
-    expect(amazigh.every((q) => q.subject == 'ديداكتيك اللغة الأمازيغية'), isTrue);
   });
 
   test('المصادر موثقة ومتنوعة: لا مصادر وهمية في بنك الكفاءة المهنية', () {
