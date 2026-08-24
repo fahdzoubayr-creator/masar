@@ -621,11 +621,11 @@
       "text": "L'unité 1 du guide pédagogique (Thème: La famille) vise à identifier les phonèmes",
       "options": [
         "تحليل البنية السردية لقصة \"الحلوى المرة",
-        "كل الاقتراحات خاطئة",
+        "تحليل البنية السردية لقصة \"الصديق الغريب",
         "تحليل البنية السردية لرواية \"سمفونية الصحراء\"",
-        "تحليل البنية السردية لقصة \"الصديق الغريب"
+        "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -996,11 +996,11 @@
       "text": "L'unité 2 du guide (Thème: L'école) vise à identifier les phonèmes",
       "options": [
         "تحليل النصوص الأدبية لفهم السياق التاريخي والثقافي",
-        "كل الاقتراحات خاطئة",
+        "تحليل الرسومات البيانية لتطور اللغة عند الأطفال الفرنسيين.",
         "تطوير استراتيجيات تعليم اللغة الفرنسية للمتعلمين ذوي مستويات مختلفة",
-        "تحليل الرسومات البيانية لتطور اللغة عند الأطفال الفرنسيين."
+        "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1300,7 +1300,7 @@
         "شرح القواعد بالعربية الفصحى",
         "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1645,7 +1645,7 @@
         "تطبيق الاستراتيجية المناسبة حسب السياق والتعرف على الصوائت",
         "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1926,11 +1926,11 @@
       "text": "Selon le canevas méthodologique, la séance d'\"Écriture/Copie\" en 1ère année inclut une phase préparatoire où l'enseignant",
       "options": [
         "يُعنَى بتحديد الأهداف التعليمية الخاصة بمهارة الكتابة ونسخ النصوص.",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "Trace le graphème au tableau en minuscule cursive",
         "يُرَكِّز على تنمية مهارات الخط العربي وتحسينه لدى التلاميذ.",
-        "Trace le graphème au tableau en minuscule cursive"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -1971,9 +1971,9 @@
       "text": "Selon le document \"Démarche méthodologique\" (5ème/6ème), la phase \"Évaluation/Soutien\" en production écrite consiste à",
       "options": [
         "Présenter les erreurs et animer la correction",
-        "ثلاثة خيارات خاطئة مفصلة بنفس طول الإجابة الصحيحة ومستوى التفصيل:",
+        "تنظيم ورشة عمل لتقييم الأداء: توفير مساحة للطلاب لتطبيق مهاراتهم وإنتاج أعمال كتابية، ثم مناقشة أدائهم وتحديد النقاط القوية والضعفاء.",
         "إجراء مناظرة بين الطلاب حول مواضيع متعلقة بالإنتاج الكتابي: يعزز ذلك مهارات التفكير النقدي والحجاج، لكن ليس بشكل مباشر على الأخطاء وطرق التصحيح.",
-        "تنظيم ورشة عمل لتقييم الأداء: توفير مساحة للطلاب لتطبيق مهاراتهم وإنتاج أعمال كتابية، ثم مناقشة أدائهم وتحديد النقاط القوية والضعفاء."
+        "ثلاثة خيارات خاطئة مفصلة بنفس طول الإجابة الصحيحة ومستوى التفصيل:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -2122,10 +2122,10 @@
       "options": [
         "تطوير القواعد النحوية والصرفية والترقيم والتأليف: رغم أهمية هذه الجوانب في تعلم اللغة، إلا أن هذا الخيار يركز على مهارات معينة ويتجاهل الجوانب الأخرى الضرورية لفهم النصوص والقراءة بسلاسة.",
         "التركيز حصراً على القواعد الإملائية والترقيم والتأليف والمفردات: هذا الخيار يركز على جوانب محددة ويغفل عن مهارات أخرى مهمة مثل الفهم القرائي والسيولة اللغوية.",
-        "الخيارات المعدلة ثلاث لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:",
-        "La conscience phonologique, la correspondance phonique-graphique, l'identification des mots, la compréhension et la fluidité"
+        "La conscience phonologique, la correspondance phonique-graphique, l'identification des mots, la compréhension et la fluidité",
+        "الخيارات المعدلة ثلاث لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -2842,10 +2842,10 @@
       "options": [
         "يتضمن \"المرحلة التمهيدية للاستماع\" جذب انتباه المتعلمين وتقديم السياق والمفردات الأساسية المتعلقة بموضوع الاستماع. خلال \"المرحلة الرئيسية للاستماع\"، يركز المعلم على فهم النص المسموع وتعزيز المفردات والمهارات اللغوية. بعد الاستماع، يعمل المتعلمين على تقييم فهمهم ومناقشة المحتوى.",
         "في مرحلة \"التأمل والتجريب\" يتم تشجيع المتعلمين على التفكير في عمليات التعلم وتطبيق المعرفة والمهارات المكتسبة في سياقات جديدة.",
-        "ثلاث خيارات خاطئة مفصلة بنفس مستوى الإجابة الصحيحة ولكن تبقى غير صحيحة:",
-        "Observation et découverte, Compréhension, Application et transfert, Production, Évaluation, Soutien, Approfondissement"
+        "Observation et découverte, Compréhension, Application et transfert, Production, Évaluation, Soutien, Approfondissement",
+        "ثلاث خيارات خاطئة مفصلة بنفس مستوى الإجابة الصحيحة ولكن تبقى غير صحيحة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3172,8 +3172,8 @@
       "options": [
         "Observation et découverte, Compréhension et conceptualisation, Application et transfert, Évaluation et soutien",
         "تحليل النص والتعرف على الأنماط، فهم المعاني والأفكار، تكوين العلاقات بين العناصر والمفاهيم",
-        "ثلاثة خيارات خاطئة مفصّلة بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها غير صحيحة:",
-        "ممارسة مهارات التلخيص وكتابة الملخصات، تطوير القدرة على تقييم المصادر والمعلومات، تعزيز مهارات البحث والاستقصاء"
+        "ممارسة مهارات التلخيص وكتابة الملخصات، تطوير القدرة على تقييم المصادر والمعلومات، تعزيز مهارات البحث والاستقصاء",
+        "ثلاثة خيارات خاطئة مفصّلة بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها غير صحيحة:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3262,8 +3262,8 @@
       "options": [
         "Observation et découverte, Compréhension et conceptualisation, Application et transfert, Évaluation et soutien",
         "تتضمن هذه المرحلة التمهيدية لعملية الكتابة خطوات عدة:",
-        "ثلاثة خيارات خاطئة مفصلة وبنفس مستوى الإجابة الصحيحة:",
-        "استخلاص الفكرة الرئيسية: يتم توجيه التلاميذ لتحديد الفكرة الرئيسية التي يرغبون في تناولها في كتابتهم."
+        "استخلاص الفكرة الرئيسية: يتم توجيه التلاميذ لتحديد الفكرة الرئيسية التي يرغبون في تناولها في كتابتهم.",
+        "ثلاثة خيارات خاطئة مفصلة وبنفس مستوى الإجابة الصحيحة:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -3501,11 +3501,11 @@
       "text": "D'après le document \"didactique français Hamdi\", le canevas méthodologique de la poésie en 3ème AEP comporte les étapes suivantes",
       "options": [
         "في مستوى الملاحظة والاكتشاف، يمكن للتلميذ استكشاف الأشكال الشعرية المختلفة وقراءة بعض النصوص الشعرية لفهم البنية الأساسية للقصيدة.",
-        "الخيارات المُحدّثة والتي تكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:",
+        "Observation et découverte, Étude du fond et mémorisation du début, Étude de la forme et mémorisation de la fin, Récitation",
         "بعد مرحلة الملاحظة والاكتشاف، يمكن للتلميذ ممارسة مهارة الكتابة والشعر الحر للتعبير عن أفكارهم ومشاعرهم بأبيات شعرية بسيطة.",
-        "Observation et découverte, Étude du fond et mémorisation du début, Étude de la forme et mémorisation de la fin, Récitation"
+        "الخيارات المُحدّثة والتي تكون بنفس طول الإجابة الصحيحة وتفصيلها، مع بقائها خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -3666,9 +3666,9 @@
       "text": "Dans le guide de la 3ème année primaire, les « rituels » en début de journée ont pour fonction principale de",
       "options": [
         "Mettre les élèves à l’aise et dédramatiser l’appréhension de la langue",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "مناقشة الأحداث والأخبار المحلية والعالمية",
         "تطبيق تمارين القواعد النحوية المقررة لليوم",
-        "مناقشة الأحداث والأخبار المحلية والعالمية"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4026,9 +4026,9 @@
       "text": "Le guide « L’Oasis des mots » (3AP) recommande, pour l’étude d’un poème, de",
       "options": [
         "البدء بحفظ القصيدة بشكل ميكانيكي دون فهم مغزى الأبيات وارتباطها بموضوع القصيدة.",
-        "كل الاقتراحات خاطئة",
+        "التركيز على تحليل القصيدة لغويًا وتشكيليًا دون فهم النص أولاً والمعنى العام لها.",
         "Mémoriser le poème de manière ludique (jeux de récitation, gestes) après en avoir compris le sens",
-        "التركيز على تحليل القصيدة لغويًا وتشكيليًا دون فهم النص أولاً والمعنى العام لها."
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4055,10 +4055,10 @@
       "level": null,
       "text": "Dans l’organisation de l’unité didactique en 6AEP (« Parcours de français »), l’unité 1 est spécifiquement dédiée à",
       "options": [
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:",
+        "دراسة النصوص الإعلامية: يركز هذا الخيار على تحليل ودراسة النصوص غير الروائية، بدلاً من التركيز على النصوص الروائية كما في الخيار الصحيح.",
         "تقويم الفصل الدراسي الثاني: يتعلق الأمر بتقويم أداء الطلاب خلال الفصل الدراسي الثاني وليس حول تقييم التشخيص وتحسين المكتسبات.",
         "L’évaluation diagnostique, la mise à niveau et le renforcement des acquis",
-        "دراسة النصوص الإعلامية: يركز هذا الخيار على تحليل ودراسة النصوص غير الروائية، بدلاً من التركيز على النصوص الروائية كما في الخيار الصحيح."
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4146,9 +4146,9 @@
       "text": "L’évaluation sommative, telle que définie dans les guides pédagogiques, intervient à la fin des apprentissages pour",
       "options": [
         "Attester le degré d’acquisition des compétences et des connaissances",
-        "الخيارات المُحدّثة بكونها خاطئة ومفصلة:",
+        "تقديم تغذية راجعة فورية للطلبة والمعلم لتحسين الفهم والتعلم.",
         "تركيز على تطوير المنهاج الدراسي بناءً على نتائج التقييم.",
-        "تقديم تغذية راجعة فورية للطلبة والمعلم لتحسين الفهم والتعلم."
+        "الخيارات المُحدّثة بكونها خاطئة ومفصلة:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4161,11 +4161,11 @@
       "text": "En 3ème année primaire, pour la copie, le passage progressif de l’ardoise au cahier puis au livret (fiche-type) a pour but de",
       "options": [
         "تشجيع الإسراف والتبذير في توفير الموارد المدرسية",
-        "ثلاثة خيارات خاطئة مفصلة تعادل الإجابة الصحيحة من حيث الطول والتفصيل مع بقاءها خاطئة:",
+        "Permettre un entraîtnement progressif et une correction avant le passage au propre",
         "تجاهل التطور التكنولوجي والتركيز على الأدوات التقليدية فقط",
-        "Permettre un entraîtnement progressif et une correction avant le passage au propre"
+        "ثلاثة خيارات خاطئة مفصلة تعادل الإجابة الصحيحة من حيث الطول والتفصيل مع بقاءها خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4235,10 +4235,10 @@
       "level": null,
       "text": "En 2ème année primaire, le découpage des mots en syllabes lors des activités de lecture et d’écriture aide l’élève à",
       "options": [
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:",
+        "تعزيز مهارات التفكير النقدي والتحليل",
         "استيعاب مبادئ القواعد النحوية الأساسية",
         "Améliorer sa prononciation et à mieux comprendre le principe alphabétique",
-        "تعزيز مهارات التفكير النقدي والتحليل"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4250,10 +4250,10 @@
       "level": null,
       "text": "La perspective entrepreneuriale et communautaire, citée dans les orientations pédagogiques, relie le projet de classe à",
       "options": [
-        "كل الاقتراحات خاطئة",
+        "إغفال دور المتعلم في المساهمة بإيجابية تجاه بيئته الاجتماعية وتعزيز قيم التعاون والمشاركة مع الآخرين.",
         "التركيز فقط على التطور المهني والشخصي للمتعلم دون الأخذ بعين الاعتبار احتياجات وموارد مجتمعه.",
         "La communauté et l’environnement social de l’élève, donnant du sens aux apprentissages",
-        "إغفال دور المتعلم في المساهمة بإيجابية تجاه بيئته الاجتماعية وتعزيز قيم التعاون والمشاركة مع الآخرين."
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4281,11 +4281,11 @@
       "text": "En grammaire, l’identification des compléments d’objet (COD/COI) est facilitée par la maîtrise de la question",
       "options": [
         "الموقع والزمن: تركز هذه الفئة على السؤال عن مكان حدوث الفعل وزمن وقوعه.",
-        "الخيارات المعدلة لتصبح بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "Qui ? Quoi ? / À qui ? À quoi ? De qui ? De quoi ?",
         "السببيّة والغائيّة: تتناول هذه الفئة السؤال حول الأسباب والنتائج المرتبطة بالفعل الرئيسي أو الجملة.",
-        "Qui ? Quoi ? / À qui ? À quoi ? De qui ? De quoi ?"
+        "الخيارات المعدلة لتصبح بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4387,8 +4387,8 @@
       "options": [
         "Rendre les apprentissages plus motivants et fonctionnels, et ouvrir l’élève sur des pratiques langagières variées",
         "تحويل وقت التعلّم إلى مُجرد تطبيق للمعرفة اللغوية من خلال البحث عن الصور دون تطوير مهارات استخدام التكنولوجيا والتواصل.",
-        "الخيارات المُحدّثة والمفصّلة كخيارات خاطئة:",
-        "تَقْليص دور المعلّم كمُيسّر للتعلّم وناقل للمعرفة ليصبح مُحاوِر ومُواكِب للتكنولوجيا المعلوماتية والاتصالية."
+        "تَقْليص دور المعلّم كمُيسّر للتعلّم وناقل للمعرفة ليصبح مُحاوِر ومُواكِب للتكنولوجيا المعلوماتية والاتصالية.",
+        "الخيارات المُحدّثة والمفصّلة كخيارات خاطئة:"
       ],
       "correctIndex": 0,
       "explanation": "",
@@ -4507,8 +4507,8 @@
       "options": [
         "توطيد فهم القواعد النحوية والإملائية المتعلقة برسالة.",
         "Permettre une première approche du tracé avec la possibilité de correction immédiate avant le passage au cahier",
-        "الخيارات المُعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
-        "تقييم مدى اتقان التلاميذة للخط العربي وتحديد نقاط التحسين."
+        "تقييم مدى اتقان التلاميذة للخط العربي وتحديد نقاط التحسين.",
+        "الخيارات المُعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
       "correctIndex": 1,
       "explanation": "",
@@ -4610,10 +4610,10 @@
       "level": null,
       "text": "En 4ème année primaire, l’étude de l’adjectif qualificatif permet à l’élève de",
       "options": [
-        "كل الاقتراحات خاطئة",
+        "في السنة الرابعة من التعليم الابتدائي، دراسة الصفة الكاشفة تساعد التلميذ على: توسيع فهم الموضوع من خلال إضافة تفاصيل أكثر حول الموضوع (الجانب، اللون، الشكل...)",
         "في السنة الرابعة من التعليم الابتدائي، دراسة الصفة الكاشفة تساعد التلميذ على: تعلم كيفية تغيير صيغة الفعل في الأزمنة المختلفة دون فهم المغزى العميق للأفعال وتطورها عبر الزمن.",
         "Enrichir le nom en lui apportant des précisions (qualité, couleur, forme...)",
-        "في السنة الرابعة من التعليم الابتدائي، دراسة الصفة الكاشفة تساعد التلميذ على: توسيع فهم الموضوع من خلال إضافة تفاصيل أكثر حول الموضوع (الجانب، اللون، الشكل...)"
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4641,11 +4641,11 @@
       "text": "Dans le développement de la lecture en 2ème année, la discrimination visuelle (reconnaître la lettre dans les mots) sert à",
       "options": [
         "تعزيز فهم العلاقات بين الحروف والأصوات المرتبطة بها دون التركيز على التمييز البصري.",
-        "كل الاقتراحات خاطئة",
+        "Établir le lien entre la forme écrite de la lettre et le son qu’elle produit",
         "تدريب القدرة على تحليل الكلمات إلى وحداتها الصوتية الأساسية.",
-        "Établir le lien entre la forme écrite de la lettre et le son qu’elle produit"
+        "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "",
       "source": null,
       "situation": null
@@ -4760,10 +4760,10 @@
       "level": null,
       "text": "Lors de l’apprentissage du code en 2AP, la décomposition de mots en syllabes (ex: ba-na-ne) aide l’élève à",
       "options": [
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "تطوير القدرة على تحديد الحالات الإعرابية للفعل",
         "تعلم كيفية تهجئة الكلمة وإمكانياتها الصوتية المتعددة",
         "Mettre en relation les unités sonores et les unités graphiques pour le décodage",
-        "تطوير القدرة على تحديد الحالات الإعرابية للفعل"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -4940,10 +4940,10 @@
       "level": null,
       "text": "Le choix des thèmes des unités (ex: « La civilisation marocaine », « La forêt ») en 4AP vise à",
       "options": [
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:",
+        "تشجيع الطلاب على الانفصال عن واقعهم والتفاعل مع موضوعات لا ترتبط ببيئتهم أو تاريخهم.",
         "اتباع موضوعات محددة دولياً بشكل ميكانيكي دون مراعاة السياق المغربي والثقافة المحلية.",
         "Constituer un univers de référence solide et motivant pour l’élève, en lien avec son environnement",
-        "تشجيع الطلاب على الانفصال عن واقعهم والتفاعل مع موضوعات لا ترتبط ببيئتهم أو تاريخهم."
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
       ],
       "correctIndex": 2,
       "explanation": "",
@@ -5001,9 +5001,9 @@
       "text": "Dans la fiche pédagogique de « L’Oasis des mots » (3AP), la phase « Évaluation » (en fin de séance d’oral) invite l’élève à",
       "options": [
         "S’auto-évaluer en écoutant les productions de ses camarades et en se corrigeant",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع كونها خاطئة:",
+        "اختيار كلمات عشوائية من النص أو الإجابة بناءً على الحفظ",
         "إعادة سرد الأحداث الرئيسية بالنص دون فهم عميق",
-        "اختيار كلمات عشوائية من النص أو الإجابة بناءً على الحفظ"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها، مع كونها خاطئة:"
       ],
       "correctIndex": 0,
       "explanation": "",

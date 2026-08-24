@@ -156,9 +156,9 @@
       "text": "L'approche actionnelle dans l'enseignement du FLE considère l'apprenant comme",
       "options": [
         "un acteur social accomplissant des tâches dans des situations de communication",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:",
+        "يعتبر المتعلم في النهج العملي للتعليم اللغوي والثقافي وكيانا ثابتا يتلقى المعلومات والقواعد دون تفاعل مع مواقف التواصل.",
         "ينحصر دور المتعلم في تقليد المعلم فقط دون المشاركة الفعّالة والتفاعل مع سياقات التواصل المتنوعة.",
-        "يعتبر المتعلم في النهج العملي للتعليم اللغوي والثقافي وكيانا ثابتا يتلقى المعلومات والقواعد دون تفاعل مع مواقف التواصل."
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقائها خاطئة:"
       ],
       "correctIndex": 0,
       "explanation": "Dans l'approche actionnelle, l'apprenant est un acteur social qui réalise des tâches (simples et complexes) mobilisant des activités langagières dans un contexte donné.",
@@ -187,8 +187,8 @@
       "options": [
         "déclencher la parole et soutenir la compréhension et l'expression",
         "استخدام الصورة الثابتة في الفصل الدراسي للغة الفرنسية في المرحلة الابتدائية يقتصر على إضفاء لمسة جمالية على الكراسات فقط.",
-        "كل الاقتراحات خاطئة",
-        "الهدف من توظيف الصورة الثابتة هو تزيين دفاتر التلاميذ دون أن يسهم ذلك في تحفيز الكلام وتعزيز الفهم والتواصل باللغة الفرنسية."
+        "الهدف من توظيف الصورة الثابتة هو تزيين دفاتر التلاميذ دون أن يسهم ذلك في تحفيز الكلام وتعزيز الفهم والتواصل باللغة الفرنسية.",
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 0,
       "explanation": "L'image est un support déclencheur de prise de parole et un appui à la compréhension ; elle favorise la description, la narration et l'interprétation.",
@@ -291,9 +291,9 @@
       "text": "La compréhension orale en classe de FLE doit être évaluée par",
       "options": [
         "التركيز فقط على تحديد الأفكار الرئيسية والثانوية دون التحقق من الفهم العام للنص المسموع.",
-        "ثلاثة خيارات خاطئة مفصلة أكثر:",
+        "تقييم الفهم من خلال قدرة الطلاب على استرجاع معلومات جزئية من النص دون التحقق من فهم الرسالة بأكملها.",
         "des tâches de repérage et de vérification de la compréhension du message entendu",
-        "تقييم الفهم من خلال قدرة الطلاب على استرجاع معلومات جزئية من النص دون التحقق من فهم الرسالة بأكملها."
+        "ثلاثة خيارات خاطئة مفصلة أكثر:"
       ],
       "correctIndex": 2,
       "explanation": "On évalue la compréhension orale par des activités qui exigent une réaction à ce qui est entendu: cocher, relier, répondre, reformuler, sans recours à la copie.",
@@ -307,10 +307,10 @@
       "options": [
         "يقتصر على ترديد المعلومات من الوثيقة بلا فهم",
         "يقرأ النص بصوت عال فقط دون استيعاب",
-        "الخيارات المعدلة الثلاثة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:",
-        "prélever et organiser des informations utiles dans des documents variés"
+        "prélever et organiser des informations utiles dans des documents variés",
+        "الخيارات المعدلة الثلاثة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع بقاءها خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 2,
       "explanation": "La lecture documentaire développe des stratégies de recherche d'information: repérage, sélection, organisation et restitution, dans des supports variés.",
       "source": "Guide pédagogique — Lecture documentaire",
       "situation": null
@@ -650,12 +650,12 @@
       "level": null,
       "text": "Pour introduire un nouveau texte en lecture, l'enseignant commencera par",
       "options": [
-        "كل الاقتراحات خاطئة",
+        "une phase d'anticipation : émettre des hypothèses à partir du titre et des illustrations",
         "إجراء اختبار تحليل النصوص الأدبية لتحديد مستوى الفهم والاستيعاب لدى الطلاب قبل البدء بالنص الجديد. هذا الخيار لا يتعلق مباشرة بتقديم النص الجديد في سياق التعلم.",
         "تحديد المستوى القرائي المناسب بناءً على معرفة التلاميذ والطالب الجديد. يجب على المعلم تحديد مستوى النص التعليمي ليتناسب مع قدرات الطلاب.",
-        "une phase d'anticipation : émettre des hypothèses à partir du titre et des illustrations"
+        "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 3,
+      "correctIndex": 0,
       "explanation": "La phase d'anticipation (à partir du titre, des images, des indices) éveille l'intérêt et prépare la compréhension en activant les connaissances de l'élève.",
       "source": "Didactique de la lecture — Anticipation",
       "situation": null
@@ -771,9 +771,9 @@
       "text": "Dans l'apprentissage précoce de la lecture, l'entraînement à la conscience syllabique consiste à",
       "options": [
         "segmenter les mots en syllabes et les manipuler (fusionner, supprimer, inverser)",
-        "كل الاقتراحات خاطئة",
+        "التركيز على التعرف على الحروف بدلاً من ربطها بالأصوات",
         "نسخ جمل كاملة دون التعامل مع تحليل الكلمات إلى مقاطع",
-        "التركيز على التعرف على الحروف بدلاً من ربطها بالأصوات"
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 0,
       "explanation": "La conscience syllabique (segmentation, fusion, suppression de syllabes) prépare la conscience phonémique et facilite l'entrée dans la lecture.",
@@ -845,12 +845,12 @@
       "level": null,
       "text": "En lecture, le déchiffrage lent et syllabique sans accès au sens révèle",
       "options": [
-        "كل الاقتراحات خاطئة",
+        "une lecture non automatisée qui nécessite un entraînement à la fluidité",
         "اعتناق استراتيجية قراءة معمقة تعزز التحليل والنقد عوض التلقائية",
         "تجاهل متعمد للنص وعدم التفاعل مع المحتوى المقروء",
-        "une lecture non automatisée qui nécessite un entraînement à la fluidité"
+        "كل الاقتراحات خاطئة"
       ],
-      "correctIndex": 3,
+      "correctIndex": 0,
       "explanation": "Le décodage non automatisé absorbe les ressources attentionnelles et gêne la compréhension ; il faut entraîner la fluidité par des relectures répétées.",
       "source": "Référentiel — Lecture et fluidité",
       "situation": null
@@ -891,11 +891,11 @@
       "text": "La lecture à voix haute en classe de FLE doit être précédée de",
       "options": [
         "تقييم فوري غير مُصنَّف للكلمات الصعبة المُكتشفة خلال القراءة الصامتة",
-        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:",
+        "un travail de compréhension et de préparation (lecture silencieuse, repérage des mots difficiles)",
         "إجراء اختبار فهم سريع عبر طرح أسئلة قبل القراءة الجهرية",
-        "un travail de compréhension et de préparation (lecture silencieuse, repérage des mots difficiles)"
+        "الخيارات المعدلة لتكون بنفس طول الإجابة الصحيحة وتفصيلها مع البقاء خاطئة:"
       ],
-      "correctIndex": 3,
+      "correctIndex": 1,
       "explanation": "On ne lit à voix haute que ce que l'on a compris ; la préparation (lecture silencieuse, découpage, entraînement) est indispensable avant la lecture oralisée.",
       "source": "Didactique de la lecture — Lecture à voix haute",
       "situation": null
@@ -906,9 +906,9 @@
       "text": "Pour évaluer le vocabulaire acquis, la tâche la plus révélatrice est",
       "options": [
         "la réutilisation des mots en production (orale ou écrite) dans des contextes variés",
-        "كل الاقتراحات خاطئة",
+        "يمكن اعتبار \"التكرار الشفهي للمجموعات من الكلمات\" مهمة مميزة لتقييم المفردات المكتسبة، لكنها ليست الأكثر إيحاءً مقارنة بالاستخدام الفعلي للكلمات في سياقات متنوعة.",
         "تحديد الكلمات في القاموس يعتبر خطوة مهمة لفهم معاني الكلمات، لكنه لا يعكس قدرة المتعلم على استخدام الكلمات بفعالية في التواصل والتعبير.",
-        "يمكن اعتبار \"التكرار الشفهي للمجموعات من الكلمات\" مهمة مميزة لتقييم المفردات المكتسبة، لكنها ليست الأكثر إيحاءً مقارنة بالاستخدام الفعلي للكلمات في سياقات متنوعة."
+        "كل الاقتراحات خاطئة"
       ],
       "correctIndex": 0,
       "explanation": "Un mot est vraiment acquis lorsqu'il est réutilisé spontanément en contexte ; l'évaluation du vocabulaire se fait donc surtout en production.",
