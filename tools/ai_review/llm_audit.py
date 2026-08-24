@@ -3,7 +3,7 @@ LLM-as-a-Judge: Groq-based audit of all question bank files.
 Checks: reversed years, concatenated words, spelling errors, factual accuracy.
 Outputs structured JSON report for human review.
 """
-import json, subprocess, sys, io, time, re, os
+import json, subprocess, sys, io, time, re
 from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -17,11 +17,11 @@ GROQ_API_KEY = "***REMOVED***"
 GROQ_MODEL = "allam-2-7b"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-BATCH_SIZE = 30
-SLEEP_BETWEEN = 2.0
+BATCH_SIZE = 50
+SLEEP_BETWEEN = 3.0
+MAX_RETRIES = 8
 
-def call_groq(prompt: str, retries: int = 5) -> str | None:
-    """Call Groq API via curl (urllib gets 403)."""
+def call_groq(prompt: str, retries: int = MAX_RETRIES) -> str | None:
     payload = json.dumps({
         "model": GROQ_MODEL,
         "messages": [{"role": "user", "content": prompt}],
@@ -32,14 +32,12 @@ def call_groq(prompt: str, retries: int = 5) -> str | None:
     for attempt in range(retries):
         try:
             result = subprocess.run(
-                [
-                    "curl.exe", "-s", "-w", "\\n%{http_code}",
-                    "-X", "POST", GROQ_URL,
-                    "-H", "Content-Type: application/json",
-                    "-H", f"Authorization: Bearer {GROQ_API_KEY}",
-                    "-d", payload,
-                ],
-                capture_output=True, timeout=60,
+                ["curl.exe", "-s", "-w", "\\n%{http_code}",
+                 "-X", "POST", GROQ_URL,
+                 "-H", "Content-Type: application/json",
+                 "-H", f"Authorization: Bearer {GROQ_API_KEY}",
+                 "-d", payload],
+                capture_output=True, timeout=90,
             )
             output = result.stdout.decode("utf-8", errors="replace").strip()
             lines = output.rsplit("\n", 1)
@@ -47,140 +45,120 @@ def call_groq(prompt: str, retries: int = 5) -> str | None:
             code = lines[-1] if len(lines) > 1 else "0"
 
             if code == "429":
-                wait = 10 * (attempt + 1)
-                print(f"  Rate limited, waiting {wait}s...")
+                wait = 15 * (attempt + 1)
+                print(f"    429 rate limit, waiting {wait}s...", flush=True)
                 time.sleep(wait)
                 continue
             if code != "200":
-                print(f"  HTTP {code}: {body[:200]}")
-                time.sleep(2)
+                print(f"    HTTP {code}, retry in 5s...", flush=True)
+                time.sleep(5)
                 continue
 
             data = json.loads(body)
             return data["choices"][0]["message"]["content"]
         except Exception as e:
-            print(f"  Error: {e}")
-            time.sleep(2)
+            print(f"    Error: {e}, retry in 5s...", flush=True)
+            time.sleep(5)
     return None
 
-def build_audit_prompt(questions: list[dict]) -> str:
-    """Build prompt for batch of questions."""
+def build_prompt(questions: list[dict]) -> str:
     q_text = ""
     for i, q in enumerate(questions):
-        opts_str = " | ".join(q["options"])
-        q_text += f"[{i}] {q['text']}\n    الخيارات: {opts_str}\n    الجواب: الخيار {q['correctIndex']}\n"
+        opts = " | ".join(q["options"])
+        q_text += f"[{i}] {q['text']}\n    الخيارات: {opts}\n    الجواب: الخيار {q['correctIndex']}\n\n"
 
-    return f"""أنت مدقق أسئلة تعليمية مغربي. فحص الأسئلة التالية واكتشف المشاكل فقط.
+    return f"""أنت مدقق أسئلة تعليمية مغربي. فحص الأسئلة التالية واكتشف المشاكل.
 
 احذر من:
-1. سنوات معكوسة (مثلاً 3691 بدلاً من 1963، أو 1002 بدلاً من 2001)
-2. كلمات ملتصقة (بدون مسافة)
+1. سنوات معكوسة (مثلاً 3691 بدلاً من 1963)
+2. كلمات ملتصقة (بدون مسافة بين كلمتين)
 3. أخطاء إملائية واضحة
-4. معلومات غير صحيحة واقعياً (حقائق خاطئة)
-5. خيارات مكررة (نفس الخيار مرتين في سؤال واحد)
+4. معلومات غير صحيحة واقعياً
+5. خيارات مكررة
 
 الأسئلة:
 {q_text}
-
-أرجع JSON فقط (بدون نص آخر):
-{{
-  "issues": [
-    {{
-      "index": رقم_السؤال,
-      "type": "reversed_year|concatenated|spelling|factual|duplicate",
-      "detail": "وصف دقيق للمشكلة"
-    }}
-  ]
-}}
-
-إذا لا توجد مشاكل: {{"issues": []}}"""
+أرجع JSON فقط:
+{{"issues":[{{"i":رقم,"t":"reversed_year|concatenated|spelling|factual|duplicate","d":"وصف"}}]}}
+لا توجد مشاكل: {{"issues":[]}}"""
 
 def load_progress() -> set:
     if PROGRESS_PATH.exists():
-        return set(json.loads(PROGRESS_PATH.read_text("utf-8")))
+        data = json.loads(PROGRESS_PATH.read_text("utf-8"))
+        return set(data) if isinstance(data, list) else set()
     return set()
 
 def save_progress(done: set):
-    PROGRESS_PATH.write_text(json.dumps(list(done), ensure_ascii=False), "utf-8")
+    PROGRESS_PATH.write_text(json.dumps(sorted(done), ensure_ascii=False), "utf-8")
 
 def main():
-    all_questions = []
+    all_q = []
     for fp in sorted(BANKS_DIR.glob("*.json")):
         with open(fp, "r", encoding="utf-8") as f:
             data = json.load(f)
-        for subject, qs in data.items():
+        for subj, qs in data.items():
             for q in qs:
                 q["_file"] = fp.name
-                q["_subject"] = subject
-                all_questions.append(q)
+                q["_subject"] = subj
+                all_q.append(q)
 
-    print(f"Total questions: {len(all_questions)}")
+    total = len(all_q)
+    num_batches = (total + BATCH_SIZE - 1) // BATCH_SIZE
+    print(f"Total: {total} questions, {num_batches} batches of {BATCH_SIZE}", flush=True)
 
-    # Load existing report if resuming
     report = {"issues": [], "audited_count": 0}
-    if REPORT_PATH.exists():
-        report = json.loads(REPORT_PATH.read_text("utf-8"))
-
     done = load_progress()
-    batches = []
-    for i in range(0, len(all_questions), BATCH_SIZE):
-        batch_id = f"batch_{i}"
-        if batch_id not in done:
-            batches.append((batch_id, i, all_questions[i:i+BATCH_SIZE]))
 
-    print(f"Remaining batches: {len(batches)}")
+    for bi in range(num_batches):
+        batch_id = f"b{bi}"
+        if batch_id in done:
+            continue
 
-    for bi, (batch_id, start_idx, batch) in enumerate(batches):
-        print(f"[{bi+1}/{len(batches)}] Auditing questions {start_idx}-{start_idx+len(batch)-1}...")
-        prompt = build_audit_prompt(batch)
+        start = bi * BATCH_SIZE
+        batch = all_q[start:start + BATCH_SIZE]
+        print(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
+
+        prompt = build_prompt(batch)
         response = call_groq(prompt)
 
         if response is None:
-            print(f"  FAILED after retries, skipping batch")
+            print("FAILED", flush=True)
             done.add(batch_id)
             save_progress(done)
             continue
 
-        # Extract JSON from response
         try:
-            # Try to find JSON in the response
-            json_match = re.search(r'\{[\s\S]*\}', response)
-            if json_match:
-                result = json.loads(json_match.group())
-            else:
-                result = {"issues": []}
-
+            m = re.search(r'\{[\s\S]*\}', response)
+            result = json.loads(m.group()) if m else {"issues": []}
+            count = 0
             for issue in result.get("issues", []):
-                idx = issue.get("index", 0)
+                idx = issue.get("i", -1)
                 if 0 <= idx < len(batch):
                     q = batch[idx]
                     report["issues"].append({
                         "file": q["_file"],
                         "subject": q["_subject"],
-                        "question": q["text"][:100],
-                        "type": issue.get("type", "unknown"),
-                        "detail": issue.get("detail", ""),
+                        "question": q["text"][:120],
+                        "type": issue.get("t", "?"),
+                        "detail": issue.get("d", ""),
                     })
-        except json.JSONDecodeError as e:
-            print(f"  JSON parse error: {e}")
-            print(f"  Raw: {response[:200]}")
+                    count += 1
+            print(f"OK ({count} issues)", flush=True)
+        except (json.JSONDecodeError, KeyError) as e:
+            print(f"PARSE ERR: {e}", flush=True)
 
-        report["audited_count"] = len(done) * BATCH_SIZE
         done.add(batch_id)
         save_progress(done)
-
-        # Save report periodically
-        if (bi + 1) % 10 == 0:
-            REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
-            print(f"  Saved report ({len(report['issues'])} issues so far)")
-
         time.sleep(SLEEP_BETWEEN)
 
-    # Final save
-    report["audited_count"] = len(all_questions)
+        if len(done) % 20 == 0:
+            report["audited_count"] = len(done) * BATCH_SIZE
+            REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
+            print(f"  >> Saved checkpoint: {len(report['issues'])} issues in {len(done)*BATCH_SIZE}/{total}", flush=True)
+
+    report["audited_count"] = total
     REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
-    print(f"\nDone! {len(report['issues'])} issues found in {len(all_questions)} questions.")
-    print(f"Report saved to: {REPORT_PATH}")
+    print(f"\nDONE: {len(report['issues'])} issues in {total} questions.", flush=True)
 
 if __name__ == "__main__":
     main()

@@ -111,7 +111,18 @@ class _QuizScreenState extends State<QuizScreen> {
   void _submitByTime() {
     _saveResult();
     setState(() => finished = true);
-    playSfx(Sfx.complete);
+    _playFinish();
+  }
+
+  /// نهاية الكويز: هتاف جماهيري عند تجاوز عتبة 30%، وزئير استياء عند الاستبعاد.
+  void _playFinish() {
+    final pool = this.pool;
+    if (pool == null || pool.isEmpty) {
+      playSfx(Sfx.complete);
+      return;
+    }
+    final pct = ((score / pool.length) * 100).round();
+    playSfx(pct >= 30 ? Sfx.victory : Sfx.defeat);
   }
 
   void _select(int index) {
@@ -134,7 +145,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (current == pool.length - 1) {
       _saveResult();
       setState(() => finished = true);
-      playSfx(Sfx.complete);
+      _playFinish();
     } else {
       // فحص الحظر الفوري: إذا كانت نسبة الإجابات الصحيحة الحالية أقل من 30%
       // ولا يمكن للمترشح بلوغ 30% حتى لو أجاب صحيحاً على ما تبقى.
@@ -148,7 +159,8 @@ class _QuizScreenState extends State<QuizScreen> {
         setState(() {
           finished = true;
         });
-        playSfx(Sfx.complete);
+        // استبعاد مؤكد — لا مجال للنجاح: بكاء الجماهير.
+        playSfx(Sfx.defeat);
         return;
       }
       setState(() {
