@@ -1,0 +1,4164 @@
+{
+  "مؤسسات الريادة — مقاربة TaRL": [
+    {
+      "text": "ما هي المهمة المطلوبة من المتعلم في بداية النشاط التعليمي؟",
+      "options": [
+        "ترتيب الحروف",
+        "عدم القيام بأي شيء",
+        "قراءة الرسالة المشار إليها",
+        "كتابة رسالة جديدة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد المرات التي يُطلب من المتعلم قراءة الرسالة؟",
+      "options": [
+        "ثلاث مرات",
+        "اثنين",
+        "أربع مرات",
+        "مرة واحدة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو دور المعلم عند تقديم الحروف غير المرتبة؟",
+      "options": [
+        "إشارة الحروف غير المرتبة وطلب قراءة الرسالة",
+        "إعطاء درس في الإملاء",
+        "كتابة رسالة جديدة",
+        "عدم المشاركة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الأهداف التي يجب تحقيقها في الجلسة التعليمية؟",
+      "options": [
+        "عدم تحقيق أي هدف",
+        "كتابة تقرير حول الجلسة",
+        "تحديد الأهداف ومناقشة التدابير والعمليات المقبلة",
+        "تقديم درس في القواعد"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو محتوى التقرير المعروض؟",
+      "options": [
+        "مراجعة القواعد النحوية",
+        "مناقشة عامة للتدابير والعمليات المقبلة",
+        "عرض تقديمي حول الحروف",
+        "تقرير حول تقدم المتعلم"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم مدة الوقت الممنوحة للمجموعات للتدرب على أدوارها؟",
+      "options": [
+        "تم منح المجموعات مدة 5 دقائق للتدرب على أدوارها.",
+        "تم منح المتعلمين وقت غير محدد للتدرب على أدوارهم",
+        "تم منح المتعلمين وقت غير محدود",
+        "تم منح المتعلمين 10 دقائق للتدرب على أدوارهم"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الخطوة التي يقوم بها الميسر بين المجموعات؟",
+      "options": [
+        "ينشغل الميسر بحل مشاكل المتعلمين",
+        "ينشغل الميسر بإدارة حوار مع المتعلمين حول المشهد",
+        "يمر الميسر بين المجموعات لتحفيز الجميع على المشاركة وتقديم الدعم اللازم.",
+        "ينشغل الميسر بمراقبة المتعلمين فقط"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الخطوة الأخيرة في سير النشاط الثاني: ممارسة موجهة؟",
+      "options": [
+        "ينهي الميسر الورشة",
+        "يترك المتعلمين لمناقشة مشاعرهم حول النشاط",
+        "يطلب الميسر من المتعلمين تقييم النشاط",
+        "يشجع الميسر المتعلمين على استرجاع الكلمات / العبارات التي تم ترويجها."
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الخطوة الأولى في سير النشاط الثالث: اختتام الورشة؟",
+      "options": [
+        "هل أنجز المتعلمين النشاط بشكل جيد؟",
+        "هل اتبع المتعلمين التعليمات بشكل صحيح؟",
+        "هل بلغنا أهداف الورشة؟",
+        "هل تفاعل المتعلمين مع الورشة بشكل إيجابي؟"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المدة الزمنية المقترحة للتدرب على الأدوار في النشاط الثالث: اختتام الورشة؟",
+      "options": [
+        "تم منح المتعلمين وقت غير محدد للتدرب على أدوارهم.",
+        "تم منح المتعلمين وقت محدد للتدرب على أدوارهم",
+        "تم منح المتعلمين وقت غير محدود للتدرب على أدوارهم",
+        "تم منح المتعلمين 10 دقائق للتدرب على أدوارهم"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الخطوة الثانية في سير النشاط الثالث: اختتام الورشة؟",
+      "options": [
+        "ينهي الميسر الورشة",
+        "يطلب الميسر من المتعلمين تقييم النشاط",
+        "يترك المتعلمين لمناقشة مشاعرهم حول النشاط",
+        "يشجع الميسر المتعلمين على استرجاع الكلمات / العبارات التي تم ترويجها."
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المدة الزمنية المقترحة للتدرب على الأدوار في النشاط الثاني: ممارسة موجهة؟",
+      "options": [
+        "تم منح المتعلمين 5 دقائق للتدرب على أدوارهم.",
+        "تم منح المتعلمين وقت محدد للتدرب على أدوارهم",
+        "تم منح المتعلمين وقت غير محدود للتدرب على أدوارهم",
+        "تم منح المتعلمين وقت غير محدد للتدرب على أدوارهم"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مهمة المعلم في ترتيب الحروف؟",
+      "options": [
+        "طلب المعلم من الطلاب قراءة الحروف بالترتيب.",
+        "طلب المعلم من الطلاب ترتيب الحروف",
+        "طلب المعلم من الطلاب كتابة الحروف",
+        "طلب المعلم من الطلاب تحليل النص"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد المرات التي طلب المعلم من الطلاب قراءة الحروف؟",
+      "options": [
+        "مرة واحدة",
+        "طلب المعلم من الطلاب قراءة الحروف مرتين.",
+        "ثلاث مرات",
+        "أربع مرات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الحروف التي تم ترتيبها مسبقا؟",
+      "options": [
+        "الحروف M, N, O, P",
+        "الحروف I, J, K, L",
+        "الحروف E, F, G, H",
+        "الحروف A, B, C, D"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الأهداف التي يجب تحقيقها في الجلسة القادمة؟",
+      "options": [
+        "تحقيق الأهداف المتعلقة بترتيب الكلمات",
+        "تحقيق الأهداف المتعلقة بكتابة الحروف",
+        "تحقيق الأهداف المتعلقة بتحليل النص",
+        "تحقيق الأهداف المتعلقة بترتيب الحروف وقراءتها."
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي العمليات المقبلة؟",
+      "options": [
+        "ترتيب الحروف وقراءتها",
+        "تحليل النص",
+        "كتابة الحروف",
+        "حل المسائل الحسابية"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الحروف التي تم ترتيبها مسبقا؟",
+      "options": [
+        "تم ترتيب الحروف M, N, O, P",
+        "تم ترتيب الحروف I, J, K, L",
+        "تم ترتيب الحروف A, B, C, D",
+        "تم ترتيب الحروف E, F, G, H"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي التدابير التي يجب اتخاذها؟",
+      "options": [
+        "كتابة الحروف",
+        "حل المسائل الحسابية",
+        "تحليل النص",
+        "ترتيب الحروف وقراءتها"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم مرة طلب المعلم من الطلاب قراءة الحروف؟",
+      "options": [
+        "طلب المعلم من الطلاب قراءة الحروف مرتين",
+        "أربع مرات",
+        "ثلاث مرات",
+        "مرة واحدة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "Generated from: unknown",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو تاريخ بدء الدورة الوطنية للتكوين في مقاربات التدريس الفعال؟",
+      "options": [
+        "27 أيار 2024",
+        "27 أبريل 2024",
+        "27 يونيو 2024",
+        "27 مارس 2024"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي النسبة المستهدفة لتحقيق نسب تحكم المتعلمين في قراءة النصوص؟",
+      "options": [
+        "نسبة ستين بالمئة",
+        "نسبة تسعين بالمئة",
+        "نسبة سبعين بالمئة",
+        "نسبة ثمانين بالمئة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المدة الزمنية لنشاط قراءة القصة؟",
+      "options": [
+        "30 دقيقة",
+        "90 دقيقة",
+        "45 دقيقة",
+        "60 دقيقة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط القراءة المذكور؟",
+      "options": [
+        "زيادة المفردات والفهم",
+        "تطوير مهارات الكتابة",
+        "تحسين سرعة القراءة",
+        "تعليم القواعد المتقدمة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نشاط غير مذكور في قائمة الأنشطة الرئيسية؟",
+      "options": [
+        "تمارين التحدث",
+        "الاستماع إلى البودكاست",
+        "كتابة المقالات",
+        "قراءة القصص القصيرة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو مدة نشاط القراءة؟",
+      "options": [
+        "30 دقيقة",
+        "45 دقيقة",
+        "90 دقيقة",
+        "60 دقيقة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الخطوة الأولى في نشاط القراءة؟",
+      "options": [
+        "Write the title on board",
+        "Discuss the title",
+        "Ask students to guess the plot",
+        "Read the story aloud"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو العنصر غير المدرج كداعم للنشاط؟",
+      "options": [
+        "Markers and pens",
+        "Students' workbook",
+        "Projector screen",
+        "Students' notebooks"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "بعد التحقق من الفرضيات، ماذا يفعل متعلمان؟",
+      "options": [
+        "Read the text aloud",
+        "Create a word network",
+        "Discuss the title again",
+        "Write a summary"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لخطوة النمذجة في درس القراءة؟",
+      "options": [
+        "تقييم سرعة القراءة",
+        "إظهار القراءة المعبرة",
+        "إجراء الممارسة المستقلة",
+        "تقديم قوائم المفردات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نوع من القراءة يتضمن المتعلمين قراءة النص بصمت واستخراج الكلمات المفتاحية؟",
+      "options": [
+        "القراءة الجهرية",
+        "القراءة الفردية الهامسة",
+        "المناقشة الجماعية",
+        "القراءة المستقلة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نوع السؤال الرابع في نشاط المعجم؟",
+      "options": [
+        "سؤال بسيط حول الفهم",
+        "طلب ضد كلمة",
+        "طلب مرادف",
+        "طلب معنى كلمة صعبة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للنشاط المذكور؟",
+      "options": [
+        "التركيز على كتابة المقالات",
+        "تعليم القواعد النحوية",
+        "تحسين مهارات الإملاء",
+        "تطوير مهارات فهم القراءة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي خطوة تتضمن كتابة عنوان النص على السبورة وتحيطه بدائرة؟",
+      "options": [
+        "المرحلة الافتتاحية",
+        "المرحلة الممارسة",
+        "المرحلة الختامية",
+        "خطوة النمذجة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما المدة الزمنية المقررة للنشاط؟",
+      "options": [
+        "30 دقيقة",
+        "60 دقيقة",
+        "15 دقيقة",
+        "45 دقيقة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو شرط فوز المجموعة في النشاط؟",
+      "options": [
+        "استخدموا صورًا ملونة",
+        "أظهروا مهارات الكتابة",
+        "أخذوا وقتًا أطول",
+        "شارك جميع أعضائها في الإنتاج"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يطلبه الميسر عند انتهاء النشاط؟",
+      "options": [
+        "تقديم ملخص قصير",
+        "إعادة كتابة القصة بالكامل",
+        "مناقشة الأحداث الثانوية",
+        "تسليط الضوء على أهمية الخطاطة الذهنية"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مدة الحصة التعليمية؟",
+      "options": [
+        "60 دقيقة",
+        "30 دقيقة",
+        "90 دقيقة",
+        "45 دقيقة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي من نشاط النمذجة في الدرس؟",
+      "options": [
+        "إظهار كيفية بناء قصة بشكل تعاوني",
+        "توزيع الواجب المنزلي",
+        "اختبار الفهم القرائي",
+        "تقييم مهارات الكتابة لدى الطلاب"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يُشجع المعلم على فعله أثناء الممارسة الموجهة؟",
+      "options": [
+        "تخطي النشاط",
+        "تقديم حلول مفصلة",
+        "تصحيح الانحرافات السردية",
+        "السماح للطلاب بالعمل بمفردهم"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم المدة المخصصة للنشاط الموجه؟",
+      "options": [
+        "45 دقيقة",
+        "60 دقيقة",
+        "10 دقائق",
+        "30 دقيقة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النسبة المستهدفة للمتعلمين الذين يجب أن يحققوا تحكمًا تفوقًا في قراءة نصوص طويلة؟",
+      "options": [
+        "90%",
+        "60%",
+        "80%",
+        "70%"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الرئيسي في الورشة الثانية؟",
+      "options": [
+        "كتابة نص قصير",
+        "حفظ أشعار",
+        "قراءة نص طويل",
+        "مناقشة قضايا"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الاستراتيجية المستخدمة لاستثمار المفردات؟",
+      "options": [
+        "تجاهل الكلمات غير المعروفة",
+        "استثمار بعض استراتيجيات المفردات",
+        "استخدام البطاقات التعليمية",
+        "قراءة العناوين فقط"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي إحدى الاستراتيجيات التي تم نمذجتها في النص؟",
+      "options": [
+        "ترجمة النص",
+        "تلخيص النص",
+        "تذكر النص",
+        "قراءة بصوت عالٍ"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف الممارسة الموجهة المذكورة؟",
+      "options": [
+        "كتابة مقالات",
+        "منح نقاط لتطبيق الخطوات بشكل سليم",
+        "اختبار الذاكرة",
+        "القراءة بصمت"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم المدة الزمنية المقررة لحل التحدي؟",
+      "options": [
+        "45 دقيقة",
+        "30 دقيقة",
+        "15 دقيقة",
+        "25 دقيقة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الحد الأقصى للعدد الذي يُقرأ في المستوى الرابع؟",
+      "options": [
+        "العدد 999",
+        "العدد 9999",
+        "العدد 10000",
+        "العدد 99999"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في أي مستوى يُدرّس الضرب؟",
+      "options": [
+        "المستوى الرابع",
+        "المستوى الأول",
+        "المستوى الثالث",
+        "المستوى الثاني"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الاستراتيجية المستخدمة لحل المسائل البسيطة؟",
+      "options": [
+        "التمرين المتكرر",
+        "التطبيق العملي",
+        "المراجعة اليومية",
+        "استراتيجية الأسئلة الأربعة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في أي مستوى يُفترض أن يتقن المتعلمون عملية الجمع؟",
+      "options": [
+        "المستوى الأول",
+        "المستوى الرابع",
+        "المستوى الثاني",
+        "المستوى الثالث"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو العملية التي يُفترض أن يتقنها المتعلمون في المستوى الخامس؟",
+      "options": [
+        "عملية القسمة",
+        "عملية الضرب",
+        "عملية الجمع",
+        "عملية الطرح"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الأسابيع المقررة للدعم المكثف؟",
+      "options": [
+        "4 أسابيع",
+        "2 أسابيع",
+        "3 أسابيع",
+        "5 أسابيع"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الحد الأقصى للأعداد التي يمكن للمتعلم قراءتها في المستوى الثانوي؟",
+      "options": [
+        "الأعداد حتى 100",
+        "الأعداد حتى 9999",
+        "الأعداد حتى 999",
+        "الأعداد حتى 99"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي عملية حسابية لا يستطيع المتعلم تنفيذها في مرحلة 18؟",
+      "options": [
+        "عملية الطرح",
+        "عملية الجمع",
+        "عملية القسمة",
+        "عملية الضرب"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نوع الأعداد التي يتعلم الطالب تمثيلها في المستوى الثانوي؟",
+      "options": [
+        "الأعداد الكسرية",
+        "الأعداد الصحيحة",
+        "الأعداد السالبة",
+        "الأعداد العشرية"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which operation is NOT explicitly mentioned for level 4?",
+      "options": [
+        "division",
+        "multiplication",
+        "addition",
+        "subtraction"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which number range is mastered in levels 5 and 6?",
+      "options": [
+        "0 to 9999",
+        "0 to 999999",
+        "0 to 99999",
+        "0 to 999"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which strategy is practiced for solving simple addition problems?",
+      "options": [
+        "three-question strategy",
+        "five-question strategy",
+        "two-question strategy",
+        "four-question strategy"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للأنشطة الرياضية وفقاً للنص؟",
+      "options": [
+        "Encourage competition and fun",
+        "Build conceptual understanding",
+        "Increase speed of calculation",
+        "Focus on memorization"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الاستراتيجية المستخدمة لتصحيح الأخطاء؟",
+      "options": [
+        "Teacher-only correction",
+        "Avoiding mistakes",
+        "Self-correction only",
+        "Peer correction"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نطاق الأعداد في اللبنة 1؟",
+      "options": [
+        "0 to 999",
+        "0 to 99",
+        "0 to 9999",
+        "0 to 99999"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو العملية التي تُدرس في اللبنة 3 للأعداد حتى 9999؟",
+      "options": [
+        "division operation",
+        "multiplication operation",
+        "subtraction operation",
+        "addition operation"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الحد الأقصى لعدد الأرقام التي يجب أن يتعرف عليها المتعلمون بنهاية اللبنة 4؟",
+      "options": [
+        "4 digits",
+        "3 digits",
+        "6 digits",
+        "5 digits"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط المذكور لتعليم الأعداد باستخدام \"لعبة النقود\"؟",
+      "options": [
+        "لوحة تفكيك الأعداد",
+        "عجلة الأعداد",
+        "لعبة القفز على الأعداد",
+        "لعبة النقود"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي يستخدم الحزم والخشيبات في الجمع والطرح؟",
+      "options": [
+        "لعبة النقود",
+        "الحزم والخشيبات",
+        "تقنية السلم",
+        "جدول الضرب"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من قراءة لوحة الأعداد في النشاط؟",
+      "options": [
+        "حساب الضرب",
+        "قراءة الأعداد من 1 إلى 20",
+        "استخدام الخشيبات",
+        "تجربة القسمة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي تقنية تُستخدم في ضرب الأعداد باستخدام السلم؟",
+      "options": [
+        "تقنية السلم",
+        "تقنية الصندق",
+        "لعبة النقود",
+        "استخدام الخشيبات"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي تمثله الأرقام في العشرات في الأعداد من 1 إلى 99؟",
+      "options": [
+        "المئات في الأعداد",
+        "العشرات",
+        "الوحدات فقط",
+        "الآلاف في الأعداد"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الطيات التي تُستخدم لتشكيل كتاب الورق في النشاط؟",
+      "options": [
+        "ثلاث طيات",
+        "أربع طيات",
+        "طية واحدة",
+        "خمس طيات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف مسابقة المجموعات الصغيرة في السيناريو الثاني؟",
+      "options": [
+        "تقييم مجموعات أخرى بالنتائج",
+        "تحدي مجموعات أخرى بأسئلة",
+        "تجميع مجموعات أخرى للتمارين",
+        "مشاركة مجموعات أخرى بالمواد"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من رسم الدوائر الثلاث المتمركزة مع تسميات \"وحدات\"، \"عشرات\"، \"مئات\"؟",
+      "options": [
+        "Illustrate fractions",
+        "Represent place value",
+        "Create a game board",
+        "Count pebbles"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في الممارسة المستقلة، ماذا يجب على المتعلمين فعله قبل إزالة الحصى من الدوائر؟",
+      "options": [
+        "Read the number aloud",
+        "Count pebbles inside circles",
+        "Sort the pebbles by color",
+        "Write the number in the table"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مجموعة الأوراق النقدية المستخدمة لتعليم القيمة المكانية في لعبة النقود؟",
+      "options": [
+        "2, 20, 200, 2000",
+        "3, 30, 300, 3000",
+        "1, 10, 100, 1000",
+        "5, 50, 500, 5000"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نطاق البطاقات المستخدمة في تركيب الأعداد في النشاط؟",
+      "options": [
+        "100-900",
+        "10-90",
+        "1000-9000",
+        "1-9"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من إخفاء/طيل لوحة التفكيك؟",
+      "options": [
+        "ترك اللوحة ظاهرة",
+        "تعديل صعوبة النشاط",
+        "إظهار جميع الأرقام",
+        "إزالة الأرقام"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في لعبة الحجلة، كم عدد الأرقام التي يقفز عليها الطالب في مرة واحدة؟",
+      "options": [
+        "أربعة",
+        "ثلاثة",
+        "اثنان",
+        "واحد"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للدورة الوطنية للتكوين في الديمقاربات الفعال؟",
+      "options": [
+        "زيادة عدد المعلمين",
+        "تحسين المناهج الدولية",
+        "تقليص الفوارق المستقبلية",
+        "تطوير التكنولوجيا"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الحروف المختارة في اختبار رائز للمرحلة الأولى؟",
+      "options": [
+        "ثمانية حروف",
+        "اثني عشر حروف",
+        "ستة حروف",
+        "عشرة حروف"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المواد المدرجة في برنامج TAR للمرحلة الأولى؟",
+      "options": [
+        "العربية، الفرنسية، الرياضيات",
+        "العربية، الرياضيات، العلوم",
+        "الفرنسية، الرياضيات، العلوم",
+        "العربية، الفرنسية، العلوم"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو مدة النشاط في كل جلسة؟",
+      "options": [
+        "5 إلى 10 دقائق",
+        "30 دقيقة",
+        "15 إلى 20 دقيقة",
+        "1 إلى 2 دقيقة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الصوت الذي يُستخدم كإشارة في النشاط؟",
+      "options": [
+        "نغمة موسيقية",
+        "صوت طائر",
+        "صافرة",
+        "صوت هاتف"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للنشاط؟",
+      "options": [
+        "تطوير مهارات الاستماع",
+        "تحسين القراءة",
+        "تعزيز الرياضيات",
+        "زيادة الذاكرة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف النشاط في بداية الحصة؟",
+      "options": [
+        "مناقشة الدرس",
+        "تعرف على أسماء الطلاب",
+        "تسجيل الحضور",
+        "تقييم الأداء"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كيف يقرأ المعلم أسماء الطلاب؟",
+      "options": [
+        "يكتب الأسماء على السبورة",
+        "يُعطي كل طالب بطاقة",
+        "يقرأ الأسماء من القوائم",
+        "يطلب منهم نطق الأسماء"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يحدث عند انتهاء النشاط؟",
+      "options": [
+        "يُكتب الأسماء على السبورة",
+        "يُعيد المعلم البطاقات",
+        "يُخرج الطلاب من الصف",
+        "يُعطي الطلاب واجبات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the main goal of the circular session described?",
+      "options": [
+        "Assess academic performance",
+        "Teach algebra concepts",
+        "Build self-confidence among students",
+        "Schedule extracurricular activities"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which method is used to discuss emotions after reading the story?",
+      "options": [
+        "Physical exercise routine",
+        "Silent meditation",
+        "Group discussion of feelings",
+        "Individual written test"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the recommended duration for each activity session?",
+      "options": [
+        "60 to 90 minutes",
+        "5 to 10 minutes",
+        "30 to 45 minutes",
+        "15 to 20 minutes"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي من نشاط نصف الدائرة المذكور؟",
+      "options": [
+        "تحليل بيانات الطلاب",
+        "توفير بيئة آمنة للمتعلمين",
+        "تحديد أهداف النشاط",
+        "تقييم أداء المعلم"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نشاط يُذكر ضمن أنشطة ما قبل القراءة؟",
+      "options": [
+        "ممارسة الرياضة",
+        "قراءة قصة",
+        "التحليل الإحصائي",
+        "تدريب على الرياضيات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الأداة المستخدمة لعرض الصور في الصف؟",
+      "options": [
+        "الطابعة الكبيرة",
+        "الممحاة الكبيرة",
+        "جهاز العرض",
+        "الطاولة الكبيرة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the primary objective of the activity?",
+      "options": [
+        "Learn Arabic grammar rules",
+        "Recognize Arabic letters and their sounds",
+        "Write Arabic sentences",
+        "Memorize Arabic vocabulary"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "How long is each daily session?",
+      "options": [
+        "30 to 35 minutes",
+        "40 to 45 minutes",
+        "20 to 25 minutes",
+        "10 to 15 minutes"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which tool is used to display letters?",
+      "options": [
+        "Chalk and paper",
+        "Textbook and worksheets",
+        "Board and letter cards",
+        "Smartphone and apps"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي يطلب من المتعلمين دمج المقاطع لتكوين كلمة؟",
+      "options": [
+        "تحديد الأصوات",
+        "دمج المقاطع",
+        "تلوين الحروف",
+        "كتابة الجمل"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النشاط الذي يهدف إلى تطوير التناسق الحسي الحركي للكتابة؟",
+      "options": [
+        "التحليل الصوتي",
+        "التخطيط والتلوين",
+        "قراءة القصص",
+        "ممارسة الكتابة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الجزء الذي يطبق فيه كل متعلم ما اكتسبه على الرسم؟",
+      "options": [
+        "المناقشة الجماعية",
+        "التقييم الجماعي",
+        "التدريب على الحروف",
+        "الممارسة المستقلة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لدور المعلم في الحصة الأولى؟",
+      "options": [
+        "Encourage independent reading only",
+        "Ignore student questions",
+        "Focus on students' understanding of the story",
+        "Assign homework immediately"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النشاط المذكور لتعليم الأعداد من 1 إلى 9؟",
+      "options": [
+        "Playing musical instruments",
+        "Using tangible objects to represent numbers",
+        "Reciting numbers silently",
+        "Drawing numbers on board"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما فعل القرد في القصة؟",
+      "options": [
+        "Sang a song",
+        "Bought a hat",
+        "Stole the hat",
+        "Tried to climb a tree"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف وضع بطاقات الأعداد من 1 إلى 9 على الأرض أثناء الممارسة الموجهة؟",
+      "options": [
+        "To decorate classroom",
+        "To practice writing numbers",
+        "To help students count objects",
+        "To test memory"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النشاط الذي يتضمن استخدام الأصابع لتمثيل عدد العناصر؟",
+      "options": [
+        "Counting with fingers",
+        "Writing numbers",
+        "Drawing shapes",
+        "Reading texts"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما دور الميسر أثناء الممارسة المستقلة؟",
+      "options": [
+        "Clean classroom",
+        "Teach new concepts",
+        "Take attendance",
+        "Guide students to complete activities"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the purpose of placing one stick in the left hand and four sticks in the right hand during the activity?",
+      "options": [
+        "To practice balance",
+        "To show left-right preference",
+        "To count to ten",
+        "To represent the number five"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "In the described activity, what does the facilitator ask the learners to do after bringing their hands together?",
+      "options": [
+        "Say 'I have five sticks'",
+        "Count to one",
+        "Count to ten",
+        "Count to three"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which of the following best describes the difference between a closed line and an open line as taught in the lesson?",
+      "options": [
+        "Closed line is horizontal",
+        "Closed line is a complete loop",
+        "Open line is thinner",
+        "Closed line is thicker"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما نوع الخطوط التي يتعلم الطلاب تصنيفها؟",
+      "options": [
+        "منحني",
+        "مغلق ومفتوح",
+        "متعرج",
+        "مستطيل"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الأشكال الهندسية التي يعرّفها الدرس؟",
+      "options": [
+        "المستطيل",
+        "المربع",
+        "الدائرة",
+        "القرص والمثلث"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يطلب الميسر من المتعلمين عند التعامل مع القرص؟",
+      "options": [
+        "يلونه",
+        "يقفز عليها",
+        "يضعه على الطاولة",
+        "يمرر يدهم حوله"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الأضلاع في المثلث؟",
+      "options": [
+        "5 أضلاع",
+        "4 أضلاع",
+        "3 أضلاع",
+        "2 أضلاع"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد رؤوس المستطيل؟",
+      "options": [
+        "6 رؤوس",
+        "5 رؤوس",
+        "3 رؤوس",
+        "4 رؤوس"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الشكل الذي لا يحتوي على أضلاع؟",
+      "options": [
+        "لا أضلاع",
+        "مستطيل واحد",
+        "مثلث واحد",
+        "مربع واحد"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الشكل الهندسي الذي له أربعة أضلاع متساوية وأربع رؤوس متساوية؟",
+      "options": [
+        "المربع",
+        "المثلث",
+        "المستطيل",
+        "الدائرة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الشكل الهندسي الذي لا يحتوي على أضلاع؟",
+      "options": [
+        "المثلث",
+        "المستطيل",
+        "المربع",
+        "الدائرة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من الممارسة المستقلة في الدرس؟",
+      "options": [
+        "تطبيق التعلم على الأنشطة العملية",
+        "كتابة الملاحظات",
+        "تكرار المعلومات",
+        "مشاهدة الدرس"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يميز المستطيل عن المربع؟",
+      "options": [
+        "جميع الأضلاع متساوية",
+        "الأضلاع غير متساوية",
+        "الأضلاع المتقابلة متساوية",
+        "كل الزوايا قائمة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الشكل الذي له 4 رؤوس و4 أضلاع لكنه ليس متساوي الأضلاع؟",
+      "options": [
+        "المربع",
+        "المستطيل المتساوي الأضلاع",
+        "المستطيل المائل",
+        "المستطيل"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الهدف الأساسي للممارسة المستقلة في تعليم الهندسة؟",
+      "options": [
+        "تقييم الفهم",
+        "إلغاء دور المعلم",
+        "توفير الترفيه",
+        "إجراء الأنشطة التطبيقية"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للنشاط الموصوف؟",
+      "options": [
+        "Compare groups of up to 5 items",
+        "Teach advanced algebra",
+        "Practice handwriting",
+        "Learn foreign language"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في مرحلة النمذجة، ماذا يطلب الميسر من المتعلمين بالهياكل؟",
+      "options": [
+        "Throw them",
+        "Hold opposite ends",
+        "Tie them together",
+        "Paint them"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "بعد إضافة المزيد من الفتيات، ما العبارة التي يكررها الميسر؟",
+      "options": [
+        "More boys than girls",
+        "More girls than boys",
+        "Equal numbers of both",
+        "No children present"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الكراسي المطلوبة في لعبة الكراسي بالموسيقى؟",
+      "options": [
+        "مساوي لعدد الأطفال",
+        "ثلاثة أضعاف لعدد الأطفال",
+        "مضاعف لعدد الأطفال",
+        "واحد أقل من عدد الأطفال"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "إلى أي رقم يُعدّ الطلاب في النشاط العدّ التصاعدي؟",
+      "options": [
+        "العدّ إلى سبعة",
+        "العدّ إلى خمسة",
+        "العدّ إلى عشرة",
+        "العدّ إلى اثني عشر"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يحدث للطفل الذي لا يحصل على كرسي عند توقف الموسيقى؟",
+      "options": [
+        "يُستبعد من اللعبة",
+        "يبقى على الأرض",
+        "يحصل على فرصة ثانية",
+        "يبقى في اللعبة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لاستخدام الشريط العددي في الدرس؟",
+      "options": [
+        "Develop logical thinking",
+        "Improve handwriting",
+        "Increase reading speed",
+        "Teach multiplication tables"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يفعله الميسر بعد إخفاء الأعداد الزوجية في الشريط العددي؟",
+      "options": [
+        "Students draw pictures",
+        "Students skip the lesson",
+        "Students write numbers on paper",
+        "Students count remaining numbers"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما دور المعلم أثناء الممارسة المستقلة؟",
+      "options": [
+        "Teach new topic",
+        "Take a break",
+        "Check students' work",
+        "Give extra homework"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the duration of the activity?",
+      "options": [
+        "20 minutes",
+        "30 minutes",
+        "15 minutes",
+        "10 minutes"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What material is used to model the maze?",
+      "options": [
+        "balls",
+        "cards",
+        "ropes",
+        "chalk"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the main goal of the activity?",
+      "options": [
+        "learn Arabic letters",
+        "improve physical fitness",
+        "develop logical thinking",
+        "increase vocabulary"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the duration of the Jeu de Vocabulaire?",
+      "options": [
+        "20 min",
+        "30 min",
+        "15 min",
+        "10 min"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which recommendation advises teachers to maintain a high pace?",
+      "options": [
+        "Lire passivement",
+        "Maintenir un rythme soutenu",
+        "Ignorer les élèves faibles",
+        "Sauter des pages"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is one objective for students at the end of the session?",
+      "options": [
+        "Écrire un poème",
+        "Lire un livre",
+        "Suivre à l’écoute une comptine",
+        "Chanter un solo"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الكلمة التي يُقدّمها المعلم أولاً؟",
+      "options": [
+        "jupe",
+        "robe",
+        "pantalon",
+        "chemise"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في نشاط \"Je dis, tu montres\" ماذا يفعل المعلم؟",
+      "options": [
+        "يسأل الأسئلة",
+        "يكتب على السبورة",
+        "يقول الكلمات",
+        "يُظهر الصور"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الأغنية التي يُستمع إليها ويُغنى في النهاية؟",
+      "options": [
+        "أغنية العد",
+        "أغنية الأبجدية",
+        "أغنية القصيدة",
+        "أغنية القصة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الرئيسي للمعلم في الدرس؟",
+      "options": [
+        "رسم الحروف على الورق",
+        "ترديد الحروف بالترتيب الأبجدي",
+        "كتابة الحروف على السبورة",
+        "قراءة الحروف بترتيب عشوائي"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي مجموعة حروف تم ذكرها في النص؟",
+      "options": [
+        "Q R S T",
+        "X Y Z",
+        "A B C D",
+        "M N O P"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يفعل المعلم بعد انتهاء الدرس؟",
+      "options": [
+        "يكتب ملاحظاته في دفتر اليوميات",
+        "يلعب لعبة مع الطلاب",
+        "يغني أغنية تعليمية",
+        "يمنح الواجب المنزلي"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للنشاط المذكور في النص؟",
+      "options": [
+        "تعليم الجبر",
+        "تعليم جدول الجمع والطرح",
+        "تعليم جدول الضرب",
+        "تعليم القراءة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم دقيقة يُمنحها المتعلمون لمراجعة الجدول يوميًا؟",
+      "options": [
+        "5 دقائق",
+        "10 دقائق",
+        "15 دقيقة",
+        "3 دقائق"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو وسيلة تقييم أداء المتعلمين في النشاط؟",
+      "options": [
+        "نظام النجوم",
+        "نظام النقاط",
+        "شهادات التقدير",
+        "نظام الدرجات"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الأساسي للعبة رمي الكرة؟",
+      "options": [
+        "تحسين الذاكرة البصرية",
+        "تعزيز المهارات الحركية الدقيقة",
+        "اكتساب القدرة على الجمع الشفوي",
+        "زيادة التركيز على القراءة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نوع النشاط الموجه في المرحلة الثانية؟",
+      "options": [
+        "ممارسة فردية",
+        "ممارسة مستقلة",
+        "ممارسة موجهة",
+        "ممارسة جماعية"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المصطلح المستخدم للتعبير عن عملية الطرح؟",
+      "options": [
+        "إضافة",
+        "إزالة",
+        "ضم",
+        "دمج"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الهدف من استخدام الكلمات المفتاحية في النشاط؟",
+      "options": [
+        "كتابة المعادلات",
+        "تمثيل الجمع والطرح بلغة رياضياتية",
+        "تذكر الأعداد",
+        "حساب عدد الخشيبات فقط"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من رسم جدول على السبورة؟",
+      "options": [
+        "كتابة الحل",
+        "تحديد المعطيات",
+        "تسليط الضوء على الكلمات",
+        "إعطاء الوقت للطلاب"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الموجه في المرحلة الثانية؟",
+      "options": [
+        "قراءة نصوص طويلة",
+        "كتابة تقارير",
+        "حل مسائل بسيطة",
+        "تجربة مختبرية"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يمنح الميسر للطلاب في المرحلة الثالثة؟",
+      "options": [
+        "نشاطات تطبيقية",
+        "مكافآت مالية",
+        "ملاحظات مكتوبة",
+        "أدوات فنية"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الأساسي لنشاط حل المسائل باستخدام الخشيبة؟",
+      "options": [
+        "تطوير مهارات الرسم",
+        "تعليم القواعد النحوية",
+        "تدريب على القراءة السريعة",
+        "تعزيز مهارات الجمع والطرح"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الخطوة الأولى التي يقوم بها الميسر في مرحلة النمذجة؟",
+      "options": [
+        "توزيع الخشيبات على الطلاب",
+        "إجراء تصحيح جماعي",
+        "كتابة المسألة على السبورة",
+        "تحديد أهداف النشاط"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو معنى قاعدة المبادلة بعشرة؟",
+      "options": [
+        "كل خشيبة = حزمة واحدة",
+        "كل خشيبة = عشرة حزم",
+        "كل حزمة = عشر خشيبات",
+        "حزمة واحدة = عشرة خشيبات"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد البرتقالات التي تمتلكها مريم الآن؟",
+      "options": [
+        "27 برتقالة",
+        "15 برتقالة",
+        "42 كرة",
+        "42 برتقالة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم كرة تبقى مع أمينة بعد إعطاء 15 كرة لعائشة؟",
+      "options": [
+        "27 كرة",
+        "27 برتقالة",
+        "42 كرة",
+        "15 كرة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الأداة المستخدمة في عملية الجمع في النشاط؟",
+      "options": [
+        "الحبر",
+        "الحاسبة",
+        "القلم",
+        "الخشيبات"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "According to the text, how many shisha shells are in one bundle?",
+      "options": [
+        "5 shells",
+        "12 shells",
+        "8 shells",
+        "10 shells"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "After giving 13 stories to Ahmed, how many stories did Fatima have left?",
+      "options": [
+        "19 stories",
+        "15 stories",
+        "25 stories",
+        "21 stories"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "After giving 235 dirhams to Ahmed, how many dirhams did Ibrahim have left?",
+      "options": [
+        "358 dirhams",
+        "123 dirhams",
+        "1230 dirhams",
+        "235 dirhams"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي من خطوة النمذجة في النشاط؟",
+      "options": [
+        "جمع بيانات للبحث",
+        "اختبار ذاكرة الطلاب",
+        "إظهار عملية حل المشكلة",
+        "توزيع الواجبات على الطلاب"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد أوراق الدنـار الواحد التي أعطاها أحمد لخالد؟",
+      "options": [
+        "خمسة أوراق",
+        "عشرة أوراق",
+        "سبع أوراق",
+        "ورقتان"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو معيار الفوز في التحدي؟",
+      "options": [
+        "العمل بمفرده",
+        "أكبر عدد من الأوراق",
+        "السرعة مع الحل الصحيح",
+        "استخدام الآلات الحاسبة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لبناء تصور عام حول المقاربات المؤثثة للنموذج البيداغوجي في مؤسسة الريادة؟",
+      "options": [
+        "تقييم نتائج PISA",
+        "تدريب المعلمين على التكنولوجيا",
+        "تحسين بيئة الدراسة",
+        "تحديد مبادئ المقاربات المعتمدة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي أحد التحديات التي يواجهها التلميذ في النظام التعليمي العمومي وفقًا للنص؟",
+      "options": [
+        "زيادة عدد الاختبارات",
+        "نقص الموارد البيداغوجية",
+        "تحسين جودة المناهج",
+        "توفير بيئة ملائمة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي من العناصر التالية يُذكر كدعم لجودة النموذج البيداغوجي؟",
+      "options": [
+        "زيادة عدد الساعات الدراسية",
+        "أنشطة مادة محفزة وفعالة",
+        "إلغاء التقييمات الوطنية",
+        "تقليل عدد المعلمين"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المبدأ الذي يحدد تسلسل مراحل التعلم؟",
+      "options": [
+        "مبدأ التقييم الدوري",
+        "مبدأ التحكم في التعلم",
+        "مبدأ هيكلة عمليات التعليم والتعلم وفق محطات",
+        "مبدأ التدرج الحمولة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لمبدأ التصريح؟",
+      "options": [
+        "إعلام المتعلم بالأهداف والمتطلبات",
+        "تحديد مواد الدرس",
+        "تقييم أداء الطالب",
+        "تحديد وقت الدرس"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النسبة المطلوبة للمتعلمين للتحكم في التعلم؟",
+      "options": [
+        "أكثر من 70%",
+        "فقط 30%",
+        "حوالي 90%",
+        "أقل من 50%"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the main goal of the early assessment (الرائزالبدئي) conducted in September 2023?",
+      "options": [
+        "Test national exam readiness",
+        "Evaluate teacher performance",
+        "Identify students' basic learning gaps",
+        "Measure school infrastructure quality"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "According to the early assessment results, what percentage of students lacked the programmed basic learning at the previous level?",
+      "options": [
+        "60%",
+        "20%",
+        "80%",
+        "40%"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which principle is NOT part of the effective teaching principles outlined?",
+      "options": [
+        "Student-centered choices",
+        "Measuring impact of choices",
+        "Continuous assessment",
+        "Standardized testing only"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما نسبة تحسن التلاميذ في قراءة الفقرة بعد الدعم في سبتمبر 2023؟",
+      "options": [
+        "45%",
+        "52%",
+        "30%",
+        "70%"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النسبة التي يجب أن يحققها الفصل للانتقال من لبنة إلى أخرى؟",
+      "options": [
+        "60%",
+        "90%",
+        "70%",
+        "80%"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الأسابيع المخصصة للدعم المركز في بداية العام الدراسي؟",
+      "options": [
+        "4-6 weeks",
+        "1 week",
+        "8-10 weeks",
+        "2-3 weeks"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لبرنامج الدعم؟",
+      "options": [
+        "تحسين مهارات الكتابة",
+        "توفير مواد مكتبية",
+        "زيادة عدد الحصص الدراسية",
+        "اكتساب المهارات الأساسية في القراءة والحساب"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي خطوة تتضمن تكوين مجموعات الدعم؟",
+      "options": [
+        "بلورة خطة الدعم",
+        "أجرأة خطة الدعم",
+        "تكوين مجموعات الدعم",
+        "رائز املوضعة القبلي"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الأداة المستخدمة للمراقبة اليومية؟",
+      "options": [
+        "بطاقات نشاط مفصلة",
+        "جداول زمنية",
+        "مشاهد تعليمية",
+        "مذكرة يومية وفق نموذج خاص"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المدة المقررة للعبة \"Jeu de Vocabulaire\"؟",
+      "options": [
+        "5 minutes",
+        "10 minutes",
+        "15 minutes",
+        "20 minutes"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كيف يجب على المعلم التعامل مع صفحات الدعم وفقًا للتوصيات؟",
+      "options": [
+        "Skip unnecessary pages",
+        "Read them silently",
+        "Read aloud continuously",
+        "Follow steps without passive reading"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النسبة المطلوبة من التلاميذ ليتمكنوا من متابعة الأغنية في نهاية الجلسة؟",
+      "options": [
+        "Exactly 50%",
+        "Nearly 100%",
+        "Around 60%",
+        "At least 80%"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما نسبة المتعلمين في المستوى الخامس القادرين على قراءة نص من 80 كلمة؟",
+      "options": [
+        "50%",
+        "15%",
+        "35%",
+        "23%"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما المستويات التي تتلقى الدعم المكثف؟",
+      "options": [
+        "Levels 1 to 6",
+        "Levels 1 to 3",
+        "Levels 4 to 6",
+        "Levels 2 to 6"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما مدة الدعم المكثف؟",
+      "options": [
+        "2 weeks",
+        "8 weeks",
+        "6 weeks",
+        "4 weeks"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي اللبنة التي تتعلق بسؤال القصة؟",
+      "options": [
+        "سؤال الحروف",
+        "سؤال القصة",
+        "سؤال الفقرة",
+        "سؤال الكلمات"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في أي مستوى يركز على إنتاج الجمل البسيطة؟",
+      "options": [
+        "المستوى السادس",
+        "المستوى الرابع",
+        "المستوى الثالث",
+        "المستوى الثاني"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو أحد استراتيجيات إثراء القاموس في المستويات الرابعة إلى السادسة؟",
+      "options": [
+        "كتابة الجمل البسيطة",
+        "استخدام المرادفات",
+        "قراءة القصص القصيرة",
+        "حفظ الأناشيد"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لمكونات تعلم اللغة المذكورة؟",
+      "options": [
+        "التحدث",
+        "القراءة",
+        "الكتابة",
+        "الاستماع"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نشاط يثري المعجم ويعد للقراءة؟",
+      "options": [
+        "أنشطة القراءة",
+        "أنشطة الاستماع",
+        "أنشطة الكتابة",
+        "الأنشطة الشفهية"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو اللبنة الأولى في بنية الدعم؟",
+      "options": [
+        "فقرة",
+        "جملة",
+        "كلمة",
+        "حرف"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف من نشاط \"اللحظة واستماع وتحدث\" في لبنة \"كلمة\"؟",
+      "options": [
+        "تدريب على الكتابة",
+        "تحسين القواعد النحوية",
+        "تعليم المفردات الأجنبية",
+        "إغناء المعجم"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المهارة التي يهدف الطلاب في نهاية لبنة \"أقصوصة\" إلى إتقانها؟",
+      "options": [
+        "تحليل النصوص العلمية",
+        "كتابة المقالات الطويلة",
+        "قراءة القصص القصيرة",
+        "ترجمة النصوص الأجنبية"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي من الأنشطة التالية مذكور في لبنة \"التحدي\"؟",
+      "options": [
+        "تصميم الرسوم البيانية",
+        "تمارين القواعد الصرفية",
+        "مناظرات – موائد مستديرة",
+        "مراجعة الحروف العربية"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما المستويان الذين يقتصران على المسارين 1 و 2؟",
+      "options": [
+        "المستويان الأول والثاني",
+        "المستويان الثاني والثالث",
+        "المستويان الرابع والخامس",
+        "المستويان الثالث والرابع"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نشاط غير مذكور في القائمة؟",
+      "options": [
+        "قراءة لوحات الحروف",
+        "الأناشيد",
+        "الخرائط الذهنية",
+        "كتابة المقالات"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الهدف من الحصص الإضافية؟",
+      "options": [
+        "التكامل والتثبيت",
+        "إعطاء واجبات",
+        "إضافة محتوى",
+        "اختبار الطلاب"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which method is used to model the activity?",
+      "options": [
+        "Group discussion",
+        "Story telling",
+        "Formal lecture",
+        "Role play"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the recommended duration of the activity?",
+      "options": [
+        "30 minutes",
+        "5 minutes",
+        "1 hour",
+        "10 minutes"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط النشيد حسب النص؟",
+      "options": [
+        "تدريب على القراءة السريعة",
+        "تعليم القواعد النحوية",
+        "تحسين مهارات الكتابة",
+        "إغناء معجم المتعلمين"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي يُجرى بعد مرحلة النمذجة في نشاط النشيد؟",
+      "options": [
+        "تدريب على التمثيل",
+        "إجراء اختبار",
+        "تحليل النص",
+        "اختتام الحصة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في تدبير نشاط النقل، ماذا يطلب المعلم من المتعلمين بعد قراءة الجملة؟",
+      "options": [
+        "يطلب منهم كتابة الجملة",
+        "يطلب منهم حفظها",
+        "يطلب منهم تلخيصها",
+        "يطلب من المتعلمين تقييم أدائه القرائي"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط النقل؟",
+      "options": [
+        "تحسين الخط",
+        "تعليم القواعد النحوية",
+        "تدريب على القراءة السريعة",
+        "تحسين مهارات الكتابة الإلكترونية"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الخطوة التي يتبعها الميسر بعد انتهاء النقل؟",
+      "options": [
+        "الميسر يطلب التحقق من المنقول",
+        "الطلاب يبدؤون كتابة جديدة",
+        "الميسر يكتب على السبورة",
+        "التقييم على أساس السرعة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الممارسة الموصى بها لتجنب سخرية المتعلمين؟",
+      "options": [
+        "تجاهل الأخطاء الصغيرة",
+        "إعطاء درجات عالية للجميع",
+        "عدم سخرية المتعلمين من بعضهم البعض",
+        "تحديد معايير صارمة للخطأ"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف همس الكتابة على السبورة؟",
+      "options": [
+        "To maintain focus",
+        "To reduce noise",
+        "To emphasize importance",
+        "To distract students"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "من يُكسب لقب الفائز الذي وجد أكبر عدد من الأخطاء؟",
+      "options": [
+        "Student who wrote the longest text",
+        "Student who found the most errors",
+        "Student who made the fewest errors",
+        "Student who spoke the fastest"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط قراءة الصورة؟",
+      "options": [
+        "Teach advanced grammar",
+        "Develop observation skills",
+        "Practice spelling",
+        "Learn new verbs"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي خطوة تتضمن نمذجة من قبل الميسر؟",
+      "options": [
+        "اختتام الحصة",
+        "ممارسة مستقلة/ فردية",
+        "نموذج–ممارسة جماعية",
+        "ممارسة موجهة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يفعل الميسر بعد تسجيل الكلمات على السبورة؟",
+      "options": [
+        "تحضير اختبار نهائي",
+        "استثمارها في أنشطة القراءة",
+        "تقديم ملخص للدرس",
+        "تقييم أداء الطلاب"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو أول إجراء يقوم به الميسر في النشاط؟",
+      "options": [
+        "يختار مشهداً من الصورة",
+        "يختار المتعلمين للعب",
+        "يشرح قواعد اللغة",
+        "يطلب من الجميع التحدث"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم الوقت المخصص للمجموعات لتدريب أدوارها؟",
+      "options": [
+        "5 دقائق",
+        "10 دقائق",
+        "20 دقيقة",
+        "15 دقيقة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو التوقع اللغوي للمتعلمين عند استرجاع الكلمات؟",
+      "options": [
+        "الكتابة فقط",
+        "استخدام اللغة العامية",
+        "التحدث بالإنجليزية",
+        "التحدث بجمل تامة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مجالات برنامج TaRL؟",
+      "options": [
+        "4 مجالات",
+        "3 مجالات",
+        "5 مجالات",
+        "6 مجالات"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مكونات رائز اللغة العربية؟",
+      "options": [
+        "7 أسئلة.",
+        "5 أسئلة متدرجة في الصعوبة.",
+        "3 أسئلة.",
+        "10 أسئلة."
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المدخل المناسب للصف الثاني في قراءة الكلمات؟",
+      "options": [
+        "قراءة الكلمات",
+        "قراءة الفقرة",
+        "قراءة الأعداد",
+        "قراءة القصص"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المستوى الذي يُقرأ فيه الفقرة البسيطة؟",
+      "options": [
+        "المستوى الثاني",
+        "المستوى السادس",
+        "المستوى الثالث",
+        "المستوى الرابع"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نوع المسائل في المستوى الرابع للرياضيات؟",
+      "options": [
+        "قسمة",
+        "جمع",
+        "طرح",
+        "ضرب"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المستوى الذي يتضمن عملية الضرب؟",
+      "options": [
+        "المستوى الخامس والسادس",
+        "المستوى الثالث",
+        "المستوى الثاني",
+        "المستوى الرابع"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في أي مستوى يستطيع الطالب قراءة جميع الأعداد من 0 إلى 9؟",
+      "options": [
+        "المستوى الخامس والسادس",
+        "المستوى الثاني",
+        "المستوى الرابع",
+        "المستوى الثالث"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي لا يستطيع الطالب القيام به في المستوى الثالث؟",
+      "options": [
+        "إجراء عمليات قسمة",
+        "إجراء عمليات ضرب",
+        "إجراء عمليات جمع مع الاحتفاظ",
+        "إجراء عمليات طرح مع الاحتفاظ"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What skill is needed to perform addition operations?",
+      "options": [
+        "Read simple words",
+        "Recognize letters",
+        "Perform addition",
+        "Solve advanced problems"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the entry point for the 4th grade in the TaRL French test?",
+      "options": [
+        "Beginner Letter",
+        "4th, 5th, and 6th AP",
+        "Advanced Word",
+        "Simple Word"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which level indicates a student cannot read advanced words?",
+      "options": [
+        "Simple Word",
+        "Beginner Letter",
+        "Advanced Word",
+        "Complex Grapheme"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المستوى الذي يستطيع المتعلم فيه قراءة الكلمات مع الجرافيمات المعقدة ولكنه لا يستطيع قراءة الجمل؟",
+      "options": [
+        "قراءة النص",
+        "قراءة الكلمات مع المقاطع المتقدمة",
+        "قراءة الكلمات مع الجرافيمات المعقدة",
+        "قراءة الجمل"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الخطوة الأولى في سيرورة التمرير للغة العربية؟",
+      "options": [
+        "تأسيس بيئة آمنة للتمرير",
+        "إعداد أوراق التمرير",
+        "تسجيل النتائج",
+        "إجراء الاختبار"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما العمليات التي يتضمنها المستوى الرابع في الرياضيات؟",
+      "options": [
+        "الجمع والطرح فقط",
+        "الجمع فقط",
+        "الجمع والطرح والضرب والقسمة",
+        "الضرب والقسمة فقط"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What does the TaRL results network record?",
+      "options": [
+        "Student's level in each subject",
+        "Classroom location",
+        "Teacher's attendance",
+        "Homework scores"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "After the test, what does the teacher do on the platform?",
+      "options": [
+        "Record each student's subject level",
+        "Assign grades",
+        "Schedule next test",
+        "Send emails"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "How are support groups determined?",
+      "options": [
+        "Teacher preference",
+        "Random selection",
+        "Parent request",
+        "By ordering students by score"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف تقسيم المتعلمين إلى مجموعات متكافئة في النظام المذكور؟",
+      "options": [
+        "زيادة التنوع",
+        "تعيين مهام عشوائية",
+        "تقليل حركة المتعلمين",
+        "ضمان التجانس العالي"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الحد الأدنى للفارق في المستوى الذي لا يشير إلى عدم مصداقية النتائج؟",
+      "options": [
+        "ثلاثة مستويات",
+        "مستوى واحد",
+        "مستويان",
+        "نصف مستوى"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الممارسة الموصى بها عند الشك في تحديد مستوى المتعلم في سؤال من أسئلة الرائز؟",
+      "options": [
+        "تعيين المستوى المتوسط",
+        "تعيين المستوى الأدنى",
+        "تعيين المستوى الأعلى",
+        "تعيين مستوى عشوائي"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which level focuses on reading letters?",
+      "options": [
+        "Level 4",
+        "Level 3",
+        "Level 2",
+        "Level 1"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What operation is used in اللبنة 3?",
+      "options": [
+        "Subtraction operation",
+        "Addition operation",
+        "Multiplication operation",
+        "Division operation"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the minimum correct answers needed to pass the رائز التصديق على اللبنة?",
+      "options": [
+        "Must answer 4 questions",
+        "Must read 12 letters",
+        "Must read 12 words",
+        "Must answer at least 10 out of 12 correctly"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المستوى الذي يختص بقراءة الحروف؟",
+      "options": [
+        "Palier 3",
+        "Palier 4",
+        "Palier 1",
+        "Palier 2"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "في أي سنة يُطلب فقط قراءة الحروف والكلمات البسيطة؟",
+      "options": [
+        "السنة الثانية",
+        "السنة الرابعة",
+        "السنة الأولى",
+        "السنة الثالثة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي مستوى يتضمن قراءة نص 40-50 كلمة مع إجابة أسئلة؟",
+      "options": [
+        "Palier 4",
+        "Palier 5",
+        "Palier 7",
+        "Palier 6"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي مواعيد الدورة الوطنية للتكوين؟",
+      "options": [
+        "1 June to 10 June 2024",
+        "27 May to 4 June 2024",
+        "15 May to 23 May 2024",
+        "30 May to 5 June 2024"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط المضمن في ورشة لبنة الحرف؟",
+      "options": [
+        "Reading the paragraph",
+        "Playing tic-tac-toe",
+        "Reading the letter board",
+        "Jumping on letters"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لبنة الحرف؟",
+      "options": [
+        "Recognize all Arabic letters and read syllables",
+        "Memorize poetry",
+        "Teach math",
+        "Write essays"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يقوم به الميسر أثناء نمذجة القراءة؟",
+      "options": [
+        "Read paragraph with pronunciation and finger under words",
+        "Write the paragraph on the board",
+        "Ask students to write their own paragraph",
+        "Sing a song about reading"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الغرض من وضع الإصبع تحت كل كلمة أثناء القراءة؟",
+      "options": [
+        "Show off finger skills",
+        "Make the text look neat",
+        "Avoid touching the paper",
+        "Coordinate hand, eye, and tongue"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لاستخدام لوحة الحروف والمقاطع في النشاط؟",
+      "options": [
+        "To teach pronunciation of letters",
+        "To test memory",
+        "To assess writing skills",
+        "To evaluate reading speed"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الإجراء الموصى به من قبل الميسر عندما يرتكب الطالب خطأً؟",
+      "options": [
+        "Stop the lesson",
+        "Punish the student",
+        "Ignore the mistake",
+        "Encourage them to try again"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النتيجة المتوقعة للمتعلمين بعد انتهاء النشاط؟",
+      "options": [
+        "Learn a new language",
+        "Recognize letter names and sounds",
+        "Solve algebra problems",
+        "Write essays"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the main focus of the guided practice session?",
+      "options": [
+        "writing sentences",
+        "drawing pictures",
+        "memorizing sounds",
+        "reading letters and building words"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which reading technique is emphasized by the facilitator?",
+      "options": [
+        "reading silently",
+        "only vertical reading",
+        "only horizontal reading",
+        "vertical and horizontal zigzag reading"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is the primary objective of the letter map activity?",
+      "options": [
+        "learn new grammar",
+        "improve handwriting skills",
+        "practice pronunciation",
+        "enrich vocabulary and word construction"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط سلسلة المقاطع بناء الكلمات؟",
+      "options": [
+        "تطوير الذاكرة",
+        "خدمة القراءة",
+        "تحسين الكتابة",
+        "تعزيز القواعد"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يطلبه الميسر من المتعلمين في مرحلة الممارسة المستقلة؟",
+      "options": [
+        "إعادة الحروف المقدمة",
+        "القيام بنفس النشاط بشكل فردي",
+        "العمل مع زملائهم",
+        "كتابة ملخص النشاط"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو العنصر الذي يُستخدم لتصحيح الأخطاء في النشاط؟",
+      "options": [
+        "تصحيح فردي",
+        "تصحيح مكتوب",
+        "تصحيح جماعي",
+        "تصحيح شفهي"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الإجراء الأول الذي يقوم به الميسر في الحصة؟",
+      "options": [
+        "يختار كلمة معجمية",
+        "يحضّر أدوات العمل",
+        "يطلب قراءة الحروف",
+        "يعلن بداية النشاط"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما النتيجة المتوقعة التي يصرح بها الميسر؟",
+      "options": [
+        "بناء كلمات وقراءتها بشكل سليم",
+        "تطوير مهارات الكتابة",
+        "تعلم قواعد الإملاء",
+        "تحسين النطق العربي"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يحدد فوز المجموعة في الممارسة الموجهة؟",
+      "options": [
+        "أكثر تنوع في المقاطع",
+        "أكثر دقة في الحركات",
+        "أسرع قراءة الكلمات",
+        "أكبر عدد من الكلمات"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الهدف الرئيسي من لعبة سلة الحروف؟",
+      "options": [
+        "تحسين مهارات الرياضيات",
+        "تعلم قواعد النحو",
+        "زيادة سرعة الكتابة",
+        "تذكر الحروف وقراءة المقاطع"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يحدث عندما تتوقف الموسيقى أثناء اللعبة؟",
+      "options": [
+        "يتم حذف بطاقة من السلة",
+        "يتم إيقاف اللعبة مؤقتاً",
+        "المتعلم الذي توقفت عنده السلة يسحب بطاقة",
+        "يتم إعادة ترتيب السلة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي من العناصر التالية ليس جزءاً من النشاط؟",
+      "options": [
+        "مقاطع الفيديو",
+        "موسيقى إشارة صوتية",
+        "سلة صغيرة",
+        "بطاقات الحروف"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو دور الميسر عندما يرفع المتعلم بطاقة غير صحيحة؟",
+      "options": [
+        "يمنح تلميحًا بالحرف",
+        "يزيل البطاقة من اللعبة",
+        "يستبعد الخطأ",
+        "يطلب من المتعلم العثور على البطاقة الصحيحة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الحرفان اللذان يُستخدمان في لعبة تيك تاك تو المتخصصة؟",
+      "options": [
+        "ب و ت",
+        "ك و ل",
+        "د و ذ",
+        "م و ن"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد فرص المتعلم للعثور على البطاقة الصحيحة؟",
+      "options": [
+        "ثلاثة",
+        "أربعة",
+        "اثنان",
+        "خمسة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو المستوى الأدنى للعبة؟",
+      "options": [
+        "لعبة مقاطع الكلمة",
+        "لعبة الحروف",
+        "لعبة المقاطع",
+        "لعبة القفز على الحروف"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد الخلايا في شبكة اللعبة؟",
+      "options": [
+        "اثني عشر خلايا",
+        "ثمان خلايا",
+        "تسعة خلايا",
+        "ستة خلايا"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يفعله الميسر بعد إضافة المدود إلى الشبكة؟",
+      "options": [
+        "يطلب القراءة",
+        "يضيف حروف جديدة",
+        "يوقف اللعبة",
+        "يغير التعليمة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للورشة الثانية \"لعبة العنكبوت\"؟",
+      "options": [
+        "إعداد نصوص معقدة",
+        "تدريب على التمثيل الصوتي",
+        "تحقيق نسب تحكم تفوق",
+        "تحسين القواعد الإملائية"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي نشاط يُستخدم لقراءة الجمل البسيطة؟",
+      "options": [
+        "قراءة السلسلة الكلمات",
+        "قراءة لوحة المقاطع",
+        "قراءة الصورة",
+        "قراءة الفقرة البسيطة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو هدف نشاط \"خريطة الكلمة\"؟",
+      "options": [
+        "تحسين الخط اليدوي",
+        "إغناء رصيد المعجم",
+        "تدريب على التمثيل الصوتي",
+        "إعداد نصوص معقدة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الخطوة الأولى في نشاط خريطة الكلمة؟",
+      "options": [
+        "نمذجة النشاط",
+        "مناقشة سيرورة",
+        "تقديم بطاقة خريطة الكلمة",
+        "ممارسة مستقلة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي عنصر لا يُذكر في مرحلة الممارسة الموجهة؟",
+      "options": [
+        "تقديم بطاقة خريطة الكلمة",
+        "تشجيع على تركيب جمل جديدة",
+        "تصحيح جماعي",
+        "عرض كل مجموعة إنجازها"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم مدة نشاط سجع الكلمات؟",
+      "options": [
+        "20 دقيقة",
+        "15 دقيقة",
+        "10 دقائق",
+        "30 دقيقة"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي من نشاط سجع الكلمات؟",
+      "options": [
+        "تعليم القواعد النحوية",
+        "تحسين الكتابة اليدوية",
+        "تدريب على الترجمة",
+        "إغناء رصيد المعجم والقراءة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو أداة النشاط المذكورة في النص؟",
+      "options": [
+        "مقاطع فيديو",
+        "مقلمة",
+        "سبورة",
+        "ممحاة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الخطوة التي تأتي بعد نمذجة النشاط؟",
+      "options": [
+        "الممارسة المستقلة",
+        "الختام",
+        "التحضير",
+        "الممارسة الموجهة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الهدف الرئيسي للعبة سلة الحروف؟",
+      "options": [
+        "تعليم الرياضيات",
+        "تحسين الكتابة",
+        "ممارسة التحدث",
+        "تذكر الحروف وقراءة المقاطع"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يفعله الميسر أثناء نمذجة اللعبة؟",
+      "options": [
+        "يحرق البطاقات",
+        "يكتب البطاقات على السبورة",
+        "يخفي البطاقات",
+        "يضع البطاقات في سلة صغيرة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد البطاقات التي يلتفتها الميسر في نشاط البطاقات المقلوبة؟",
+      "options": [
+        "ثلاثة بطاقات",
+        "خمسة بطاقات",
+        "اثني عشر بطاقة",
+        "تسع بطاقات"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي عند تقليب الطالب للبطاقة في النشاط؟",
+      "options": [
+        "Find the specified letter/segment/word",
+        "Recite a poem",
+        "Count the number of letters",
+        "Draw a picture"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يلزم للانتصار في لعبة تيك-تاك المتضمنة الحروف؟",
+      "options": [
+        "Collect all letters",
+        "Score more points",
+        "Fill three cells row with same letter",
+        "Avoid using same letter"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم عدد المحاولات التي يحصل عليها المتعلم للعثور على البطاقة الصحيحة؟",
+      "options": [
+        "Five chances",
+        "Unlimited chances",
+        "Three chances",
+        "One chance"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي يتضمن قفز على خانتين لتكوين مقطع؟",
+      "options": [
+        "قفز على ثلاث خانات",
+        "قفز على خانتين",
+        "قفز على كلمة",
+        "قفز على حرف واحد"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي من نشاط حلقة الأسئلة؟",
+      "options": [
+        "Improving reading speed",
+        "Learning new vocabulary",
+        "Writing essays",
+        "Training to ask and answer questions"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو النشاط الذي يتضمن إنشاء خريطة ذهنية؟",
+      "options": [
+        "قراءة الصورة",
+        "إمالة الألعاب",
+        "تصحيح الخطأ",
+        "الخريطة الذهنية"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو دور الميسر في عملية التعلم؟",
+      "options": [
+        "Creates worksheets",
+        "Supervises and gradually withdraws",
+        "Teaches all lessons",
+        "Grades students"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي للنشاط القرائي؟",
+      "options": [
+        "تحسين الاستماع",
+        "تعلم المفردات الجديدة",
+        "استخراج المعلومات الصريحة",
+        "ممارسة الكتابة"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم المدة الزمنية المقررة للنشاط؟",
+      "options": [
+        "10-15 دقيقة",
+        "45-60 دقيقة",
+        "5-10 دقيقة",
+        "20-30 دقيقة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي الأداة المستخدمة في النشاط؟",
+      "options": [
+        "رسم الصور",
+        "كتابة المقالات",
+        "قراءة الفقرات",
+        "الاستماع للموسيقى"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي مرحلة تتضمن عمل الطلاب في مجموعات للإجابة على الأسئلة؟",
+      "options": [
+        "Independent practice",
+        "Guided practice",
+        "Modeling activity",
+        "Opening session"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يُستخدم لتحديد إجابة السؤال داخل الفقرة؟",
+      "options": [
+        "Key word",
+        "Definition word",
+        "Antonym word",
+        "Synonym word"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف الرئيسي لنشاط تصحيح الخطأ؟",
+      "options": [
+        "زيادة عدد الأسئلة",
+        "تشجيع المتعلمين على التحدث",
+        "تمكين المتعلمين من تصحيح أخطائهم",
+        "تقييم أداء المتعلمين"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هي المواد المطلوبة لتنفيذ النشاط؟",
+      "options": [
+        "مكبر صوت، أوراق ملونة، جهاز كمبيوتر، هاتف ذكي",
+        "جهاز كمبيوتر، هاتف ذكي، أوراق ملونة، مكبر صوت",
+        "أوراق ملونة، مكبر صوت، جهاز كمبيوتر، هاتف ذكي",
+        "سبورة، قلم رصاص، دفاتر، كراسة"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الخطوة التي يتبعها الميسر بعد كتابة الجملة مع الخطأ؟",
+      "options": [
+        "يوقف النشاط",
+        "يكتب الجملة الصحيحة فقط",
+        "يطلب من المتعلمين أن يكتبوا الجملة",
+        "يقرأ الجملة ويستفسر عن الخطأ"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو التركيز الرئيسي في المرحلة الأولى من الورشة؟",
+      "options": [
+        "Teaching advanced punctuation",
+        "Practicing essay writing",
+        "Correcting common grammatical errors",
+        "Analyzing literary texts"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يشجعه الميسر على قيام المتعلمين به أثناء الممارسة المستقلة؟",
+      "options": [
+        "Skip the correction step",
+        "Write longer essays",
+        "Review each other's work",
+        "Focus only on vocabulary"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الذي يُطلب من المتعلمين القيام به في اختتام الحصة؟",
+      "options": [
+        "Recap correction steps and simple rules",
+        "Submit a final exam",
+        "Take a break",
+        "Leave early"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو وقت عرض وتقاسم خالصات اليوم الثاني في الورشة؟",
+      "options": [
+        "9:30-10:00",
+        "10:00-11:30",
+        "9:00-9:30",
+        "11:30-12:00"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الهدف العام من مرحلة الدعم المكثف؟",
+      "options": [
+        "تحسين الخط",
+        "معالجة التعثرات العميقة",
+        "تدريب على الأنشطة السمعية",
+        "مراجعة القواعد النحوية"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما المستويات المعنية بالدعم المكثف؟",
+      "options": [
+        "المستوى الثاني إلى السادس",
+        "المستوى الأول فقط",
+        "المستوى السابع والستة",
+        "المستوى الأول والثاني"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What is one of the objectives for level 3 in the support program?",
+      "options": [
+        "Recognize letters and read simple words",
+        "Teach advanced geometry",
+        "Solve complex algebraic equations",
+        "Master calculus"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which activity is part of the speaking and listening training?",
+      "options": [
+        "Memorizing poetry",
+        "Calculating fractions",
+        "Writing essays",
+        "Singing simple anasheed"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What percentage of students should be able to perform subtraction with substitution at level 3?",
+      "options": [
+        "More than 80%",
+        "Less than 50%",
+        "Exactly 100%",
+        "None of the students"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نطاق الأعداد الذي يُدرس في المستوى الثاني؟",
+      "options": [
+        "0 إلى 999",
+        "0 إلى 1000",
+        "0 إلى 100",
+        "0 إلى 99"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي عملية يُدرس في المستوى الثالث مع المبادلة؟",
+      "options": [
+        "الطرح مع المبادلة",
+        "الجمع مع المبادلة",
+        "الضرب مع المبادلة",
+        "الجمع بدون مبادلة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الجدول الذي يُدرّس في المستوى الثالث؟",
+      "options": [
+        "جدول الجمع",
+        "جدول الضرب",
+        "جدول القسمة",
+        "جدول الطرح"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو الحد الأقصى للأعداد التي يُمكن تمثيلها في نطاق 0 إلى 9999؟",
+      "options": [
+        "0-999999",
+        "0-9999999",
+        "0-9999",
+        "0-999"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي مستوى يركز على تدريب الطلاب على جداول الضرب؟",
+      "options": [
+        "المستوى السادس",
+        "المستوى الخامس",
+        "المستوى الثالث",
+        "المستوى الرابع"
+      ],
+      "correctIndex": 3,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي مسار يشمل العمليات على الأعداد الكسرية والعشرية؟",
+      "options": [
+        "مسار التميز / لبنة التحدي",
+        "مسار المتقدم",
+        "مسار المتوسط",
+        "مسار الأساس"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "مستوى غير قادر على قراءة رقم واحد؟",
+      "options": [
+        "مبتدئ",
+        "رقم",
+        "جمع",
+        "رقمان"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما الحد الأقصى للقراءة في مسار المستوى الثالث؟",
+      "options": [
+        "0-99999",
+        "0-99",
+        "0-9999",
+        "0-999"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "أي عملية لا تُجرى في مستوى رقمان؟",
+      "options": [
+        "الضرب",
+        "الطرح",
+        "القسمة",
+        "الجمع"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "مدة المسار الأول للمستوى الرابع في أيام؟",
+      "options": [
+        "6 days",
+        "24 days",
+        "3 days",
+        "15 days"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو العملية التي تُدرّس في المسار الثاني للمستوى الخامس؟",
+      "options": [
+        "division",
+        "addition",
+        "multiplication",
+        "subtraction"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو نطاق الأعداد للطرح في المسار الأول للمستوى الخامس؟",
+      "options": [
+        "0 to 999",
+        "0 to 999999",
+        "0 to 99999",
+        "0 to 9999"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "Which operation is included in the first building block?",
+      "options": [
+        "Trigonometric functions",
+        "Division operation",
+        "Geometry skills",
+        "Algebraic concepts"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "What conditions must a group meet to be eligible for the special path?",
+      "options": [
+        "Only C",
+        "Only A",
+        "Both A and C",
+        "Only B"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "How many days are allocated for the final assessment of a building block?",
+      "options": [
+        "Three days",
+        "Two days",
+        "One day",
+        "Four days"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما هو تأثير عدم التحكم في اللبنات؟",
+      "options": [
+        "It improves engagement",
+        "It increases learning outcomes",
+        "It affects the reach point",
+        "It reduces processing time"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ما المستويات التي يغطيها مسار دعم الرياضيات؟",
+      "options": [
+        "Levels 4 to 8",
+        "Levels 1 to 5",
+        "Levels 2 to 6",
+        "Levels 3 to 7"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم مدة الجلسة الأولى؟",
+      "options": [
+        "20 minutes",
+        "30 minutes",
+        "10 minutes",
+        "40 minutes"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "ماذا يفعل الميسر أولاً مع الصورة؟",
+      "options": [
+        "يختار مشهدًا من الصورة لتشخيصه",
+        "يقسم المتعلمين إلى فرق",
+        "يطلب من المتعلمين رسم الصورة",
+        "يعطي اختبارًا كتابيًا عن الصورة"
+      ],
+      "correctIndex": 0,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كم دقيقة يُعطى للمجموعات لتدريب الأدوار؟",
+      "options": [
+        "دقيقتان فقط",
+        "ثلاثون دقيقة",
+        "خمسة دقائق",
+        "عشر دقائق"
+      ],
+      "correctIndex": 2,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    },
+    {
+      "text": "كيف يُشجع المتعلمون على الكلام في ختام الحصة؟",
+      "options": [
+        "بالدارجة المغربية فقط",
+        "بجمل تامة بلغة فصيحة",
+        "بدون أي تصحيح لغوي",
+        "بكلمات مختصرة غير رسمية"
+      ],
+      "correctIndex": 1,
+      "explanation": "",
+      "source": "RAG generated",
+      "subject": "مؤسسات الريادة — مقاربة TaRL"
+    }
+  ]
+}

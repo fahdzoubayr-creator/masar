@@ -38,6 +38,7 @@ class QuestionBankLoader {
     'assets/banks/socio_psychology.json',
     'assets/banks/statutory_bank.json',
     'assets/banks/wadiaa_bank.json',
+    'assets/banks/rag_مؤسسات_الريادة.json',
   ];
 
   /// تحميل كل ملفات JSON — يجب استدعاءها مرة واحدة في main() قبل runApp().
@@ -54,6 +55,7 @@ class QuestionBankLoader {
         final questions = (entry.value as List<dynamic>)
             .map((q) => Question.fromJson(q as Map<String, dynamic>))
             .toList();
+        if (questions.isEmpty) continue;
         bank.update(
           subject,
           (existing) => [...existing, ...questions],
