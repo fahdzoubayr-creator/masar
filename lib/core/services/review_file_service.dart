@@ -22,14 +22,46 @@ class ReviewFileService {
   // جذر موقع النشر على GitHub Pages — الملفات تحت assets/assets/review_files.
   static const String baseUrl = 'https://fahdzoubayr-creator.github.io/masar';
 
-  /// ملف دليل الملفات النصية لكل محور — يُولَّد تلقائياً عند البناء
-  /// بواسطة أداة build_manifest.js ويُرفع مع الملفات إلى السحابة.
-  static String get manifestUrl =>
-      '$baseUrl/assets/assets/review_files/manifest.json';
+  /// ملفات الـPDF الفعلية مستضافة كأصول Release على GitHub
+  /// (حدود Pages هي 1GB فقط بينما Releases يدعم حتى 2GB للملف الواحد).
+  static const String releaseBase =
+      'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v1/';
 
-  /// يحوّل مسار الأصول (assets/review_files/...) إلى رابط السحابة المقابل.
-  static String urlFor(String assetPath) =>
-      '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
+  /// ترجمة اسم مجلد المحور إلى المزالج اللاتينية المستخدمة في أسماء
+  /// أصول الـRelease — GitHub يقصّ المحارف غير اللاتينية من الأسماء.
+  static const Map<String, String> folderSlugs = {
+    'التشريع المدرسي': 'tachrii_madrasii',
+    'التنشيط التربوي': 'tanshit_tarbawi',
+    'خطاطات ذهنية': 'khatatat_dhihniya',
+    'دورات تكوينية': 'dawrat_takwiniya',
+    'ديداكتيك الرياضيات': 'didactique_maths',
+    'ديداكتيك اللغة الأمازيغية': 'didactique_amazigh',
+    'ديداكتيك اللغة العربية': 'didactique_arabe',
+    'ديداكتيك اللغة الفرنسية': 'didactique_francais',
+    'ديداكتيك النشاط العلمي': 'didactique_science',
+    'علوم التربية': 'ouloum_tarbiya',
+    'مؤسسات الريادة': 'mouassasat_riyada',
+    'مراسلات ومذكرات': 'murasilat_mudhakkirat',
+    'مشروع المؤسسة المندمج': 'mashroua_muassasa',
+    'التعليم الثانوي بسلكيه': 'taalim_thaanawi',
+    'بنك الاسئلة': 'bank_asila',
+  };
+
+  /// دليل الملفات لكل محور — يُجلب من الفرع الرئيسي مباشرة (raw)
+  /// ليظهر أي تحديث فوراً دون انتظار إعادة نشر الموقع.
+  static String get manifestUrl =>
+      'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/'
+      'assets/assets/review_files/manifest.json';
+
+  /// يحوّل مسار الأصول (assets/review_files/<مجلد>/<NN>.pdf)
+  /// إلى رابط الـRelease المقابل، أو رابط Pages كبديل للمسارات غير المعروفة.
+  static String urlFor(String assetPath) {
+    final m =
+        RegExp(r'^assets/(?:assets/)?review_files/([^/]+)/(.+)$').firstMatch(assetPath);
+    final slug = m == null ? null : folderSlugs[m.group(1)];
+    if (m != null && slug != null) return '$releaseBase${slug}__${m.group(2)}';
+    return '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
+  }
 
   /// يقرأ ملفاً (PDF أو TXT): من السحابة أولاً، ثم من الكاش،
   /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.

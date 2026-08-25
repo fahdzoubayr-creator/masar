@@ -1,13 +1,39 @@
 const http = require('http');
 const https = require('https');
 let remoteManifestCache = { t: 0, data: null };
+const FOLDER_SLUGS = {
+  'التشريع المدرسي': 'tachrii_madrasii',
+  'التنشيط التربوي': 'tanshit_tarbawi',
+  'خطاطات ذهنية': 'khatatat_dhihniya',
+  'دورات تكوينية': 'dawrat_takwiniya',
+  'ديداكتيك الرياضيات': 'didactique_maths',
+  'ديداكتيك اللغة الأمازيغية': 'didactique_amazigh',
+  'ديداكتيك اللغة العربية': 'didactique_arabe',
+  'ديداكتيك اللغة الفرنسية': 'didactique_francais',
+  'ديداكتيك النشاط العلمي': 'didactique_science',
+  'علوم التربية': 'ouloum_tarbiya',
+  'مؤسسات الريادة': 'mouassasat_riyada',
+  'مراسلات ومذكرات': 'murasilat_mudhakkirat',
+  'مشروع المؤسسة المندمج': 'mashroua_muassasa',
+  'التعليم الثانوي بسلكيه': 'taalim_thaanawi',
+  'بنك الاسئلة': 'bank_asila',
+};
+const RELEASE_BASE =
+  'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v1/';
+function releaseUrlFor(pdfPath) {
+  const m = String(pdfPath).replace(/^\/+/, '').match(/^assets(?:\/assets)?\/review_files\/([^/]+)\/(.+)$/);
+  if (!m) return null;
+  const slug = FOLDER_SLUGS[m[1]];
+  if (!slug) return null;
+  return RELEASE_BASE + slug + '__' + m[2];
+}
 function toCloudFiles(entries, pagesBase) {
   return entries
     .filter((e) => e && typeof e.pdf === 'string')
     .map((e) => ({
       path: e.pdf,
       name: e.name || e.pdf,
-      url: pagesBase + e.pdf.replace(/^\/+/, '').replace(/^assets\//, 'assets/assets/'),
+      url: releaseUrlFor(e.pdf) || pagesBase + e.pdf.replace(/^\/+/, '').replace(/^assets\//, 'assets/assets/'),
     }));
 }
 const fs = require('fs');
@@ -585,13 +611,14 @@ const handler = async (req, res) => {
     if (!safe) return json(res, 400, { error: 'folder مطلوب' });
     const dir = path.join(__dirname, 'assets', 'review_files', safe);
     fs.readdir(dir, (err, entries) => {
-      if (err) return json(res, 200, { files: [] });
-      const files = entries
+      if (err) entries = [];
+      const files = (entries || [])
         .filter((f) => f.toLowerCase().endsWith('.pdf'))
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
         .map((f) => ({
           path: `assets/review_files/${safe}/${f}`,
           name: f.replace(/\.pdf$/i, ''),
+          url: releaseUrlFor(`assets/review_files/${safe}/${f}`),
         }));
       const done = (files) => {
         console.log(`[review-files] ${safe} -> ${files.length} pdf`);
@@ -601,8 +628,9 @@ const handler = async (req, res) => {
       // لا ملفات محلية؟ اسأل المانيفست السحابي في GitHub (مصدر الملفات الرسمي).
       const PAGES_BASE = 'https://fahdzoubayr-creator.github.io/masar/';
       const SOURCES = [
-        PAGES_BASE + 'assets/assets/review_files/manifest.json',
+        // ????? ??????? ????? ? ???? ?? ????? ????? ??? ?????? ????? ??? ??????.
         'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/assets/assets/review_files/manifest.json',
+        PAGES_BASE + 'assets/assets/review_files/manifest.json',
       ];
       if (remoteManifestCache.data && Date.now() - remoteManifestCache.t < 300000) {
         return done(toCloudFiles(remoteManifestCache.data[safe] || [], PAGES_BASE));
