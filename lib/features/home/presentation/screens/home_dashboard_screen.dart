@@ -11,6 +11,7 @@ import 'package:masar_app/features/exams/presentation/screens/final_exams_screen
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_lobby_screen.dart';
 import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_screen.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
+import 'package:masar_app/features/home/presentation/widgets/exams_access_gate_dialog.dart';
 import 'package:masar_app/features/splash/presentation/splash_screen.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
 
@@ -234,9 +235,15 @@ class _DashboardCard extends StatelessWidget {
               // القاعات الصوتية فضاء صامت تماماً: بلا مؤثرات إطلاقاً.
               onTap: locked
                   ? null
-                  : () {
+                  : () async {
                       if (item.builder != HomeDashboardScreen._buildLiveRoom) {
                         playSfx(Sfx.select);
+                      }
+                      // فضاء الامتحانات التجريبية محمي بكود الانضمام —
+                      // تُعرض بوابة فيسبوك قبل فتحه، ولا يمرّ منها إلا بالكود.
+                      if (item.builder == HomeDashboardScreen._buildFinalExams) {
+                        final unlocked = await showExamsAccessGateDialog(context);
+                        if (!unlocked || !context.mounted) return;
                       }
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: item.builder),

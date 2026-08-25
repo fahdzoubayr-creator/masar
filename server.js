@@ -436,6 +436,118 @@ const handler = async (req, res) => {
     return;
   }
 
+  // ===== توليد كويز من ملف الدرس (PDF -> Groq -> 70 سؤالاً) =====
+  if (req.method === 'POST' && urlPath === '/api/quiz/generate-from-pdf') {
+    let body = '';
+    req.on('data', (c) => {
+      body += c;
+      if (body.length > 8192) req.destroy();
+    });
+    req.on('end', () => {
+      let payload = {};
+      try {
+        payload = JSON.parse(body || '{}');
+      } catch {}
+      const rawPath = typeof payload.path === 'string' ? payload.path : '';
+      if (!rawPath) return json(res, 400, { error: 'path مطلوب' });
+      let rel;
+      try {
+        rel = decodeURIComponent(rawPath.replace(/^\/+/, ''));
+      } catch {
+        return json(res, 400, { error: 'مسار غير صالح' });
+      }
+      rel = rel.replace(/^assets\/assets\//, 'assets/');
+      if (!/^assets\/review_files\/.+\.pdf$/i.test(rel)) {
+        rel = 'assets/review_files/' + rel.replace(/^assets\//, '');
+      }
+      const baseDir = path.join(__dirname, 'assets', 'review_files');
+      const pdfFile = path.normalize(path.join(__dirname, rel));
+      if (!pdfFile.startsWith(baseDir) || !pdfFile.toLowerCase().endsWith('.pdf')) {
+        return json(res, 403, { error: 'مسار غير مسموح' });
+      }
+      fs.stat(pdfFile, (err, st) => {
+        if (err || !st.isFile()) return json(res, 404, { error: 'الملف غير موجود' });
+
+        // ذاكرة/قرص تخزين مؤقت حسب المسار+الحجم+زمن التعديل
+        const crypto = require('crypto');
+        const genDir = path.join(__dirname, 'assets', 'banks', 'generated');
+        const id = crypto
+          .createHash('sha1')
+          .update(rel + st.size + st.mtimeMs)
+          .digest('hex')
+          .slice(0, 16);
+        const cacheFile = path.join(genDir, id + '.json');
+        try {
+          if (fs.existsSync(cacheFile)) {
+            const j = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+            console.log(`[quiz-gen] cached ${rel}`);
+            return json(res, 200, { cached: true, ...j });
+          }
+        } catch {}
+
+        const key =
+          process.env.GROQ_API_KEY ||
+          (() => {
+            try {
+              const t = fs.readFileSync(
+                path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
+                'utf8'
+              );
+              const m = t.match(/gsk_[A-Za-z0-9]+/);
+              return m ? m[0] : null;
+            } catch {
+              return null;
+            }
+          })();
+        if (!key) return json(res, 503, { error: 'GROQ_KEY_MISSING' });
+
+        fs.mkdirSync(genDir, { recursive: true });
+        const { spawn } = require('child_process');
+        const proc = spawn(
+          'python',
+          [
+            path.join(__dirname, 'tools', 'quiz_from_pdf.py'),
+            '--pdf', pdfFile,
+            '--subject', String(payload.subject || ''),
+            '--out', cacheFile,
+          ],
+          {
+            env: { ...process.env, GROQ_API_KEY: key, PYTHONIOENCODING: 'utf-8' },
+            windowsHide: true,
+          }
+        );
+        let errTxt = '';
+        const killer = setTimeout(() => proc.kill(), 480000);
+        proc.stdout.on('data', () => {});
+        proc.stderr.on('data', (d) => {
+          errTxt += d.toString();
+          if (errTxt.length > 8000) errTxt = errTxt.slice(-4000);
+        });
+        proc.on('error', (e) => {
+          errTxt += String(e);
+        });
+        proc.on('close', (code) => {
+          clearTimeout(killer);
+          if (code === 0 && fs.existsSync(cacheFile)) {
+            try {
+              const j = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+              console.log(`[quiz-gen] ${rel} -> ${j.count}q`);
+              return json(res, 200, { cached: false, ...j });
+            } catch (e) {
+              errTxt += String(e);
+            }
+          }
+          console.error(`[quiz-gen-fail] code=${code} ${errTxt.slice(-400)}`);
+          return json(res, 502, {
+            error: 'GENERATION_FAILED',
+            detail: errTxt.slice(-180),
+          });
+        });
+      });
+    });
+    return;
+  }
+
   if (urlPath.endsWith('/')) urlPath += 'index.html';
   // أسماء الأصول العربية تُخزَّن مشفّرة على القرص (ترميز URL) في build/web —
   // نجرّب المسار المفكوك ثم المسار الخام (المشفر) عند خدمة الملفات الثابتة.

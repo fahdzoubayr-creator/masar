@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
+import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
+import 'package:masar_app/core/services/generated_quiz_service.dart';
 import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/services/review_file_service.dart';
@@ -12,6 +14,63 @@ import 'package:masar_app/features/review/presentation/screens/pdf_viewer_screen
 
 /// شاشة قائمة ملفات PDF لمحور فرعي — تُفتح من صف المحور في فضاء المراجعة،
 /// وتضم كويز المحور أسفل الملفات.
+/// كويز مولّد من محتوى ملف واحد تحديداً — مستقل عن حالة بطاقة الكويز.
+Future<void> _openFileQuiz(
+  BuildContext context,
+  ReviewPdf file,
+  String folderTitle,
+  String topicTitle,
+) async {
+  playSfx(Sfx.select);
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => Dialog(
+      backgroundColor: Colors.transparent,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            CircularProgressIndicator(color: AppColors.gold),
+            SizedBox(height: 14),
+            Text('جاري توليد كويز من محتوى الملف…',
+                style: TextStyle(color: AppColors.cream, fontSize: 12)),
+          ],
+        ),
+      ),
+    ),
+  );
+  List<Question>? generated;
+  try {
+    generated = await GeneratedQuizService.fromPdf(
+      file.assetPath,
+      subject: topicTitle.isNotEmpty ? topicTitle : folderTitle,
+    );
+  } catch (_) {
+    generated = null;
+  }
+  if (!context.mounted) return;
+  Navigator.of(context, rootNavigator: true).pop();
+  if (generated == null || generated.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.err,
+        content: Text('تعذّر توليد الكويز من هذا الملف، حاول لاحقاً.',
+            style: TextStyle(color: Colors.white))));
+    return;
+  }
+  await Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => QuizScreen(
+        questionLoader: () async => generated!,
+        testType: 'كويز من محتوى الدرس',
+        axisName: folderTitle,
+        subAxisName: topicTitle.isNotEmpty ? topicTitle : file.displayName,
+      ),
+    ),
+  );
+}
+
 class TopicFilesScreen extends StatelessWidget {
   final String folderTitle;
   final String topicTitle;
@@ -134,6 +193,16 @@ class TopicFilesScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
+                                    // كويز مولّد من محتوى هذا الملف تحديداً.
+                                    IconButton(
+                                      onPressed: () => _openFileQuiz(
+                                          context, file, folderTitle, topicTitle),
+                                      icon: const Icon(Icons.quiz_outlined,
+                                          color: AppColors.goldSoft, size: 20),
+                                      tooltip: 'كويز من هذا الملف',
+                                      constraints: const BoxConstraints(
+                                          minWidth: 36, minHeight: 36),
+                                    ),
                                     const Icon(Icons.chevron_left_rounded,
                                         color: AppColors.muted, size: 22),
                                   ],
