@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:masar_app/core/services/review_file_cache.dart';
@@ -63,10 +64,22 @@ class ReviewFileService {
     return '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
   }
 
+  /// رابط التحميل الفعلي للبايتات: على الويب نمرّ عبر السيرفر المحلي
+  /// كوسيط لأن روابط Releases لا ترسل ترويسات CORS فيرفضها المتصفح،
+  /// أما الهاتف (لا يخضع لـCORS) فيجلبها مباشرة من الـRelease.
+  static String downloadUrlFor(String assetPath) {
+    if (kIsWeb) {
+      return Uri.base.resolve(
+        '/api/review-files/file?path=${Uri.encodeComponent(assetPath)}',
+      ).toString();
+    }
+    return urlFor(assetPath);
+  }
+
   /// يقرأ ملفاً (PDF أو TXT): من السحابة أولاً، ثم من الكاش،
   /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.
   static Future<Uint8List> readAsset(String assetPath) async {
-    final url = urlFor(assetPath);
+    final url = downloadUrlFor(assetPath);
     final cached = await ReviewFileDiskCache.read(url);
     if (cached != null) return cached;
     try {

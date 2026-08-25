@@ -595,6 +595,73 @@ const handler = async (req, res) => {
     return;
   }
 
+  // بث ملف مراجعة عبر السيرفر كوسيط ? روابط Releases لا ترسل ترويسات
+  // CORS فيرفضها متصفح الويب، لذا نجلب البايتات نحن ونعيد بثها.
+  if (req.method === 'GET' && urlPath.startsWith('/api/review-files/file')) {
+    let parsed;
+    try {
+      parsed = new URL(req.url, 'http://localhost');
+    } catch {
+      return json(res, 400, { error: 'طلب غير صالح' });
+    }
+    let target = '';
+    try {
+      target = decodeURIComponent(parsed.searchParams.get('path') || '');
+    } catch {}
+    if (!/^assets\/(?:assets\/)?review_files\/[^/]+\/[^/]+$/.test(target)) {
+      return json(res, 400, { error: '???? ??? ????' });
+    }
+    const done404 = () => json(res, 404, { error: '????? ??? ????? ???' });
+    const streamRemote = (url, tries) => {
+      if (tries > 5) {
+        res.writeHead(502);
+        return res.end();
+      }
+      https
+        .get(url, { headers: { 'User-Agent': 'masar-server' } }, (r) => {
+          if (
+            r.statusCode >= 300 &&
+            r.statusCode < 400 &&
+            r.headers.location
+          ) {
+            r.resume();
+            return streamRemote(r.headers.location, tries + 1);
+          }
+          if (r.statusCode !== 200) {
+            r.resume();
+            return done404();
+          }
+          const h = {
+            'Content-Type': 'application/pdf',
+            'Cache-Control': 'no-cache',
+            'Access-Control-Allow-Origin': '*',
+          };
+          if (r.headers['content-length']) h['Content-Length'] = r.headers['content-length'];
+          res.writeHead(200, h);
+          r.pipe(res);
+        })
+        .on('error', () => {
+          try { res.writeHead(502); } catch {}
+          res.end();
+        });
+    };
+    const releaseUrl = releaseUrlFor(target);
+    if (releaseUrl) return streamRemote(releaseUrl, 0);
+    try {
+      const localFile = path.join(__dirname, target);
+      const stat = fs.statSync(localFile);
+      if (stat.isFile()) {
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Length': stat.size,
+          'Cache-Control': 'no-cache',
+        });
+        return fs.createReadStream(localFile).pipe(res);
+      }
+    } catch (_) {}
+    return done404();
+  }
+
   // قائمة ملفات المراجعة من القرص مباشرة — بديل عندما يكون المانيفست قديماً أو غير متاح
   if (req.method === 'GET' && urlPath.startsWith('/api/review-files/list')) {
     let parsed;
