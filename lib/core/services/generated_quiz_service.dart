@@ -42,4 +42,22 @@ class GeneratedQuizService {
     _mem[assetPath] = questions;
     return questions;
   }
+
+  /// يولّد من عدة ملفات بالتتابع حتى بلوغ [target] سؤالاً — يتخطى ما يفشل.
+  static Future<List<Question>> fromPdfs(
+    List<String> assetPaths, {
+    required String subject,
+    int target = 70,
+  }) async {
+    final out = <Question>[];
+    for (final p in assetPaths) {
+      if (out.length >= target) break;
+      try {
+        out.addAll(await fromPdf(p, subject: subject));
+      } catch (_) {
+        // تخطَّ الملف الفاشل وواصل مع البقية.
+      }
+    }
+    return out.length > target ? out.sublist(0, target) : out;
+  }
 }

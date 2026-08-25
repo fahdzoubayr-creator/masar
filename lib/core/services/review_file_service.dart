@@ -179,6 +179,29 @@ class ReviewFileService {
         displayName: entry['name'] ?? pdf,
       ));
     }
+    if (pdfs.isEmpty) {
+      // المانيفست قد يكون قديماً أو غير متاح — اسأل السيرفر المحلي عن
+      // الملفات الموجودة فعلياً على القرص داخل مجلد المحور.
+      try {
+        final uri = Uri.base.resolve(
+            '/api/review-files/list?folder=${Uri.encodeComponent(folder)}');
+        final resp = await http.get(uri).timeout(const Duration(seconds: 8));
+        if (resp.statusCode == 200) {
+          final data =
+              jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+          final list = (data['files'] as List?) ?? const [];
+          for (final e in list.cast<Map<String, dynamic>>()) {
+            pdfs.add(ReviewPdf(
+              assetPath: e['path'] as String,
+              displayName:
+                  (e['name'] as String?) ?? (e['path'] as String),
+            ));
+          }
+        }
+      } catch (_) {
+        // بلا سيرفر: تبقى القائمة فارغة وتظهر حالة عدم توفر ملفات.
+      }
+    }
     pdfs.sort((a, b) {
       final na = int.tryParse(
               RegExp(r'/(\d+)\.pdf$').firstMatch(a.assetPath)?.group(1) ?? '') ??

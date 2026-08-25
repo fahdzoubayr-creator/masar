@@ -548,6 +548,36 @@ const handler = async (req, res) => {
     return;
   }
 
+  // قائمة ملفات المراجعة من القرص مباشرة — بديل عندما يكون المانيفست قديماً أو غير متاح
+  if (req.method === 'GET' && urlPath.startsWith('/api/review-files/list')) {
+    let parsed;
+    try {
+      parsed = new URL(req.url, 'http://localhost');
+    } catch {
+      return json(res, 400, { error: 'طلب غير صالح' });
+    }
+    let folder = '';
+    try {
+      folder = decodeURIComponent(parsed.searchParams.get('folder') || '');
+    } catch {}
+    const safe = folder.replace(/[\/\\]/g, '').trim();
+    if (!safe) return json(res, 400, { error: 'folder مطلوب' });
+    const dir = path.join(__dirname, 'assets', 'review_files', safe);
+    fs.readdir(dir, (err, entries) => {
+      if (err) return json(res, 200, { files: [] });
+      const files = entries
+        .filter((f) => f.toLowerCase().endsWith('.pdf'))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .map((f) => ({
+          path: `assets/review_files/${safe}/${f}`,
+          name: f.replace(/\.pdf$/i, ''),
+        }));
+      console.log(`[review-files] ${safe} -> ${files.length} pdf`);
+      return json(res, 200, { files });
+    });
+    return;
+  }
+
   if (urlPath.endsWith('/')) urlPath += 'index.html';
   // أسماء الأصول العربية تُخزَّن مشفّرة على القرص (ترميز URL) في build/web —
   // نجرّب المسار المفكوك ثم المسار الخام (المشفر) عند خدمة الملفات الثابتة.

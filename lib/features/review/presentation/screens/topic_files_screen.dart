@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
@@ -6,15 +6,16 @@ import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/generated_quiz_service.dart';
 import 'package:masar_app/core/services/question_generator.dart';
+import 'package:masar_app/core/services/question_repository.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/services/review_file_service.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/features/quiz/presentation/screens/quiz_screen.dart';
 import 'package:masar_app/features/review/presentation/screens/pdf_viewer_screen.dart';
 
-/// شاشة قائمة ملفات PDF لمحور فرعي — تُفتح من صف المحور في فضاء المراجعة،
-/// وتضم كويز المحور أسفل الملفات.
-/// كويز مولّد من محتوى ملف واحد تحديداً — مستقل عن حالة بطاقة الكويز.
+/// Ø´Ø§Ø´Ø© Ù‚Ø§Ø¦Ù…Ø© Ù…Ù„ÙØ§Øª PDF Ù„Ù…Ø­ÙˆØ± ÙØ±Ø¹ÙŠ â€” ØªÙÙØªØ­ Ù…Ù† ØµÙ Ø§Ù„Ù…Ø­ÙˆØ± ÙÙŠ ÙØ¶Ø§Ø¡ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©ØŒ
+/// ÙˆØªØ¶Ù… ÙƒÙˆÙŠØ² Ø§Ù„Ù…Ø­ÙˆØ± Ø£Ø³ÙÙ„ Ø§Ù„Ù…Ù„ÙØ§Øª.
+/// ÙƒÙˆÙŠØ² Ù…ÙˆÙ„Ù‘Ø¯ Ù…Ù† Ù…Ø­ØªÙˆÙ‰ Ù…Ù„Ù ÙˆØ§Ø­Ø¯ ØªØ­Ø¯ÙŠØ¯Ø§Ù‹ â€” Ù…Ø³ØªÙ‚Ù„ Ø¹Ù† Ø­Ø§Ù„Ø© Ø¨Ø·Ø§Ù‚Ø© Ø§Ù„ÙƒÙˆÙŠØ².
 Future<void> _openFileQuiz(
   BuildContext context,
   ReviewPdf file,
@@ -33,7 +34,7 @@ Future<void> _openFileQuiz(
           children: const [
             CircularProgressIndicator(color: AppColors.gold),
             SizedBox(height: 14),
-            Text('جاري توليد كويز من محتوى الملف…',
+            Text('Ø¬Ø§Ø±ÙŠ ØªÙˆÙ„ÙŠØ¯ ÙƒÙˆÙŠØ² Ù…Ù† Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…Ù„Ùâ€¦',
                 style: TextStyle(color: AppColors.cream, fontSize: 12)),
           ],
         ),
@@ -55,7 +56,7 @@ Future<void> _openFileQuiz(
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.err,
-        content: Text('تعذّر توليد الكويز من هذا الملف، حاول لاحقاً.',
+        content: Text('ØªØ¹Ø°Ù‘Ø± ØªÙˆÙ„ÙŠØ¯ Ø§Ù„ÙƒÙˆÙŠØ² Ù…Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„ÙØŒ Ø­Ø§ÙˆÙ„ Ù„Ø§Ø­Ù‚Ø§Ù‹.',
             style: TextStyle(color: Colors.white))));
     return;
   }
@@ -63,7 +64,7 @@ Future<void> _openFileQuiz(
     MaterialPageRoute(
       builder: (_) => QuizScreen(
         questionLoader: () async => generated!,
-        testType: 'كويز من محتوى الدرس',
+        testType: 'ÙƒÙˆÙŠØ² Ù…Ù† Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø¯Ø±Ø³',
         axisName: folderTitle,
         subAxisName: topicTitle.isNotEmpty ? topicTitle : file.displayName,
       ),
@@ -89,7 +90,7 @@ class TopicFilesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // الخلفية الموحدة تُقدَّم من main.dart — لا طبقة معتمة هنا.
+        // Ø§Ù„Ø®Ù„ÙÙŠØ© Ø§Ù„Ù…ÙˆØ­Ø¯Ø© ØªÙÙ‚Ø¯ÙŽÙ‘Ù… Ù…Ù† main.dart â€” Ù„Ø§ Ø·Ø¨Ù‚Ø© Ù…Ø¹ØªÙ…Ø© Ù‡Ù†Ø§.
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
@@ -102,7 +103,7 @@ class TopicFilesScreen extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.arrow_back_ios_new_rounded,
                         color: AppColors.goldSoft, size: 18),
-                    tooltip: 'رجوع',
+                    tooltip: 'Ø±Ø¬ÙˆØ¹',
                     constraints:
                         const BoxConstraints(minWidth: 44, minHeight: 44),
                   ),
@@ -117,8 +118,8 @@ class TopicFilesScreen extends StatelessWidget {
                         size: 18, weight: FontWeight.w700)),
                 const SizedBox(height: 4),
                 Text(files.isEmpty
-                    ? 'لا توجد ملفات مراجعة بعد'
-                    : '${files.length} ملفات للمراجعة',
+                    ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ù„ÙØ§Øª Ù…Ø±Ø§Ø¬Ø¹Ø© Ø¨Ø¹Ø¯'
+                    : '${files.length} Ù…Ù„ÙØ§Øª Ù„Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©',
                     style: const TextStyle(
                         fontSize: 11, color: AppColors.goldSoft)),
                 const SizedBox(height: 16),
@@ -193,13 +194,13 @@ class TopicFilesScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    // كويز مولّد من محتوى هذا الملف تحديداً.
+                                    // ÙƒÙˆÙŠØ² Ù…ÙˆÙ„Ù‘Ø¯ Ù…Ù† Ù…Ø­ØªÙˆÙ‰ Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù ØªØ­Ø¯ÙŠØ¯Ø§Ù‹.
                                     IconButton(
                                       onPressed: () => _openFileQuiz(
                                           context, file, folderTitle, topicTitle),
                                       icon: const Icon(Icons.quiz_outlined,
                                           color: AppColors.goldSoft, size: 20),
-                                      tooltip: 'كويز من هذا الملف',
+                                      tooltip: 'ÙƒÙˆÙŠØ² Ù…Ù† Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù',
                                       constraints: const BoxConstraints(
                                           minWidth: 36, minHeight: 36),
                                     ),
@@ -223,7 +224,7 @@ class TopicFilesScreen extends StatelessWidget {
   }
 }
 
-/// حالة «لا ملفات بعد» داخل شاشة المحور.
+/// Ø­Ø§Ù„Ø© Â«Ù„Ø§ Ù…Ù„ÙØ§Øª Ø¨Ø¹Ø¯Â» Ø¯Ø§Ø®Ù„ Ø´Ø§Ø´Ø© Ø§Ù„Ù…Ø­ÙˆØ±.
 class _EmptyFilesState extends StatelessWidget {
   const _EmptyFilesState();
 
@@ -245,7 +246,7 @@ class _EmptyFilesState extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           const Text(
-            'ملفات هذا المحور في طور الإعداد\nوسيتم إضافتها قريباً',
+            'Ù…Ù„ÙØ§Øª Ù‡Ø°Ø§ Ø§Ù„Ù…Ø­ÙˆØ± ÙÙŠ Ø·ÙˆØ± Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯\nÙˆØ³ÙŠØªÙ… Ø¥Ø¶Ø§ÙØªÙ‡Ø§ Ù‚Ø±ÙŠØ¨Ø§Ù‹',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.5,
@@ -259,8 +260,8 @@ class _EmptyFilesState extends StatelessWidget {
   }
 }
 
-/// بطاقة كويز المحور الفرعي — أسفل قائمة الملفات في شاشة المحور،
-/// مع ملاحظة الحظر 3 ساعات عند الفشل، أفضل نسبة، وعدّاد تنازلي أثناء الحظر.
+/// Ø¨Ø·Ø§Ù‚Ø© ÙƒÙˆÙŠØ² Ø§Ù„Ù…Ø­ÙˆØ± Ø§Ù„ÙØ±Ø¹ÙŠ â€” Ø£Ø³ÙÙ„ Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ù„ÙØ§Øª ÙÙŠ Ø´Ø§Ø´Ø© Ø§Ù„Ù…Ø­ÙˆØ±ØŒ
+/// Ù…Ø¹ Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ø­Ø¸Ø± 3 Ø³Ø§Ø¹Ø§Øª Ø¹Ù†Ø¯ Ø§Ù„ÙØ´Ù„ØŒ Ø£ÙØ¶Ù„ Ù†Ø³Ø¨Ø©ØŒ ÙˆØ¹Ø¯Ù‘Ø§Ø¯ ØªÙ†Ø§Ø²Ù„ÙŠ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­Ø¸Ø±.
 class TopicQuizCard extends StatefulWidget {
   final String folderTitle;
   final String topicTitle;
@@ -280,7 +281,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
   Timer? _timer;
   String _remaining = '';
 
-  String get _quizId => '${widget.folderTitle} › ${widget.topicTitle}';
+  String get _quizId => '${widget.folderTitle} â€º ${widget.topicTitle}';
 
   @override
   void initState() {
@@ -329,15 +330,43 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
-          questionLoader: () => QuestionGenerator.generateForFolder(
-              widget.folderTitle,
-              topic: widget.topicTitle),
-          testType: 'كويز المحور الفرعي',
+          questionLoader: () async {
+            final bankQs = await QuestionGenerator.generateForFolder(
+                widget.folderTitle,
+                topic: widget.topicTitle);
+            if (bankQs.isNotEmpty) return bankQs;
+            // Ù…Ø·Ø§Ø¨Ù‚Ø© Ø¨Ù†ÙƒÙŠØ© Ù…Ø±Ù†Ø©: ÙŠÙ„ØªÙ‚Ø· Ø¨Ù†ÙˆÙƒØ§Ù‹ Ù…Ø«Ù„ Â«Ù…Ø¤Ø³Ø³Ø§Øª Ø§Ù„Ø±ÙŠØ§Ø¯Ø© â€” Ù…Ù‚Ø§Ø±Ø¨Ø©â€¦Â»
+            final fuzzy =
+                await QuestionRepository.instance.loadQuestions(
+              subject: widget.topicTitle.isNotEmpty
+                  ? widget.topicTitle
+                  : widget.folderTitle,
+            );
+            if (fuzzy.length >= 20) {
+              fuzzy.shuffle();
+              return fuzzy.take(70).toList();
+            }
+            // Ù„Ø§ Ø¨Ù†Ùƒ Ù„Ù‡Ø°Ø§ Ø§Ù„Ù…Ø­ÙˆØ±ØŸ ÙˆÙ„Ù‘Ø¯ Ø§Ù„ÙƒÙˆÙŠØ² Ù…Ù† Ù…Ù„ÙØ§Øª Ø§Ù„Ù…Ø­ÙˆØ± Ù†ÙØ³Ù‡Ø§.
+            var files = await ReviewFileService.loadFolderPdfs(
+                widget.folderTitle,
+                topic: widget.topicTitle);
+            if (files.isEmpty) {
+              files =
+                  await ReviewFileService.loadFolderPdfs(widget.folderTitle);
+            }
+            if (files.isEmpty) return const <Question>[];
+            return GeneratedQuizService.fromPdfs(
+              files.map((f) => f.assetPath).toList(),
+              subject: widget.topicTitle.isNotEmpty
+                  ? widget.topicTitle
+                  : widget.folderTitle,
+            );
+          },          testType: 'ÙƒÙˆÙŠØ² Ø§Ù„Ù…Ø­ÙˆØ± Ø§Ù„ÙØ±Ø¹ÙŠ',
           axisName: widget.folderTitle,
           subAxisName: widget.topicTitle,
           onFinished: (result) => QuizAttemptService.record(_quizId, result),
           failureNote:
-              'لم تحصل على 50% على الأقل — تم منعك من إعادة هذا الكويز لمدة 3 ساعات.\nارجع إلى المراجعة أولاً.',
+              'Ù„Ù… ØªØ­ØµÙ„ Ø¹Ù„Ù‰ 50% Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„ â€” ØªÙ… Ù…Ù†Ø¹Ùƒ Ù…Ù† Ø¥Ø¹Ø§Ø¯Ø© Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆÙŠØ² Ù„Ù…Ø¯Ø© 3 Ø³Ø§Ø¹Ø§Øª.\nØ§Ø±Ø¬Ø¹ Ø¥Ù„Ù‰ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø£ÙˆÙ„Ø§Ù‹.',
         ),
       ),
     );
@@ -373,18 +402,18 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               const Icon(Icons.quiz_rounded, size: 20, color: AppColors.goldSoft),
               const SizedBox(width: 8),
               Expanded(
-                child: Text('كويز هذا المحور الفرعي',
+                child: Text('ÙƒÙˆÙŠØ² Ù‡Ø°Ø§ Ø§Ù„Ù…Ø­ÙˆØ± Ø§Ù„ÙØ±Ø¹ÙŠ',
                     style: AppTheme.displayFont(
                         size: 13, weight: FontWeight.w700)),
               ),
               if (hasAttempt && !locked) ...[
-                Text('أفضل نسبة: ${_attempt!.bestPercentage}%',
+                Text('Ø£ÙØ¶Ù„ Ù†Ø³Ø¨Ø©: ${_attempt!.bestPercentage}%',
                     style: const TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         color: AppColors.goldSoft)),
                 const SizedBox(width: 8),
-                Text('${_attempt!.attempts} محاولة',
+                Text('${_attempt!.attempts} Ù…Ø­Ø§ÙˆÙ„Ø©',
                     style:
                         const TextStyle(fontSize: 10.5, color: AppColors.muted)),
               ],
@@ -392,7 +421,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'إذا لم تحصل على 50% على الأقل في أسئلة هذا الكويز، ستمنع من إعادة المحاولة لمدة 3 ساعات — ارجع إلى المراجعة أولاً.',
+            'Ø¥Ø°Ø§ Ù„Ù… ØªØ­ØµÙ„ Ø¹Ù„Ù‰ 50% Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„ ÙÙŠ Ø£Ø³Ø¦Ù„Ø© Ù‡Ø°Ø§ Ø§Ù„ÙƒÙˆÙŠØ²ØŒ Ø³ØªÙ…Ù†Ø¹ Ù…Ù† Ø¥Ø¹Ø§Ø¯Ø© Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø© Ù„Ù…Ø¯Ø© 3 Ø³Ø§Ø¹Ø§Øª â€” Ø§Ø±Ø¬Ø¹ Ø¥Ù„Ù‰ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø£ÙˆÙ„Ø§Ù‹.',
             style: TextStyle(fontSize: 11, color: AppColors.muted, height: 1.6),
           ),
           const SizedBox(height: 10),
@@ -420,8 +449,8 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
                   Expanded(
                     child: Text(
                       _remaining.isEmpty
-                          ? 'أنت ممنوع من الكويز — ارجع إلى المراجعة'
-                          : 'أنت ممنوع من الكويز — ارجع إلى المراجعة · متبقي: $_remaining',
+                          ? 'Ø£Ù†Øª Ù…Ù…Ù†ÙˆØ¹ Ù…Ù† Ø§Ù„ÙƒÙˆÙŠØ² â€” Ø§Ø±Ø¬Ø¹ Ø¥Ù„Ù‰ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø©'
+                          : 'Ø£Ù†Øª Ù…Ù…Ù†ÙˆØ¹ Ù…Ù† Ø§Ù„ÙƒÙˆÙŠØ² â€” Ø§Ø±Ø¬Ø¹ Ø¥Ù„Ù‰ Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Â· Ù…ØªØ¨Ù‚ÙŠ: $_remaining',
                       style: const TextStyle(
                           fontSize: 12, color: AppColors.err, height: 1.5),
                     ),
@@ -441,7 +470,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
                       borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: () => _openQuiz(context),
-                child: const Text('ابدأ الكويز',
+                child: const Text('Ø§Ø¨Ø¯Ø£ Ø§Ù„ÙƒÙˆÙŠØ²',
                     style:
                         TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5)),
               ),
