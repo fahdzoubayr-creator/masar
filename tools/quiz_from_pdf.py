@@ -29,7 +29,12 @@ PHRASE = "كل الاقتراحات السابقة خاطئة"
 TARGET_DEFAULT = 70
 PHRASE_CORRECT_DEFAULT = 15
 
-MODELS = ["openai/gpt-oss-20b", "llama-3.3-70b-versatile", "allam-2-7b"]
+MODEL_PREF = [
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-120b",
+    "llama-3.3-70b-versatile",
+    "llama-3.3-70b",
+]
 CHUNK_WORDS = 300
 PER_CALL = 6          # أسئلة مطلوبة في كل استدعاء
 MAX_CALLS = 18        # سقف استدعاءات لملف واحد
@@ -88,6 +93,31 @@ def resolve_key() -> str:
         except OSError:
             pass
     raise SystemExit("NO_GROQ_KEY")
+
+
+def pick_models(client):
+    """????? ??????? ??????? ?????? ???? ??????? ? ???? GROQ_MODELS ????? ?????."""
+    env = os.environ.get("GROQ_MODELS", "").strip()
+    if env:
+        return [m.strip() for m in env.split(",") if m.strip()]
+    try:
+        ids = [m.id for m in client.models.list()]
+    except Exception:
+        return list(MODEL_PREF)
+
+    def score(mid: str) -> int:
+        if mid in MODEL_PREF:
+            return MODEL_PREF.index(mid)
+        low = mid.lower()
+        if "gpt-oss" in low:
+            return 100
+        if "70b" in low:
+            return 200
+        if "llama" in low or "qwen" in low:
+            return 300
+        return 400
+
+    return sorted(ids, key=score)
 
 
 def extract_text(pdf_path=None, pdf_bytes=None) -> str:
@@ -218,6 +248,8 @@ def main():
     from groq import Groq
 
     client = Groq(api_key=resolve_key())
+    models = pick_models(client)
+    print("models:", ",".join(models[:6]), file=sys.stderr)
     chunks = chunk_text(text)
     seen_q = set()
     items = []
@@ -232,12 +264,23 @@ def main():
         n = min(PER_CALL, remaining + 2)  # هامش للرفض بعد الفحص
         prompt = PROMPT.format(n=n, style=STYLE, text=excerpt, phrase=PHRASE)
         raw = None
-        for model in MODELS:
-            try:
-                raw = ask(client, model, prompt)
+        for model in models:
+            for attempt in range(2):
+                try:
+                    raw = ask(client, model, prompt)
+                    break
+                except Exception as ex:
+                    msg = str(ex)
+                    print(f"MODEL_FAIL {model}: {msg[:120]}", file=sys.stderr)
+                    transient = "429" in msg or "Rate limit" in msg or "503" in msg
+                    if transient and attempt == 0:
+                        import time as _t
+
+                        _t.sleep(12)
+                        continue
+                    break
+            if raw:
                 break
-            except Exception as ex:
-                print(f"MODEL_FAIL {model}: {str(ex)[:120]}", file=sys.stderr)
                 raw = None
         if not raw:
             continue

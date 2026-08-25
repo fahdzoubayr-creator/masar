@@ -87,7 +87,7 @@ const MIME = {
   '.otf': 'font/otf',
   '.wasm': 'application/wasm',
   '.pdf': 'application/pdf',
-  '.map': 'application/json',
+  '.map': 'application/json; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.md': 'text/markdown; charset=utf-8',
   '.rtf': 'application/rtf',
@@ -1124,7 +1124,7 @@ function lkTwirp(method, bodyObj) {
         path: `/twirp/livekit.RoomService/${method}`,
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
           Authorization: `Bearer ${adminToken}`,
           'Content-Length': data.length,
         },

@@ -274,7 +274,8 @@ class AudioRoomController extends ChangeNotifier {
           )
           .timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
-        final map = jsonDecode(response.body) as Map<String, dynamic>;
+        final map =
+            jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         final url = (map['url'] as String?) ?? '';
         final token = (map['token'] as String?) ?? '';
         if (url.isEmpty || token.isEmpty) {
@@ -288,7 +289,7 @@ class AudioRoomController extends ChangeNotifier {
       }
       String message = 'خدمة القاعات غير متاحة (${response.statusCode})';
       try {
-        final err = jsonDecode(response.body);
+        final err = jsonDecode(utf8.decode(response.bodyBytes));
         if (err is Map && err['error'] is String) message = err['error'] as String;
       } catch (_) {}
       throw RoomSessionException(message);
@@ -1248,7 +1249,7 @@ class AudioRoomController extends ChangeNotifier {
     if (resp.statusCode != 200) {
       String msg = 'فشل الإجراء (${resp.statusCode})';
       try {
-        final j = jsonDecode(resp.body);
+        final j = jsonDecode(utf8.decode(resp.bodyBytes));
         final e = j['error'];
         final d = j['detail'];
         if (e is String && e.isNotEmpty) msg = e;

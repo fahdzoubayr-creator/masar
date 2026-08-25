@@ -29,7 +29,8 @@ class GeneratedQuizService {
         .timeout(const Duration(minutes: 8));
 
     if (resp.statusCode != 200) {
-      throw Exception('GENERATE_HTTP_${resp.statusCode}: ${resp.body}');
+      throw Exception(
+          'GENERATE_HTTP_${resp.statusCode}: ${utf8.decode(resp.bodyBytes)}');
     }
     final data = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
     final raw = data['questions'];
