@@ -14,7 +14,11 @@ class QuestionValidator {
 
   /// كلمات مشوّهة شائعة في البيانات المستخرجة من PDF.
   static final _mojibakeWords = RegExp(
-    r'(?:Ø§Ù|ÙØ§|Ø§Ù„|Ù…Ø§|ÙŠÙ†|Ø¹Ù„|Ã)',
+    r'(?:Ø[§©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾]'
+    r'|Ù[ˆ‰Š‹ŒŽ‘’“”•–—˜™š]'
+    r'|â€[€‚ƒ„…†‡ˆ‰Š‹Œ\u008DŽ\u008F\u0090‘’“”•–—˜™š›œ\u009DžŸ \u00A0]'
+    r'|Ã[\u0080-\u00BF]'
+    r'|Â[\u00A0-\u00BF])',
   );
 
   /// عبارة "جميع ما سبق خاطئ" بأي صيغة.
@@ -64,7 +68,7 @@ class QuestionValidator {
     }
     if (allWrongCount > 1) return false;
 
-    // 8. لا توجد خيارات شبيهة جداً (ت相似 > 80%)
+    // 8. لا توجد خيارات شبيهة جداً (تشابه > 95%)
     if (_hasNearDuplicateOptions(normalized)) return false;
 
     // 9. correctIndex في النطاق الصحيح
@@ -132,7 +136,7 @@ class QuestionValidator {
   }
 
   /// إحصائيات الفلترة — يُرجع {total, valid, removed, reasons}.
-  /// يُ区分 بين أخطاء بنية (ترفض السؤال) و质量问题 (تحذر فقط).
+  /// يُفرّق بين أخطاء بنية (ترفض السؤال) وملاحظات جودة (تحذر فقط).
   static Map<String, dynamic> audit(List<Question> questions) {
     int total = questions.length;
     int valid = 0;

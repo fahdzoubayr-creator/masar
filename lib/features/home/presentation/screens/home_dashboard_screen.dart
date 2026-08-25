@@ -8,6 +8,7 @@ import 'package:masar_app/features/review/presentation/screens/review_space_scre
 import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
 import 'package:masar_app/features/history/presentation/screens/history_screen.dart';
 import 'package:masar_app/features/exams/presentation/screens/final_exams_screen.dart';
+import 'package:masar_app/features/exams/presentation/screens/level_map_screen.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_lobby_screen.dart';
 import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_screen.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
@@ -76,10 +77,10 @@ class HomeDashboardScreen extends StatelessWidget {
     ),
     _DashboardItem(
       title: 'الامتحانات التجريبية',
-      subtitle: 'محاكاة للاختبار بمؤقت زمني',
+      subtitle: 'مسار تحدي بالمراحل والنجوم',
       icon: Icons.timer_rounded,
       featured: true,
-      builder: _buildFinalExams,
+      builder: _buildLevelMap,
     ),
     _DashboardItem(
       title: 'مؤشر التقدم',
@@ -109,6 +110,7 @@ class HomeDashboardScreen extends StatelessWidget {
   static Widget _buildHistory(BuildContext context) => const HistoryScreen();
   static Widget _buildFinalExams(BuildContext context) =>
       const FinalExamsScreen();
+  static Widget _buildLevelMap(BuildContext context) => const LevelMapScreen();
   static Widget _buildMindMaps(BuildContext context) => const MindMapsScreen();
   static Widget _buildLiveRoom(BuildContext context) =>
       const AudioRoomLobbyScreen();
@@ -241,7 +243,7 @@ class _DashboardCard extends StatelessWidget {
                       }
                       // فضاء الامتحانات التجريبية محمي بكود الانضمام —
                       // تُعرض بوابة فيسبوك قبل فتحه، ولا يمرّ منها إلا بالكود.
-                      if (item.builder == HomeDashboardScreen._buildFinalExams) {
+                      if (item.builder == HomeDashboardScreen._buildLevelMap) {
                         final unlocked = await showExamsAccessGateDialog(context);
                         if (!unlocked || !context.mounted) return;
                       }

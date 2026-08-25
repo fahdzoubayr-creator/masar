@@ -2,29 +2,37 @@
  "التشريع المدرسي": [
   {
    "pdf": "assets/review_files/التشريع المدرسي/01.pdf",
-   "name": "-4 -ملخص التشريع المدرسي وأخالقيات المهنة-مهم",
-   "quiz": true
+   "txt": "assets/review_files/التشريع المدرسي/04.txt",
+   "name": "ملخص التشريع المدرسي وأخالقيات المهنة-مهم",
+   "quiz": true,
+   "topic": "التشريع المدرسي"
   },
   {
    "pdf": "assets/review_files/التشريع المدرسي/02.pdf",
+   "txt": "assets/review_files/التشريع المدرسي/01.txt",
    "name": "التشريع المدرسي و أخلاقيات المهنة-1",
-   "quiz": true
+   "quiz": true,
+   "topic": "التشريع المدرسي"
   },
   {
    "pdf": "assets/review_files/التشريع المدرسي/03.pdf",
+   "txt": "assets/review_files/التشريع المدرسي/02.txt",
    "name": "التشريع المدرسي وأخلاقيات المهنة-2",
-   "quiz": true
+   "quiz": true,
+   "topic": "التشريع المدرسي"
   },
   {
    "pdf": "assets/review_files/التشريع المدرسي/04.pdf",
+   "txt": "assets/review_files/التشريع المدرسي/03.txt",
    "name": "مادة التشريع المدرسي-ملخص مهم-3",
-   "quiz": true
+   "quiz": true,
+   "topic": "التشريع المدرسي"
   }
  ],
  "التعليم الثانوي بسلكيه": [
   {
    "pdf": "assets/review_files/التعليم الثانوي بسلكيه/01.pdf",
-   "name": "اللغة الأمازيغية_ع. التربيةوالديداكتيك",
+   "name": "اللغة الأمازيغية_ع",
    "quiz": true
   },
   {
@@ -34,7 +42,7 @@
   },
   {
    "pdf": "assets/review_files/التعليم الثانوي بسلكيه/03.pdf",
-   "name": "المزدوج_ع. التربية والديداكتيك",
+   "name": "المزدوج_ع",
    "quiz": true
   }
  ],
@@ -78,150 +86,208 @@
  "خطاطات ذهنية": [
   {
    "pdf": "assets/review_files/خطاطات ذهنية/01.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/11.txt",
    "name": "TIMSS-PIRLS-PNEA-PISA التقييمات بمنظومة التعليم-11",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/02.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/08.txt",
    "name": "البرنامج الحكومي-8",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/03.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/05.txt",
    "name": "التربية الدامجة الجزء 1-5",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/04.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/06.txt",
    "name": "التربية الدامجة الجزء 2-6",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/05.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/07.txt",
    "name": "التربية الدامجة الجزء 3-7",
-   "quiz": true
+   "quiz": false,
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/06.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/01.txt",
    "name": "القانون الإطار من المادة 1 إلى 18-1",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/07.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/02.txt",
    "name": "القانون الإطار من المادة 19 إلى 35-2",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/08.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/03.txt",
    "name": "القانون الإطار من المادة 36 إلى 59-3",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/09.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/04.txt",
    "name": "القانون الإطار من المادة 53 إلى 56-4",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/10.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/09.txt",
    "name": "النمودج التنموي الجزء الأول-9",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/11.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/10.txt",
    "name": "النمودج التنموي الجزء الثاني-10",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/12.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/12.txt",
    "name": "مطوية حول المشروع الشخصي اكتوبر -12",
-   "quiz": true
+   "quiz": true,
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/13.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/13.txt",
    "name": "ملخص ديداكتيك المواد-13",
-   "quiz": true
+   "quiz": "false",
+   "topic": "خطاطات ذهنية"
   },
   {
    "pdf": "assets/review_files/خطاطات ذهنية/14.pdf",
+   "txt": "assets/review_files/خطاطات ذهنية/14.txt",
    "name": "ورقات من وحي المنهاج-14",
-   "quiz": true
+   "quiz": true,
+   "topic": "خطاطات ذهنية"
   }
  ],
  "دورات تكوينية": [
   {
    "pdf": "assets/review_files/دورات تكوينية/01.pdf",
+   "txt": "assets/review_files/دورات تكوينية/10.txt",
    "name": "احداث الاكاديميات الجهوية +المهام والاختصاصات-10",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/02.pdf",
+   "txt": "assets/review_files/دورات تكوينية/03.txt",
    "name": "الحقيبة_التكوينية_لدورة_علوم_التربية_والديداكتيك_مع_المفتش_التربوي_3",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/03.pdf",
+   "txt": "assets/review_files/دورات تكوينية/05.txt",
    "name": "الدورة التكوينية يوليوز 2024-اليوم الاول-5",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/04.pdf",
+   "txt": "assets/review_files/دورات تكوينية/07.txt",
    "name": "الدورة التكوينية يوليوز 2024-اليوم الثالث-7",
-   "quiz": true
+   "quiz": "false",
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/05.pdf",
+   "txt": "assets/review_files/دورات تكوينية/06.txt",
    "name": "الدورة التكوينية يوليوز 2024-اليوم الثاني-6",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/06.pdf",
+   "txt": "assets/review_files/دورات تكوينية/18.txt",
    "name": "المساهمات المنهجية على الفايسبوك_هشام قطبان-18",
-   "quiz": true
+   "quiz": "false",
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/07.pdf",
+   "txt": "assets/review_files/دورات تكوينية/08.txt",
    "name": "دليل إنتاج الوسائل التعليمية وتدبير الأنشطة الصفية في اللغة العربية-8",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/08.pdf",
+   "txt": "assets/review_files/دورات تكوينية/17.txt",
    "name": "ديداكتيك-الرياضيات-بالسلك-الابتدائي-17",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/09.pdf",
+   "txt": "assets/review_files/دورات تكوينية/02.txt",
    "name": "عرض إطار التنزيل الإجرائي لخارطة الطريق-2",
-   "quiz": true
+   "quiz": "false",
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/10.pdf",
+   "txt": "assets/review_files/دورات تكوينية/16.txt",
    "name": "عرض الرياضيات النسخة النهائية للمنهاج يوليوز 2021-16",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/11.pdf",
+   "txt": "assets/review_files/دورات تكوينية/01.txt",
    "name": "عرض خارطة الطريق_1",
-   "quiz": true
+   "quiz": "false",
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/12.pdf",
+   "txt": "assets/review_files/دورات تكوينية/15.txt",
    "name": "عرض ديدكتيك النشاط العلمي-15",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/13.pdf",
+   "txt": "assets/review_files/دورات تكوينية/11.txt",
    "name": "كتاب العدة الشاملة لتحضير المباريات والامتحانات المهنية  الجزء الاول-11",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/14.pdf",
+   "txt": "assets/review_files/دورات تكوينية/14.txt",
    "name": "مصوغة الرياضيات - نسخة غشت2019 - شوكر خالد-14",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/15.pdf",
+   "txt": "assets/review_files/دورات تكوينية/04.txt",
    "name": "مفتاحك للنجاح في الكفاءة المهنية ببساطة-4",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/16.pdf",
@@ -230,8 +296,10 @@
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/17.pdf",
+   "txt": "assets/review_files/دورات تكوينية/09.txt",
    "name": "منهجية اجتياز الامتحان المهني م مباراة التفتيش-9",
-   "quiz": true
+   "quiz": true,
+   "topic": "دورات تكوينية"
   },
   {
    "pdf": "assets/review_files/دورات تكوينية/18.pdf",
@@ -242,12 +310,14 @@
  "ديداكتيك الرياضيات": [
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/01.pdf",
-   "name": "-الجيد في الرياضيات-الرابع -13",
-   "quiz": true
+   "txt": "assets/review_files/ديداكتيك الرياضيات/13.txt",
+   "name": "الجيد في الرياضيات-الرابع -13",
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/02.pdf",
-   "name": "1-ExaProf rec Maths + repart annuelle tout les nvمهم.",
+   "name": "1-ExaProf rec Maths + repart annuelle tout les nvمهم",
    "quiz": true
   },
   {
@@ -257,384 +327,534 @@
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/04.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/07.txt",
    "name": "التخطيط الإجرائي لدرس في مادة الرياضيات-7",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/05.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/14.txt",
    "name": "الجيد في الرياضيات-الرابع -14",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/06.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/08.txt",
    "name": "تقديم  بعض مفاهيم الرياضيات قطبان-8",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/07.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/09.txt",
    "name": "تقييم شامل لديداكتيك الياضيات-9",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/08.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/15.txt",
    "name": "جذاذات الجديد في الرياضيات السنة السادسة ابتدائي_ص171-15",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/09.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/05.txt",
    "name": "ديداكتيك الرياضيات خالد حمام -عرض منقح-5",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/10.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/03.txt",
    "name": "ديداكتيك الرياضيات في المدرسة المغربية -نورالدين عزمي-3",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/11.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/04.txt",
    "name": "عرض الرياضيات-4",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/12.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/12.txt",
    "name": "قياس الكتل-12",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/13.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/10.txt",
    "name": "مصفوفة المدى و التتابع كاملة للرياضيات في السلك الابتدائي  عبد الغني اسليماني-10",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/14.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/11.txt",
    "name": "مصفوفة المدى و التتابع كاملة للرياضيات في السلك الابتدائي -11",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/15.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/02.txt",
    "name": "ملخص المنهاج الدراسي للتعليم الابتدائي للرياضيات-2",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   },
   {
    "pdf": "assets/review_files/ديداكتيك الرياضيات/16.pdf",
+   "txt": "assets/review_files/ديداكتيك الرياضيات/17.txt",
    "name": "ملخصات المستوى السادس إبتدائي-للاستئناس - Annee 5 AEP et 6 AEP-17",
-   "quiz": true
+   "quiz": true,
+   "topic": "ديداكتيك الرياضيات"
   }
  ],
  "مؤسسات الريادة": [
   {
    "pdf": "assets/review_files/مؤسسات الريادة/01.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/01.txt",
    "name": "Mon Aide Mémoire Français 5",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/02.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/35.txt",
    "name": "PPt 5 -الدورة الوطنية - اليوم الخامس",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/03.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/36.txt",
    "name": "PPt 6 -الدورة الوطنية - اليوم السادس",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/04.pdf",
-   "name": "PPt 8 -الدورة الوطنية - اليوم الثامن ",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/37.txt",
+   "name": "PPt 8 -الدورة الوطنية - اليوم الثامن",
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/05.pdf",
-   "name": "TOUTES LES GRILLES - DE SUIVI  DU FRANCAIS DE 2AP a 6AP (2)",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/02.txt",
+   "name": "TOUTES LES GRILLES - DE SUIVI DU FRANCAIS DE 2AP a 6AP (2)",
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/06.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/03.txt",
    "name": "، الاطار المرجعي للتعليم الصريح بالمدارس الرائدة",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/07.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/04.txt",
    "name": "الاطار المرجعي للتعليم الصريح بالمدارس الرائدة",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/08.pdf",
-   "name": "البطاقة التقنية للدعم الممتد مدونة معلمي 2022_2026",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/05.txt",
+   "name": "البطاقة التقنية للدعم الممتد مدونة معلمي 2022 2026",
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/09.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/06.txt",
    "name": "البطاقة التقنية للدعم الممتد",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/10.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/38.txt",
    "name": "الدورة الوطنية - اليوم السابع - PPT 8",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/11.pdf",
-   "name": "المستجد في مواد  التعليم الصريح 2025 2026 مدونة معلمي",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/07.txt",
+   "name": "المستجد في مواد التعليم الصريح 2025 2026 مدونة معلمي",
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/12.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/08.txt",
    "name": "المستوى الأول مستجدات الرائز القبلي مدونة معلمي",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/13.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/09.txt",
    "name": "خطاطة ذهنية نمطية فرنسية و رياضيات",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/14.pdf",
-   "name": "دليل الأستاذ اللغة العربية بمؤسسات الريادة 2026_2025 ",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/10.txt",
+   "name": "دليل الأستاذ اللغة العربية بمؤسسات الريادة 2026 2025",
+   "quiz": false,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/15.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/11.txt",
    "name": "دليل التفويج والتخصصات مقاربة طارل",
-   "quiz": true
+   "quiz": false,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/16.pdf",
-   "name": "دليل لقاءات أولياء الأمور بمؤسسات الريادة  2025_2026",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/12.txt",
+   "name": "دليل لقاءات أولياء الأمور بمؤسسات الريادة 2025 2026",
+   "quiz": false,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/17.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/39.txt",
    "name": "دورة التكوين الوطنية -  اليوم الأول - PPT 1",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/18.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/40.txt",
    "name": "دورة التكوين الوطنية -  اليوم الثالث PPT 3",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/19.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/41.txt",
    "name": "دورة التكوين الوطنية -  اليوم الثانيPPT 2",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/20.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/42.txt",
    "name": "دورة التكوين الوطنية -  اليوم الرابع PPT 4",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/21.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/13.txt",
    "name": "شبكة تفريغ نتائج التقويم للمرحلة المستوى 1 .",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/22.pdf",
-   "name": "طارل اللغة العربية موقع همام التربوي ",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/14.txt",
+   "name": "طارل اللغة العربية موقع همام التربوي",
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/23.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/15.txt",
    "name": "عرض حول مشروع المؤسسة المندمج سلم بوها صمبا",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/24.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/16.txt",
    "name": "عرض حول مشروع المؤسسة المندمج",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/25.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/43.txt",
    "name": "عرض_اليوم_الثالث تكوين_المنسقين (1) (1)",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/26.pdf",
-   "name": "كراسة الرياضيات المستوى الرابع  طبعة 2025",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/17.txt",
+   "name": "كراسة الرياضيات المستوى الرابع طبعة 2025",
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/27.pdf",
-   "name": "كراسة اللغة العربية المستوى السادس 2025_2026 الجزء 1",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/18.txt",
+   "name": "كراسة اللغة العربية المستوى السادس 2025 2026 الجزء 1",
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/28.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/19.txt",
    "name": "كراسة اللغة الفرنسية المستوى الرابع المدرسة الرائدة",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/29.pdf",
-   "name": "كراسة المتعلم الرياضيات الجزء الثاني",
-   "quiz": true
+   "txt": "assets/review_files/مؤسسات الريادة/20.txt",
+   "name": "كراسة المتعلم الرياضيات الجزء الثاني (الجزء 1)",
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/30.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/22.txt",
    "name": "كراسة المستوى الخامس عربية الجزء 2",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/31.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/23.txt",
    "name": "كراسة النشاط العلمي المستوى الرابع 2025",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/32.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/24.txt",
    "name": "كفايات المستوى الأول",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/33.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/25.txt",
    "name": "كفايات المستوى الثالث",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/34.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/26.txt",
    "name": "كفايات المستوى الثاني",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/35.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/27.txt",
    "name": "كفايات المستوى الخامس",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/36.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/28.txt",
    "name": "كفايات المستوى الرابع",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/37.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/29.txt",
    "name": "كفايات المستوى السادس",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/38.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/30.txt",
    "name": "مصفوفة المضامين والبنيات اللغوية للمستوى الخامس",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/39.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/31.txt",
    "name": "مفكرتي في الرياضيات المستوى الخامس",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/40.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/32.txt",
    "name": "مفكرتي في اللغة العربية المستوى الخامس",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/41.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/33.txt",
    "name": "ملخص دعم التعلمات الأساس -مادة اللغة الفرنسية",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   },
   {
    "pdf": "assets/review_files/مؤسسات الريادة/42.pdf",
+   "txt": "assets/review_files/مؤسسات الريادة/34.txt",
    "name": "ملخص دعم التعلمات الأساس-مادة اللغة العربية",
-   "quiz": true
+   "quiz": true,
+   "topic": "مؤسسات الريادة — مقاربة TaRL"
   }
  ],
  "مراسلات ومذكرات": [
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/01.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/01.txt",
    "name": "154 تأمين الزمن المدرسي",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/02.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/02.txt",
    "name": "ادوار ومهام اولياء امور التلامذ",
-   "quiz": true
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/03.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/03.txt",
    "name": "ارساء المشروع الشخصي للمتعلم",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/04.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/04.txt",
    "name": "استراتيجية التكوين المستمر",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/05.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/05.txt",
    "name": "الأستاذ الرئيس",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/06.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/06.txt",
    "name": "الأسس والمرجعيات المؤطرة للسياسات العمومية في التربية والتكوين",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/07.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/07.txt",
    "name": "الارتقاء بالتوجيه المدرسي",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/08.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/08.txt",
    "name": "التوجيه المدرسي-المشروع الشخصي للمتعلم",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/09.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/09.txt",
    "name": "النظام الأساسي-مهم",
-   "quiz": true
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/10.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/10.txt",
    "name": "شريف رقم 1.00.201 - بتنفيذ القانون رقم 05.00 بشأن النظام الأساسي للتعليم الأولي",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/11.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/11.txt",
    "name": "شريف رقم 1.14.100 - بتنفيذ القانون رقم 105.12 المتعلق بالمجلس الأعلى للتربية",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/12.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/12.txt",
    "name": "شريف رقم 1.63.071 - حول إلزامية التعليم الأساسي كما وقع تغييره وتتميمه",
-   "quiz": true
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/13.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/13.txt",
    "name": "مذكرة المدارس الجماعاتية",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/14.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/14.txt",
    "name": "مرسوم اللجنة الدائمة",
-   "quiz": true
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/15.pdf",
+   "txt": "assets/review_files/مراسلات ومذكرات/15.txt",
    "name": "مرسوم جمعية آباء و أولياء التلاميذ",
-   "quiz": true
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   },
   {
    "pdf": "assets/review_files/مراسلات ومذكرات/16.pdf",
-   "name": "مرسوم رقم 2.20.472 بتاريخ 24 غشت 2021 في شأن دروس الدعم التربوي (1)",
-   "quiz": true
+   "txt": "assets/review_files/مراسلات ومذكرات/16.txt",
+   "name": "مرسوم رقم 2.20.472 بتاريخ 24 غشت 2021 في شأن دروس الدعم التربوي",
+   "quiz": true,
+   "topic": "مراسلات ومذكرات"
   }
  ],
  "مشروع المؤسسة المندمج": [
   {
    "pdf": "assets/review_files/مشروع المؤسسة المندمج/01.pdf",
+   "txt": "assets/review_files/مشروع المؤسسة المندمج/01.txt",
    "name": "EPAR",
-   "quiz": true
+   "quiz": true,
+   "topic": "مشروع المؤسسة المندمج"
   },
   {
    "pdf": "assets/review_files/مشروع المؤسسة المندمج/02.pdf",
+   "txt": "assets/review_files/مشروع المؤسسة المندمج/02.txt",
    "name": "مجزوءة مشروع المؤسسة المندمج رسمي",
-   "quiz": true
+   "quiz": true,
+   "topic": "مشروع المؤسسة المندمج"
   },
   {
    "pdf": "assets/review_files/مشروع المؤسسة المندمج/03.pdf",
+   "txt": "assets/review_files/مشروع المؤسسة المندمج/03.txt",
    "name": "مذكرة تعميم مشروع المؤسسة المندمج",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مشروع المؤسسة المندمج"
   },
   {
    "pdf": "assets/review_files/مشروع المؤسسة المندمج/04.pdf",
+   "txt": "assets/review_files/مشروع المؤسسة المندمج/04.txt",
    "name": "مذكرة مشروع المؤسسة بالمؤسسات",
-   "quiz": true
+   "quiz": "false",
+   "topic": "مشروع المؤسسة المندمج"
   }
  ]
 }
