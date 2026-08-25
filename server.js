@@ -595,6 +595,164 @@ const handler = async (req, res) => {
     return;
   }
 
+  // ===== التوليد المتدرج: دفعة أولى فورية + استكمال بالخلفية =====
+  // POST /api/quiz/start-from-pdf  -> أول 4 أسئلة خلال ثوانٍ + jobId
+  // GET  /api/quiz/job/<jobId>     -> حالة المهمة وأسئلة ما بعد الدفعة الأولى
+  const quizJobs =
+    global.__quizJobs || (global.__quizJobs = new Map());
+
+  if (req.method === 'POST' && urlPath === '/api/quiz/start-from-pdf') {
+    let body = '';
+    req.on('data', (c) => {
+      body += c;
+      if (body.length > 8192) req.destroy();
+    });
+    req.on('end', () => {
+      let payload = {};
+      try {
+        payload = JSON.parse(body || '{}');
+      } catch {}
+      const rawPath = typeof payload.path === 'string' ? payload.path : '';
+      let payloadUrl = typeof payload.url === 'string' ? payload.url : '';
+      if (!rawPath && !payloadUrl) return json(res, 400, { error: 'path أو url مطلوب' });
+      let remoteUrl = '';
+      if (payloadUrl) {
+        try {
+          remoteUrl = decodeURIComponent(payloadUrl);
+        } catch {
+          remoteUrl = payloadUrl;
+        }
+        const ok = /^https:\/\/([a-z0-9.-]+\.github\.io|raw\.githubusercontent\.com|github\.com|codeload\.github\.com)\//i.test(remoteUrl);
+        if (!ok) return json(res, 403, { error: 'نطاق غير مسموح' });
+      }
+      let rel = rawPath;
+      try {
+        rel = decodeURIComponent(String(rel || '').replace(/^\/+/, ''));
+      } catch {}
+      rel = rel.replace(/^assets\/assets\//, 'assets/');
+      if (rel && !/^assets\/review_files\/.+\.pdf$/i.test(rel)) {
+        rel = 'assets/review_files/' + rel.replace(/^assets\//, '');
+      }
+      const baseDir = path.join(__dirname, 'assets', 'review_files');
+      const pdfFile = rel ? path.normalize(path.join(__dirname, rel)) : null;
+      if (!remoteUrl) {
+        if (!pdfFile || !pdfFile.startsWith(baseDir) || !pdfFile.toLowerCase().endsWith('.pdf')) {
+          return json(res, 403, { error: 'مسار غير مسموح' });
+        }
+      }
+      const gkey =
+        process.env.GROQ_API_KEY ||
+        (() => {
+          try {
+            const t = fs.readFileSync(
+              path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
+              'utf8'
+            );
+            const m = t.match(/gsk_[A-Za-z0-9]+/);
+            return m ? m[0] : null;
+          } catch {
+            return null;
+          }
+        })();
+      if (!gkey) return json(res, 503, { error: 'GROQ_KEY_MISSING' });
+
+      const crypto = require('crypto');
+      const jobId =
+        Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      const jobDir = path.join(__dirname, 'assets', 'banks', 'generated_jobs');
+      fs.mkdirSync(jobDir, { recursive: true });
+      const fFirst = path.join(jobDir, jobId + '.first.json');
+      const fRest = path.join(jobDir, jobId + '.rest.json');
+      const fFull = path.join(jobDir, jobId + '.full.json');
+      const seed = crypto.randomInt(1, 0x7fffffff);
+
+      const { spawn } = require('child_process');
+      const scriptArgs = [
+        path.join(__dirname, 'tools', 'quiz_from_pdf.py'),
+        '--seed', String(seed),
+        '--subject', String(payload.subject || ''),
+        '--count', '70',
+        '--phrase-correct', '15',
+        '--first-count', '4',
+        '--out-first', fFirst,
+        '--out-rest', fRest,
+        '--out', fFull,
+      ];
+      if (remoteUrl) scriptArgs.push('--url', remoteUrl);
+      else scriptArgs.push('--pdf', pdfFile);
+      const proc = spawn('python', scriptArgs, {
+        env: { ...process.env, GROQ_API_KEY: gkey, PYTHONIOENCODING: 'utf-8' },
+        windowsHide: true,
+      });
+      let errTxt = '';
+      proc.stderr.on('data', (d) => {
+        errTxt += d.toString();
+        if (errTxt.length > 4000) errTxt = errTxt.slice(-2000);
+      });
+      proc.on('close', () => {
+        quizJobs.set(jobId, {
+          done: true,
+          ok: fs.existsSync(fFull),
+          endedAt: Date.now(),
+        });
+        setTimeout(() => {
+          quizJobs.delete(jobId);
+          [fFirst, fRest, fFull].forEach((f) => fs.unlink(f, () => {}));
+        }, 1800000).unref();
+      });
+      quizJobs.set(jobId, { proc });
+
+      // ننتظر ظهور ملف الدفعة الأولى حتى 90 ثانية ثم نرد فوراً بما توفر
+      const t0 = Date.now();
+      const pollFirst = setInterval(() => {
+        if (fs.existsSync(fFirst)) {
+          clearInterval(pollFirst);
+          try {
+            const j = JSON.parse(fs.readFileSync(fFirst, 'utf8'));
+            console.log('[quiz-start] ' + jobId + ' first=' + j.count);
+            return json(res, 200, {
+              jobId,
+              questions: j.questions,
+              hasMore: true,
+            });
+          } catch (e) {}
+        }
+        const alive = quizJobs.get(jobId)?.proc && !quizJobs.get(jobId).done;
+        if (Date.now() - t0 > 90000 || (!alive && !fs.existsSync(fFirst))) {
+          clearInterval(pollFirst);
+          console.error('[quiz-start-fail] ' + jobId + ' ' + errTxt.slice(-300));
+          return json(res, 502, {
+            error: 'GENERATION_FAILED',
+            detail: errTxt.slice(-160),
+          });
+        }
+      }, 300);
+    });
+    return;
+  }
+
+  const mJob = urlPath.match(/^\/api\/quiz\/job\/([A-Za-z0-9_-]+)$/);
+  if (req.method === 'GET' && mJob) {
+    const jobId = mJob[1];
+    const jobDir = path.join(__dirname, 'assets', 'banks', 'generated_jobs');
+    const fRest = path.join(jobDir, jobId + '.rest.json');
+    const fFull = path.join(jobDir, jobId + '.full.json');
+    const fFirst = path.join(jobDir, jobId + '.first.json');
+    if (fs.existsSync(fRest)) {
+      try {
+        const j = JSON.parse(fs.readFileSync(fRest, 'utf8'));
+        return json(res, 200, { state: 'done', questions: j.questions || [] });
+      } catch {}
+    }
+    if (fs.existsSync(fFull)) return json(res, 200, { state: 'done', questions: [] });
+    if (!fs.existsSync(fFirst)) return json(res, 404, { error: 'JOB_NOT_FOUND' });
+    const ent = quizJobs.get(jobId);
+    if (ent && !ent.done && ent.proc && ent.proc.exitCode == null) {
+      return json(res, 200, { state: 'working' });
+    }
+    return json(res, 200, { state: ent?.ok ? 'working' : 'error' });
+  }
+
   // بث ملف مراجعة عبر السيرفر كوسيط ? روابط Releases لا ترسل ترويسات
   // CORS فيرفضها متصفح الويب، لذا نجلب البايتات نحن ونعيد بثها.
   if (req.method === 'GET' && urlPath.startsWith('/api/review-files/file')) {

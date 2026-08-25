@@ -18,6 +18,10 @@ class QuizScreen extends StatefulWidget {
   /// عندما يكون غير null يُستعمل بدل فلترة بنك الأسئلة.
   final Future<List<Question>> Function()? questionLoader;
 
+  /// التوليد المتدرج: يُستدعى بعد ظهور الدفعة الأولى لإلحاق بقية الأسئلة
+  /// أثناء لعب المستخدم — القائمة تتمدد تلقائياً حتى جاهزيتها.
+  final Future<List<Question>> Function()? restLoader;
+
   /// استدعاء يُنفَّذ عند إنهاء الاختبار (لتسجيل المحاولة وأفضل نسبة والحظر).
   final void Function(QuizResult result)? onFinished;
 
@@ -41,6 +45,7 @@ class QuizScreen extends StatefulWidget {
     super.key,
     this.subjectFilter,
     this.questionLoader,
+    this.restLoader,
     this.onFinished,
     this.failureNote,
     this.examDuration,
@@ -60,6 +65,8 @@ class _QuizScreenState extends State<QuizScreen> {
   int? selectedIndex;
   bool answered = false;
   bool finished = false;
+  bool _moreLoading = false;
+  bool _waitingMore = false;
   int? _lastPct;
   Timer? _timer;
   Duration _remaining = Duration.zero;
@@ -89,6 +96,46 @@ class _QuizScreenState extends State<QuizScreen> {
       _remaining = widget.examDuration ?? Duration.zero;
     });
     if (widget.examDuration != null && filtered.isNotEmpty) _startTimer();
+    if (widget.restLoader != null &&
+        filtered.isNotEmpty &&
+        widget.examDuration == null) {
+      _loadMore();
+    }
+  }
+
+  /// يجلب بقية أسئلة التوليد المتدرج ويُلحقها بالقائمة الحالية.
+  Future<void> _loadMore() async {
+    setState(() => _moreLoading = true);
+    List<Question> rest = const [];
+    try {
+      rest = await widget.restLoader!();
+    } catch (_) {}
+    if (!mounted) return;
+    if (!finished && rest.isNotEmpty) {
+      final cur = pool ?? const <Question>[];
+      final fresh = QuestionValidator.filterValid(rest)
+          .where((q) => !cur.any((p) => p.text.trim() == q.text.trim()))
+          .toList();
+      if (fresh.isNotEmpty) {
+        setState(() {
+          pool = [...cur, ...fresh];
+          _moreLoading = false;
+          if (_waitingMore) {
+            _waitingMore = false;
+            current++;
+            selectedIndex = null;
+            answered = false;
+          }
+        });
+        return;
+      }
+    }
+    setState(() => _moreLoading = false);
+    if (_waitingMore && !finished) {
+      _saveResult();
+      setState(() => finished = true);
+      _playFinish();
+    }
   }
 
   void _startTimer() {
@@ -143,6 +190,11 @@ class _QuizScreenState extends State<QuizScreen> {
     final pool = this.pool;
     if (pool == null) return;
     if (current == pool.length - 1) {
+      // التوليد المتدرج: الدفعة التالية قيد التحضير — ننتظرها بدل الإنهاء.
+      if (widget.restLoader != null && _moreLoading) {
+        setState(() => _waitingMore = true);
+        return;
+      }
       _saveResult();
       setState(() => finished = true);
       _playFinish();
@@ -281,6 +333,35 @@ class _QuizScreenState extends State<QuizScreen> {
                 total: pool.length,
                 score: score,
                 remaining: widget.examDuration != null ? _remaining : null),
+            if ((widget.restLoader != null &&
+                    _moreLoading &&
+                    pool.isNotEmpty &&
+                    current < pool.length - 1) ||
+                _waitingMore)
+              Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 7),
+                color: AppColors.gold.withValues(alpha: 0.08),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 12,
+                      height: 12,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 1.6, color: AppColors.goldSoft),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      _waitingMore
+                          ? 'انتهت الدفعة الحالية — جاري تحضير بقية الأسئلة…'
+                          : 'يتم توليد بقية الأسئلة في الخلفية…',
+                      style: const TextStyle(
+                          fontSize: 11.5, color: AppColors.goldSoft),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(22, 20, 22, 20),
@@ -373,11 +454,31 @@ class _QuizScreenState extends State<QuizScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
-                  onPressed: answered ? _next : null,
-                  child: Text(
-                    current == pool.length - 1 ? 'إنهاء الاختبار' : 'السؤال التالي',
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-                  ),
+                  onPressed: answered && !_waitingMore ? _next : null,
+                  child: _waitingMore
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            SizedBox(
+                              width: 15,
+                              height: 15,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Color(0xFF06201F)),
+                            ),
+                            SizedBox(width: 10),
+                            Text('جاري تحضير بقية الأسئلة…',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15)),
+                          ],
+                        )
+                      : Text(
+                          current == pool.length - 1
+                              ? 'إنهاء الاختبار'
+                              : 'السؤال التالي',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 15),
+                        ),
                 ),
               ),
             ),

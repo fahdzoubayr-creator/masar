@@ -7,7 +7,6 @@ import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
 import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
 import 'package:masar_app/features/history/presentation/screens/history_screen.dart';
-import 'package:masar_app/features/exams/presentation/screens/final_exams_screen.dart';
 import 'package:masar_app/features/exams/presentation/screens/level_map_screen.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_lobby_screen.dart';
 import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_screen.dart';
@@ -108,8 +107,6 @@ class HomeDashboardScreen extends StatelessWidget {
   static Widget _buildQuizPicker(BuildContext context) =>
       const QuizPickerScreen();
   static Widget _buildHistory(BuildContext context) => const HistoryScreen();
-  static Widget _buildFinalExams(BuildContext context) =>
-      const FinalExamsScreen();
   static Widget _buildLevelMap(BuildContext context) => const LevelMapScreen();
   static Widget _buildMindMaps(BuildContext context) => const MindMapsScreen();
   static Widget _buildLiveRoom(BuildContext context) =>

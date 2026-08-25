@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/services/level_progress_service.dart';
@@ -12,8 +13,9 @@ import 'package:masar_app/features/exams/presentation/screens/quiz_level_play_sc
 
 /// مسار تحدي الكفاءة — خريطة مراحل منحنية على طريقة الألعاب.
 ///
-/// كل مرحلة: 8 أسئلة عشوائية من بنك الأسئلة، نقاط + نجوم + بونص سرعة،
+/// كل مرحلة: 10 أسئلة عشوائية من بنك الأسئلة، نقاط + نجوم + بونص سرعة،
 /// وفتح تدريجي للمراحل مع توليد لا نهائي للمراحل الجديدة.
+/// الصعود من الأسفل (المرحلة 1) إلى الأعلى.
 class LevelMapScreen extends StatefulWidget {
   const LevelMapScreen({super.key});
 
@@ -24,7 +26,7 @@ class LevelMapScreen extends StatefulWidget {
 class _LevelMapScreenState extends State<LevelMapScreen> {
   static const double _itemH = 110;
   static const double _padV = 40;
-  static const int _questionsPerLevel = 8;
+  static const int _questionsPerLevel = 10;
 
   LevelProgress _progress = LevelProgress.initial;
   final ScrollController _scroll = ScrollController();
@@ -45,7 +47,7 @@ class _LevelMapScreenState extends State<LevelMapScreen> {
     final progress = await LevelProgressService.load();
     if (!mounted) return;
     setState(() => _progress = progress);
-    WidgetsBinding.addPostFrameCallback((_) => _scrollToCurrent());
+    SchedulerBinding.instance.addPostFrameCallback((_) => _scrollToCurrent());
   }
 
   /// عدد المراحل المعروضة — يتوسع تلقائياً كلما اقترب اللاعب من النهاية.
@@ -57,11 +59,13 @@ class _LevelMapScreenState extends State<LevelMapScreen> {
   void _scrollToCurrent() {
     if (!_scroll.hasClients) return;
     final viewport = _scroll.position.viewportDimension;
-    final target = _padV +
-        (_progress.currentLevel - 1) * _itemH +
-        _itemH / 2 -
-        viewport * 0.62;
-    final clamped = target.clamp(0.0, max(0.0, _scroll.position.maxScrollExtent));
+    // المرحلة الحالية قرب أسفل المحتوى (الصعود من الأسفل إلى الأعلى).
+    final nodeY = _contentHeight - _padV - _itemH / 2 -
+        (_progress.currentLevel - 1) * _itemH;
+    final target = nodeY - viewport * 0.62;
+    final clamped =
+        target.clamp(0.0, max(0.0, _scroll.position.maxScrollExtent))
+            .toDouble();
     _scroll.animateTo(clamped,
         duration: const Duration(milliseconds: 600), curve: Curves.easeOutCubic);
   }
@@ -132,26 +136,35 @@ class _LevelMapScreenState extends State<LevelMapScreen> {
           children: [
             _buildHeader(),
             Expanded(
-              child: SingleChildScrollView(
-                controller: _scroll,
-                child: SizedBox(
-                  height: _contentHeight,
-                  width: double.infinity,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Positioned.fill(
-                        child: CustomPaint(
-                          size: Size(double.infinity, _contentHeight),
-                          painter: _PathPainter(levelCount: _levelCount),
+              // الهندسة كلها مشتقة من عرض العمود الفعلي (LayoutBuilder)
+              // وليس من عرض النافذة — وإلا تبعثرت العقد وانحرف الخط عنها.
+              child: LayoutBuilder(builder: (context, cons) {
+                final w = cons.maxWidth;
+                final amp = min(w * 0.27, max(0.0, w / 2 - 58));
+                return SingleChildScrollView(
+                  controller: _scroll,
+                  child: SizedBox(
+                    height: _contentHeight,
+                    width: w,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned.fill(
+                          child: CustomPaint(
+                            size: Size(w, _contentHeight),
+                            painter: _PathPainter(
+                                levelCount: _levelCount,
+                                width: w,
+                                amplitude: amp),
+                          ),
                         ),
-                      ),
-                      for (var i = 0; i < _levelCount; i++)
-                        _buildNodeAt(i),
-                    ],
+                        for (var i = 0; i < _levelCount; i++)
+                          _buildNodeAt(i, w, amp),
+                      ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
             ),
           ],
         ),
@@ -237,12 +250,12 @@ class _LevelMapScreenState extends State<LevelMapScreen> {
     );
   }
 
-  Positioned _buildNodeAt(int index) {
+  Positioned _buildNodeAt(int index, double width, double amplitude) {
     final levelNumber = index + 1;
-    final width = MediaQuery.sizeOf(context).width;
-    final xCenter =
-        width / 2 + sin(index * 0.8) * (width * 0.28);
-    final yCenter = _padV + index * _itemH + _itemH / 2;
+    final xCenter = width / 2 + sin(index * 0.8) * amplitude;
+    // المرحلة 1 في الأسفل والترقيم يصعد نحو الأعلى.
+    final yCenter =
+        _contentHeight - _padV - _itemH / 2 - index * _itemH;
     final record = _progress.records[levelNumber];
     final unlocked = _progress.isUnlocked(levelNumber);
     final isCurrent = unlocked && (record == null || record.stars == 0);
@@ -349,7 +362,13 @@ class _LevelNode extends StatelessWidget {
 /// الخط المنحني الذي يربط عقد المراحل — إحداثياته مطابقة تماماً لمواضعها.
 class _PathPainter extends CustomPainter {
   final int levelCount;
-  _PathPainter({required this.levelCount});
+  final double width;
+  final double amplitude;
+  _PathPainter({
+    required this.levelCount,
+    required this.width,
+    required this.amplitude,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -360,9 +379,9 @@ class _PathPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     Offset centerAt(int i) {
-      final y = _LevelMapScreenState._padV + i * _LevelMapScreenState._itemH +
-          _LevelMapScreenState._itemH / 2;
-      final x = size.width / 2 + sin(i * 0.8) * (size.width * 0.28);
+      final y = size.height - _LevelMapScreenState._padV -
+          _LevelMapScreenState._itemH / 2 - i * _LevelMapScreenState._itemH;
+      final x = width / 2 + sin(i * 0.8) * amplitude;
       return Offset(x, y);
     }
 

@@ -327,6 +327,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
   Future<void> _openQuiz(BuildContext context) async {
     final locked = QuizAttemptService.isLocked(_attempt);
     if (locked) return;
+    String? jobRef; // معرّف مهمة التوليد المتدرج (يُضبط عند سقوط البنوك)
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
@@ -346,7 +347,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               fuzzy.shuffle();
               return fuzzy.take(70).toList();
             }
-            // لا بنك لهذا المحور؟ ولّد الكويز من ملفات المحور نفسه.
+            // لا بنك لهذا المحور؟ توليد متدرج: دفعة أولى فورية والباقي بالخلفية.
             var files = await ReviewFileService.loadFolderPdfs(
                 widget.folderTitle,
                 topic: widget.topicTitle);
@@ -355,13 +356,24 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
                   await ReviewFileService.loadFolderPdfs(widget.folderTitle);
             }
             if (files.isEmpty) return const <Question>[];
-            return GeneratedQuizService.fromPdfs(
-              files.map((f) => f.assetPath).toList(),
-              subject: widget.topicTitle.isNotEmpty
-                  ? widget.topicTitle
-                  : widget.folderTitle,
-            );
+            final subject = widget.topicTitle.isNotEmpty
+                ? widget.topicTitle
+                : widget.folderTitle;
+            try {
+              final start = await GeneratedQuizService.startProgressive(
+                  files.first.assetPath,
+                  subject: subject);
+              jobRef = start.jobId;
+              return start.first;
+            } catch (_) {
+              // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
+              return GeneratedQuizService.fromPdfs(
+                files.map((f) => f.assetPath).toList(),
+                subject: subject,
+              );
+            }
           },
+          restLoader: () => GeneratedQuizService.restWhenReady(jobRef ?? ''),
           testType: 'كويز المحور الفرعي',
           axisName: widget.folderTitle,
           subAxisName: widget.topicTitle,

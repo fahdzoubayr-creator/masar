@@ -256,6 +256,39 @@ def gen_one(client, models, excerpt, n, worker_idx=0):
     return [norm_item(it) for it in arr if valid_item(it)]
 
 
+def compose(items, subject, rng, special_n):
+    """تركيب حتمي: خلط + قاعدة العبارة الأخيرة الصحيحة لـ special_n سؤالاً."""
+    questions = []
+    for idx, it in enumerate(items):
+        if idx in special_n:
+            opts = [it["f1"], it["f2"], it["f3"]]
+            rng.shuffle(opts)
+            correct_index = len(opts)
+        else:
+            opts = [it["t"], it["f1"], it["f2"]]
+            rng.shuffle(opts)
+            correct_index = opts.index(it["t"])
+        opts.append(PHRASE)
+        q = {
+            "subject": subject,
+            "text": it["q"],
+            "options": opts,
+            "correctIndex": correct_index,
+            "explanation": "مستخرجة من محتوى ملف الدرس.",
+        }
+        if it["situation"]:
+            q["situation"] = it["situation"]
+        questions.append(q)
+    return questions
+
+
+def write_json(path: Path, data: dict):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(path)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default="")
@@ -264,8 +297,13 @@ def main():
     ap.add_argument("--subject", default="")
     ap.add_argument("--count", type=int, default=TARGET_DEFAULT)
     ap.add_argument("--phrase-correct", type=int, default=PHRASE_CORRECT_DEFAULT)
+    ap.add_argument("--first-count", type=int, default=0,
+                    help="التوليد المتدرج: عدد أسئلة الدفعة الفورية")
+    ap.add_argument("--out-first", default="", help="ملف الدفعة الفورية")
+    ap.add_argument("--out-rest", default="", help="ملف أسئلة ما بعد الدفعة الأولى")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
+    progressive = args.first_count > 0 and args.out_first
 
     rng_seed = args.seed
     rng = random.Random(rng_seed)
@@ -293,14 +331,47 @@ def main():
     chunks = chunk_text(text)
     seen_q = set()
     items = []
+    first_count_done = 0
+
+    if progressive:
+        # ===== الدفعة الفورية: استدعاء واحد سريع ثم كتابة فورية =====
+        fb = gen_one(client, models, chunks[0], args.first_count + 1)
+        uniq = []
+        fseen = set()
+        for nit in fb:
+            k = re.sub(r"\s+", " ", nit["q"]).lower()
+            if k not in fseen:
+                fseen.add(k)
+                uniq.append(nit)
+        fb = uniq[: args.first_count]
+        if len(fb) < args.first_count:
+            print("FIRST_FAILED got=%d" % len(fb))
+            return 4
+        specials_first = max(1, round(
+            args.phrase_correct * len(fb) / max(1, args.count)))
+        sp_idx = set(rng.sample(range(len(fb)), min(specials_first, len(fb))))
+        first_questions = compose(fb, args.subject, rng, sp_idx)
+        write_json(Path(args.out_first), {
+            "generatedAt": datetime.now().isoformat(timespec="seconds"),
+            "pdf": pdf_path.name if pdf_path else args.url.rsplit("/", 1)[-1],
+            "seed": args.seed,
+            "count": len(first_questions),
+            "phraseCorrectCount": len(sp_idx),
+            "questions": first_questions,
+        })
+        first_count_done = len(fb)
+        for nit in fb:
+            keyq = re.sub(r"\s+", " ", nit["q"]).lower()
+            seen_q.add(keyq)
+            items.append(nit)
+        print(f"FIRST_READY n={first_count_done}", flush=True)
 
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     plan = min(MAX_CALLS, -(-args.count // PER_CALL) + 3)
-    jobs = []
-    for k in range(plan):
-        n = PER_CALL if k < plan - 1 else args.count
-        jobs.append((k, chunks[k % len(chunks)], n))
+    jobs = [
+        (k, chunks[k % len(chunks)], PER_CALL) for k in range(plan)
+    ]
 
     done_calls = 0
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
@@ -335,34 +406,28 @@ def main():
                 break
 
     if len(items) < args.count:
-        print(f"NOT_ENOUGH_QUESTIONS got={len(items)} need={args.count}")
-        return 2
-
-    # ===== التركيب الحتمي: قاعدة الخيار الأخير 15/55 =====
-    rng.shuffle(items)
-    items = items[: args.count]
-    special_idx = set(rng.sample(range(len(items)), args.phrase_correct))
-    questions = []
-    for idx, it in enumerate(items):
-        if idx in special_idx:
-            opts = [it["f1"], it["f2"], it["f3"]]
-            rng.shuffle(opts)
-            correct_index = len(opts)  # العبارة الأخيرة هي الصحيحة
+        if progressive and len(items) >= first_count_done + 8:
+            pass  # توليد جزئي مقبول في النمط المتدرج
         else:
-            opts = [it["t"], it["f1"], it["f2"]]
-            rng.shuffle(opts)
-            correct_index = opts.index(it["t"])
-        opts.append(PHRASE)
-        q = {
-            "subject": args.subject,
-            "text": it["q"],
-            "options": opts,
-            "correctIndex": correct_index,
-            "explanation": "مستخرجة من محتوى ملف الدرس.",
-        }
-        if it["situation"]:
-            q["situation"] = it["situation"]
-        questions.append(q)
+            print(f"NOT_ENOUGH_QUESTIONS got={len(items)} need={args.count}")
+            return 2
+
+    # ===== التركيب الحتمي: قاعدة الخيار الأخير =====
+    total_n = min(args.count, len(items))
+    rng.shuffle(items)
+    items = items[:total_n]
+    n_special = (args.phrase_correct if total_n >= args.count else
+                 max(1, round(args.phrase_correct * total_n / args.count)))
+    special_idx = set(rng.sample(range(len(items)), min(n_special, len(items))))
+    questions = compose(items, args.subject, rng, special_idx)
+
+    if progressive and args.out_rest:
+        rest_q = questions[first_count_done:]
+        write_json(Path(args.out_rest), {
+            "state": "done",
+            "count": len(rest_q),
+            "questions": rest_q,
+        })
 
     out = {
         "generatedAt": datetime.now().isoformat(timespec="seconds"),
@@ -371,13 +436,11 @@ def main():
         "seed": args.seed,
         "count": len(questions),
         "phraseCorrectCount": args.phrase_correct,
+        "firstCount": first_count_done,
         "questions": questions,
     }
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(args.out).write_text(
-        json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8"
-    )
-    print(f"GEN_OK count={len(questions)} phraseCorrect={args.phrase_correct}")
+    write_json(Path(args.out), out)
+    print(f"GEN_OK count={len(questions)} phraseCorrect={len(special_idx)}")
     return 0
 
 
