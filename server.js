@@ -1,5 +1,15 @@
 const http = require('http');
 const https = require('https');
+let remoteManifestCache = { t: 0, data: null };
+function toCloudFiles(entries, pagesBase) {
+  return entries
+    .filter((e) => e && typeof e.pdf === 'string')
+    .map((e) => ({
+      path: e.pdf,
+      name: e.name || e.pdf,
+      url: pagesBase + e.pdf.replace(/^\/+/, '').replace(/^assets\//, 'assets/assets/'),
+    }));
+}
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -589,32 +599,41 @@ const handler = async (req, res) => {
       };
       if (files.length > 0) return done(files);
       // لا ملفات محلية؟ اسأل المانيفست السحابي في GitHub (مصدر الملفات الرسمي).
-      const REMOTE_MANIFEST =
-        'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/assets/assets/review_files/manifest.json';
       const PAGES_BASE = 'https://fahdzoubayr-creator.github.io/masar/';
-      https
-        .get(REMOTE_MANIFEST, { headers: { 'User-Agent': 'masar-server' } }, (r) => {
-          let b = '';
-          r.on('data', (c) => (b += c));
-          r.on('end', () => {
-            try {
-              if (r.statusCode !== 200) return done([]);
-              const m = JSON.parse(b);
-              const entries = m[safe] || [];
-              const cloud = entries
-                .filter((e) => e && typeof e.pdf === 'string')
-                .map((e) => ({
-                  path: e.pdf,
-                  name: e.name || e.pdf,
-                  url: PAGES_BASE + e.pdf.replace(/^\/+/, ''),
-                }));
-              return done(cloud);
-            } catch {
-              return done([]);
-            }
+      const SOURCES = [
+        PAGES_BASE + 'assets/assets/review_files/manifest.json',
+        'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/assets/assets/review_files/manifest.json',
+      ];
+      if (remoteManifestCache.data && Date.now() - remoteManifestCache.t < 300000) {
+        return done(toCloudFiles(remoteManifestCache.data[safe] || [], PAGES_BASE));
+      }
+      const tryFetch = (i) => {
+        if (i >= SOURCES.length) return done([]);
+        https
+          .get(SOURCES[i], { headers: { 'User-Agent': 'masar-server' } }, (r) => {
+            let b = '';
+            r.on('data', (c) => (b += c));
+            r.on('end', () => {
+              if (r.statusCode !== 200) {
+                console.warn('[review-files] source', i, 'status', r.statusCode);
+                return tryFetch(i + 1);
+              }
+              try {
+                const m = JSON.parse(b);
+                remoteManifestCache = { t: Date.now(), data: m };
+                return done(toCloudFiles(m[safe] || [], PAGES_BASE));
+              } catch (e) {
+                console.warn('[review-files] parse error', e.message);
+                return tryFetch(i + 1);
+              }
+            });
+          })
+          .on('error', (e) => {
+            console.warn('[review-files] fetch error', e.message);
+            tryFetch(i + 1);
           });
-        })
-        .on('error', () => done([]));
+      };
+      tryFetch(0);
     });
     return;
   }
