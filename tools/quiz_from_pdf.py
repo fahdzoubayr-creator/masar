@@ -36,8 +36,10 @@ MODEL_PREF = [
     "llama-3.3-70b",
 ]
 CHUNK_WORDS = 300
-PER_CALL = 6          # أسئلة مطلوبة في كل استدعاء
-MAX_CALLS = 18        # سقف استدعاءات لملف واحد
+PER_CALL = 9          # أسئلة مطلوبة في كل استدعاء
+MAX_CALLS = 14        # سقف استدعاءات لملف واحد
+PARALLEL = 3          # استدعاءات متزامنة (تخفيف الضغط على حصة Groq)
+DEAD_MODELS = set()   # نماذج ثبت عدم توفرها (404) تُتخطى فوراً
 FORBIDDEN = [
     PHRASE,
     "جميع الإجابات",
@@ -216,6 +218,44 @@ def ask(client, model: str, prompt: str):
     return resp.choices[0].message.content or ""
 
 
+def gen_one(client, models, excerpt, n, worker_idx=0):
+    """استدعاء واحد: يُرجع قائمة عناصر صالحة (قد تكون فارغة)."""
+    import time as _t
+
+    _t.sleep(worker_idx * 1.5)  # إزاحة بدء العمال لتلطيف حدود الطلب/الدقيقة
+    prompt = PROMPT.format(n=n, style=STYLE, text=excerpt, phrase=PHRASE)
+    raw = None
+    for model in [m for m in models if m not in DEAD_MODELS]:
+        for attempt in range(3):
+            try:
+                raw = ask(client, model, prompt)
+                break
+            except Exception as ex:
+                msg = str(ex)
+                print(f"MODEL_FAIL {model}: {msg[:120]}", file=sys.stderr)
+                if "404" in msg or "does not exist" in msg:
+                    DEAD_MODELS.add(model)
+                    break
+                transient = "429" in msg or "Rate limit" in msg or "503" in msg
+                if transient and attempt < 2:
+                    wait = 15 * (attempt + 1)
+                    mra = re.search(r"try again in ([\d.]+)(ms|s|m)", msg)
+                    if mra:
+                        val = float(mra.group(1))
+                        wait = max(wait, val / 1000 if mra.group(2) == "ms" else val * 60 if mra.group(2) == "m" else val)
+                    _t.sleep(min(wait, 45))
+                    continue
+                break
+        if raw:
+            break
+    if not raw:
+        return []
+    arr = clean_json_array(raw)
+    if not isinstance(arr, list):
+        return []
+    return [norm_item(it) for it in arr if valid_item(it)]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default="")
@@ -254,56 +294,45 @@ def main():
     seen_q = set()
     items = []
 
-    ci = 0
-    for call_no in range(MAX_CALLS):
-        remaining = args.count - len(items)
-        if remaining <= 0:
-            break
-        excerpt = chunks[ci % len(chunks)]
-        ci += 1
-        n = min(PER_CALL, remaining + 2)  # هامش للرفض بعد الفحص
-        prompt = PROMPT.format(n=n, style=STYLE, text=excerpt, phrase=PHRASE)
-        raw = None
-        for model in models:
-            for attempt in range(2):
-                try:
-                    raw = ask(client, model, prompt)
-                    break
-                except Exception as ex:
-                    msg = str(ex)
-                    print(f"MODEL_FAIL {model}: {msg[:120]}", file=sys.stderr)
-                    transient = "429" in msg or "Rate limit" in msg or "503" in msg
-                    if transient and attempt == 0:
-                        import time as _t
+    from concurrent.futures import ThreadPoolExecutor, as_completed
 
-                        _t.sleep(12)
-                        continue
+    plan = min(MAX_CALLS, -(-args.count // PER_CALL) + 3)
+    jobs = []
+    for k in range(plan):
+        n = PER_CALL if k < plan - 1 else args.count
+        jobs.append((k, chunks[k % len(chunks)], n))
+
+    done_calls = 0
+    with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
+        futs = {
+            pool.submit(gen_one, client, models, ex, n, k % PARALLEL): (k, n)
+            for k, ex, n in jobs
+        }
+        for fut in as_completed(futs):
+            done_calls += 1
+            try:
+                got = fut.result()
+            except Exception as ex:  # شبكة/أخرى
+                print(f"CALL_FAIL {futs[fut]}: {str(ex)[:120]}", file=sys.stderr)
+                got = []
+            added = 0
+            for nit in got:
+                if len(items) >= args.count:
                     break
-            if raw:
-                break
-                raw = None
-        if not raw:
-            continue
-        arr = clean_json_array(raw)
-        if not isinstance(arr, list):
-            continue
-        added = 0
-        for it in arr:
+                keyq = re.sub(r"\s+", " ", nit["q"]).lower()
+                if keyq in seen_q:
+                    continue
+                seen_q.add(keyq)
+                items.append(nit)
+                added += 1
+            print(
+                f"call#{done_calls}/{plan} added={added} total={len(items)}",
+                file=sys.stderr,
+            )
             if len(items) >= args.count:
+                for f in futs:
+                    f.cancel()
                 break
-            if not valid_item(it):
-                continue
-            nit = norm_item(it)
-            keyq = re.sub(r"\s+", " ", nit["q"]).lower()
-            if keyq in seen_q:
-                continue
-            seen_q.add(keyq)
-            items.append(nit)
-            added += 1
-        print(
-            f"call#{call_no + 1} chunk={ci % len(chunks)} added={added} total={len(items)}",
-            file=sys.stderr,
-        )
 
     if len(items) < args.count:
         print(f"NOT_ENOUGH_QUESTIONS got={len(items)} need={args.count}")
