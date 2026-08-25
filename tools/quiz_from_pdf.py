@@ -294,7 +294,7 @@ def main():
 
     out = {
         "generatedAt": datetime.now().isoformat(timespec="seconds"),
-        "pdf": pdf_path.name,
+        "pdf": pdf_path.name if pdf_path else args.url.rsplit("/", 1)[-1],
         "model_style": "moroccan_professional_exam",
         "seed": args.seed,
         "count": len(questions),

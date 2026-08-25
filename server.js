@@ -583,8 +583,38 @@ const handler = async (req, res) => {
           path: `assets/review_files/${safe}/${f}`,
           name: f.replace(/\.pdf$/i, ''),
         }));
-      console.log(`[review-files] ${safe} -> ${files.length} pdf`);
-      return json(res, 200, { files });
+      const done = (files) => {
+        console.log(`[review-files] ${safe} -> ${files.length} pdf`);
+        return json(res, 200, { files });
+      };
+      if (files.length > 0) return done(files);
+      // لا ملفات محلية؟ اسأل المانيفست السحابي في GitHub (مصدر الملفات الرسمي).
+      const REMOTE_MANIFEST =
+        'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/assets/assets/review_files/manifest.json';
+      const PAGES_BASE = 'https://fahdzoubayr-creator.github.io/masar/';
+      https
+        .get(REMOTE_MANIFEST, { headers: { 'User-Agent': 'masar-server' } }, (r) => {
+          let b = '';
+          r.on('data', (c) => (b += c));
+          r.on('end', () => {
+            try {
+              if (r.statusCode !== 200) return done([]);
+              const m = JSON.parse(b);
+              const entries = m[safe] || [];
+              const cloud = entries
+                .filter((e) => e && typeof e.pdf === 'string')
+                .map((e) => ({
+                  path: e.pdf,
+                  name: e.name || e.pdf,
+                  url: PAGES_BASE + e.pdf.replace(/^\/+/, ''),
+                }));
+              return done(cloud);
+            } catch {
+              return done([]);
+            }
+          });
+        })
+        .on('error', () => done([]));
     });
     return;
   }
