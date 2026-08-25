@@ -11,6 +11,7 @@ class SessionService {
   static const _levelKey = 'school_level_v1';
   static const _specKey = 'specialization_v1';
   static const _trackKey = 'track_v1';
+  static const _cosmicIntroKey = 'cosmic_intro_seen_v1';
 
   static Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
@@ -120,5 +121,17 @@ class SessionService {
   static Future<String?> getTrack() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_trackKey);
+  }
+
+  /// هل عُرضت مقدّمة الانفجار الكوني من قبل؟ (مرة واحدة فقط بعد التثبيت)
+  static Future<bool> isCosmicIntroSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_cosmicIntroKey) ?? false;
+  }
+
+  /// تعليم المقدّمة الكونية كمُعرَضة حتى لا تتكرر في الإقلاعات القادمة.
+  static Future<void> markCosmicIntroSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_cosmicIntroKey, true);
   }
 }

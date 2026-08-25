@@ -65,8 +65,42 @@ class QuestionGenerator {
     final validPool = QuestionValidator.filterValid(pool);
     validPool.shuffle(_random);
     final result =
-        validPool.length > count ? validPool.sublist(0, count) : validPool;
+        (validPool.length > count ? validPool.sublist(0, count) : validPool)
+            .map(withShuffledOptions)
+            .toList();
     return result;
+  }
+
+  /// يعيد توزيع موضع الإجابة الصحيحة عشوائياً بين الاختيارات، مع تثبيت
+  /// خيار «جميع الإجابات خاطئة» في آخر موضع لأن نصه يحيل إلى ما قبله.
+  static Question withShuffledOptions(Question q) {
+    final opts = List<String>.of(q.options);
+    if (opts.length < 2 || q.correctIndex >= opts.length) return q;
+    String? pinned;
+    for (final special in const [allWrongOption, frenchAllWrongOption]) {
+      final i = opts.indexOf(special);
+      if (i >= 0) {
+        pinned = opts.removeAt(i);
+        break;
+      }
+    }
+    for (int i = opts.length - 1; i > 0; i--) {
+      final j = _random.nextInt(i + 1);
+      final t = opts[i];
+      opts[i] = opts[j];
+      opts[j] = t;
+    }
+    if (pinned != null) opts.add(pinned);
+    return Question(
+      subject: q.subject,
+      level: q.level,
+      text: q.text,
+      options: opts,
+      correctIndex: opts.indexOf(q.options[q.correctIndex]),
+      explanation: q.explanation,
+      source: q.source,
+      situation: q.situation,
+    );
   }
 
   /// يعيد عدد أسئلة البنك المتاحة لمحور [folder] / موضوع [topic].

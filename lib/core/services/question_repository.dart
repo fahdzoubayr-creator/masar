@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
+import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/question_validator.dart';
 
 /// طبقة الوصول إلى بنك الأسئلة.
@@ -52,6 +53,7 @@ class QuestionRepository {
 
     list.shuffle(_random);
     if (list.length > targetCount) list = list.take(targetCount).toList();
-    return list;
+    // توزيع مواضع الإجابة الصحيحة على جميع الاختيارات لا الأولى فقط.
+    return list.map(QuestionGenerator.withShuffledOptions).toList();
   }
 }

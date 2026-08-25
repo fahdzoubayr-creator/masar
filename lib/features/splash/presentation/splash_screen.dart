@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
+import 'cosmic_intro.dart';
 import 'tap_sound_stub.dart'
     if (dart.library.js_interop) 'tap_sound_web.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
@@ -22,13 +25,51 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  // هل انتهينا من تحديد إن كانت المقدّمة الكونية ستُعرض؟
+  bool _decided = false;
+  // مشهد الانفجار الكوني يُعرض مرة واحدة فقط: أول افتتاح بعد التثبيت.
+  bool _showIntro = false;
+  // بوارة تؤجّل التنقل التلقائي حتى ينتهي المشهد الكوني.
+  final Completer<void> _introPlayed = Completer<void>();
+
   @override
   void initState() {
     super.initState();
+    _boot();
+  }
+
+  /// يقرر إن كانت هذه أول جلسة بعد التثبيت ليُعرض مشهد الانفجار الكوني،
+  /// ثم يشغّل منطق التخطّي التلقائي (بعد انتهاء المشهد إن وُجد).
+  Future<void> _boot() async {
+    if (!widget.fromBack) {
+      final reduceMotion = MediaQuery.disableAnimationsOf(context);
+      final seen = await SessionService.isCosmicIntroSeen();
+      if (!mounted) return;
+      if (!seen && !reduceMotion) {
+        // يُعلَّم العلم فوراً حتى لا يتكرر المشهد لو أُغلق التطبيق مفاجئاً.
+        await SessionService.markCosmicIntroSeen();
+        if (!mounted) return;
+        setState(() {
+          _decided = true;
+          _showIntro = true;
+        });
+        _autoSkip();
+        return;
+      }
+    }
+    if (!mounted) return;
+    setState(() => _decided = true);
+    _introPlayed.complete();
     _autoSkip();
   }
 
+  void _onIntroFinished() {
+    if (!_introPlayed.isCompleted) _introPlayed.complete();
+    if (mounted) setState(() => _showIntro = false);
+  }
+
   Future<void> _autoSkip() async {
+    await _introPlayed.future;
     if (widget.fromBack) return;
     final loggedIn = await SessionService.isLoggedIn();
     if (!mounted) return;
@@ -82,8 +123,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    if (!_decided) {
+      // فراغ داكن لحظة القرار — يمهّد بصرياً لبداية المشهد الكوني.
+      return const ColoredBox(color: Color(0xFF04070E));
+    }
+    final body = Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/خلفية_الترحيب.jpg'),
@@ -172,7 +216,14 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
+    if (_showIntro) {
+      // أول افتتاح: مشهد الانفجار الكوني يحتضن واجهة الترحيب كاملة.
+      return CosmicIntro(
+        onFinished: _onIntroFinished,
+        child: Scaffold(body: body),
+      );
+    }
+    return Scaffold(body: body);
   }
 }

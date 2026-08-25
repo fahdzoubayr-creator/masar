@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:js_interop';
 import 'package:web/web.dart' as web;
 import 'sfx.dart';
@@ -6,6 +7,12 @@ import 'sfx.dart';
 /// للمخازن المفكوكة؛ المسار القياسي ثم البديل حسب نسخة Flutter.
 final Map<Sfx, web.AudioBuffer> _cache = {};
 web.AudioContext? _ctx;
+
+/// أصوات صُدَّت بسياسة التشغيل الذاتي وتنتظر أول تفاعل ليُطلقها،
+/// مع طابع زمني: ما تجاوز مهلته يُهمَل بدل أن ينفجر متأخراً في وقت غريب.
+final List<(Sfx, DateTime)> _pendingAutoplay = [];
+const _pendingTtl = Duration(milliseconds: 2200);
+bool _unlockHooked = false;
 
 web.AudioContext get _audio => _ctx ??= web.AudioContext();
 
@@ -31,15 +38,62 @@ void playSfx(Sfx s) {
   _load(s).then((_) {
     final b = _cache[s];
     if (b == null) return;
-    if (_audio.state == 'suspended') _audio.resume();
-    final src = _audio.createBufferSource();
-    src.buffer = b;
-    final g = _audio.createGain();
-    g.gain.value = 0.9;
-    src.connect(g);
-    g.connect(_audio.destination);
-    src.start();
+    if (_audio.state == 'suspended') {
+      // متصفح بلا تفاعل سابق: نؤجّل الصوت إلى أول لمسة بدل إسقاطه.
+      _pendingAutoplay.add((s, DateTime.now()));
+      _hookUnlock();
+      keepFlushingPending();
+      return;
+    }
+    _start(b);
   });
+}
+
+void _start(web.AudioBuffer b) {
+  final src = _audio.createBufferSource();
+  src.buffer = b;
+  final g = _audio.createGain();
+  g.gain.value = 0.9;
+  src.connect(g);
+  g.connect(_audio.destination);
+  src.start();
+}
+
+/// يفكّ تعليق السياق عند أول تفاعل ثم يُطلق ما انتظر من الأصوات.
+/// يُسجَّل مرة واحدة فقط لكل صفحة.
+void _hookUnlock() {
+  if (_unlockHooked) return;
+  _unlockHooked = true;
+  final handler = ((web.Event _) {
+    _audio.resume().toDart.then((_) => _flushPending());
+  }).toJS;
+  web.document.addEventListener('pointerdown', handler);
+  web.document.addEventListener('keydown', handler);
+}
+
+void _flushPending() {
+  final now = DateTime.now();
+  final due = <Sfx>[];
+  _pendingAutoplay.retainWhere((e) {
+    if (now.difference(e.$2) <= _pendingTtl) {
+      due.add(e.$1);
+      return false;
+    }
+    return true; // منتهي الصلاحية: يُحذف بصمت
+  });
+  for (final s in due) {
+    final b = _cache[s];
+    if (b != null) _start(b);
+  }
+}
+
+/// استئناف استباقي لسياق الصوت — يُستدعى مع أول تفاعل ممكن.
+void primeAudio() {
+  if (_audio.state == 'suspended') {
+    _audio.resume();
+    _hookUnlock();
+    keepFlushingPending();
+  }
 }
 
 /// تحميل مسبق صامت لكل المؤثرات عند إقلاع التطبيق.
@@ -47,4 +101,21 @@ void preloadSfx() {
   for (final s in Sfx.values) {
     _load(s);
   }
+}
+
+/// مهلة أمان تُفرغ الانتظار إن عاد السياق للعمل وحده (سياسات بعض المتصفحات).
+Timer? _watchdog;
+
+void keepFlushingPending() {
+  _watchdog?.cancel();
+  _watchdog = Timer.periodic(const Duration(milliseconds: 400), (t) {
+    if (_pendingAutoplay.isEmpty) {
+      t.cancel();
+      return;
+    }
+    _flushPending();
+    if (_pendingAutoplay.isEmpty || _audio.state == 'running') {
+      t.cancel();
+    }
+  });
 }
