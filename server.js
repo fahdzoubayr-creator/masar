@@ -449,73 +449,78 @@ const handler = async (req, res) => {
         payload = JSON.parse(body || '{}');
       } catch {}
       const rawPath = typeof payload.path === 'string' ? payload.path : '';
-      if (!rawPath) return json(res, 400, { error: 'path مطلوب' });
+      const payloadUrl = typeof payload.url === 'string' ? payload.url : '';
+      if (!rawPath && !payloadUrl) return json(res, 400, { error: 'path أو url مطلوب' });
       let rel;
-      try {
-        rel = decodeURIComponent(rawPath.replace(/^\/+/, ''));
-      } catch {
-        return json(res, 400, { error: 'مسار غير صالح' });
+      let remoteUrl = '';
+      if (payloadUrl) {
+        // قراءة PDF من GitHub سحابياً — نطاقات مسموحة فقط
+        try {
+          remoteUrl = decodeURIComponent(payloadUrl);
+        } catch {
+          remoteUrl = payloadUrl;
+        }
+        const ok = /^https:\/\/([a-z0-9.-]+\.github\.io|raw\.githubusercontent\.com|github\.com|codeload\.github\.com)\//i.test(remoteUrl);
+        if (!ok) return json(res, 403, { error: 'نطاق غير مسموح' });
+        rel = typeof rawPath === 'string' ? rawPath : '';
       }
+      try {
+        rel = decodeURIComponent(String(rel || '').replace(/^\/+/, ''));
+      } catch {}
       rel = rel.replace(/^assets\/assets\//, 'assets/');
-      if (!/^assets\/review_files\/.+\.pdf$/i.test(rel)) {
+      if (rel && !/^assets\/review_files\/.+\.pdf$/i.test(rel)) {
         rel = 'assets/review_files/' + rel.replace(/^assets\//, '');
       }
       const baseDir = path.join(__dirname, 'assets', 'review_files');
-      const pdfFile = path.normalize(path.join(__dirname, rel));
-      if (!pdfFile.startsWith(baseDir) || !pdfFile.toLowerCase().endsWith('.pdf')) {
-        return json(res, 403, { error: 'مسار غير مسموح' });
+      const pdfFile = rel ? path.normalize(path.join(__dirname, rel)) : null;
+      if (!remoteUrl) {
+        if (!pdfFile || !pdfFile.startsWith(baseDir) || !pdfFile.toLowerCase().endsWith('.pdf')) {
+          return json(res, 403, { error: 'مسار غير مسموح' });
+        }
       }
-      fs.stat(pdfFile, (err, st) => {
-        if (err || !st.isFile()) return json(res, 404, { error: 'الملف غير موجود' });
-
-        // ذاكرة/قرص تخزين مؤقت حسب المسار+الحجم+زمن التعديل
-        const crypto = require('crypto');
-        const genDir = path.join(__dirname, 'assets', 'banks', 'generated');
-        const id = crypto
-          .createHash('sha1')
-          .update(rel + st.size + st.mtimeMs)
-          .digest('hex')
-          .slice(0, 16);
-        const cacheFile = path.join(genDir, id + '.json');
-        try {
-          if (fs.existsSync(cacheFile)) {
-            const j = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-            console.log(`[quiz-gen] cached ${rel}`);
-            return json(res, 200, { cached: true, ...j });
+      const groqKey = () =>
+        process.env.GROQ_API_KEY ||
+        (() => {
+          try {
+            const t = fs.readFileSync(
+              path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
+              'utf8'
+            );
+            const m = t.match(/gsk_[A-Za-z0-9]+/);
+            return m ? m[0] : null;
+          } catch {
+            return null;
           }
-        } catch {}
+        })();
 
-        const key =
-          process.env.GROQ_API_KEY ||
-          (() => {
-            try {
-              const t = fs.readFileSync(
-                path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
-                'utf8'
-              );
-              const m = t.match(/gsk_[A-Za-z0-9]+/);
-              return m ? m[0] : null;
-            } catch {
-              return null;
-            }
-          })();
+      const proceed = () => {
+        const key = groqKey();
         if (!key) return json(res, 503, { error: 'GROQ_KEY_MISSING' });
-
+        // بلا كاش دائم: كل محاولة توليد جديدة ببذرة مختلفة.
+        const genDir = path.join(__dirname, 'assets', 'banks', 'generated');
         fs.mkdirSync(genDir, { recursive: true });
+        const crypto = require('crypto');
+        const stamp =
+          Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+        const seed = crypto.randomInt(1, 0x7fffffff);
+        const outFile = path.join(genDir, 'gen_' + stamp + '.json');
         const { spawn } = require('child_process');
-        const proc = spawn(
-          'python',
-          [
-            path.join(__dirname, 'tools', 'quiz_from_pdf.py'),
-            '--pdf', pdfFile,
-            '--subject', String(payload.subject || ''),
-            '--out', cacheFile,
-          ],
-          {
-            env: { ...process.env, GROQ_API_KEY: key, PYTHONIOENCODING: 'utf-8' },
-            windowsHide: true,
-          }
+        const scriptArgs = [path.join(__dirname, 'tools', 'quiz_from_pdf.py')];
+        if (remoteUrl) {
+          scriptArgs.push('--url', remoteUrl);
+          if (pdfFile) scriptArgs.push('--pdf', pdfFile);
+        } else {
+          scriptArgs.push('--pdf', pdfFile);
+        }
+        scriptArgs.push(
+          '--seed', String(seed),
+          '--subject', String(payload.subject || ''),
+          '--out', outFile
         );
+        const proc = spawn('python', scriptArgs, {
+          env: { ...process.env, GROQ_API_KEY: key, PYTHONIOENCODING: 'utf-8' },
+          windowsHide: true,
+        });
         let errTxt = '';
         const killer = setTimeout(() => proc.kill(), 480000);
         proc.stdout.on('data', () => {});
@@ -528,21 +533,27 @@ const handler = async (req, res) => {
         });
         proc.on('close', (code) => {
           clearTimeout(killer);
-          if (code === 0 && fs.existsSync(cacheFile)) {
+          if (code === 0 && fs.existsSync(outFile)) {
             try {
-              const j = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
-              console.log(`[quiz-gen] ${rel} -> ${j.count}q`);
-              return json(res, 200, { cached: false, ...j });
+              const j = JSON.parse(fs.readFileSync(outFile, 'utf8'));
+              console.log('[quiz-gen] ' + (remoteUrl || rel) + ' seed=' + seed + ' -> ' + j.count + 'q');
+              return json(res, 200, { cached: false, seed, ...j });
             } catch (e) {
               errTxt += String(e);
             }
           }
-          console.error(`[quiz-gen-fail] code=${code} ${errTxt.slice(-400)}`);
+          console.error('[quiz-gen-fail] code=' + code + ' ' + errTxt.slice(-400));
           return json(res, 502, {
             error: 'GENERATION_FAILED',
             detail: errTxt.slice(-180),
           });
         });
+      };
+
+      if (remoteUrl) return proceed();
+      fs.stat(pdfFile, (err, st) => {
+        if (err || !st.isFile()) return json(res, 404, { error: 'الملف غير موجود' });
+        proceed();
       });
     });
     return;

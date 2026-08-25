@@ -2,12 +2,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:masar_app/core/models/question.dart';
+import 'package:masar_app/core/services/review_file_service.dart';
 
 /// كويز مولّد آلياً من محتوى ملف الدرس (PDF) عبر السيرفر و Groq.
 class GeneratedQuizService {
   GeneratedQuizService._();
-
-  static final Map<String, List<Question>> _mem = {};
 
   /// يولّد (أو يعيد من التخزين المؤقت) 70 سؤالاً من ملف الدرس.
   /// يرمي استثناء عند الفشل — على المستدعي التراجع لبنك الموضوع.
@@ -15,15 +14,17 @@ class GeneratedQuizService {
     String assetPath, {
     required String subject,
   }) async {
-    final cached = _mem[assetPath];
-    if (cached != null) return cached;
-
+    // بلا تخزين بين المحاولات: كل إعادة اختبار = بذرة جديدة وأسئلة تتجدد.
     final uri = Uri.base.resolve('/api/quiz/generate-from-pdf');
     final resp = await http
         .post(
           uri,
           headers: const {'Content-Type': 'application/json'},
-          body: jsonEncode({'path': assetPath, 'subject': subject}),
+          body: jsonEncode({
+            'path': assetPath,
+            'url': ReviewFileService.urlFor(assetPath),
+            'subject': subject,
+          }),
         )
         .timeout(const Duration(minutes: 8));
 
@@ -35,12 +36,10 @@ class GeneratedQuizService {
     if (raw is! List || raw.isEmpty) {
       throw Exception('GENERATE_EMPTY');
     }
-    final questions = raw
+    return raw
         .cast<Map<String, dynamic>>()
         .map(Question.fromJson)
         .toList();
-    _mem[assetPath] = questions;
-    return questions;
   }
 
   /// يولّد من عدة ملفات بالتتابع حتى بلوغ [target] سؤالاً — يتخطى ما يفشل.

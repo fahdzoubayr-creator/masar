@@ -19,16 +19,17 @@ class ReviewPdf {
 class ReviewFileService {
   /// عنوان ملفات المراجعة على GitHub Pages — تُقدَّم عند الطلب فقط
   /// فيبقى التطبيق (ويب وهاتف) صغيراً وسريعاً.
-  static const String baseUrl =
-      'https://fahdzoubayr-creator.github.io/masar/files';
+  // جذر موقع النشر على GitHub Pages — الملفات تحت assets/assets/review_files.
+  static const String baseUrl = 'https://fahdzoubayr-creator.github.io/masar';
 
   /// ملف دليل الملفات النصية لكل محور — يُولَّد تلقائياً عند البناء
   /// بواسطة أداة build_manifest.js ويُرفع مع الملفات إلى السحابة.
-  static String get manifestUrl => '$baseUrl/manifest.json';
+  static String get manifestUrl =>
+      '$baseUrl/assets/assets/review_files/manifest.json';
 
   /// يحوّل مسار الأصول (assets/review_files/...) إلى رابط السحابة المقابل.
   static String urlFor(String assetPath) =>
-      '$baseUrl/${assetPath.replaceFirst('assets/review_files/', '')}';
+      '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
 
   /// يقرأ ملفاً (PDF أو TXT): من السحابة أولاً، ثم من الكاش،
   /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.

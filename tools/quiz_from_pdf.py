@@ -90,10 +90,11 @@ def resolve_key() -> str:
     raise SystemExit("NO_GROQ_KEY")
 
 
-def extract_text(pdf_path: Path) -> str:
+def extract_text(pdf_path=None, pdf_bytes=None) -> str:
     import fitz  # pymupdf
 
-    doc = fitz.open(str(pdf_path))
+    doc = (fitz.open(stream=pdf_bytes, filetype="pdf")
+           if pdf_bytes else fitz.open(str(pdf_path)))
     parts = []
     for page in doc:
         parts.append(page.get_text("text"))
@@ -187,19 +188,29 @@ def ask(client, model: str, prompt: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pdf", required=True)
+    ap.add_argument("--pdf", default="")
+    ap.add_argument("--url", default="")
+    ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--subject", default="")
     ap.add_argument("--count", type=int, default=TARGET_DEFAULT)
     ap.add_argument("--phrase-correct", type=int, default=PHRASE_CORRECT_DEFAULT)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
 
-    pdf_path = Path(args.pdf)
-    if not pdf_path.is_file():
-        print(f"PDF_NOT_FOUND {pdf_path}")
+    rng_seed = args.seed
+    rng = random.Random(rng_seed)
+    pdf_bytes = None
+    if args.url:
+        import requests as _rq
+        rr = _rq.get(args.url, timeout=60, headers={"User-Agent": "masar-quizgen"})
+        rr.raise_for_status()
+        pdf_bytes = rr.content
+    pdf_path = Path(args.pdf) if args.pdf else None
+    if pdf_bytes is None and (pdf_path is None or not pdf_path.is_file()):
+        print("PDF_NOT_FOUND")
         return 2
 
-    text = extract_text(pdf_path)
+    text = extract_text(pdf_path, pdf_bytes)
     if len(text.split()) < 120:
         print("PDF_TEXT_TOO_SHORT")
         return 2
@@ -256,18 +267,18 @@ def main():
         return 2
 
     # ===== التركيب الحتمي: قاعدة الخيار الأخير 15/55 =====
-    random.shuffle(items)
+    rng.shuffle(items)
     items = items[: args.count]
-    special_idx = set(random.sample(range(len(items)), args.phrase_correct))
+    special_idx = set(rng.sample(range(len(items)), args.phrase_correct))
     questions = []
     for idx, it in enumerate(items):
         if idx in special_idx:
             opts = [it["f1"], it["f2"], it["f3"]]
-            random.shuffle(opts)
+            rng.shuffle(opts)
             correct_index = len(opts)  # العبارة الأخيرة هي الصحيحة
         else:
             opts = [it["t"], it["f1"], it["f2"]]
-            random.shuffle(opts)
+            rng.shuffle(opts)
             correct_index = opts.index(it["t"])
         opts.append(PHRASE)
         q = {
@@ -285,6 +296,7 @@ def main():
         "generatedAt": datetime.now().isoformat(timespec="seconds"),
         "pdf": pdf_path.name,
         "model_style": "moroccan_professional_exam",
+        "seed": args.seed,
         "count": len(questions),
         "phraseCorrectCount": args.phrase_correct,
         "questions": questions,
