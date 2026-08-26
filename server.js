@@ -766,54 +766,78 @@ const handler = async (req, res) => {
     try {
       target = decodeURIComponent(parsed.searchParams.get('path') || '');
     } catch {}
-    if (!/^assets\/(?:assets\/)?review_files\/[^/]+\/[^/]+$/.test(target)) {
-      return json(res, 400, { error: '???? ??? ????' });
+    if (!/^assets\/(?:assets\/)?review_files\/.+\.pdf$/i.test(target)) {
+      return json(res, 400, { error: 'مسار غير مدعوم' });
     }
-    const done404 = () => json(res, 404, { error: '????? ??? ????? ???' });
-    const streamRemote = (url, tries) => {
-      if (tries > 5) {
-        res.writeHead(502);
-        return res.end();
+    const done404 = () => json(res, 404, { error: 'الملف غير موجود' });
+    const CACHE_DIR = path.join(__dirname, 'assets', 'review_files_cache');
+
+    // 1) تحديد مصدر الملف: رابط إصدار، مسار مسطح، أو محلي
+    let remoteUrl = releaseUrlFor(target);
+    let cacheKey = '';
+    if (remoteUrl) {
+      cacheKey = path.basename(remoteUrl);
+    } else {
+      const flatMatch = target.replace(/^\/+/, '').match(
+        /assets(?:\/assets)?\/review_files\/([a-z0-9_]+)__(\d+)\.pdf$/i
+      );
+      if (flatMatch) {
+        remoteUrl = RELEASE_BASE + flatMatch[1] + '__' + flatMatch[2] + '.pdf';
+        cacheKey = flatMatch[1] + '__' + flatMatch[2] + '.pdf';
+      } else {
+        const bare = path.basename(target).replace(/[^a-zA-Z0-9._-]/g, '_');
+        const bareMatch = bare.match(/^([a-z0-9_]+)__\d+\.pdf$/i);
+        if (bareMatch) {
+          remoteUrl = RELEASE_BASE + bare;
+          cacheKey = bare;
+        }
       }
-      https
-        .get(url, { headers: { 'User-Agent': 'masar-server' } }, (r) => {
-          if (
-            r.statusCode >= 300 &&
-            r.statusCode < 400 &&
-            r.headers.location
-          ) {
-            r.resume();
-            return streamRemote(r.headers.location, tries + 1);
-          }
-          if (r.statusCode !== 200) {
-            r.resume();
-            return done404();
-          }
-          const h = {
+    }
+
+    // 2) خدمة فورية من الكاش المحلي
+    if (cacheKey) {
+      const safe = cacheKey.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const cacheFile = path.join(CACHE_DIR, safe);
+      try {
+        const st = fs.statSync(cacheFile);
+        if (st.isFile()) {
+          res.writeHead(200, {
             'Content-Type': 'application/pdf',
-            'Cache-Control': 'no-cache',
+            'Content-Length': st.size,
+            'Cache-Control': 'public, max-age=86400',
             'Access-Control-Allow-Origin': '*',
-          };
+          });
+          return fs.createReadStream(cacheFile).pipe(res);
+        }
+      } catch {}
+      // تحميل من GitHub + تخزين + بث متزامن
+      const streamRemote = (url, tries) => {
+        if (tries > 5) { try { res.writeHead(502); } catch {} return res.end(); }
+        https.get(url, { headers: { 'User-Agent': 'masar-server' } }, (r) => {
+          if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
+            r.resume(); return streamRemote(r.headers.location, tries + 1);
+          }
+          if (r.statusCode !== 200) { r.resume(); return done404(); }
+          const h = { 'Content-Type': 'application/pdf', 'Cache-Control': 'public, max-age=3600', 'Access-Control-Allow-Origin': '*' };
           if (r.headers['content-length']) h['Content-Length'] = r.headers['content-length'];
           res.writeHead(200, h);
-          r.pipe(res);
-        })
-        .on('error', () => {
-          try { res.writeHead(502); } catch {}
-          res.end();
-        });
-    };
-    const releaseUrl = releaseUrlFor(target);
-    if (releaseUrl) return streamRemote(releaseUrl, 0);
+          fs.mkdirSync(CACHE_DIR, { recursive: true });
+          const tmp = cacheFile + '.part';
+          const w = fs.createWriteStream(tmp);
+          w.on('finish', () => fs.rename(tmp, cacheFile, () => {}));
+          w.on('error', () => fs.unlink(tmp, () => {}));
+          r.pipe(w); r.pipe(res);
+        }).on('error', () => { try { res.writeHead(502); } catch {} res.end(); });
+      };
+      return streamRemote(remoteUrl, 0);
+    }
+
+    // 3) ملف محلي فقط
     try {
       const localFile = path.join(__dirname, target);
-      const stat = fs.statSync(localFile);
-      if (stat.isFile()) {
-        res.writeHead(200, {
-          'Content-Type': 'application/pdf',
-          'Content-Length': stat.size,
-          'Cache-Control': 'no-cache',
-        });
+      const st = fs.statSync(localFile);
+      if (st.isFile()) {
+        res.writeHead(200, { 'Content-Type': 'application/pdf', 'Content-Length': st.size, 'Cache-Control': 'no-cache' });
         return fs.createReadStream(localFile).pipe(res);
       }
     } catch (_) {}

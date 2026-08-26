@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:masar_app/core/services/game_bank_loader.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
@@ -33,6 +34,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // تحميل بنوك الأسئلة من JSON
   await QuestionBankLoader.init();
+  await GameBankLoader.init();
   // يُبقي شجرة الوصول (Semantics) مفعّلة دائماً — لإتاحة قارئات الشاشة
   // ولتمكين الفحص التلقائي للواجهة.
   SemanticsBinding.instance.ensureSemantics();
