@@ -43,35 +43,52 @@ NUMBERED_TOPIC_RATIO = 0.55
 
 # ---------------- استخراج رقم الترتيب ----------------
 
+def peel_name(name: str) -> str:
+    """يزيل شوائب ملاصقة للبداية لتكشف أرقام البادئة مثل '-20-اسم' أو '-4مدخل'."""
+    return re.sub(r"^[-_–—،:;#*٪@\s]+", "", name)
+
+
+def _prev_word(name: str) -> str:
+    words = re.findall(r"[\u0600-\u06FFa-zA-Z]+", name)
+    return words[-1] if words else ""
+
+
+# كلمات يليها رقم له معناه (جزء/مستوى/وحدة/سنة...) فيُستثنى من أرقام الترتيب.
+KEEP_ORDER_NUMBER_PREV = {
+    "الجزء", "المستوى", "المستوي", "المستويات", "م", "السنة", "وحدة", "المفيد", "المنير",
+}
+
+
 def leading_number(name: str):
-    """رقم بادئة يتبعه فراغ/شرطة، أو ملاصق لجملة داخل محاور مرقمة فقط."""
-    m = re.match(r"^\s*(\d{1,3})\s*(?:[-_–—]\s*)?", name)
+    """رقم بادئة يتبعه فراغ/شرطة/ترقيم، أو ملاصق لجملة ('-4مدخل')."""
+    n = peel_name(name)
+    m = re.match(r"^(\d{1,3})\s*(?:[-_–—]\s*|[,.;،:·]\s*)?", n)
     if not m:
         return None
     num = int(m.group(1))
-    rest = name[m.end():]
-    # لا تُعتبر "100سؤال"/"1030 سؤال"/"المستوى 2..." أرقام ترتيب عامة
-    # الاشتراط: لا يتلوه حرف لاتيني (1re/1AP) ولا كلمة "سؤال/المستوى/الجزء"
+    rest = n[m.end():]
+    # لا تُعتبر "100سؤال"/"1030 سؤال" أرقام ترتيب، ولا ما يتلوه حرف لاتيني (1re/1AP)
     head = rest.lstrip()[:6]
     if re.match(r"^[A-Za-z]", head):
         return None
-    if num > 0 and num <= 999:
+    if 0 < num <= 999:
         return num
     return None
 
 
 def suffix_number(name: str):
     """رقم لاحقة بعد شرطة/شرطة سفلية: 'اسم-N'"""
-    m = re.search(r"[-_–—]\s*(\d{1,3})\s*$", name)
+    m = re.search(r"[-_–—]\s*(\d{1,3})\s*$", peel_name(name))
     if not m:
         return None
     num = int(m.group(1))
-    if num > 0 and num <= 999:
+    if 0 < num <= 999:
         return num
     return None
 
 
-def extract_number(name: str):
+def prefix_suffix_number(name: str):
+    """رقم الترتيب الكلاسيكي (بادئة/لاحقة بشرطة) دون اعتبار الأرقام اللاحقة بفراغ."""
     lead = leading_number(name)
     if lead is not None:
         return lead, "prefix"
@@ -81,16 +98,41 @@ def extract_number(name: str):
     return None, None
 
 
+def extract_number(name: str, used: set):
+    """(num, kind) لرقم ترتيب، أو (None, None).
+    kind: prefix | suffix | trailing (رقم بعد فراغ).
+    trailing يُقبل فقط إن لم يكن الرقم مستعملًا (فجوات سلسلة الحصص 1-42)
+    ولم يسبقه جزء/مستوى/م/المفيد... ولم يكن سنةً (>=2020)."""
+    num, kind = prefix_suffix_number(name)
+    if num is not None:
+        return num, kind
+    n = peel_name(name)
+    m = re.search(r"\s+(\d{1,3})\s*$", n)
+    if m:
+        num = int(m.group(1))
+        prev = _prev_word(n[:m.start()])
+        if (
+            0 < num <= 99
+            and num < 2020
+            and prev not in KEEP_ORDER_NUMBER_PREV
+            and num not in used
+        ):
+            return num, "trailing"
+    return None, None
+
+
 # ---------------- حذف رقم الترتيب من الاسم ----------------
 
-def strip_order_marker(name: str) -> str:
-    lead = leading_number(name)
-    if lead is not None:
+def strip_order_marker(name: str, marker) -> str:
+    kind, num = marker
+    n = peel_name(name)
+    if kind == "prefix":
         # يبتلع أيضًا الترقيم (فاصلة/نقطة...) بعد رقم البادئة: "5, الكفايات" -> "الكفايات"
-        return re.sub(r"^\s*(\d{1,3})\s*(?:[-_–—]\s*|[,.;،:·]\s*)?", "", name, count=1)
-    suf = suffix_number(name)
-    if suf is not None:
-        return re.sub(r"[-_–—]\s*(\d{1,3})\s*$", "", name, count=1)
+        return re.sub(r"^(\d{1,3})\s*(?:[-_–—]\s*|[,.;،:·]\s*)?", "", n, count=1)
+    if kind == "suffix":
+        return re.sub(r"[-_–—]\s*(\d{1,3})\s*$", "", n, count=1)
+    if kind == "trailing":
+        return re.sub(r"\s+(\d{1,3})\s*$", "", n, count=1)
     return name
 
 
@@ -105,10 +147,11 @@ def strip_junk_attached_digit(name: str) -> str:
 
 # ---------------- تنظيف الاسم ----------------
 
-def clean_name(raw: str, allow_order_strip: bool = False) -> str:
+def clean_name(raw: str, marker=None, allow_order_strip: bool = False) -> str:
     s = raw.strip()
     if allow_order_strip:
-        s = strip_order_marker(s)
+        if marker is not None:
+            s = strip_order_marker(s, marker)
     else:
         s = strip_junk_attached_digit(s)
     # امتدادات وملحقات ملفات (في أي موضع، وليس فقط النهاية)
@@ -178,9 +221,10 @@ def topic_key(e):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--input", default=MANIFEST, help="manifest الأصلي للمعالجة")
     args = ap.parse_args()
 
-    with open(MANIFEST, encoding="utf-8") as fh:
+    with open(args.input, encoding="utf-8") as fh:
         manifest = json.load(fh, object_pairs_hook=OrderedDict)
 
     report_lines = []
@@ -207,8 +251,13 @@ def main() -> int:
         for tk, group in groups.items():
             if not group:
                 continue
+            used_nums: set = set()
+            for e in group:
+                _num, _kind = prefix_suffix_number(e.get("name", ""))
+                if _num is not None:
+                    used_nums.add(_num)
             # تحديد هل هذا المحور الفرعي مؤهل للفرز بالأرقام
-            numbered = [e for e in group if extract_number(e.get("name", ""))[0] is not None]
+            numbered = [e for e in group if extract_number(e.get("name", ""), used_nums)[0] is not None]
             do_sort = (
                 folder in ORDERED_FOLDERS
                 and len(group) >= 3
@@ -217,7 +266,7 @@ def main() -> int:
             if do_sort:
                 # مستقرة: المرقمة تصاعدياً، غير المرقمة بعدها بترتيبها الأصلي
                 tagged = [
-                    (extract_number(e.get("name", ""))[0], e) for e in group
+                    (extract_number(e.get("name", ""), used_nums)[0], e) for e in group
                 ]
                 tagged.sort(key=lambda t: (t[0] is None, t[0] if t[0] is not None else 0))
                 group = [e for _n, e in tagged]
@@ -227,7 +276,11 @@ def main() -> int:
             # تنظيف الأسماء (يتم هنا حتى لا تتأثر أكواد الفرز أعلاه)
             for e in group:
                 old_name = e.get("name", "")
-                new_name = clean_name(old_name, do_sort)
+                _knum, _kkind = extract_number(old_name, used_nums) if do_sort else (None, None)
+                marker = (_kkind, _knum) if _knum is not None else None
+                new_name = clean_name(old_name, marker, do_sort)
+                if folder == "مراسلات ومذكرات" and new_name.startswith("شريف رقم"):
+                    new_name = "ظهير شريف رقم" + new_name[len("شريف رقم"):]
                 changed = new_name != old_name
                 total_changed += 1 if changed else 0
                 e["name"] = new_name

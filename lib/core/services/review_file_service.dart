@@ -76,6 +76,12 @@ class ReviewFileService {
     return urlFor(assetPath);
   }
 
+  /// رابط فتح الملف على المتصفح في صفحة عرض كبيرة (viewer.html) مع منع
+  /// التحميل والطباعة. يُحلّ نسبيًا فيرث أصل الخدمة الحالي (سيرفر/Pages).
+  static String viewerUrlFor(String assetPath) => Uri.base
+      .resolve('viewer.html?path=${Uri.encodeComponent(assetPath)}')
+      .toString();
+
   /// يقرأ ملفاً (PDF أو TXT): من السحابة أولاً، ثم من الكاش،
   /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.
   static Future<Uint8List> readAsset(String assetPath) async {
