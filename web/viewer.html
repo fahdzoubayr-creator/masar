@@ -59,7 +59,16 @@
     const params = new URLSearchParams(location.search);
     const rawPath = params.get('path') || '';
 
-    let pdfDoc = null, canvases = [], scale = 1, fitScale = 1, current = 1, busy = false;
+    let pdfDoc = null, canvases = [], scale = 1, fitScale = 1, current = 1, busy = false, firstVp = null;
+
+    function computeFitScale() {
+      if (!firstVp) return 1;
+      return Math.max(
+          0.25,
+          Math.min(
+              (window.innerWidth * 0.92) / firstVp.width,
+              (window.innerHeight * 0.85) / firstVp.height));
+    }
 
     function updatePager() {
       if (!pdfDoc) return;
@@ -113,7 +122,9 @@
       $('container').style.display = 'flex';
 
       const first = await pdfDoc.getPage(1);
-      fitScale = Math.max(0.25, (window.innerWidth * 0.9) / first.getViewport({ scale: 1 }).width);
+      firstVp = first.getViewport({ scale: 1 });
+      // ملاءمة كاملة لنافذة المتصفح (العرض والارتفاع) — الصفحة بحجم النافذة
+      fitScale = computeFitScale();
 
       for (let i = 1; i <= pdfDoc.numPages; i++) {
         const el = document.createElement('div');
@@ -127,30 +138,47 @@
       await setScale(fitScale, false);
     }
 
-    async function renderPage(n, target) {
+    async function renderPage(n, scaleCss) {
+      // مقاس العرض الفعلي (CSS) منفصل عن دقة الرسم (dpr) كي لا يتجاوز الصفحةُ
+      // نافذةَ المتصفح رغم وضوح النص على الشاشات عالية الكثافة.
+      const dpr = window.devicePixelRatio || 1;
       const page = await pdfDoc.getPage(n);
-      const base = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: 1 });
       const cv = canvases[n - 1];
-      cv.width = Math.floor(base.width * target);
-      cv.height = Math.floor(base.height * target);
+      cv.style.width = Math.floor(vp.width * scaleCss) + 'px';
+      cv.style.height = Math.floor(vp.height * scaleCss) + 'px';
+      cv.width = Math.floor(vp.width * scaleCss * dpr);
+      cv.height = Math.floor(vp.height * scaleCss * dpr);
       await page.render({
         canvasContext: cv.getContext('2d'),
-        viewport: page.getViewport({ scale: target }),
+        viewport: page.getViewport({ scale: scaleCss * dpr }),
       }).promise;
     }
 
     async function setScale(s, scrollToCurrent) {
       scale = s;
-      const dpr = window.devicePixelRatio || 1;
       // كل الصفحات تُعاد برسمها بالمقاس الجديد (الملفات متوسطة الحجم)
-      for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale * dpr);
+      for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale);
       if (scrollToCurrent) canvases[current - 1].scrollIntoView({ behavior: 'smooth' });
       updatePager();
     }
 
     $('zoomin').onclick = async () => { await setScale(Math.min(5, scale * 1.25), true); };
     $('zoomout').onclick = async () => { await setScale(Math.max(0.25, scale / 1.25), true); };
-    $('fit').onclick = async () => { await setScale(fitScale, true); };
+    $('fit').onclick = async () => {
+      fitScale = computeFitScale();
+      await setScale(fitScale, true);
+    };
+    // عند تغيير حجم النافذة: يعيد الملاءمة إن كان المستخدم عند مقاس الملاءمة
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const wasFit = Math.abs(scale - fitScale) < 1e-4;
+        fitScale = computeFitScale();
+        if (wasFit) setScale(fitScale, false);
+      }, 250);
+    });
     $('prev').onclick = () => { if (current > 1) { current--; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
     $('next').onclick = () => { if (current < pdfDoc.numPages) { current++; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
 
