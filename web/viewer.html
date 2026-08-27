@@ -14,7 +14,9 @@
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; background: #111820; color: #f3e9d2;
                font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
-  #toolbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px;
+  /* الشريط العلوي مثبّت دائمًا: الجسم عمودي، والشريط في الأعلى والمحتوى يمرّر تحته */
+  body { display: flex; flex-direction: column; overflow: hidden; }
+  #toolbar { flex: 0 0 auto; z-index: 10; display: flex; align-items: center; gap: 8px;
              padding: 8px 12px; background: rgba(8, 31, 31, 0.97); border-bottom: 1px solid #2c6e6e;
              flex-wrap: wrap; }
   #toolbar button { background: #1f5f5f; color: #ffe9b0; border: 1px solid #3aa; border-radius: 6px;
@@ -23,11 +25,14 @@
   #toolbar button:disabled { opacity: .4; cursor: default; }
   #pageno { min-width: 78px; text-align: center; color: #ffe9b0; font-size: 14px; }
   .spacer { flex: 1; }
-  #status { color: #c9b885; font-size: 12px; padding: 0 8px; user-select: none; }
-  #container { display: none; flex-direction: column; align-items: center; gap: 18px; padding: 24px 10px; }
+  #logo { height: 30px; width: 30px; border-radius: 50%; object-fit: cover;
+          border: 1px solid #2c6e6e; box-shadow: 0 0 0 2px rgba(8, 31, 31, .8); }
+  #container { flex: 1 1 auto; overflow-y: auto; min-height: 0; display: none;
+               flex-direction: column; align-items: center; gap: 18px; padding: 16px 10px 24px; }
   .pagewrap { background: #fff; box-shadow: 0 6px 24px rgba(0, 0, 0, .55); }
   .pagewrap canvas { display: block; }
-  #loading { margin: 70px auto; text-align: center; color: #c9b885; font-size: 16px; }
+  #loading { flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+             color: #c9b885; font-size: 16px; }
   #errbox { display: none; margin: 60px auto; max-width: 640px; padding: 22px; text-align: center;
             background: #2a2230; border: 1px solid #b4514f; border-radius: 10px; color: #f6d6d1;
             font-size: 15px; line-height: 1.8; }
@@ -43,7 +48,7 @@
     <button id="zoomin" title="تكبير">+</button>
     <button id="fit" title="ملاءمة العرض">ملاءمة</button>
     <span class="spacer"></span>
-    <span id="status">عرض فقط — التحميل والطباعة معطّلان</span>
+    <img id="logo" src="icons/app_logo1.jpg" alt="شعار التطبيق" title="عرض فقط — التحميل والطباعة معطّلان">
   </div>
   <div id="loading">جارٍ فتح الملف...</div>
   <div id="container"></div>
@@ -63,11 +68,10 @@
 
     function computeFitScale() {
       if (!firstVp) return 1;
-      return Math.max(
-          0.25,
-          Math.min(
-              (window.innerWidth * 0.92) / firstVp.width,
-              (window.innerHeight * 0.85) / firstVp.height));
+      const c = $('container');
+      const cw = c.clientWidth || window.innerWidth;
+      const ch = c.clientHeight || window.innerHeight;
+      return Math.max(0.25, Math.min((cw * 0.92) / firstVp.width, (ch * 0.85) / firstVp.height));
     }
 
     function updatePager() {
@@ -182,17 +186,20 @@
     $('prev').onclick = () => { if (current > 1) { current--; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
     $('next').onclick = () => { if (current < pdfDoc.numPages) { current++; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
 
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    $('container').addEventListener('scroll', onScroll, { passive: true });
+    function onScroll() {
       if (!canvases.length || busy) return;
-      const vh = window.innerHeight;
+      const box = $('container');
+      const b = box.getBoundingClientRect();
       let best = current, bestScore = -1;
       for (let i = 0; i < canvases.length; i++) {
         const r = canvases[i].getBoundingClientRect();
-        const vis = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+        const vis = Math.max(0, Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top));
         if (vis > bestScore) { bestScore = vis; best = i + 1; }
       }
       if (best !== current) { current = best; updatePager(); }
-    }, { passive: true });
+    }
 
     open().catch(e => showErr('خطأ غير متوقع: ' + (e && e.message ? e.message : e)));
   </script>
