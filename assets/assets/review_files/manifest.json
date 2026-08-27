@@ -785,21 +785,21 @@
     {
       "pdf": "assets/review_files/مراسلات ومذكرات/10.pdf",
       "txt": "assets/review_files/مراسلات ومذكرات/10.txt",
-      "name": "شريف رقم 1.00.201 - بتنفيذ القانون رقم 05.00 بشأن النظام الأساسي للتعليم الأولي",
+      "name": "ظهير شريف رقم 1.00.201 - بتنفيذ القانون رقم 05.00 بشأن النظام الأساسي للتعليم الأولي",
       "quiz": "false",
       "topic": "مراسلات ومذكرات"
     },
     {
       "pdf": "assets/review_files/مراسلات ومذكرات/11.pdf",
       "txt": "assets/review_files/مراسلات ومذكرات/11.txt",
-      "name": "شريف رقم 1.14.100 - بتنفيذ القانون رقم 105.12 المتعلق بالمجلس الأعلى للتربية",
+      "name": "ظهير شريف رقم 1.14.100 - بتنفيذ القانون رقم 105.12 المتعلق بالمجلس الأعلى للتربية",
       "quiz": "false",
       "topic": "مراسلات ومذكرات"
     },
     {
       "pdf": "assets/review_files/مراسلات ومذكرات/12.pdf",
       "txt": "assets/review_files/مراسلات ومذكرات/12.txt",
-      "name": "شريف رقم 1.63.071 - حول إلزامية التعليم الأساسي كما وقع تغييره وتتميمه",
+      "name": "ظهير شريف رقم 1.63.071 - حول إلزامية التعليم الأساسي كما وقع تغييره وتتميمه",
       "quiz": true,
       "topic": "مراسلات ومذكرات"
     },
@@ -954,20 +954,20 @@
       "topic": "التنشيط"
     },
     {
-      "pdf": "assets/review_files/التنشيط التربوي/09.pdf",
-      "name": "Guide Mes rituels en lecture Niveau 10",
-      "quiz": true,
-      "topic": "التنشيط"
-    },
-    {
       "pdf": "assets/review_files/التنشيط التربوي/10.pdf",
-      "name": "Guide Mes rituels en lecture Niveau 8",
+      "name": "Guide Mes rituels en lecture Niveau",
       "quiz": true,
       "topic": "التنشيط"
     },
     {
       "pdf": "assets/review_files/التنشيط التربوي/11.pdf",
-      "name": "Guide Mes rituels en lecture Niveau 9",
+      "name": "Guide Mes rituels en lecture Niveau",
+      "quiz": true,
+      "topic": "التنشيط"
+    },
+    {
+      "pdf": "assets/review_files/التنشيط التربوي/09.pdf",
+      "name": "Guide Mes rituels en lecture Niveau",
       "quiz": true,
       "topic": "التنشيط"
     },
@@ -1046,6 +1046,12 @@
       "topic": "الحصص"
     },
     {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/34.pdf",
+      "name": "التنظيم البيداغوجي العام",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/30.pdf",
       "name": "مكونات اللغة العربية",
       "quiz": true,
@@ -1060,6 +1066,18 @@
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/02.pdf",
       "name": "برنامج مادة اللغة العربية",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/37.pdf",
+      "name": "بناء الكفاية اللغوية",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/42.pdf",
+      "name": "تنمية المهارات الشفهية",
       "quiz": true,
       "topic": "الحصص"
     },
@@ -1082,6 +1100,18 @@
       "topic": "الحصص"
     },
     {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/40.pdf",
+      "name": "تدبير حصص مكون الاستماع والتحدث الجزء الأول",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/41.pdf",
+      "name": "تدبير مكون الاستماع والتحدث الجزء الثاني",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/06.pdf",
       "name": "خلاصة",
       "quiz": true,
@@ -1090,6 +1120,12 @@
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/07.pdf",
       "name": "مكون التواصل الشفهي",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/33.pdf",
+      "name": "أهداف التواصل الشفهي",
       "quiz": true,
       "topic": "الحصص"
     },
@@ -1166,6 +1202,18 @@
       "topic": "الحصص"
     },
     {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/36.pdf",
+      "name": "الكلمات البصرية",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/35.pdf",
+      "name": "القراءة المشتركة",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/22.pdf",
       "name": "استراتيجيات القراءة ومراحل دراسة النصوص",
       "quiz": true,
@@ -1174,6 +1222,12 @@
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/23.pdf",
       "name": "تدبير حصص القراءة المستوى 2",
+      "quiz": true,
+      "topic": "الحصص"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/32.pdf",
+      "name": "أنواع النصوص",
       "quiz": true,
       "topic": "الحصص"
     },
@@ -1190,74 +1244,20 @@
       "topic": "الحصص"
     },
     {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/27.pdf",
-      "name": "تدبير حصص النص المسترسل",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/32.pdf",
-      "name": "أنواع النصوص 37",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/33.pdf",
-      "name": "أهداف التواصل الشفهي 20",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/34.pdf",
-      "name": "التنظيم البيداغوجي العام 7",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/35.pdf",
-      "name": "القراءة المشتركة 34",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/36.pdf",
-      "name": "الكلمات البصرية 33",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/37.pdf",
-      "name": "بناء الكفاية اللغوية 11",
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/39.pdf",
+      "name": "تدبير حصص النص الوظيفي",
       "quiz": true,
       "topic": "الحصص"
     },
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/38.pdf",
-      "name": "تدبير حصص النص الشعري 41",
+      "name": "تدبير حصص النص الشعري",
       "quiz": true,
       "topic": "الحصص"
     },
     {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/39.pdf",
-      "name": "تدبير حصص النص الوظيفي 40",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/40.pdf",
-      "name": "تدبير حصص مكون الاستماع والتحدث الجزء الأول 16",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/41.pdf",
-      "name": "تدبير مكون الاستماع والتحدث الجزء الثاني 17",
-      "quiz": true,
-      "topic": "الحصص"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/42.pdf",
-      "name": "تنمية المهارات الشفهية 12",
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/27.pdf",
+      "name": "تدبير حصص النص المسترسل",
       "quiz": true,
       "topic": "الحصص"
     },
@@ -1276,6 +1276,12 @@
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/47.pdf",
       "name": "تدريسية اللغة العربية بالسلك الابتدائي في ضوء النموذج اللغوي للمنهاج",
+      "quiz": true,
+      "topic": "ديداكتيك"
+    },
+    {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/44.pdf",
+      "name": "مدخل إلى ديداكتيك مكونات منهاج اللغة العربية في السلك الابتدائي",
       "quiz": true,
       "topic": "ديداكتيك"
     },
@@ -1364,6 +1370,12 @@
       "topic": "ديداكتيك"
     },
     {
+      "pdf": "assets/review_files/ديداكتيك اللغة العربية/43.pdf",
+      "name": "عام مكون القراءة",
+      "quiz": true,
+      "topic": "ديداكتيك"
+    },
+    {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/53.pdf",
       "name": "ديداكتيك التعبير الكتابي بالمدرسة الابتدائية",
       "quiz": true,
@@ -1378,18 +1390,6 @@
     {
       "pdf": "assets/review_files/ديداكتيك اللغة العربية/46.pdf",
       "name": "الرابع -جذاذات الدعم و المعالجة -خالص-نموذج للاستئناس",
-      "quiz": true,
-      "topic": "ديداكتيك"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/43.pdf",
-      "name": "20-عام مكون القراءة",
-      "quiz": true,
-      "topic": "ديداكتيك"
-    },
-    {
-      "pdf": "assets/review_files/ديداكتيك اللغة العربية/44.pdf",
-      "name": "4 مدخل إلى ديداكتيك مكونات منهاج اللغة العربية في السلك الابتدائي",
       "quiz": true,
       "topic": "ديداكتيك"
     },

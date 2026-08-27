@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عرض الملف</title>
+<!--
+  صفحة العرض الكبير للملفات: تُفتح من التطبيق (زر "افتح الملف على المتصفح")
+  على الحاسوب فقط. تعرض الملف بملء الشاشة عبر pdf.js بدون أي زر تحميل/طباعة،
+  وتمنع الطباعة (CSS) ولوحة المفاتيح/القائمة والنقر اليميني.
+  تستوفي الملفات عبر السيرفر المحلي /api (نفس القناة التي يستعملها التطبيق).
+-->
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: #111820; color: #f3e9d2;
+               font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+  #toolbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px;
+             padding: 8px 12px; background: rgba(8, 31, 31, 0.97); border-bottom: 1px solid #2c6e6e;
+             flex-wrap: wrap; }
+  #toolbar button { background: #1f5f5f; color: #ffe9b0; border: 1px solid #3aa; border-radius: 6px;
+                    padding: 6px 12px; cursor: pointer; font-size: 14px; font-family: inherit; }
+  #toolbar button:hover:not(:disabled) { background: #2b7a7a; }
+  #toolbar button:disabled { opacity: .4; cursor: default; }
+  #pageno { min-width: 78px; text-align: center; color: #ffe9b0; font-size: 14px; }
+  .spacer { flex: 1; }
+  #status { color: #c9b885; font-size: 12px; padding: 0 8px; user-select: none; }
+  #container { display: none; flex-direction: column; align-items: center; gap: 18px; padding: 24px 10px; }
+  .pagewrap { background: #fff; box-shadow: 0 6px 24px rgba(0, 0, 0, .55); }
+  .pagewrap canvas { display: block; }
+  #loading { margin: 70px auto; text-align: center; color: #c9b885; font-size: 16px; }
+  #errbox { display: none; margin: 60px auto; max-width: 640px; padding: 22px; text-align: center;
+            background: #2a2230; border: 1px solid #b4514f; border-radius: 10px; color: #f6d6d1;
+            font-size: 15px; line-height: 1.8; }
+  @media print { body { display: none !important; } }
+</style>
+</head>
+<body>
+  <div id="toolbar">
+    <button id="prev" title="الصفحة السابقة">‹ السابقة</button>
+    <button id="next" title="الصفحة التالية">التالية ›</button>
+    <span id="pageno">1 / 1</span>
+    <button id="zoomout" title="تصغير" disabled>−</button>
+    <button id="zoomin" title="تكبير">+</button>
+    <button id="fit" title="ملاءمة العرض">ملاءمة</button>
+    <span class="spacer"></span>
+    <span id="status">عرض فقط — التحميل والطباعة معطّلان</span>
+  </div>
+  <div id="loading">جارٍ فتح الملف...</div>
+  <div id="container"></div>
+  <div id="errbox"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs" type="module"></script>
+  <script type="module">
+    var { pdfjsLib } = globalThis;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
+    var cMapUrl = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/';
+
+    const $ = id => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+    const rawPath = params.get('path') || '';
+
+    let pdfDoc = null, canvases = [], scale = 1, fitScale = 1, current = 1, busy = false;
+
+    function updatePager() {
+      if (!pdfDoc) return;
+      $('pageno').textContent = current + ' / ' + pdfDoc.numPages;
+      $('prev').disabled = current <= 1;
+      $('next').disabled = current >= pdfDoc.numPages;
+    }
+
+    function showErr(msg) {
+      $('loading').style.display = 'none';
+      $('toolbar').style.visibility = 'hidden';
+      const b = $('errbox');
+      b.style.display = 'block';
+      b.textContent = msg;
+    }
+
+    // منع الطباعة والتحميل والاطلاع على المصدر عبر لوحة المفاتيح والقائمة اليمينية
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && ['p', 's', 'u'].includes((e.key || '').toLowerCase())) {
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('beforeprint', () => {
+      // لا يمكن إلغاء الطباعة بالكامل في كل المتصفحات، فمحتوى الصفحة مخفي @media print
+    });
+
+    async function open() {
+      if (!rawPath) return showErr('لم يُحدَّد مسار الملف.');
+      if (!pdfjsLib) return showErr('فشل تحميل مكتبة عرض PDF من الإنترنت.');
+
+      let resp;
+      try {
+        resp = await fetch(location.origin + '/api/review-files/file?path=' + encodeURIComponent(rawPath));
+      } catch (_) {
+        return showErr('تعذّر الاتصال بالسيرفر لتحميل الملف.');
+      }
+      if (!resp.ok) return showErr('تعذّر جلب الملف من السيرفر (رمز ' + resp.status + ').');
+
+      try {
+        const buf = await resp.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument({
+          data: new Uint8Array(buf),
+          cMapUrl, cMapPacked: true,
+        }).promise;
+      } catch (_) {
+        return showErr('تعذّر فكّ ترميز ملف PDF.');
+      }
+
+      $('loading').style.display = 'none';
+      $('container').style.display = 'flex';
+
+      const first = await pdfDoc.getPage(1);
+      fitScale = Math.max(0.25, (window.innerWidth * 0.9) / first.getViewport({ scale: 1 }).width);
+
+      for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const el = document.createElement('div');
+        el.className = 'pagewrap';
+        const cv = document.createElement('canvas');
+        el.appendChild(cv);
+        $('container').appendChild(el);
+        canvases[i - 1] = cv;
+      }
+      updatePager();
+      await setScale(fitScale, false);
+    }
+
+    async function renderPage(n, target) {
+      const page = await pdfDoc.getPage(n);
+      const base = page.getViewport({ scale: 1 });
+      const cv = canvases[n - 1];
+      cv.width = Math.floor(base.width * target);
+      cv.height = Math.floor(base.height * target);
+      await page.render({
+        canvasContext: cv.getContext('2d'),
+        viewport: page.getViewport({ scale: target }),
+      }).promise;
+    }
+
+    async function setScale(s, scrollToCurrent) {
+      scale = s;
+      const dpr = window.devicePixelRatio || 1;
+      // كل الصفحات تُعاد برسمها بالمقاس الجديد (الملفات متوسطة الحجم)
+      for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale * dpr);
+      if (scrollToCurrent) canvases[current - 1].scrollIntoView({ behavior: 'smooth' });
+      updatePager();
+    }
+
+    $('zoomin').onclick = async () => { await setScale(Math.min(5, scale * 1.25), true); };
+    $('zoomout').onclick = async () => { await setScale(Math.max(0.25, scale / 1.25), true); };
+    $('fit').onclick = async () => { await setScale(fitScale, true); };
+    $('prev').onclick = () => { if (current > 1) { current--; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
+    $('next').onclick = () => { if (current < pdfDoc.numPages) { current++; canvases[current - 1].scrollIntoView({ behavior: 'smooth' }); updatePager(); } };
+
+    window.addEventListener('scroll', () => {
+      if (!canvases.length || busy) return;
+      const vh = window.innerHeight;
+      let best = current, bestScore = -1;
+      for (let i = 0; i < canvases.length; i++) {
+        const r = canvases[i].getBoundingClientRect();
+        const vis = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+        if (vis > bestScore) { bestScore = vis; best = i + 1; }
+      }
+      if (best !== current) { current = best; updatePager(); }
+    }, { passive: true });
+
+    open().catch(e => showErr('خطأ غير متوقع: ' + (e && e.message ? e.message : e)));
+  </script>
+</body>
+</html>
