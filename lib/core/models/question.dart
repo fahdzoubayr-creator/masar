@@ -1,20 +1,16 @@
 class Question {
+  final String id;
   final String subject;
-  final String? level; // null لمواد بدون مستويات (علوم التربية، التشريع)
+  final String? level;
   final String text;
   final List<String> options;
   final int correctIndex;
   final String explanation;
-
-  /// إحالة مصدر الجواب في المرجع (مثل: «دليل الأستاذ(ة) — ص 12»).
-  /// يُعرض في الكويز فقط عند إجابة المستخدم خطأً.
   final String? source;
-
-  /// وضعية مشكلة مهنية أو سياق تشريعي/ديداكتيكي يسبق السؤال.
-  /// عند وجودها، تُعرض كفقرة منفصلة أعلى السؤال في شاشة الكويز.
   final String? situation;
 
   const Question({
+    required this.id,
     required this.subject,
     this.level,
     required this.text,
@@ -25,21 +21,30 @@ class Question {
     this.situation,
   });
 
-  factory Question.fromJson(Map<String, dynamic> j) => Question(
-        subject: j['subject'] as String? ?? '',
-        level: j['level'] as String?,
-        text: j['text'] as String? ?? '',
-        options: (j['options'] as List<dynamic>?)
-                ?.map((e) => e.toString())
-                .toList() ??
-            [],
-        correctIndex: j['correctIndex'] as int? ?? 0,
-        explanation: j['explanation'] as String? ?? '',
-        source: j['source'] as String?,
-        situation: j['situation'] as String?,
-      );
+  factory Question.fromJson(Map<String, dynamic> j) {
+    // توليد معرف فريد من نص السؤال + الموضوع
+    final text = j['text'] as String? ?? '';
+    final subject = j['subject'] as String? ?? '';
+    final id = j['id'] as String? ?? '${subject}_$text'.hashCode.toString();
+
+    return Question(
+      id: id,
+      subject: subject,
+      level: j['level'] as String?,
+      text: text,
+      options: (j['options'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      correctIndex: j['correctIndex'] as int? ?? 0,
+      explanation: j['explanation'] as String? ?? '',
+      source: j['source'] as String?,
+      situation: j['situation'] as String?,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'subject': subject,
         if (level != null) 'level': level,
         'text': text,

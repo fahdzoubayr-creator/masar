@@ -36,9 +36,10 @@ MODEL_PREF = [
     "llama-3.3-70b",
 ]
 CHUNK_WORDS = 300
-PER_CALL = 9          # أسئلة مطلوبة في كل استدعاء
-MAX_CALLS = 14        # سقف استدعاءات لملف واحد
+PER_CALL = 12         # أسئلة مطلوبة في كل استدعاء
+MAX_CALLS = 18        # سقف استدعاءات لملف واحد
 PARALLEL = 3          # استدعاءات متزامنة (تخفيف الضغط على حصة Groq)
+PLAN_MARGIN = 6       # استدعاءات إضافية احتياطية لتعويض المكررات والمرفوضات
 DEAD_MODELS = set()   # نماذج ثبت عدم توفرها (404) تُتخطى فوراً
 FORBIDDEN = [
     PHRASE,
@@ -213,7 +214,7 @@ def ask(client, model: str, prompt: str):
             {"role": "user", "content": prompt},
         ],
         temperature=0.65,
-        max_tokens=3500,
+        max_tokens=4096,
     )
     return resp.choices[0].message.content or ""
 
@@ -368,7 +369,7 @@ def main():
 
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
-    plan = min(MAX_CALLS, -(-args.count // PER_CALL) + 3)
+    plan = min(MAX_CALLS, -(-args.count // PER_CALL) + PLAN_MARGIN)
     jobs = [
         (k, chunks[k % len(chunks)], PER_CALL) for k in range(plan)
     ]

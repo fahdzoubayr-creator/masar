@@ -92,6 +92,7 @@ class QuestionGenerator {
     }
     if (pinned != null) opts.add(pinned);
     return Question(
+      id: 'gen_${q.text.hashCode}',
       subject: q.subject,
       level: q.level,
       text: q.text,
@@ -169,7 +170,7 @@ class QuestionGenerator {
       'ديداكتيك النشاط العلمي': 'ديداكتيك النشاط العلمي',
       'التشريع المدرسي': 'التشريع المدرسي والتنظيمي',
       'التنشيط التربوي': 'التنشيط التربوي',
-      'مؤسسات الريادة': 'مؤسسة الريادة — مقاربة TaRL',
+      'مؤسسات الريادة': 'مؤسسات الريادة',
       'مشروع المؤسسة المندمج': 'مشروع المؤسسة المندمج',
     };
     return subjectByFolder[folder];
@@ -276,6 +277,7 @@ class QuestionGenerator {
     final opts = [entry.definition, ...distractors.take(3)]..shuffle(_random);
     final options = opts.map(_cleanOption).toList();
     return Question(
+      id: 'def_${entry.term.hashCode}',
       subject: folder,
       text: french
           ? 'D\'après le texte, que signifie « ${_cleanOption(entry.term)} » ?'
@@ -292,6 +294,7 @@ class QuestionGenerator {
     final opts = [entry.term, ...distractors.take(3)]..shuffle(_random);
     final options = opts.map(_cleanOption).toList();
     return Question(
+      id: 'term_${entry.term.hashCode}',
       subject: folder,
       text: french
           ? 'Selon le texte, quel terme désigne : « ${_cleanOption(entry.definition)} » ?'
@@ -308,6 +311,7 @@ class QuestionGenerator {
     final opts = [claim, ...distractors.take(3)]..shuffle(_random);
     final options = opts.map(_cleanOption).toList();
     return Question(
+      id: 'comp_${claim.hashCode}',
       subject: folder,
       text: french
           ? 'D\'après le texte, laquelle de ces affirmations est correcte ?'

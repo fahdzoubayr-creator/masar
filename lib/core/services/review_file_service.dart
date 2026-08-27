@@ -248,15 +248,7 @@ class ReviewFileService {
         // بلا سيرفر: تبقى القائمة فارغة وتظهر حالة عدم توفر ملفات.
       }
     }
-    pdfs.sort((a, b) {
-      final na = int.tryParse(
-              RegExp(r'/(\d+)\.pdf$').firstMatch(a.assetPath)?.group(1) ?? '') ??
-          9999;
-      final nb = int.tryParse(
-              RegExp(r'/(\d+)\.pdf$').firstMatch(b.assetPath)?.group(1) ?? '') ??
-          9999;
-      return na.compareTo(nb);
-    });
+    // الترتيب يتبع ترتيب manifest.json مباشرة (بعد إعادة ترتيب الأسماء).
     return pdfs;
   }
 }

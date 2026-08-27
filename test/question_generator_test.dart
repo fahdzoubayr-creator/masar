@@ -138,7 +138,7 @@ Les exercices structuraux aident à la mémorisation des structures.
   });
 
   test('بنك RAG: أسئلة مؤسسات الريادة، 4 خيارات', () {
-    final questions = QuestionBankLoader.questionsFor('مؤسسات الريادة — مقاربة TaRL');
+    final questions = QuestionBankLoader.questionsFor('مؤسسات الريادة');
     expect(questions, isNotNull, reason: 'بنك مؤسسات الريادة غير موجود');
     expect(questions!.length, greaterThanOrEqualTo(10));
     for (final q in questions) {

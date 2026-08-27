@@ -23,11 +23,14 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
   bool _loading = true;
   bool _primaryContent = true;
   String _trackTitle = '';
+  int _topicsWithContent = 0;
+  int _totalTopics = 0;
 
   @override
   void initState() {
     super.initState();
     _loadTrack();
+    _loadProgress();
   }
 
   Future<void> _loadTrack() async {
@@ -42,6 +45,37 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
               : track;
       _primaryContent = true;
       _loading = false;
+    });
+  }
+
+  Future<void> _loadProgress() async {
+    int total = 0;
+    int withContent = 0;
+    for (final space in reviewSpaces) {
+      for (final folder in space.folders) {
+        for (final topic in folder.topics) {
+          total++;
+          // Check if folder has PDF files
+          final pdfs = await ReviewFileService.loadFolderPdfs(folder.title,
+              topic: topic.title);
+          if (pdfs.isNotEmpty) {
+            withContent++;
+            continue;
+          }
+          // Check if folder has quiz questions
+          final bank = QuestionGenerator.bankCountFor(folder.title,
+              topic: topic.title);
+          if (bank > 0) {
+            withContent++;
+            continue;
+          }
+        }
+      }
+    }
+    if (!mounted) return;
+    setState(() {
+      _totalTopics = total;
+      _topicsWithContent = withContent;
     });
   }
 
@@ -76,6 +110,10 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
                 if (!_primaryContent) ...[
                   const SizedBox(height: 12),
                   _buildComingSoonBanner(),
+                ],
+                if (_totalTopics > 0) ...[
+                  const SizedBox(height: 12),
+                  _buildProgressIndicator(),
                 ],
                 const SizedBox(height: 20),
                 Expanded(
@@ -120,6 +158,49 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
             child: Text(
               'المحتوى في طور الإعداد وسيكون متوفراً قريباً',
               style: TextStyle(fontSize: 12, color: AppColors.cream),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressIndicator() {
+    final percent = _totalTopics > 0
+        ? (_topicsWithContent / _totalTopics * 100).round()
+        : 0;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.pie_chart_outline_rounded,
+                  color: AppColors.goldSoft, size: 16),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'المحتوى المتاح: $_topicsWithContent من $_totalTopics محوراً ($percent%)',
+                  style: const TextStyle(fontSize: 11, color: AppColors.cream),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: _totalTopics > 0 ? _topicsWithContent / _totalTopics : 0,
+              backgroundColor: AppColors.gold.withValues(alpha: 0.15),
+              valueColor:
+                  const AlwaysStoppedAnimation<Color>(AppColors.goldSoft),
+              minHeight: 6,
             ),
           ),
         ],

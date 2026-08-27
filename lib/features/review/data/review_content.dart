@@ -93,6 +93,12 @@ const List<ReviewSpace> reviewSpaces = [
       ReviewFolder('مشروع المؤسسة المندمج', Icons.hub_outlined, topics: [
         ReviewTopic('مشروع المؤسسة المندمج'),
       ]),
+      ReviewFolder('التعليم الثانوي بسلكيه', Icons.school_outlined, topics: [
+        ReviewTopic('التعليم الثانوي بسلكيه'),
+      ]),
+      ReviewFolder('بنك الاسئلة', Icons.quiz_outlined, topics: [
+        ReviewTopic('بنك الاسئلة'),
+      ]),
     ],
   ),
   ReviewSpace(

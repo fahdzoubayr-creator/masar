@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/exam_question_service.dart';
+import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/features/quiz/presentation/screens/quiz_screen.dart';
@@ -11,9 +12,11 @@ import 'package:masar_app/features/quiz/presentation/screens/quiz_screen.dart';
 /// الاختبارات النهائية العامة — نماذج اختبارات شاملة بمؤقّت (70 سؤالاً).
 ///
 /// كل نموذج:
-///  - يتكوّن من 70 سؤالاً بالضبط (من بنك الأسئلة الشائعة + البنك الثابت).
+///  - الاختبار الشامل: 70 سؤالاً موزعة بالتساوي على كل المواد.
+///  - الاختبار حسب المادة: 70 سؤالاً من المادة نفسها فقط.
 ///  - يُخاض بمؤقّت (60 دقيقة) مع عدّاد تنازلي وإرسال تلقائي عند انتهاء الوقت.
 ///  - من يحصل على أقل من 50% يُمنع من إعادة الاختبار لمدة 3 ساعات.
+///  - توليد عشوائي في كل محاولة.
 class FinalExamsScreen extends StatefulWidget {
   const FinalExamsScreen({super.key});
 
@@ -22,65 +25,23 @@ class FinalExamsScreen extends StatefulWidget {
 }
 
 class _FinalExamsScreenState extends State<FinalExamsScreen> {
-  static const List<_ExamOption> _options = [
-    _ExamOption(
-      quizId: 'الاختبار النهائي الشامل',
-      title: 'الاختبار النهائي الشامل',
-      subjectFilter: 'الاختبار النهائي الشامل',
-      description: '70 سؤالاً من جميع المواد',
-      icon: Icons.auto_awesome_rounded,
-      comprehensive: true,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: علوم التربية والبيداغوجيا',
-      title: 'علوم التربية والبيداغوجيا',
-      subjectFilter: 'علوم التربية والبيداغوجيا',
-      description: '70 سؤالاً',
-      icon: Icons.school_outlined,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: اللغة العربية',
-      title: 'اللغة العربية',
-      subjectFilter: 'اللغة العربية',
-      description: '70 سؤالاً',
-      icon: Icons.menu_book_outlined,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: اللغة الفرنسية',
-      title: 'اللغة الفرنسية',
-      subjectFilter: 'الفرنسية',
-      description: '70 سؤالاً',
-      icon: Icons.translate_outlined,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: الرياضيات',
-      title: 'الرياضيات',
-      subjectFilter: 'الرياضيات',
-      description: '70 سؤالاً',
-      icon: Icons.calculate_outlined,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: التشريع المدرسي والإداري',
-      title: 'التشريع المدرسي والإداري',
-      subjectFilter: 'التشريع المدرسي والإداري',
-      description: '70 سؤالاً',
-      icon: Icons.account_balance_outlined,
-    ),
-    _ExamOption(
-      quizId: 'الاختبار النهائي: النشاط العلمي',
-      title: 'النشاط العلمي',
-      subjectFilter: 'النشاط العلمي',
-      description: '70 سؤالاً',
-      icon: Icons.biotech_outlined,
-    ),
-  ];
+  static const _comprehensiveOption = _ExamOption(
+    quizId: 'الاختبار النهائي الشامل',
+    title: 'الاختبار النهائي الشامل',
+    subjectFilter: null,
+    description: '70 سؤالاً من جميع المواد بالتساوي',
+    icon: Icons.auto_awesome_rounded,
+    comprehensive: true,
+  );
 
+  List<_ExamOption> _subjectOptions = [];
   Map<String, TopicAttempt>? _attempts;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _buildOptions();
     _load();
   }
 
@@ -89,6 +50,41 @@ class _FinalExamsScreenState extends State<FinalExamsScreen> {
     _timer?.cancel();
     super.dispose();
   }
+
+  void _buildOptions() {
+    final subjects = QuestionBankLoader.availableSubjects;
+    _subjectOptions = subjects.map((s) {
+      final count = QuestionBankLoader.questionsFor(s)?.length ?? 0;
+      return _ExamOption(
+        quizId: 'الاختبار النهائي: $s',
+        title: s,
+        subjectFilter: s,
+        description: '$count سؤالاً متاحاً',
+        icon: _iconForSubject(s),
+      );
+    }).toList();
+  }
+
+  static IconData _iconForSubject(String subject) {
+    if (subject.contains('الفرنسية')) return Icons.translate_outlined;
+    if (subject.contains('العربية')) return Icons.menu_book_outlined;
+    if (subject.contains('الرياضيات')) return Icons.calculate_outlined;
+    if (subject.contains('النشاط العلمي')) return Icons.biotech_outlined;
+    if (subject.contains('علوم التربية')) return Icons.psychology_outlined;
+    if (subject.contains('التشريع') || subject.contains('البيداغوجيا'))
+      return Icons.account_balance_outlined;
+    if (subject.contains('مقارنة')) return Icons.compare_arrows_outlined;
+    if (subject.contains('مؤسسة') || subject.contains('الريادة'))
+      return Icons.school_outlined;
+    if (subject.contains('TaRL') || subject.contains('طارل'))
+      return Icons.track_changes_outlined;
+    if (subject.contains('حكامة') || subject.contains('مدر'))
+      return Icons.account_tree_outlined;
+    if (subject.contains('تدريس')) return Icons.biotech_outlined;
+    return Icons.article_outlined;
+  }
+
+  List<_ExamOption> get _allOptions => [_comprehensiveOption, ..._subjectOptions];
 
   Future<void> _load() async {
     final attempts = await QuizAttemptService.loadAll();
@@ -99,8 +95,8 @@ class _FinalExamsScreenState extends State<FinalExamsScreen> {
 
   void _syncTimer() {
     _timer?.cancel();
-    final anyLocked = _options.any((o) =>
-        QuizAttemptService.isLocked(_attempts?[o.quizId]));
+    final anyLocked =
+        _allOptions.any((o) => QuizAttemptService.isLocked(_attempts?[o.quizId]));
     if (!anyLocked) return;
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted) return;
@@ -115,7 +111,7 @@ class _FinalExamsScreenState extends State<FinalExamsScreen> {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
-          subjectFilter: option.subjectFilter,
+          subjectFilter: option.title,
           questionLoader: option.comprehensive
               ? ExamQuestionService.buildComprehensiveExam
               : () => ExamQuestionService.buildExam(option.subjectFilter!),
@@ -148,12 +144,12 @@ class _FinalExamsScreenState extends State<FinalExamsScreen> {
               )
             : ListView.separated(
                 padding: const EdgeInsets.fromLTRB(22, 16, 22, 24),
-                itemCount: _options.length,
+                itemCount: _allOptions.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (context, i) => _ExamCard(
-                  option: _options[i],
-                  attempt: _attempts![_options[i].quizId],
-                  onTap: () => _openExam(context, _options[i]),
+                  option: _allOptions[i],
+                  attempt: _attempts![_allOptions[i].quizId],
+                  onTap: () => _openExam(context, _allOptions[i]),
                 ),
               ),
       ),
@@ -248,12 +244,12 @@ class _ExamCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          const Row(
+          Row(
             children: [
-              Icon(Icons.timer_outlined, size: 14, color: AppColors.muted),
-              SizedBox(width: 5),
-              Text('المدة: 60 دقيقة · 70 سؤالاً',
-                  style: TextStyle(fontSize: 11, color: AppColors.muted)),
+              const Icon(Icons.timer_outlined, size: 14, color: AppColors.muted),
+              const SizedBox(width: 5),
+              Text('المدة: 60 دقيقة · حتى 70 سؤالاً',
+                  style: const TextStyle(fontSize: 11, color: AppColors.muted)),
             ],
           ),
           const SizedBox(height: 10),
