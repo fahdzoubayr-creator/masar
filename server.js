@@ -844,6 +844,152 @@ const handler = async (req, res) => {
     return done404();
   }
 
+  // محوّل صفحات-PNG للمراجع (MuPDF): يحرّر العارض المتصفح من تشكيل الحروف
+  // العربية بصيغة pdf.js التي تفسد الملفات غير المضمّنة الخط.
+  if (req.method === 'GET' && urlPath.startsWith('/api/review-files/meta')) {
+    let parsed;
+    try {
+      parsed = new URL(req.url, 'http://localhost');
+    } catch {
+      return json(res, 400, { error: 'طلب غير صالح' });
+    }
+    let target = '';
+    try {
+      target = decodeURIComponent(parsed.searchParams.get('path') || '');
+    } catch {}
+    if (!/^assets\/(?:assets\/)?review_files\/.+\.pdf$/i.test(target)) {
+      return json(res, 400, { error: 'مسار غير مدعوم' });
+    }
+    const done404 = () => json(res, 404, { error: 'الملف غير موجود' });
+    const CACHES = {
+      pdf: path.join(__dirname, 'assets', 'review_files_cache'),
+      png: path.join(__dirname, 'assets', 'review_pages_cache'),
+    };
+
+    // تحديد الملف المصدر بنفس منطق /api/review-files/file
+    let cacheKey = '';
+    let localSource = '';
+    {
+      let remoteUrl = releaseUrlFor(target);
+      if (remoteUrl) {
+        cacheKey = path.basename(remoteUrl);
+      } else {
+        const flat = target.replace(/^\/+/, '').match(
+          /assets(?:\/assets)?\/review_files\/([a-z0-9_]+)__(\d+)\.pdf$/i
+        );
+        if (flat) {
+          cacheKey = flat[1] + '__' + flat[2] + '.pdf';
+        } else {
+          const bare = path.basename(target);
+          if (bare) {
+            const safeBare = bare.replace(/[^a-zA-Z0-9._-]/g, '_');
+            if (/^([a-z0-9_]+)__\d+\.pdf$/i.test(safeBare)) cacheKey = safeBare;
+          }
+        }
+      }
+      localSource = path.join(__dirname, target);
+    }
+
+    const base = (cacheKey || path.basename(localSource)).replace(/\.pdf$/i, '');
+    const pngDir = path.join(CACHES.png, base);
+    const metaFile = path.join(pngDir, 'meta.json');
+
+    const genAll = (cb) => {
+      const { spawn } = require('child_process');
+      const proc = spawn('python', [
+        path.join(__dirname, 'tools', 'review_to_png.py'),
+        '--pdf', cacheKey ? path.join(CACHES.pdf, cacheKey) : localSource,
+        '--out', pngDir,
+        '--zoom', '2.0',
+      ], { windowsHide: true });
+      const killer = setTimeout(() => proc.kill(), 120000);
+      proc.on('close', (code) => {
+        clearTimeout(killer);
+        cb(code === 0);
+      });
+      proc.on('error', () => { clearTimeout(killer); cb(false); });
+    };
+
+    const respond = () => {
+      try {
+        const meta = JSON.parse(fs.readFileSync(metaFile, 'utf8'));
+        fs.readdir(pngDir, (err, files) => {
+          const ready = files?.filter((f) => /^p\d+\.png$/.test(f)).length >= meta.pages;
+          return json(res, 200, { mode: 'png', zoom: meta.zoom, pages: meta.pages, ready: !!ready, natural: meta.natural });
+        });
+      } catch (_) {
+        return json(res, 200, { mode: 'pdf' });
+      }
+    };
+
+    // مصدر موجود؟ إن لم يكن صفحات PNG جاهزة نولّدها فوراً مرة واحدة.
+    const srcExists = (() => {
+      try {
+        return fs.statSync(cacheKey ? path.join(CACHES.pdf, cacheKey) : localSource).isFile();
+      } catch {
+        return false;
+      }
+    })();
+    if (!srcExists) return done404();
+    if (!fs.existsSync(metaFile)) {
+      return genAll((ok) => {
+        if (!ok) return json(res, 200, { mode: 'pdf' });
+        respond();
+      });
+    }
+    return respond();
+  }
+
+  // خدمة صورة صفحة معينة للمرجع.
+  if (req.method === 'GET' && urlPath.startsWith('/api/review-files/page')) {
+    let parsed;
+    try {
+      parsed = new URL(req.url, 'http://localhost');
+    } catch {
+      return json(res, 400, { error: 'طلب غير صالح' });
+    }
+    let target = '';
+    let p = 1;
+    try {
+      target = decodeURIComponent(parsed.searchParams.get('path') || '');
+      p = parseInt(parsed.searchParams.get('p') || '1', 10);
+    } catch {}
+    if (!/^assets\/(?:assets\/)?review_files\/.+\.pdf$/i.test(target) || !(p >= 1 && p <= 9999)) {
+      return json(res, 400, { error: 'معاملات غير صالحة' });
+    }
+    const CACHE_PDF = path.join(__dirname, 'assets', 'review_files_cache');
+    let cacheKey = '';
+    {
+      let remoteUrl = releaseUrlFor(target);
+      if (remoteUrl) cacheKey = path.basename(remoteUrl);
+      else {
+        const flat = target.replace(/^\/+/, '').match(/assets(?:\/assets)?\/review_files\/([a-z0-9_]+)__(\d+)\.pdf$/i);
+        if (flat) cacheKey = flat[1] + '__' + flat[2] + '.pdf';
+        else {
+          const safeBare = path.basename(target).replace(/[^a-zA-Z0-9._-]/g, '_');
+          if (/^([a-z0-9_]+)__\d+\.pdf$/i.test(safeBare)) cacheKey = safeBare;
+        }
+      }
+    }
+    const localSource = path.join(__dirname, target);
+    const base = (cacheKey || path.basename(localSource)).replace(/\.pdf$/i, '');
+    const pngFile = path.join(__dirname, 'assets', 'review_pages_cache', base, `p${String(p).padStart(2, '0')}.png`);
+    try {
+      const st = fs.statSync(pngFile);
+      if (st.isFile()) {
+        const ext = path.extname(pngFile);
+        res.writeHead(200, {
+          'Content-Type': ext === '.png' ? 'image/png' : 'image/jpeg',
+          'Content-Length': st.size,
+          'Cache-Control': 'public, max-age=86400',
+          'Access-Control-Allow-Origin': '*',
+        });
+        return fs.createReadStream(pngFile).pipe(res);
+      }
+    } catch (_) {}
+    return json(res, 410, { error: 'PAGE_NOT_READY' });
+  }
+
   // قائمة ملفات المراجعة من القرص مباشرة — بديل عندما يكون المانيفست قديماً أو غير متاح
   if (req.method === 'GET' && urlPath.startsWith('/api/review-files/list')) {
     let parsed;
