@@ -11,6 +11,7 @@ import 'tap_sound_stub.dart'
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
 import 'package:masar_app/features/home/presentation/screens/home_dashboard_screen.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_screen.dart';
+import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
 import 'package:masar_app/features/splash/presentation/splash_web_url_cleaner_stub.dart'
     if (dart.library.js_interop) 'package:masar_app/features/splash/presentation/splash_web_url_cleaner.dart';
 
@@ -107,10 +108,18 @@ class _SplashScreenState extends State<SplashScreen> {
       );
       return;
     }
+    // الرجوع من شاشة عرض الملف (viewer.html) إلى المحاور الفرعية مباشرة.
+    final review = (query['review'] ?? '').trim();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const HomeDashboardScreen()),
       (route) => false,
     );
+    if (review.isNotEmpty) {
+      _clearDeepLinkQuery();
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ReviewSpaceScreen()),
+      );
+    }
   }
 
   /// يزيل معاملات الرابط العميق (`?room=&code=`) من عنوان المتصفح عبر

@@ -3,10 +3,8 @@
 توليد كويز QCM (70 سؤالاً) من ملف PDF واحد عبر Groq، بأسلوب امتحانات
 الكفاءة المهنية لأساتذة التعليم الابتدائي بالمغرب.
 
-قاعدة الخيار الأخير (تُطبَّق حتمياً هنا لا في النموذج):
-  - آخر خيار دائماً: «كل الاقتراحات السابقة خاطئة».
-  - هو الإجابة الصحيحة في 15 سؤالاً بالضبط، وخاطئ في البقية.
-    (النموذج يُخرج لكل سؤال عبارة صحيحة + ثلاث عبارات خاطئة، ونحن نركّب.)
+النمط: لكل سؤال 4 خيارات حقيقية (عبارة صحيحة + 3 خاطئة) تُخلط آلياً،
+بدون أي خيار من نوع «كل الاقتراحات السابقة خاطئة».
 
 الاستخدام:
   python tools/quiz_from_pdf.py --pdf <مسار الملف> --subject <المادة> --out <json>
@@ -71,7 +69,7 @@ PROMPT = """اقرأ مقتطف الدرس التالي وولّد {n} أسئل�
 
 شروط صارمة:
  - كل المعلومات مستمدة من المقتطف فقط، ولا معرفة خارجية.
- - لا تستخدم إطلاقاً عبارات مثل «{phrase}» أو «كل ما سبق» — تُضاف آلياً لاحقاً.
+ - لا تستخدم إطلاقاً عبارات مثل «كل ما سبق خاطئ»، «كل الاقتراحات السابقة خاطئة»، «جميع الاختيارات خاطئة» أو ما يشابهها — لن يُضاف أي خيار آلياً.
  - العبارات الأربع مختلفة نصياً ومفهوماً.
  - أعد مصفوفة JSON فقط دون أي شرح قبله أو بعده.
 
@@ -189,17 +187,35 @@ def valid_item(it) -> bool:
     return True
 
 
+AR_CLITICS = "و ف ب ك ل س ه"
+AR_PREFIXES = ("ال", "الم", "الل", "لأ", "لإ", "أل", "وأل")
+
+
+def clean_ar(t: str) -> str:
+    """تنظيف العربية: تشكيل، كلمات مقطّعة (ك كلمة -> ككلمة)، فراغات، Bidi."""
+    s = re.sub(r"[\u064B-\u0652\u0670\u0640\u200c\u200f\u202a-\u202e]+", "", t)
+    s = re.sub(r"[ \t]+", " ", s).strip()
+    s = WORDS_RE.sub(lambda m: m.group(1) + m.group(2), s)
+    s = re.sub(r"\s+([?!؟.,:،؛])", r"\1", s)
+    return s.replace(" ؟", "؟").strip()
+
+
+WORDS_RE = re.compile(
+    r"(?:\s|^)((?:[" + AR_CLITICS + r"]|ال|الم|لأ|لإ)\s+)([^\s])"
+)
+
+
 def norm_item(it) -> dict:
     sit = it.get("situation") or ""
     if not isinstance(sit, str):
         sit = ""
     return {
-        "q": it["q"].strip(),
-        "situation": sit.strip(),
-        "t": it["t"].strip(),
-        "f1": it["f1"].strip(),
-        "f2": it["f2"].strip(),
-        "f3": it["f3"].strip(),
+        "q": clean_ar(it["q"]),
+        "situation": clean_ar(sit),
+        "t": clean_ar(it["t"]),
+        "f1": clean_ar(it["f1"]),
+        "f2": clean_ar(it["f2"]),
+        "f3": clean_ar(it["f3"]),
     }
 
 
@@ -257,19 +273,13 @@ def gen_one(client, models, excerpt, n, worker_idx=0):
     return [norm_item(it) for it in arr if valid_item(it)]
 
 
-def compose(items, subject, rng, special_n):
-    """تركيب حتمي: خلط + قاعدة العبارة الأخيرة الصحيحة لـ special_n سؤالاً."""
+def compose(items, subject, rng):
+    """تركيب: 4 خيارات حقيقية مخلوطة، بدون عبارة «كل ما سبق»."""
     questions = []
-    for idx, it in enumerate(items):
-        if idx in special_n:
-            opts = [it["f1"], it["f2"], it["f3"]]
-            rng.shuffle(opts)
-            correct_index = len(opts)
-        else:
-            opts = [it["t"], it["f1"], it["f2"]]
-            rng.shuffle(opts)
-            correct_index = opts.index(it["t"])
-        opts.append(PHRASE)
+    for it in items:
+        opts = [it["t"], it["f1"], it["f2"], it["f3"]]
+        rng.shuffle(opts)
+        correct_index = opts.index(it["t"])
         q = {
             "subject": subject,
             "text": it["q"],
@@ -348,16 +358,14 @@ def main():
         if len(fb) < args.first_count:
             print("FIRST_FAILED got=%d" % len(fb))
             return 4
-        specials_first = max(1, round(
-            args.phrase_correct * len(fb) / max(1, args.count)))
-        sp_idx = set(rng.sample(range(len(fb)), min(specials_first, len(fb))))
-        first_questions = compose(fb, args.subject, rng, sp_idx)
+        sp_idx = set()
+        first_questions = compose(fb, args.subject, rng)
         write_json(Path(args.out_first), {
             "generatedAt": datetime.now().isoformat(timespec="seconds"),
             "pdf": pdf_path.name if pdf_path else args.url.rsplit("/", 1)[-1],
             "seed": args.seed,
             "count": len(first_questions),
-            "phraseCorrectCount": len(sp_idx),
+            "phraseCorrectCount": 0,
             "questions": first_questions,
         })
         first_count_done = len(fb)
@@ -413,14 +421,11 @@ def main():
             print(f"NOT_ENOUGH_QUESTIONS got={len(items)} need={args.count}")
             return 2
 
-    # ===== التركيب الحتمي: قاعدة الخيار الأخير =====
+    # ===== التركيب: 4 خيارات حقيقية مخلوطة =====
     total_n = min(args.count, len(items))
     rng.shuffle(items)
     items = items[:total_n]
-    n_special = (args.phrase_correct if total_n >= args.count else
-                 max(1, round(args.phrase_correct * total_n / args.count)))
-    special_idx = set(rng.sample(range(len(items)), min(n_special, len(items))))
-    questions = compose(items, args.subject, rng, special_idx)
+    questions = compose(items, args.subject, rng)
 
     if progressive and args.out_rest:
         rest_q = questions[first_count_done:]
@@ -441,7 +446,7 @@ def main():
         "questions": questions,
     }
     write_json(Path(args.out), out)
-    print(f"GEN_OK count={len(questions)} phraseCorrect={len(special_idx)}")
+    print(f"GEN_OK count={len(questions)}")
     return 0
 
 

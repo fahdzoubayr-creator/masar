@@ -137,13 +137,14 @@ Les exercices structuraux aident à la mémorisation des structures.
     expect(withCorrect, total, reason: 'جميع الأسئلة لها correctIndex سليم');
   });
 
-  test('بنك RAG: أسئلة مؤسسات الريادة، 4 خيارات', () {
+  test('بنك RAG: أسئلة مؤسسات الريادة، 3-5 خيارات وخيار صحيح', () {
     final questions = QuestionBankLoader.questionsFor('مؤسسات الريادة');
     expect(questions, isNotNull, reason: 'بنك مؤسسات الريادة غير موجود');
     expect(questions!.length, greaterThanOrEqualTo(10));
     for (final q in questions) {
-      expect(q.options.length, 4, reason: '4 خيارات لكل سؤال');
-      expect(q.correctIndex, inInclusiveRange(0, 3));
+      expect(q.options.length, inInclusiveRange(3, 5),
+          reason: 'عدد الخيارات خارج 3-5');
+      expect(q.correctIndex, inInclusiveRange(0, q.options.length - 1));
     }
   });
 

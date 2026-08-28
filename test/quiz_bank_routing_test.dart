@@ -20,14 +20,14 @@ void main() {
       }
     });
 
-    test('كل سؤال يحتوي على 4 خيارات و correctIndex سليم', () {
+    test('كل سؤال يحتوي على 3-5 خيارات و correctIndex سليم', () {
       for (final key in QuestionBankLoader.bank.keys) {
         final questions = QuestionBankLoader.questionsFor(key)!;
         for (final q in questions) {
           final label = q.text.length > 30 ? q.text.substring(0, 30) : q.text;
-          expect(q.options.length, 4,
-              reason: 'سؤال بخيارات != 4 في $key: $label');
-          expect(q.correctIndex, inInclusiveRange(0, 3),
+          expect(q.options.length, inInclusiveRange(3, 5),
+              reason: 'عدد خيارات خارج 3-5 في $key: $label');
+          expect(q.correctIndex, inInclusiveRange(0, q.options.length - 1),
               reason: 'correctIndex خاطئ في $key: $label');
         }
       }

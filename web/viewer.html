@@ -41,10 +41,11 @@
 </head>
 <body>
   <div id="toolbar">
+    <button id="back" title="الرجوع إلى المحاور الفرعية">المحاور الفرعية ‹</button>
     <button id="prev" title="الصفحة السابقة">‹ السابقة</button>
     <button id="next" title="الصفحة التالية">التالية ›</button>
     <span id="pageno">1 / 1</span>
-    <button id="zoomout" title="تصغير" disabled>−</button>
+    <button id="zoomout" title="تصغير">−</button>
     <button id="zoomin" title="تكبير">+</button>
     <button id="fit" title="ملاءمة العرض">ملاءمة</button>
     <span class="spacer"></span>
@@ -160,15 +161,31 @@
     }
 
     async function setScale(s, scrollToCurrent) {
-      scale = s;
+      scale = Math.max(0.25, Math.min(5, s));
+      // تفعيل/تعطيل أزرار التكبير والتصغير وفق الحدود
+      $('zoomin').disabled = scale >= 4.999;
+      $('zoomout').disabled = scale <= 0.2501;
       // كل الصفحات تُعاد برسمها بالمقاس الجديد (الملفات متوسطة الحجم)
       for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale);
       if (scrollToCurrent) canvases[current - 1].scrollIntoView({ behavior: 'smooth' });
       updatePager();
     }
 
-    $('zoomin').onclick = async () => { await setScale(Math.min(5, scale * 1.25), true); };
-    $('zoomout').onclick = async () => { await setScale(Math.max(0.25, scale / 1.25), true); };
+    // الرجوع إلى المحاور الفرعية داخل التطبيق (فتح تطبيق في نافذة/تبويبة التطبيق
+    // وإرساله إلى رابط عميق، أو الانتقال بالتبويبة الحالية إذا أُغلقت التبويبة الأم).
+    $('back').onclick = () => {
+      const target = String(location.href).split('viewer.html')[0] + '?review=1';
+      try {
+        if (window.opener && !window.opener.closed) {
+          window.opener.location.href = target;
+          window.close();
+          return;
+        }
+      } catch (_) {}
+      location.href = target;
+    };
+    $('zoomin').onclick = async () => { await setScale(scale * 1.25, true); };
+    $('zoomout').onclick = async () => { await setScale(scale / 1.25, true); };
     $('fit').onclick = async () => {
       fitScale = computeFitScale();
       await setScale(fitScale, true);
