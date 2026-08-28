@@ -55,17 +55,21 @@
   <div id="container"></div>
   <div id="errbox"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.min.mjs" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/build/pdf.min.mjs" type="module"></script>
   <script type="module">
     var { pdfjsLib } = globalThis;
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
-    var cMapUrl = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.6.82/cmaps/';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/build/pdf.worker.mjs';
+    var cMapUrl = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/cmaps/';
+    var standardFontsUrl = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.7.284/standard_fonts/';
 
     const $ = id => document.getElementById(id);
     const params = new URLSearchParams(location.search);
     const rawPath = params.get('path') || '';
 
     let pdfDoc = null, canvases = [], scale = 1, fitScale = 1, current = 1, busy = false, firstVp = null;
+    let renderTasks = [];           // مهمة رسم حالية لكل صفحة (للإلغاء قبل إعادة الرسم)
+    let chain = Promise.resolve();  // سلسلة رسم متسلسلة — يمنع تمزّق النص بتشابك الرندر
+    let pending = null;             // المقاس المرغوب المتراكم (نطبّق فقط آخر قيمة)
 
     function computeFitScale() {
       if (!firstVp) return 1;
@@ -118,6 +122,8 @@
         pdfDoc = await pdfjsLib.getDocument({
           data: new Uint8Array(buf),
           cMapUrl, cMapPacked: true,
+          standardFontDataUrl: standardFontsUrl,
+          isEvalSupported: params.get('ie') !== '0',
         }).promise;
       } catch (_) {
         return showErr('تعذّر فكّ ترميز ملف PDF.');
@@ -154,21 +160,55 @@
       cv.style.height = Math.floor(vp.height * scaleCss) + 'px';
       cv.width = Math.floor(vp.width * scaleCss * dpr);
       cv.height = Math.floor(vp.height * scaleCss * dpr);
-      await page.render({
+      // إلغاء أي رسم سابق على نفس اللوحة حتى لا يتشابك رسمان فيُفسد النص
+      if (renderTasks[n - 1]) {
+        try { renderTasks[n - 1].cancel(); } catch (_) {}
+      }
+      const task = page.render({
         canvasContext: cv.getContext('2d'),
         viewport: page.getViewport({ scale: scaleCss * dpr }),
-      }).promise;
+      });
+      renderTasks[n - 1] = task;
+      try {
+        await task.promise;
+      } finally {
+        if (renderTasks[n - 1] === task) renderTasks[n - 1] = null;
+      }
     }
 
-    async function setScale(s, scrollToCurrent) {
-      scale = Math.max(0.25, Math.min(5, s));
-      // تفعيل/تعطيل أزرار التكبير والتصغير وفق الحدود
+    function setZoomButtons() {
       $('zoomin').disabled = scale >= 4.999;
       $('zoomout').disabled = scale <= 0.2501;
-      // كل الصفحات تُعاد برسمها بالمقاس الجديد (الملفات متوسطة الحجم)
-      for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale);
-      if (scrollToCurrent) canvases[current - 1].scrollIntoView({ behavior: 'smooth' });
-      updatePager();
+    }
+
+    // كل طلبات تغيير المقاس تُدمج في سلسلة واحدة: تُطبَّق أخير قيمة فقط،
+    // فلا يتشابك رسمان على اللوحات (سبب تشوّش الحروف عند تكرار التكبير).
+    function enqueueScale(s, scrollToCurrent) {
+      pending = { s: Math.max(0.25, Math.min(5, s)), scroll: !!scrollToCurrent };
+      chain = chain.then(async () => {
+        if (!pdfDoc || !pending) return;
+        const job = pending;
+        pending = null;
+        scale = job.s;
+        setZoomButtons();
+        for (let i = 1; i <= pdfDoc.numPages; i++) await renderPage(i, scale);
+        if (job.scroll) {
+          const target = canvases[(current - 1) || 0];
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }
+        updatePager();
+      });
+      return chain;
+    }
+
+    function setScale(s, scrollToCurrent) {
+      return enqueueScale(s, scrollToCurrent);
+    }
+
+    // تكبير نسبي مضاعف للإدخالات المتتالية (يقفز فوق الطلبات العالقة)
+    function zoomBy(factor) {
+      const base = pending ? pending.s : scale;
+      return enqueueScale(base * factor, true);
     }
 
     // الرجوع إلى المحاور الفرعية داخل التطبيق (فتح تطبيق في نافذة/تبويبة التطبيق
@@ -184,11 +224,12 @@
       } catch (_) {}
       location.href = target;
     };
-    $('zoomin').onclick = async () => { await setScale(scale * 1.25, true); };
-    $('zoomout').onclick = async () => { await setScale(scale / 1.25, true); };
-    $('fit').onclick = async () => {
+    $('zoomin').onclick = () => { if (pdfDoc) zoomBy(1.25); };
+    $('zoomout').onclick = () => { if (pdfDoc) zoomBy(1 / 1.25); };
+    $('fit').onclick = () => {
+      if (!pdfDoc) return;
       fitScale = computeFitScale();
-      await setScale(fitScale, true);
+      enqueueScale(fitScale, true);
     };
     // عند تغيير حجم النافذة: يعيد الملاءمة إن كان المستخدم عند مقاس الملاءمة
     let resizeTimer = null;
