@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:masar_app/core/services/review_file_cache.dart';
@@ -64,40 +63,47 @@ class ReviewFileService {
     return '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
   }
 
-  /// رابط التحميل الفعلي للبايتات: على الويب نمرّ عبر السيرفر المحلي
-  /// كوسيط لأن روابط Releases لا ترسل ترويسات CORS فيرفضها المتصفح،
-  /// أما الهاتف (لا يخضع لـCORS) فيجلبها مباشرة من الـRelease.
-  static String downloadUrlFor(String assetPath) {
-    if (kIsWeb) {
-      return Uri.base.resolve(
-        '/api/review-files/file?path=${Uri.encodeComponent(assetPath)}',
-      ).toString();
-    }
-    return urlFor(assetPath);
+  /// اسم الملف في الريبو/الـRelease: <slug>__NN.pdf — يطابق محتوى
+  /// assets/review_files_cache وكذلك ربط استضافة الصفحات المصوّرة.
+  static String? repoFileNameFor(String assetPath) {
+    final m =
+        RegExp(r'^assets/(?:assets/)?review_files/([^/]+)/(.+)$').firstMatch(assetPath);
+    final slug = m == null ? null : folderSlugs[m.group(1)];
+    if (m != null && slug != null) return '${slug}__${m.group(2)}';
+    return null;
   }
 
-  /// رابط فتح الملف على المتصفح في صفحة عرض كبيرة (viewer.html) مع منع
-  /// التحميل والطباعة. يُحلّ نسبيًا فيرث أصل الخدمة الحالي (سيرفر/Pages).
-  static String viewerUrlFor(String assetPath) => Uri.base
-      .resolve('viewer.html?path=${Uri.encodeComponent(assetPath)}')
-      .toString();
+  /// رابط الجلب المباشر من الريبو عبر raw.githubusercontent.com —
+  /// يرسل ترويسة CORS مسموحة فيعمل من أي متصفح دون سيرفر وسيط.
+  /// يعمل فقط للملفات الملتزمة في الريبو (<10MB).
+  static String repoRawUrlFor(String assetPath) {
+    final name = repoFileNameFor(assetPath);
+    if (name == null) return '';
+    return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/'
+        'assets/review_files_cache/$name';
+  }
 
-  /// يقرأ ملفاً (PDF أو TXT): من السحابة أولاً، ثم من الكاش،
+  /// يقرأ ملفاً (PDF): من الريبو أولاً (ويب: بلا CORS ولا سيرفر محلي)،
+  /// ثم من الـRelease (هاتف: جلب مباشر بلا CORS)، ثم من الكاش،
   /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.
   static Future<Uint8List> readAsset(String assetPath) async {
-    final url = downloadUrlFor(assetPath);
-    final cached = await ReviewFileDiskCache.read(url);
-    if (cached != null) return cached;
-    try {
-      final resp = await http
-          .get(Uri.parse(url))
-          .timeout(const Duration(seconds: 90));
-      if (resp.statusCode == 200) {
-        ReviewFileDiskCache.save(url, resp.bodyBytes);
-        return resp.bodyBytes;
+    final candidates = <String>[
+      ...{repoRawUrlFor(assetPath), urlFor(assetPath)}.where((u) => u.isNotEmpty),
+    ];
+    for (final url in candidates) {
+      final cached = await ReviewFileDiskCache.read(url);
+      if (cached != null) return cached;
+      try {
+        final resp = await http
+            .get(Uri.parse(url))
+            .timeout(const Duration(seconds: 90));
+        if (resp.statusCode == 200) {
+          ReviewFileDiskCache.save(url, resp.bodyBytes);
+          return resp.bodyBytes;
+        }
+      } catch (_) {
+        // فشل المصدر الحالي (انقطاع/رفض CORS) — نجرّب التالي.
       }
-    } catch (_) {
-      // انقطاع الشبكة — ننتقل إلى الأصول المحلية.
     }
     return _fromBundle(assetPath);
   }
@@ -230,29 +236,6 @@ class ReviewFileService {
         assetPath: pdf,
         displayName: entry['name'] ?? pdf,
       ));
-    }
-    if (pdfs.isEmpty) {
-      // المانيفست قد يكون قديماً أو غير متاح — اسأل السيرفر المحلي عن
-      // الملفات الموجودة فعلياً على القرص داخل مجلد المحور.
-      try {
-        final uri = Uri.base.resolve(
-            '/api/review-files/list?folder=${Uri.encodeComponent(folder)}');
-        final resp = await http.get(uri).timeout(const Duration(seconds: 8));
-        if (resp.statusCode == 200) {
-          final data =
-              jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
-          final list = (data['files'] as List?) ?? const [];
-          for (final e in list.cast<Map<String, dynamic>>()) {
-            pdfs.add(ReviewPdf(
-              assetPath: e['path'] as String,
-              displayName:
-                  (e['name'] as String?) ?? (e['path'] as String),
-            ));
-          }
-        }
-      } catch (_) {
-        // بلا سيرفر: تبقى القائمة فارغة وتظهر حالة عدم توفر ملفات.
-      }
     }
     // الترتيب يتبع ترتيب manifest.json مباشرة (بعد إعادة ترتيب الأسماء).
     return pdfs;

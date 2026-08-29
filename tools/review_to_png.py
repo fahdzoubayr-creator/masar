@@ -30,7 +30,7 @@ def rasterize(pdf_path: Path, out_dir: Path, zoom: float, page_only: int | None)
         pix.save(target)
         natural.append((round(r.width), round(r.height)))
     doc.close()
-    return {"pages": pages, "natural": natural, "zoom": zoom}
+    return {"mode": "png", "pages": pages, "natural": natural, "zoom": zoom}
 
 
 def main() -> None:
