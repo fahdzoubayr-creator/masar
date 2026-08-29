@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:masar_app/core/services/review_file_cache.dart';
@@ -83,12 +84,21 @@ class ReviewFileService {
         'assets/review_files_cache/$name';
   }
 
-  /// يقرأ ملفاً (PDF): من الريبو أولاً (ويب: بلا CORS ولا سيرفر محلي)،
-  /// ثم من الـRelease (هاتف: جلب مباشر بلا CORS)، ثم من الكاش،
-  /// ثم من الأصول المضمّنة داخل التطبيق عند تعذّر التحميل.
+  /// رابط الجلب من سيرفر API بنفس الأصل إن وُجد (ويب فقط): وسيط اختياري —
+  /// يعمل حين تُحمل النسخة من server.js المحلي، ويُتجاوز بصمت (404) عند
+  /// الاستضافة الثابتة. يخدم كمصدر ثانٍ قبل الـRelease.
+  static String serverRelayUrlFor(String assetPath) => Uri.base
+      .resolve('/api/review-files/file?path=${Uri.encodeComponent(assetPath)}')
+      .toString();
+
+  /// يقرأ ملفاً (PDF) بترتيب مصادر مستقل تماماً عن أي سيرفر حتمي:
+  /// 1) الريبو (raw.githubusercontent — CORS مسموح)، 2) وسيط API بنفس الأصل
+  /// (إن وُجد سياق سيرفر)، 3) الـRelease (هاتف: جلب مباشر)، 4) الكاش،
+  /// 5) الأصول المضمّنة داخل التطبيق.
   static Future<Uint8List> readAsset(String assetPath) async {
     final candidates = <String>[
       ...{repoRawUrlFor(assetPath), urlFor(assetPath)}.where((u) => u.isNotEmpty),
+      if (kIsWeb) serverRelayUrlFor(assetPath),
     ];
     for (final url in candidates) {
       final cached = await ReviewFileDiskCache.read(url);
