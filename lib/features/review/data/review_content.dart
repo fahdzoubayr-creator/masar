@@ -93,24 +93,6 @@ const List<ReviewSpace> reviewSpaces = [
       ReviewFolder('مشروع المؤسسة المندمج', Icons.hub_outlined, topics: [
         ReviewTopic('مشروع المؤسسة المندمج'),
       ]),
-      ReviewFolder('التعليم الثانوي بسلكيه', Icons.school_outlined, topics: [
-        ReviewTopic('التعليم الثانوي بسلكيه'),
-      ]),
-      ReviewFolder('بنك الاسئلة', Icons.quiz_outlined, topics: [
-        ReviewTopic('بنك الاسئلة'),
-      ]),
-    ],
-  ),
-  ReviewSpace(
-    title: 'المؤسسات الرائدة',
-    subtitle: 'مقاربة TaRL ومشروع مؤسسات الريادة',
-    icon: Icons.star_rounded,
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [Color(0xFF8A6F2F), Color(0xFF5C4A1E)],
-    ),
-    folders: [
       ReviewFolder('مؤسسات الريادة', Icons.star_rounded, topics: [
         ReviewTopic('مؤسسات الريادة — مقاربة TaRL'),
       ]),

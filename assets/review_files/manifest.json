@@ -29,23 +29,6 @@
       "topic": "التشريع المدرسي"
     }
   ],
-  "التعليم الثانوي بسلكيه": [
-    {
-      "pdf": "assets/review_files/التعليم الثانوي بسلكيه/01.pdf",
-      "name": "اللغة الأمازيغية ع",
-      "quiz": true
-    },
-    {
-      "pdf": "assets/review_files/التعليم الثانوي بسلكيه/02.pdf",
-      "name": "المزدوج واللغة الأمازيغية دراسة وضعية",
-      "quiz": true
-    },
-    {
-      "pdf": "assets/review_files/التعليم الثانوي بسلكيه/03.pdf",
-      "name": "المزدوج ع",
-      "quiz": true
-    }
-  ],
   "بنك الاسئلة": [
     {
       "pdf": "assets/review_files/بنك الاسئلة/01.pdf",

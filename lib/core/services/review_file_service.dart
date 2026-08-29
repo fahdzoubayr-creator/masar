@@ -44,7 +44,6 @@ class ReviewFileService {
     'مؤسسات الريادة': 'mouassasat_riyada',
     'مراسلات ومذكرات': 'murasilat_mudhakkirat',
     'مشروع المؤسسة المندمج': 'mashroua_muassasa',
-    'التعليم الثانوي بسلكيه': 'taalim_thaanawi',
     'بنك الاسئلة': 'bank_asila',
   };
 
@@ -83,6 +82,13 @@ class ReviewFileService {
     return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/'
         'assets/review_files_cache/$name';
   }
+
+  /// رابط فتح الملف على المتصفح في صفحة عرض كبيرة (viewer.html) مع منع
+  /// التحميل والطباعة. يُحلّ نسبيًا فيرث أصل الخدمة الحالي (سيرفر/Pages)،
+  /// ويستعمل صفحات PNG المعالَجة بـMuPDF لعرض عربي سليم وحجم مريح.
+  static String viewerUrlFor(String assetPath) => Uri.base
+      .resolve('viewer.html?path=${Uri.encodeComponent(assetPath)}')
+      .toString();
 
   /// رابط الجلب من سيرفر API بنفس الأصل إن وُجد (ويب فقط): وسيط اختياري —
   /// يعمل حين تُحمل النسخة من server.js المحلي، ويُتجاوز بصمت (404) عند

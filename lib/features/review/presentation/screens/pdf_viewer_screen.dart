@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:masar_app/core/services/review_file_service.dart';
 import 'package:masar_app/core/services/review_page_images.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
@@ -125,6 +127,19 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     }
   }
 
+  /// فتح الملف على المتصفح (ويب بشاشة عريضة فقط): صفحة عرض كبيرة
+  /// بصفحات PNG المعالَجة بـMuPDF فيرجع العرض كبيرًا والعربية سليمة.
+  Future<void> _openInBrowser() async {
+    final uri = Uri.tryParse(ReviewFileService.viewerUrlFor(widget.assetPath));
+    if (uri == null) return;
+    final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تعذّر فتح الملف على المتصفح')),
+      );
+    }
+  }
+
   void _onZoomChanged() {
     if (!mounted) return;
     setState(() => _zoomRatio = _controller!.zoomRatio);
@@ -225,11 +240,33 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // على الويب بشاشة عريضة نظهر زر "افتح الملف على المتصفح"؛
+    // وعلى الهاتف (شاشة ضيقة أو نسخة غير ويب) نخفيه.
+    final isDesktop = kIsWeb && MediaQuery.sizeOf(context).width > 600;
     return Scaffold(
       backgroundColor: const Color(0xFF232B38),
       appBar: AppBar(
         title: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
+          if (isDesktop)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: TextButton.icon(
+                  onPressed: _openInBrowser,
+                  icon: const Icon(Icons.open_in_new,
+                      size: 15, color: AppColors.goldSoft),
+                  label: const Text(
+                    'افتح الملف على المتصفح',
+                    style: TextStyle(fontSize: 12, color: AppColors.goldSoft),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 6),
+                  ),
+                ),
+              ),
+            ),
           if ((_controller != null || _imgMeta != null) && _pagesCount != null)
             Center(
               child: Padding(
