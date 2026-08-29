@@ -561,20 +561,6 @@
       "topic": "مؤسسات الريادة — مقاربة TaRL"
     },
     {
-      "pdf": "assets/review_files/مؤسسات الريادة/23.pdf",
-      "txt": "assets/review_files/مؤسسات الريادة/15.txt",
-      "name": "عرض حول مشروع المؤسسة المندمج سلم بوها صمبا",
-      "quiz": true,
-      "topic": "مؤسسات الريادة — مقاربة TaRL"
-    },
-    {
-      "pdf": "assets/review_files/مؤسسات الريادة/24.pdf",
-      "txt": "assets/review_files/مؤسسات الريادة/16.txt",
-      "name": "عرض حول مشروع المؤسسة المندمج",
-      "quiz": true,
-      "topic": "مؤسسات الريادة — مقاربة TaRL"
-    },
-    {
       "pdf": "assets/review_files/مؤسسات الريادة/25.pdf",
       "txt": "assets/review_files/مؤسسات الريادة/43.txt",
       "name": "عرض اليوم الثالث تكوين المنسقين",
@@ -847,6 +833,18 @@
     {
       "pdf": "assets/review_files/مشروع المؤسسة المندمج/05.pdf",
       "name": "EPAR برنامج دعم المؤسسات التعليمية",
+      "quiz": true,
+      "topic": "مشروع المؤسسة المندمج"
+    },
+    {
+      "pdf": "assets/review_files/مشروع المؤسسة المندمج/23.pdf",
+      "name": "عرض حول مشروع المؤسسة المندمج سلم بوها صمبا",
+      "quiz": true,
+      "topic": "مشروع المؤسسة المندمج"
+    },
+    {
+      "pdf": "assets/review_files/مشروع المؤسسة المندمج/24.pdf",
+      "name": "عرض حول مشروع المؤسسة المندمج",
       "quiz": true,
       "topic": "مشروع المؤسسة المندمج"
     }
