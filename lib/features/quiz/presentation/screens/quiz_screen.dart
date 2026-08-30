@@ -411,8 +411,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                     fontSize: 13,
                                     height: 1.7,
                                     color: AppColors.goldSoft)),
-                            if (selectedIndex != item.correctIndex &&
-                                item.source != null) ...[
+                            if (item.source != null) ...[
                               const SizedBox(height: 10),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,

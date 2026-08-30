@@ -46,6 +46,7 @@ Future<void> _openFileQuiz(
     generated = await GeneratedQuizService.fromPdf(
       file.assetPath,
       subject: topicTitle.isNotEmpty ? topicTitle : folderTitle,
+      sourceName: file.displayName,
     );
   } catch (_) {
     generated = null;
@@ -362,7 +363,8 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
             try {
               final start = await GeneratedQuizService.startProgressive(
                   files.first.assetPath,
-                  subject: subject);
+                  subject: subject,
+                  sourceName: files.first.displayName);
               jobRef = start.jobId;
               return start.first;
             } catch (_) {
@@ -370,6 +372,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               return GeneratedQuizService.fromPdfs(
                 files.map((f) => f.assetPath).toList(),
                 subject: subject,
+                sourceNames: files.map((f) => f.displayName).toList(),
               );
             }
           },

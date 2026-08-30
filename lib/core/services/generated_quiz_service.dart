@@ -20,6 +20,7 @@ class GeneratedQuizService {
   static Future<List<Question>> fromPdf(
     String assetPath, {
     required String subject,
+    String? sourceName,
   }) async {
     // بلا تخزين بين المحاولات: كل إعادة اختبار = بذرة جديدة وأسئلة تتجدد.
     final uri = Uri.base.resolve('/api/quiz/generate-from-pdf');
@@ -31,6 +32,8 @@ class GeneratedQuizService {
             'path': assetPath,
             'url': ReviewFileService.urlFor(assetPath),
             'subject': subject,
+            if (sourceName != null && sourceName.isNotEmpty)
+              'sourceName': sourceName,
           }),
         )
         .timeout(const Duration(minutes: 8));
@@ -54,6 +57,7 @@ class GeneratedQuizService {
   static Future<ProgressiveStart> startProgressive(
     String assetPath, {
     required String subject,
+    String? sourceName,
   }) async {
     final uri = Uri.base.resolve('/api/quiz/start-from-pdf');
     final resp = await http
@@ -64,6 +68,8 @@ class GeneratedQuizService {
             'path': assetPath,
             'url': ReviewFileService.urlFor(assetPath),
             'subject': subject,
+            if (sourceName != null && sourceName.isNotEmpty)
+              'sourceName': sourceName,
           }),
         )
         .timeout(const Duration(minutes: 2));
@@ -121,12 +127,18 @@ class GeneratedQuizService {
     List<String> assetPaths, {
     required String subject,
     int target = 70,
+    List<String?>? sourceNames,
   }) async {
     final out = <Question>[];
-    for (final p in assetPaths) {
+    for (var i = 0; i < assetPaths.length; i++) {
+      final p = assetPaths[i];
       if (out.length >= target) break;
       try {
-        out.addAll(await fromPdf(p, subject: subject));
+        out.addAll(await fromPdf(p,
+            subject: subject,
+            sourceName: sourceNames != null && i < sourceNames.length
+                ? sourceNames[i]
+                : null));
       } catch (_) {
         // تخطَّ الملف الفاشل وواصل مع البقية.
       }

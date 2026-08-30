@@ -553,6 +553,9 @@ const handler = async (req, res) => {
           '--subject', String(payload.subject || ''),
           '--out', outFile
         );
+        if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
+          scriptArgs.push('--source-name', payload.sourceName.trim());
+        }
         const proc = spawn('python', scriptArgs, {
           env: { ...process.env, GROQ_API_KEY: key, PYTHONIOENCODING: 'utf-8' },
           windowsHide: true,
@@ -678,6 +681,9 @@ const handler = async (req, res) => {
         '--out-rest', fRest,
         '--out', fFull,
       ];
+      if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
+        scriptArgs.push('--source-name', payload.sourceName.trim());
+      }
       if (remoteUrl) scriptArgs.push('--url', remoteUrl);
       else scriptArgs.push('--pdf', pdfFile);
       const proc = spawn('python', scriptArgs, {

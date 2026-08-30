@@ -121,32 +121,55 @@ def pick_models(client):
     return sorted(ids, key=score)
 
 
-def extract_text(pdf_path=None, pdf_bytes=None) -> str:
+def extract_pages(pdf_path=None, pdf_bytes=None) -> list:
+    """استخراج نصوص الصفحات مع الاحتفاظ بترقيم كل صفحة (1-based)."""
     import fitz  # pymupdf
 
     doc = (fitz.open(stream=pdf_bytes, filetype="pdf")
            if pdf_bytes else fitz.open(str(pdf_path)))
-    parts = []
-    for page in doc:
-        parts.append(page.get_text("text"))
+    pages = []
+    for i, page in enumerate(doc, start=1):
+        t = page.get_text("text")
+        t = re.sub(r"[ \t]+", " ", t)
+        t = re.sub(r"\n{2,}", "\n", t).strip()
+        pages.append((i, t))
     doc.close()
-    text = "\n".join(parts)
-    text = re.sub(r"[ \t]+", " ", text)
-    text = re.sub(r"\n{2,}", "\n", text)
-    return text.strip()
+    return pages
 
 
-def chunk_text(text: str, size: int = CHUNK_WORDS):
-    words = text.split()
+def chunk_pages(pages: list, size: int = CHUNK_WORDS):
+    """تقطيع نصوص الصفحات إلى مقاطع تحتفظ بنطاق أرقام الصفحات لكل مقطع."""
+    toks = []  # (word, page_no)
+    for pno, text in pages:
+        for w in text.split():
+            toks.append((w, pno))
     chunks = []
     step = max(1, int(size * 0.85))  # تداخل بسيط بين المقاطع
-    for i in range(0, len(words), step):
-        c = " ".join(words[i : i + size])
-        if len(c.split()) >= 60:
-            chunks.append(c)
-        if i + size >= len(words):
+    for i in range(0, len(toks), step):
+        sel = toks[i : i + size]
+        if len(sel) >= 60:
+            text = " ".join(w for w, _ in sel)
+            pgs = sorted({p for _, p in sel})
+            chunks.append((text, pgs))
+        if i + size >= len(toks):
             break
-    return chunks or ([text[:4000]] if text.strip() else [])
+    if chunks:
+        return chunks
+    plain = "\n".join(t for _, t in pages).strip()
+    return [(
+        plain[:4000] if plain else "",
+        sorted({p for p, _ in pages}) or [1],
+    )] if plain else []
+
+
+def page_label(pgs) -> str:
+    """تسمية مرجعية عربية لنطاق صفحات: «صفحة 3» أو «صفحات 4–7»."""
+    pgs = sorted(set(int(p or 0) for p in pgs))
+    if not pgs:
+        return ""
+    if len(pgs) == 1:
+        return f"صفحة {pgs[0]}"
+    return f"صفحات {pgs[0]}–{pgs[-1]}"
 
 
 def clean_json_array(raw: str):
@@ -235,7 +258,7 @@ def ask(client, model: str, prompt: str):
     return resp.choices[0].message.content or ""
 
 
-def gen_one(client, models, excerpt, n, worker_idx=0):
+def gen_one(client, models, excerpt, n, worker_idx=0, pages=None):
     """استدعاء واحد: يُرجع قائمة عناصر صالحة (قد تكون فارغة)."""
     import time as _t
 
@@ -270,22 +293,30 @@ def gen_one(client, models, excerpt, n, worker_idx=0):
     arr = clean_json_array(raw)
     if not isinstance(arr, list):
         return []
-    return [norm_item(it) for it in arr if valid_item(it)]
+    items = [norm_item(it) for it in arr if valid_item(it)]
+    if pages and items:
+        lbl = page_label(pages)
+        for nit in items:
+            nit["p"] = lbl
+    return items
 
 
-def compose(items, subject, rng):
+def compose(items, subject, rng, source_doc="ملف الدرس"):
     """تركيب: 4 خيارات حقيقية مخلوطة، بدون عبارة «كل ما سبق»."""
     questions = []
     for it in items:
         opts = [it["t"], it["f1"], it["f2"], it["f3"]]
         rng.shuffle(opts)
         correct_index = opts.index(it["t"])
+        pg = it.get("p") or ""
+        page_txt = f" — {pg}" if pg else ""
         q = {
             "subject": subject,
             "text": it["q"],
             "options": opts,
             "correctIndex": correct_index,
-            "explanation": "مستخرجة من محتوى ملف الدرس.",
+            "explanation": f"{it['t']} (وردت في «{source_doc}»{page_txt})",
+            "source": f"{source_doc} ({pg})" if pg else source_doc,
         }
         if it["situation"]:
             q["situation"] = it["situation"]
@@ -304,6 +335,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default="")
     ap.add_argument("--url", default="")
+    ap.add_argument("--source-name", default="",
+                    help="اسم الملف المُفضّل للمصدر في تعليل الإجابة")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--subject", default="")
     ap.add_argument("--count", type=int, default=TARGET_DEFAULT)
@@ -329,7 +362,7 @@ def main():
         print("PDF_NOT_FOUND")
         return 2
 
-    text = extract_text(pdf_path, pdf_bytes)
+    text = "\n".join(t for _, t in extract_pages(pdf_path, pdf_bytes))
     if len(text.split()) < 120:
         print("PDF_TEXT_TOO_SHORT")
         return 2
@@ -339,14 +372,18 @@ def main():
     client = Groq(api_key=resolve_key())
     models = pick_models(client)
     print("models:", ",".join(models[:6]), file=sys.stderr)
-    chunks = chunk_text(text)
+    chunks = chunk_pages(extract_pages(pdf_path, pdf_bytes))
+    source_doc = (args.source_name.strip() if args.source_name.strip()
+                  else (pdf_path.name if pdf_path
+                        else args.url.rsplit("/", 1)[-1]).rsplit(".", 1)[0])
     seen_q = set()
     items = []
     first_count_done = 0
 
     if progressive:
         # ===== الدفعة الفورية: استدعاء واحد سريع ثم كتابة فورية =====
-        fb = gen_one(client, models, chunks[0], args.first_count + 1)
+        fb = gen_one(client, models, chunks[0][0], args.first_count + 1,
+                     pages=chunks[0][1])
         uniq = []
         fseen = set()
         for nit in fb:
@@ -359,7 +396,7 @@ def main():
             print("FIRST_FAILED got=%d" % len(fb))
             return 4
         sp_idx = set()
-        first_questions = compose(fb, args.subject, rng)
+        first_questions = compose(fb, args.subject, rng, source_doc)
         write_json(Path(args.out_first), {
             "generatedAt": datetime.now().isoformat(timespec="seconds"),
             "pdf": pdf_path.name if pdf_path else args.url.rsplit("/", 1)[-1],
@@ -379,14 +416,15 @@ def main():
 
     plan = min(MAX_CALLS, -(-args.count // PER_CALL) + PLAN_MARGIN)
     jobs = [
-        (k, chunks[k % len(chunks)], PER_CALL) for k in range(plan)
+        (k, chunks[k % len(chunks)][0], chunks[k % len(chunks)][1], PER_CALL)
+        for k in range(plan)
     ]
 
     done_calls = 0
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
         futs = {
-            pool.submit(gen_one, client, models, ex, n, k % PARALLEL): (k, n)
-            for k, ex, n in jobs
+            pool.submit(gen_one, client, models, ex, n, k % PARALLEL, pg): (k, n)
+            for k, ex, pg, n in jobs
         }
         for fut in as_completed(futs):
             done_calls += 1
@@ -425,7 +463,7 @@ def main():
     total_n = min(args.count, len(items))
     rng.shuffle(items)
     items = items[:total_n]
-    questions = compose(items, args.subject, rng)
+    questions = compose(items, args.subject, rng, source_doc)
 
     if progressive and args.out_rest:
         rest_q = questions[first_count_done:]

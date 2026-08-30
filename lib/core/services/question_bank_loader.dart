@@ -11,6 +11,27 @@ import 'package:masar_app/core/models/question.dart';
 class QuestionBankLoader {
   QuestionBankLoader._();
 
+  /// المصدر الموحّد لأسئلة بنك الأسئلة الشائعة.
+  static const String bankSource =
+      'بنك الاسئلة - أسئلة شائعة على مواقع التواصل الاجتماعي';
+
+  /// يوسم سؤال البنك بالمصدر الموحّد ويجعل التوضيح يذكره عند غياب تعليل أصل.
+  static Question tagBankSource(Question q) {
+    final explanation =
+        q.explanation.trim().isEmpty ? bankSource : q.explanation;
+    return Question(
+      id: q.id,
+      subject: q.subject,
+      level: q.level,
+      text: q.text,
+      options: q.options,
+      correctIndex: q.correctIndex,
+      explanation: explanation,
+      source: bankSource,
+      situation: q.situation,
+    );
+  }
+
   static Map<String, List<Question>>? _bank;
 
   /// تحميل بنك game_challenges.json فقط — يجب استدعاءها مرة واحدة في main().
@@ -25,7 +46,7 @@ class QuestionBankLoader {
     // البنك مُنسّق كـ { "تحدي الكفاءة المهنية": [ {...}, ... ] }
     for (final entry in data.entries) {
       final questions = (entry.value as List<dynamic>)
-          .map((q) => Question.fromJson(q as Map<String, dynamic>))
+          .map((q) => tagBankSource(Question.fromJson(q as Map<String, dynamic>)))
           .toList();
       if (questions.isEmpty) continue;
 

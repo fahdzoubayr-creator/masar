@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:masar_app/core/models/question.dart';
+import 'package:masar_app/core/services/question_bank_loader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// محمل بنك أسئلة مسار التحدي مع تتبع الأسئلة المستخدمة.
@@ -25,7 +26,8 @@ class GameBankLoader {
       final all = <Question>[];
       for (final entry in data.entries) {
         final questions = (entry.value as List<dynamic>)
-            .map((q) => Question.fromJson(q as Map<String, dynamic>))
+            .map((q) =>
+                QuestionBankLoader.tagBankSource(Question.fromJson(q as Map<String, dynamic>)))
             .toList();
         all.addAll(questions);
       }
