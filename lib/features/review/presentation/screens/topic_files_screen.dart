@@ -329,26 +329,28 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
     final locked = QuizAttemptService.isLocked(_attempt);
     if (locked) return;
     String? jobRef; // معرّف مهمة التوليد المتدرج (يُضبط عند سقوط البنوك)
+    const totalTarget = 70;
+    var neededFromJob = 0; // عدد أسئلة التوليد المتبقّية بعد الدفعة الأولية
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
           questionLoader: () async {
-            final bankQs = await QuestionGenerator.generateForFolder(
+            // 1) بنك الأسئلة.
+            var bankQs = await QuestionGenerator.generateForFolder(
                 widget.folderTitle,
                 topic: widget.topicTitle);
-            if (bankQs.isNotEmpty) return bankQs;
-            // مطابقة بنكية مرنة: يلتقط بنوكاً مثل «مؤسسات الريادة — مقاربة…»
-            final fuzzy =
-                await QuestionRepository.instance.loadQuestions(
-              subject: widget.topicTitle.isNotEmpty
-                  ? widget.topicTitle
-                  : widget.folderTitle,
-            );
-            if (fuzzy.length >= 20) {
-              fuzzy.shuffle();
-              return fuzzy.take(70).toList();
+            if (bankQs.isEmpty) {
+              // مطابقة بنكية مرنة: يلتقط بنوكاً مثل «مؤسسات الريادة — مقاربة…»
+              final fuzzy =
+                  await QuestionRepository.instance.loadQuestions(
+                subject: widget.topicTitle.isNotEmpty
+                    ? widget.topicTitle
+                    : widget.folderTitle,
+              );
+              if (fuzzy.length >= 20) bankQs = fuzzy;
             }
-            // لا بنك لهذا المحور؟ توليد متدرج: دفعة أولى فورية والباقي بالخلفية.
+
+            // 2) توليد من ملفات المحور (مدمج دائماً مع البنك).
             var files = await ReviewFileService.loadFolderPdfs(
                 widget.folderTitle,
                 topic: widget.topicTitle);
@@ -356,27 +358,49 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               files =
                   await ReviewFileService.loadFolderPdfs(widget.folderTitle);
             }
-            if (files.isEmpty) return const <Question>[];
-            final subject = widget.topicTitle.isNotEmpty
-                ? widget.topicTitle
-                : widget.folderTitle;
-            try {
-              final start = await GeneratedQuizService.startProgressive(
-                  files.first.assetPath,
+            List<Question> generated = const <Question>[];
+            if (files.isNotEmpty) {
+              final subject = widget.topicTitle.isNotEmpty
+                  ? widget.topicTitle
+                  : widget.folderTitle;
+              try {
+                final start = await GeneratedQuizService.startProgressive(
+                    files.first.assetPath,
+                    subject: subject,
+                    sourceName: files.first.displayName);
+                jobRef = start.jobId;
+                generated = start.first;
+              } catch (_) {
+                // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
+                generated = await GeneratedQuizService.fromPdfs(
+                  files.map((f) => f.assetPath).toList(),
                   subject: subject,
-                  sourceName: files.first.displayName);
-              jobRef = start.jobId;
-              return start.first;
-            } catch (_) {
-              // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
-              return GeneratedQuizService.fromPdfs(
-                files.map((f) => f.assetPath).toList(),
-                subject: subject,
-                sourceNames: files.map((f) => f.displayName).toList(),
-              );
+                  sourceNames: files.map((f) => f.displayName).toList(),
+                );
+              }
             }
+
+            // 3) دمج متوازن: نصف للبنك ونصف للمولّد عندما يتوفر المصدران.
+            final bothSources = bankQs.isNotEmpty && generated.isNotEmpty;
+            final bankCap = bothSources ? totalTarget ~/ 2 : bankQs.length;
+            final genCap = bothSources ? totalTarget - bankCap : generated.length;
+            final pooled = _interleave(
+                generated.take(genCap).toList(),
+                bankQs.take(bankCap).toList());
+            if (pooled.isEmpty) return const <Question>[];
+            final firstPool = pooled.take(totalTarget).toList();
+            neededFromJob = totalTarget - firstPool.length;
+            return firstPool;
           },
-          restLoader: () => GeneratedQuizService.restWhenReady(jobRef ?? ''),
+          restLoader: () async {
+            if (jobRef == null || jobRef!.isEmpty || neededFromJob <= 0) {
+              return const <Question>[];
+            }
+            final rest =
+                await GeneratedQuizService.restWhenReady(jobRef ?? '');
+            if (rest.length <= neededFromJob) return rest;
+            return rest.sublist(0, neededFromJob);
+          },
           testType: 'كويز المحور الفرعي',
           axisName: widget.folderTitle,
           subAxisName: widget.topicTitle,
@@ -387,6 +411,18 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
       ),
     );
     await _load();
+  }
+
+  /// يمزج قائمتين بالتناوب (سؤال مولّد ثم سؤال بنك…) ليظهر المصدران معاً،
+  /// ويبدأ بالمولّد لعرض مصدر الملف (الملف + الصفحة) فوراً.
+  static List<Question> _interleave(List<Question> a, List<Question> b) {
+    final out = <Question>[];
+    final n = a.length > b.length ? a.length : b.length;
+    for (var i = 0; i < n; i++) {
+      if (i < a.length) out.add(a[i]);
+      if (i < b.length) out.add(b[i]);
+    }
+    return out;
   }
 
   static String _fmt(Duration d) {
