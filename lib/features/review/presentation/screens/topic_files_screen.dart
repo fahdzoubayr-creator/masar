@@ -330,7 +330,6 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
     if (locked) return;
     String? jobRef; // معرّف مهمة التوليد المتدرج (يُضبط عند سقوط البنوك)
     const totalTarget = 70;
-    var neededFromJob = 0; // عدد أسئلة التوليد المتبقّية بعد الدفعة الأولية
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
@@ -350,7 +349,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               if (fuzzy.length >= 20) bankQs = fuzzy;
             }
 
-            // 2) توليد من ملفات المحور (مدمج دائماً مع البنك).
+            // 2) ملفات المحور للتوليد الإثرائي (لا يُنتظَر عند توفر بنك).
             var files = await ReviewFileService.loadFolderPdfs(
                 widget.folderTitle,
                 topic: widget.topicTitle);
@@ -358,48 +357,53 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               files =
                   await ReviewFileService.loadFolderPdfs(widget.folderTitle);
             }
-            List<Question> generated = const <Question>[];
-            if (files.isNotEmpty) {
-              final subject = widget.topicTitle.isNotEmpty
-                  ? widget.topicTitle
-                  : widget.folderTitle;
-              try {
-                final start = await GeneratedQuizService.startProgressive(
-                    files.first.assetPath,
-                    subject: subject,
-                    sourceName: files.first.displayName);
-                jobRef = start.jobId;
-                generated = start.first;
-              } catch (_) {
-                // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
-                generated = await GeneratedQuizService.fromPdfs(
-                  files.map((f) => f.assetPath).toList(),
-                  subject: subject,
-                  sourceNames: files.map((f) => f.displayName).toList(),
-                );
+            final subject = widget.topicTitle.isNotEmpty
+                ? widget.topicTitle
+                : widget.folderTitle;
+
+            // 3) يوجد بنك؟ نفتح فوراً به والتوليد يُستكمل في الخلفية.
+            if (bankQs.isNotEmpty) {
+              if (files.isNotEmpty) {
+                unawaited(() async {
+                  try {
+                    final start = await GeneratedQuizService.startProgressive(
+                        files.first.assetPath,
+                        subject: subject,
+                        sourceName: files.first.displayName);
+                    jobRef = start.jobId;
+                  } catch (_) {
+                    jobRef = null;
+                  }
+                }());
               }
+              return bankQs.take(totalTarget).toList();
             }
 
-            // 3) دمج متوازن: نصف للبنك ونصف للمولّد عندما يتوفر المصدران.
-            final bothSources = bankQs.isNotEmpty && generated.isNotEmpty;
-            final bankCap = bothSources ? totalTarget ~/ 2 : bankQs.length;
-            final genCap = bothSources ? totalTarget - bankCap : generated.length;
-            final pooled = _interleave(
-                generated.take(genCap).toList(),
-                bankQs.take(bankCap).toList());
-            if (pooled.isEmpty) return const <Question>[];
-            final firstPool = pooled.take(totalTarget).toList();
-            neededFromJob = totalTarget - firstPool.length;
-            return firstPool;
+            // 4) لا بنك — توليد متدرج: دفعة أولى فورية ثم استكمال بالخلفية.
+            if (files.isEmpty) return const <Question>[];
+            try {
+              final start = await GeneratedQuizService.startProgressive(
+                  files.first.assetPath,
+                  subject: subject,
+                  sourceName: files.first.displayName);
+              jobRef = start.jobId;
+              return start.first;
+            } catch (_) {
+              // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
+              return GeneratedQuizService.fromPdfs(
+                files.map((f) => f.assetPath).toList(),
+                subject: subject,
+                sourceNames: files.map((f) => f.displayName).toList(),
+              );
+            }
           },
           restLoader: () async {
-            if (jobRef == null || jobRef!.isEmpty || neededFromJob <= 0) {
+            if (jobRef == null || jobRef!.isEmpty) {
               return const <Question>[];
             }
             final rest =
                 await GeneratedQuizService.restWhenReady(jobRef ?? '');
-            if (rest.length <= neededFromJob) return rest;
-            return rest.sublist(0, neededFromJob);
+            return rest;
           },
           testType: 'كويز المحور الفرعي',
           axisName: widget.folderTitle,
@@ -411,18 +415,6 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
       ),
     );
     await _load();
-  }
-
-  /// يمزج قائمتين بالتناوب (سؤال مولّد ثم سؤال بنك…) ليظهر المصدران معاً،
-  /// ويبدأ بالمولّد لعرض مصدر الملف (الملف + الصفحة) فوراً.
-  static List<Question> _interleave(List<Question> a, List<Question> b) {
-    final out = <Question>[];
-    final n = a.length > b.length ? a.length : b.length;
-    for (var i = 0; i < n; i++) {
-      if (i < a.length) out.add(a[i]);
-      if (i < b.length) out.add(b[i]);
-    }
-    return out;
   }
 
   static String _fmt(Duration d) {
