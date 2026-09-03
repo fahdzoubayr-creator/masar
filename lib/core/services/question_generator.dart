@@ -24,6 +24,9 @@ class QuestionGenerator {
   /// ولا يُولّد أي سؤال من النصوص.
   static Future<List<Question>> generateForFolder(String folder,
       {String? topic, int count = 70}) async {
+    // البنك المختص بمحور [folder] فقط — لا نسمح أبداً بدخول أسئلة
+    // مواد أخرى حتى عندما يكون العدد دون حدّ [count].
+    final folderBank = List<Question>.of(poolForFolder(folder));
     final pool = <Question>[];
     final seen = <String>{};
     void addAll(List<Question> questions) {
@@ -32,34 +35,15 @@ class QuestionGenerator {
       }
     }
 
-    // 1) بنك المجلد/الموضوع (أسئلة الكفاءة المهنية المصاغة يدوياً).
-    final folderBank = QuestionBankLoader.questionsFor(folder);
-    final topicBank =
-        topic != null ? QuestionBankLoader.questionsFor(topic) : null;
-    final effectiveBank =
-        (folderBank != null && folderBank.isNotEmpty) ? folderBank : topicBank;
-    if (effectiveBank != null) addAll(effectiveBank);
-
-    // 2) بنك الأسئلة الشائعة (PopularBankData) — subject-filtered when topic is specified.
-    if (pool.length < count) {
-      final popular = _popularBankFor(folder);
-      if (topic != null) {
-        // Filter popular pool to only include questions whose subject matches the topic.
-        final topicFiltered = popular.where((q) =>
-            q.subject == topic ||
-            q.subject.contains(topic) ||
-            topic.contains(q.subject)).toList();
-        // Use topic-filtered pool first; only fall back to full pool if still short.
-        if (topicFiltered.isNotEmpty) {
-          addAll(topicFiltered);
-        }
-        if (pool.length < count) {
-          addAll(popular);
-        }
-      } else {
-        addAll(popular);
-      }
+    // 1) إن حُدّد موضوع فرعي، نحاول أولاً أسئلته المطابقة (إن وُجدت).
+    if (topic != null) {
+      final topicMatch =
+          folderBank.where((q) => _matchesTopic(q, topic)).toList();
+      if (topicMatch.isNotEmpty) addAll(topicMatch);
     }
+
+    // 2) أكمل من باقي بنك المحور فقط حتى بلوغ الحاجة.
+    if (pool.length < count) addAll(folderBank);
 
     // خلط واختيار العدد
     final validPool = QuestionValidator.filterValid(pool);
@@ -69,6 +53,19 @@ class QuestionGenerator {
             .map(withShuffledOptions)
             .toList();
     return result;
+  }
+
+  /// هل سؤال [q] يخص موضوعاً فرعياً [topic]؟ مطابقة مرنة على النص والموضوع.
+  static bool _matchesTopic(Question q, String topic) {
+    if (q.subject.contains(topic) || topic.contains(q.subject)) return true;
+    return q.text.contains(topic) || topic.split(' ').any((w) => w.length > 3 && q.text.contains(w));
+  }
+
+  /// بنك المحور الكامل لحلّ [folder]: يجمع البنوك المتعلقة بالمحور فقط.
+  static List<Question> poolForFolder(String folder) {
+    final direct = QuestionBankLoader.questionsFor(folder) ?? const <Question>[];
+    if (direct.isNotEmpty) return List.of(direct);
+    return List.of(_popularBankFor(folder));
   }
 
   /// يعيد توزيع موضع الإجابة الصحيحة عشوائياً بين الاختيارات، مع تثبيت
@@ -106,13 +103,13 @@ class QuestionGenerator {
 
   /// يعيد عدد أسئلة البنك المتاحة لمحور [folder] / موضوع [topic].
   static int bankCountFor(String folder, {String? topic}) {
-    final folderBank = QuestionBankLoader.questionsFor(folder);
-    final topicBank = topic != null ? QuestionBankLoader.questionsFor(topic) : null;
-    final effective =
-        (folderBank != null && folderBank.isNotEmpty) ? folderBank : topicBank;
-    var count = effective?.length ?? 0;
-    count += _popularBankFor(folder).length;
-    return count;
+    if (topic != null) {
+      final matched = poolForFolder(folder)
+          .where((q) => _matchesTopic(q, topic))
+          .length;
+      if (matched > 0) return matched;
+    }
+    return poolForFolder(folder).length;
   }
 
   static List<Question> _popularBankFor(String folder) {
