@@ -43,7 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
   /// ثم يشغّل منطق التخطّي التلقائي (بعد انتهاء المشهد إن وُجد).
   Future<void> _boot() async {
     if (!widget.fromBack) {
-      final reduceMotion = MediaQuery.disableAnimationsOf(context);
+      final reduceMotion = WidgetsBinding
+          .instance.platformDispatcher.accessibilityFeatures.disableAnimations;
       final seen = await SessionService.isCosmicIntroSeen();
       if (!mounted) return;
       if (!seen && !reduceMotion) {

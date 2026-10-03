@@ -259,17 +259,17 @@ class QuestionGenerator {
           break;
         }
       }
-      if (correctText == null) correctText = rawCorrect;
+      correctText ??= rawCorrect;
     }
 
     // 5) نختار المشتّتات: 2 فقط إن كانت الصحيحة من الثلاثة، أو 3 إن كانت
     //    الإجابة هي العبارة الإلزامية.
     final wantDistractors = noneIsCorrect ? 3 : 2;
     final correctWords =
-        correctText == null ? <String>{} : _words(correctText!);
+        correctText == null ? <String>{} : _words(correctText);
     final chosen = <String>[];
     final seenNorm = <String>{};
-    if (correctText != null) seenNorm.add(_norm(correctText!));
+    if (correctText != null) seenNorm.add(_norm(correctText));
 
     for (final d in distractors) {
       if (chosen.length >= wantDistractors) break;
@@ -285,7 +285,7 @@ class QuestionGenerator {
     // 6) حشو إن لم تتوفّر مشتّتات كافية (نادر جداً في بنك صحيح).
     var guard = 1;
     while (chosen.length < wantDistractors) {
-      final g =
+      const g =
           '\u062e\u064a\u0627\u0631 \u0627\u0642\u062a\u0631\u0627\u062d\u064a '
           '\u0627\u062e\u0631\u0649 \u0645\u0646 \u0627\u0644\u0645\u0627\u062f\u0631\u0633';
       final cand = '$g $guard';
@@ -317,7 +317,7 @@ class QuestionGenerator {
     if (noneIsCorrect) {
       ci = 3; // العبارة الإلزامية صحيحة-by-design => موضعها الأخير.
     } else if (correctText != null) {
-      final want = _norm(correctText!);
+      final want = _norm(correctText);
       ci = out.indexWhere((o) => _norm(o) == want);
       if (ci < 0) ci = out.length - 1; // احتياط: لا -1 أبداً.
     } else {

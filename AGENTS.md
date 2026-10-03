@@ -119,10 +119,25 @@ ouloum_tarbiya__29.pdf   (945 كلمة، كان 14)  → GEN_OK count=50 في 4 
 didactique_arabe__01.pdf (207 كلمة، كان ~27) → GEN_OK count=50 في 5 نداءات
 ```
 
-### المتبقي
-1. التحقّق من فلترة المادة فعلياً في الواجهة (`_isSameSubject`) — لم يُجرَّب بعد.
-2. تنظيف `Temp\opencode\*.py`.
-3. `flutter analyze` + `flutter build web --release` ثم إعادة تشغيل السيرفر.
+### أُنجز (تكملة يوم 2026-10-03)
+1. **فلترة المادة**: أُضيف `test/subject_filter_test.dart`. النتيجة: كويز
+   الرياضيات (`ديداكتيك الرياضيات`) لا يحوي أي سؤال عربية/علوم تربية/فرنسية/
+   نشاط علمي/تشريع. ملاحظة: `_isSameSubject` لا يُسقط شيئاً فعلياً لأن مفاتيحه
+   (`الرياضيات`…) لا تطابق أسماء المحاور الفعلية (`ديداكتيك الرياضيات`)، لكن
+   بنك الأسئلة مفتاحه بحقل `subject` أصلاً فلا تسرّب.
+2. **تنظيف**: حُذفت `Temp\opencode\{fix_lead,fix_subject,audit_keys}.py`.
+3. **تحليل**: `flutter analyze` من 38 إلى 33 ملاحظة (لا أخطاء). أُصلحت ملاحظات
+   `question_generator.dart` وأُصلح خلل حقيقي في `splash_screen.dart` (قراءة
+   `MediaQuery` داخل `initState` → صارت
+   `platformDispatcher.accessibilityFeatures.disableAnimations`) فنجح `widget_test`.
+4. **اختبارات**: كل الاختبارات تنجح عدا `review_page_images_test` (يحتاج خادم
+   CORS على `127.0.0.1:8641`، خارجي).
+5. **بناء**: `flutter build web --release` = `√ Built build\web`.
 
-### حالة الخادم الآن
-- لا commit ولا push — التعديل محلي على `tools/quiz_from_pdf.py` فقط.
+### حالة الخادم الآن (2026-10-03)
+- `node server.js` يعمل PID `2120` على `http://127.0.0.1:8123` و
+  `https://127.0.0.1:8443`، وعنوان LAN: `https://192.168.0.161:8443/`.
+- **رُفع** فرع `master` إلى GitHub بعد تنقية الأسرار من التاريخ (Groq/GCP)
+  وإزالة الملفات الضخمة من التاريخ. `master` = `origin/master`.
+- تعديلات اليوم (`subject_filter_test.dart`, `splash_screen.dart`,
+  `question_generator.dart`) لم تُلتزم بعد — محلية.
