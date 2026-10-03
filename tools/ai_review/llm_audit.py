@@ -5,15 +5,41 @@ Outputs structured JSON report for human review.
 """
 import json, subprocess, sys, io, time, re
 from pathlib import Path
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
 REPORT_PATH = Path(r'D:\masar_app\masar_app\tools\ai_review\audit_report.json')
 PROGRESS_PATH = Path(r'D:\masar_app\masar_app\tools\ai_review\audit_progress.json')
 
-GROQ_API_KEY = "***REMOVED***"
+GROQ_API_KEY = "_groq_key()"
 GROQ_MODEL = "allam-2-7b"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
@@ -46,18 +72,18 @@ def call_groq(prompt: str, retries: int = MAX_RETRIES) -> str | None:
 
             if code == "429":
                 wait = 15 * (attempt + 1)
-                print(f"    429 rate limit, waiting {wait}s...", flush=True)
+                _out.write(f"    429 rate limit, waiting {wait}s...", flush=True)
                 time.sleep(wait)
                 continue
             if code != "200":
-                print(f"    HTTP {code}, retry in 5s...", flush=True)
+                _out.write(f"    HTTP {code}, retry in 5s...", flush=True)
                 time.sleep(5)
                 continue
 
             data = json.loads(body)
             return data["choices"][0]["message"]["content"]
         except Exception as e:
-            print(f"    Error: {e}, retry in 5s...", flush=True)
+            _out.write(f"    Error: {e}, retry in 5s...", flush=True)
             time.sleep(5)
     return None
 
@@ -104,7 +130,7 @@ def main():
 
     total = len(all_q)
     num_batches = (total + BATCH_SIZE - 1) // BATCH_SIZE
-    print(f"Total: {total} questions, {num_batches} batches of {BATCH_SIZE}", flush=True)
+    _out.write(f"Total: {total} questions, {num_batches} batches of {BATCH_SIZE}", flush=True)
 
     report = {"issues": [], "audited_count": 0}
     done = load_progress()
@@ -116,13 +142,13 @@ def main():
 
         start = bi * BATCH_SIZE
         batch = all_q[start:start + BATCH_SIZE]
-        print(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
+        _out.write(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
 
         prompt = build_prompt(batch)
         response = call_groq(prompt)
 
         if response is None:
-            print("FAILED", flush=True)
+            _out.write("FAILED", flush=True)
             done.add(batch_id)
             save_progress(done)
             continue
@@ -143,9 +169,9 @@ def main():
                         "detail": issue.get("d", ""),
                     })
                     count += 1
-            print(f"OK ({count} issues)", flush=True)
+            _out.write(f"OK ({count} issues)", flush=True)
         except (json.JSONDecodeError, KeyError) as e:
-            print(f"PARSE ERR: {e}", flush=True)
+            _out.write(f"PARSE ERR: {e}", flush=True)
 
         done.add(batch_id)
         save_progress(done)
@@ -154,11 +180,11 @@ def main():
         if len(done) % 20 == 0:
             report["audited_count"] = len(done) * BATCH_SIZE
             REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
-            print(f"  >> Saved checkpoint: {len(report['issues'])} issues in {len(done)*BATCH_SIZE}/{total}", flush=True)
+            _out.write(f"  >> Saved checkpoint: {len(report['issues'])} issues in {len(done)*BATCH_SIZE}/{total}", flush=True)
 
     report["audited_count"] = total
     REPORT_PATH.write_text(json.dumps(report, ensure_ascii=False, indent=2), "utf-8")
-    print(f"\nDONE: {len(report['issues'])} issues in {total} questions.", flush=True)
+    _out.write(f"\nDONE: {len(report['issues'])} issues in {total} questions.", flush=True)
 
 if __name__ == "__main__":
     main()

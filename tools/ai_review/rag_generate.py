@@ -1,17 +1,42 @@
+import os
 """
 RAG Quiz Generator: Generate MCQ questions from TXT files using Groq.
 Strict structured output, chunk-based, validated.
 """
-import json, sys, io, time, re, hashlib
+import json, sys, io, time, re, hashlib, os
 from pathlib import Path
 from groq import Groq
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 PROJECT = Path(r'D:\masar_app\masar_app')
 BASE = PROJECT / 'assets' / 'review_files'
 BANKS = Path(r'D:\masar_app\masar_app\assets\banks')
-GROQ_KEY = "***REMOVED***"
+
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        for line in (PROJECT / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+GROQ_KEY = _groq_key()
 MODEL = "openai/gpt-oss-120b"
 CHUNK_SIZE = 500  # words per chunk (reduced for Groq context limits)
 QUESTIONS_PER_CHUNK = 5
@@ -127,31 +152,31 @@ def generate_from_chunk(chunk_text, file_name, attempt=0):
             if retry < 2:
                 time.sleep(3)
             else:
-                print(f"JSON parse failed")
+                _out.write(f"JSON parse failed")
                 return []
         except Exception as e:
             if retry < 2:
                 time.sleep(5)
             else:
-                print(f"  ERROR: {e}")
+                _out.write(f"  ERROR: {e}")
                 return []
     return []
 
 def process_file(txt_path, file_id, topic):
     text = txt_path.read_text(encoding='utf-8')
     if len(text.strip()) < 200:
-        print(f"  SKIP: too short ({len(text)} chars)")
+        _out.write(f"  SKIP: too short ({len(text)} chars)")
         return []
     
     chunks = chunk_text(text)
-    print(f"  {len(chunks)} chunks from {len(text.split())} words")
+    _out.write(f"  {len(chunks)} chunks from {len(text.split())} words")
     
     all_questions = []
     for i, chunk in enumerate(chunks):
-        print(f"  Chunk {i+1}/{len(chunks)}...", end=' ', flush=True)
+        _out.write(f"  Chunk {i+1}/{len(chunks)}...", end=' ', flush=True)
         raw_qs = generate_from_chunk(chunk, txt_path.name)
         valid = [q for q in raw_qs if is_valid_question(q)]
-        print(f"{len(valid)}/{len(raw_qs)} valid")
+        _out.write(f"{len(valid)}/{len(raw_qs)} valid")
         all_questions.extend(valid)
         time.sleep(3)  # rate limit
     
@@ -211,9 +236,9 @@ for category, files in manifest.items():
     if not quiz_files:
         continue
     
-    print(f"\n{'='*60}")
-    print(f"Category: {category} ({len(quiz_files)} files)")
-    print(f"{'='*60}")
+    _out.write(f"\n{'='*60}")
+    _out.write(f"Category: {category} ({len(quiz_files)} files)")
+    _out.write(f"{'='*60}")
     
     for entry in quiz_files:
         txt_path = PROJECT / entry['txt']
@@ -224,7 +249,7 @@ for category, files in manifest.items():
         topic = entry.get('topic', category)
         name = entry.get('name', txt_path.stem)
         
-        print(f"\n  File: {name[:60]}")
+        _out.write(f"\n  File: {name[:60]}")
         questions = process_file(txt_path, file_id, topic)
         
         if questions:
@@ -234,10 +259,10 @@ for category, files in manifest.items():
             saved = save_questions(questions, topic, bank_fname)
             total_generated += len(questions)
             total_saved += saved
-            print(f"  => {len(questions)} generated, {saved} saved to {bank_fname}")
+            _out.write(f"  => {len(questions)} generated, {saved} saved to {bank_fname}")
         else:
-            print(f"  => 0 questions generated")
+            _out.write(f"  => 0 questions generated")
 
-print(f"\n{'='*60}")
-print(f"TOTAL: {total_generated} generated, {total_saved} saved to bank files")
-print(f"{'='*60}")
+_out.write(f"\n{'='*60}")
+_out.write(f"TOTAL: {total_generated} generated, {total_saved} saved to bank files")
+_out.write(f"{'='*60}")

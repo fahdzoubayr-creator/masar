@@ -28,19 +28,93 @@ TARGET_DEFAULT = 70
 PHRASE_CORRECT_DEFAULT = 15
 
 MODEL_PREF = [
-    "openai/gpt-oss-20b",
+    # النماذج المتاحة فعليًا على حساب Groq الحالي (تم التحقق 2026-09-26).
+    # الترتيب: الأعلى جودة/الأنسب لأسئلة عربية أولاً، ثم النماذج الاحتياطية.
+    "allam-2-7b",
+    "qwen/qwen3.8-27b",
     "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+]
+# نماذج لم تعد متاحة على الحساب — تُستبعد من الترشيح.
+RETIRED_MODELS = {
     "llama-3.3-70b-versatile",
     "llama-3.3-70b",
+    "llama-3.1-70b-versatile",
+    "mixtral-8x7b-32768",
+    "gemma2-9b-it",
+}
+
+# ===== مزوّدون متعدّدون، كلهم OpenAI-compatible =====
+# المفتاح يأتي من متغير البيئة ثم .env. المزوّد بلا مفتاح يُتجاهل تلقائيًا.
+# عند 429 (نفاد الحصة) ينتقل التوليد للمزوّد التالي فورًا بدل الانتظار.
+PROVIDERS = [
+    {
+        # Gemini أولًا: حدوده أوسع بكثير وحصته وفية، والأفضل للعربية.
+        "id": "gemini",
+        "key_env": "GEMINI_API_KEY",
+        "base": "https://generativelanguage.googleapis.com/v1beta/openai/",
+        "concurrency": 2,     # ثلاثة طلبات متوازية تسبب 429/503 على المجاني
+        "models_env": "GEMINI_MODELS",
+        "models": [
+            "gemini-3.6-flash",
+            "gemini-3.5-flash",
+        ],
+    },
+    {
+        # Groq احتياطي: سريع لكنه محدود بـ6000 توكن/دقيقة.
+        "id": "groq",
+        "key_env": "GROQ_API_KEY",
+        "base": None,  # Groq SDK/endpoint الافتراضي
+        "max_tokens": 4096,  # Groq يرفض ما فوق هذا الحد
+        "concurrency": 1,    # طلب واحد ثقيل يسدّ نافذة التوكنز
+        "models_env": "GROQ_MODELS",
+        "models": list(MODEL_PREF),
+    },
+    {
+        "id": "github",
+        "key_env": "GITHUB_TOKEN",
+        "base": "https://models.github.ai/inference",
+        "concurrency": 2,
+        "models_env": "GITHUB_MODELS",
+        "models": [
+            "mistral-large-2411",
+            "AI21-Jamba-1.5-Large",
+            "Phi-4",
+        ],
+    },
 ]
-CHUNK_WORDS = 300
+
+CHUNK_WORDS = 240     # سقف حجم المقطع (يُصغَّر تلقائياً للملفات القصيرة)
+CHUNK_TARGET = 8      # عدد المقاطع المستهدف: يضمن تنوّع السياق ولو كان الملف قصيراً
+CHUNK_MIN = 80        # أصغر حجم مقطع مقبول
 PER_CALL = 12         # أسئلة مطلوبة في كل استدعاء
-MAX_CALLS = 18        # سقف استدعاءات لملف واحد
-PARALLEL = 3          # استدعاءات متزامنة (تخفيف الضغط على حصة Groq)
-PLAN_MARGIN = 6       # استدعاءات إضافية احتياطية لتعويض المكررات والمرفوضات
+MAX_CALLS = 34        # سقف استدعاءات لملف واحد
+PARALLEL = 4          # خيوط عاملة؛ لكل مزوّد حدّه الخاص عبر _slot
+PLAN_MARGIN = 10       # استدعاءات إضافية احتياطية لتعويض المكررات والمرفوضات
+AVOID_N = 18          # عدد الأسئلة السابقة التي نُدرجها لمنع التكرار
 DEAD_MODELS = set()   # نماذج ثبت عدم توفرها (404) تُتخطى فوراً
+QUOTA_DEAD = {}       # مزوّد نفدت حصته: معرّف -> وقت monotonic تنتهي التهدئة
+_SLOTS = {}           # مزوّد -> إشارة تحكم بعدد الطلبات المتزامنة المسموحة
+NONE_PHRASE = "كل الأجوبة السابقة خاطئة"
+
+# زوايا متغيّرة تُوزَّع على الاستدعاءات، فيولّد النموذج أسئلة مختلفة حتى من
+# المقطع نفسه بدل إعادة صياغة الأسئلة ذاتها (سبب توقّف العدد سابقاً).
+FOCUS_ANGLES = [
+    "تحليل وضعية مهنية واقعية داخل الفصل",
+    "تخطيط وتدبير التعلمات",
+    "التقويم والدعم والمعالجة",
+    "تعريف المفاهيم والمصطلحات الأساسية",
+    "مقارنة المقاربات والنظريات التربوية",
+    "الحالات الخاصة وصعوبات التعلم",
+    "العلاقة بالأسرة والمحيط المدرسي",
+    "المستجدات والمنهاج والوثائق التربوية",
+    "أنواع الأنشطة وطرائق التنشيط",
+    "أهداف التعلم والكفايات المستهدفة",
+]
+
 FORBIDDEN = [
     PHRASE,
+    NONE_PHRASE,
     "جميع الإجابات",
     "جميع ما سبق",
     "كل ما سبق",
@@ -56,69 +130,107 @@ STYLE = (
     "والمنهاج المغربي، وتحليل الوضعيات المهنية داخل الفصل الدراسي."
 )
 
-PROMPT = """اقرأ مقتطف الدرس التالي وولّد {n} أسئلة اختيار من متعدد (QCM) منه حصراً.
+SUB_AXES = [
+    "علوم التربية",
+    "مستجدات المنهاج",
+    "الديداكتيك الخاص بالمواد",
+    "المستجدات الوطنية كمدارس الريادة",
+    "سيكولوجية النمو",
+]
+
+PROMPT = """اقرأ مقتطف الدرس التالي، ولّد {n} أسئلة اختبارية متعددة الخيارات
+(QCM) معتمدة على تحليل وضعية مهنية أو ديداكتيكية، وموجّهة للمحور الفرعي: {sub}
+وزاوية التركيز المطلوبة في هذه الدفعة: {focus}
 
 النمط المطلوب: {style}
-لغة الأسئلة: نفس لغة المقتطف (العربية غالباً).
 
-لكل سؤال أخرج بالضبط هذه الحقول:
-  q         : نص السؤال (10 كلمات على الأقل).
-  situation : سياق مهني/صفّي قصير يسبق السؤال، أو "" إن لم يكن ضرورياً.
-  t         : العبارة الصحيحة الوحيدة (إجابة صحيحة، 2 إلى 12 كلمة).
-  f1,f2,f3  : ثلاث عبارات خاطئة لكنها مقبولة ومنطقية (2 إلى 12 كلمة لكل منها).
+بنية السؤال الإجبارية، وتبقى كما هي:
+  وضعية : سياق مهني/ديداكتيكي بمعطيات واقعية (مشهد داخل الفصل، مشكل تربوي،
+           تحليل ممارسة، أو وضعية تخطيط/تدبير/تقويم).
+  سؤال   : سؤال مباشر دقيق يستدعي الفهم والتحليل لا الحفظ البصري.
+
+لكل سؤال أخرج هذه الحقول بالضبط:
+  q           : نص السؤال (8 كلمات على الأقل).
+  situation   : الوضعية (12 إلى 28 كلمة) تذكر المعطيات وتمهّد للسؤال.
+  t           : الإجابة الصحيحة (2 إلى 12 كلمة).
+  f1,f2,f3    : ثلاث عبارات خاطئة مقبولة ومنطقية (2 إلى 12 كلمة لكل واحدة).
+  explanation : تعليل مختصر للإجابة الصحيحة (سطر واحد، 8 إلى 22 كلمة).
 
 شروط صارمة:
- - كل المعلومات مستمدة من المقتطف فقط، ولا معرفة خارجية.
- - لا تستخدم إطلاقاً عبارات مثل «كل ما سبق خاطئ»، «كل الاقتراحات السابقة خاطئة»، «جميع الاختيارات خاطئة» أو ما يشابهها — لن يُضاف أي خيار آلياً.
- - العبارات الأربع مختلفة نصياً ومفهوماً.
- - أعد مصفوفة JSON فقط دون أي شرح قبله أو بعده.
-
+  - كل المعلومات من المقتطف فقط. أجب عن المعطى ولا تضف معرفة خارجية.
+  - المعطيات في الوضعية مرتبطة مباشرة بالمعطى في السؤال.
+  - الوضعية (situation) ملزمة وغير فارغة، وتمهّد للسؤال وتستمد من المعطى المرجعي.
+  - الخيار الرابع «د» نصه ثابت: «كل الأجوبة السابقة خاطئة».
+    يُضاف آلياً إلى الخيارات، ولا تكتبه أبداً داخل f1 أو f2 أو f3.
+  - إن كانت الإجابة الصحيحة هي «كل الأجوبة السابقة خاطئة» فاجعل t مساوياً لها
+    تماماً، أي أن الخيارات الثلاثة الأخرى خاطئة فعلاً.
+  - الخيارات الثلاثة متوازنة، متقاربة في الطول، ومحددة علمياً وتربوياً،
+    ولا يكون أي منها صحيحاً جزئياً أو ناقصاً أو زائداً عن الصحيح.
+  - استخدم لغة تربوية رسمية مطابقة للغة امتحانات الكفاءة المهنية.
+  - أعد مصفوفة JSON فقط دون شرح قبله أو بعده.
+{avoid}
 المقتطف:
 {text}
 
 صيغة الإخراج:
-[{{"q":"...","situation":"...","t":"...","f1":"...","f2":"...","f3":"..."}}]"""
+[{{"q":"...","situation":"...","t":"...","f1":"...","f2":"...","f3":"...","explanation":"..."}}]"""
 
 
-def resolve_key() -> str:
-    k = os.environ.get("GROQ_API_KEY", "").strip()
-    if k:
-        return k
-    for f in [PROJECT / "tools" / "ai_review" / "run_pipeline.ps1"] + list(
-        (PROJECT / "tools" / "ai_review").glob("rag_generate*.py")
-    ):
-        try:
-            m = re.search(r"gsk_[A-Za-z0-9]+", f.read_text(encoding="utf-8"))
-            if m:
-                return m.group(0)
-        except OSError:
-            pass
-    raise SystemExit("NO_GROQ_KEY")
-
-
-def pick_models(client):
-    """????? ??????? ??????? ?????? ???? ??????? ? ???? GROQ_MODELS ????? ?????."""
-    env = os.environ.get("GROQ_MODELS", "").strip()
-    if env:
-        return [m.strip() for m in env.split(",") if m.strip()]
+def read_env_file() -> dict:
+    """يقرأ .env مرة واحدة ويعيد dict (المتغير الحقيقي له الأولوية)."""
+    vals = {}
     try:
-        ids = [m.id for m in client.models.list()]
-    except Exception:
-        return list(MODEL_PREF)
+        for line in (PROJECT / ".env").read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            v = v.strip().strip("\"'")
+            if k.strip():
+                vals[k.strip()] = v
+    except OSError:
+        pass
+    for k, v in vals.items():
+        if v and not os.environ.get(k, "").strip():
+            os.environ[k] = v
+    return vals
 
-    def score(mid: str) -> int:
-        if mid in MODEL_PREF:
-            return MODEL_PREF.index(mid)
-        low = mid.lower()
-        if "gpt-oss" in low:
-            return 100
-        if "70b" in low:
-            return 200
-        if "llama" in low or "qwen" in low:
-            return 300
-        return 400
 
-    return sorted(ids, key=score)
+def env_value(name: str) -> str:
+    """قيمة متغير بيئة بعد تحميل .env."""
+    if not os.environ.get(name, "").strip():
+        read_env_file()
+    return os.environ.get(name, "").strip()
+
+
+def build_providers():
+    """يبني (provider, client, models) لكل مزوّد لديه مفتاح."""
+    from openai import OpenAI
+
+    read_env_file()
+    out = []
+    for p in PROVIDERS:
+        key = os.environ.get(p["key_env"], "").strip()
+        if not key:
+            continue
+        models_env = os.environ.get(p.get("models_env", ""), "").strip()
+        models = ([m.strip() for m in models_env.split(",") if m.strip()]
+                  if models_env else list(p["models"]))
+        try:
+            if p["base"]:
+                client = OpenAI(api_key=key, base_url=p["base"], timeout=120.0)
+            else:
+                client = OpenAI(
+                    api_key=key,
+                    base_url="https://api.groq.com/openai/v1",
+                    timeout=120.0,
+                )
+        except Exception as ex:  # pragma: no cover - تهيئة عميل
+            print(f"PROVIDER_INIT_FAIL {p['id']}: {str(ex)[:100]}",
+                  file=sys.stderr)
+            continue
+        out.append((p, client, models))
+    return out
 
 
 def extract_pages(pdf_path=None, pdf_bytes=None) -> list:
@@ -137,21 +249,30 @@ def extract_pages(pdf_path=None, pdf_bytes=None) -> list:
     return pages
 
 
-def chunk_pages(pages: list, size: int = CHUNK_WORDS):
-    """تقطيع نصوص الصفحات إلى مقاطع تحتفظ بنطاق أرقام الصفحات لكل مقطع."""
+def chunk_pages(pages: list, size: int = 0):
+    """تقطيع نصوص الصفحات إلى مقاطع تحتفظ بنطاق أرقام الصفحات لكل مقطع.
+
+    الحجم تكيّفي: يُصغَّر في الملفات القصيرة حتى لا ننحصر في مقطع واحد
+    (وهو ما كان يمنع تنوّع الأسئلة ويتوقّف عند ~27).
+    """
     toks = []  # (word, page_no)
     for pno, text in pages:
         for w in text.split():
             toks.append((w, pno))
+    total = len(toks)
+    if not size:
+        size = (max(CHUNK_MIN, min(CHUNK_WORDS, total // CHUNK_TARGET))
+                if total else CHUNK_WORDS)
     chunks = []
-    step = max(1, int(size * 0.85))  # تداخل بسيط بين المقاطع
-    for i in range(0, len(toks), step):
+    step = max(1, int(size * 0.8))  # تداخل بسيط بين المقاطع
+    floor = max(40, size // 2)
+    for i in range(0, total, step):
         sel = toks[i : i + size]
-        if len(sel) >= 60:
+        if len(sel) >= floor:
             text = " ".join(w for w, _ in sel)
             pgs = sorted({p for _, p in sel})
             chunks.append((text, pgs))
-        if i + size >= len(toks):
+        if i + size >= total:
             break
     if chunks:
         return chunks
@@ -172,19 +293,58 @@ def page_label(pgs) -> str:
     return f"صفحات {pgs[0]}–{pgs[-1]}"
 
 
+def _salvage_objects(body: str) -> list:
+    """يستخرج الكائنات الكاملة من مصفوفة JSON مبتورة عند حد التوكنز."""
+    out, depth, start, in_str, esc = [], 0, None, False, False
+    for i, ch in enumerate(body):
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+        elif ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}" and depth:
+            depth -= 1
+            if depth == 0 and start is not None:
+                try:
+                    out.append(json.loads(body[start : i + 1]))
+                except json.JSONDecodeError:
+                    pass
+                start = None
+    return out
+
+
 def clean_json_array(raw: str):
     s = raw.find("[")
     e = raw.rfind("]")
-    if s < 0 or e <= s:
+    seg = raw[s : e + 1] if s >= 0 and e > s else (raw[s:] if s >= 0 else "")
+    if not seg.strip():
         return None
-    try:
-        return json.loads(raw[s : e + 1])
-    except json.JSONDecodeError:
+    for candidate in (seg, re.sub(r",\s*([\]}])", r"\1", seg)):
         try:
-            fixed = re.sub(r",\s*([\]}])", r"\1", raw[s : e + 1])
-            return json.loads(fixed)
+            got = json.loads(candidate)
+            if isinstance(got, list) and got:
+                return got
         except json.JSONDecodeError:
-            return None
+            pass
+    # رد مبتور: نُنقذ الأسئلة المكتملة منه بدل إهدار الجداء كلها.
+    return _salvage_objects(seg) or None
+
+
+def _is_none(opt: str) -> bool:
+    """هل العبارة هي «كل الأجوبة السابقة خاطئة»؟"""
+    norm = re.sub(r"[^\u0600-\u06FFa-zA-Z ]", " ", opt)
+    norm = re.sub(r"\s+", " ", norm).strip()
+    target = re.sub(r"\s+", " ", NONE_PHRASE).strip()
+    return target in norm or norm in target
 
 
 def valid_item(it) -> bool:
@@ -207,6 +367,19 @@ def valid_item(it) -> bool:
     for opt in (it["t"], it["f1"], it["f2"], it["f3"]):
         if len(opt.split()) > 15:
             return False
+    # لا تسرّب عبارة «كل الأجوبة السابقة خاطئة» إلى الخيارات الثلاثة
+    if any(_is_none(it[k]) for k in ("f1", "f2", "f3")):
+        return False
+    # الوضعية والتعليل إلزاميان في الصيغة الجديدة
+    sit = it.get("situation")
+    if not isinstance(sit, str) or len(sit.split()) < 6:
+        return False
+    # الوضعية جملة تربوية قصيرة واحدة، وليست فقرة ولا مقتطفاً مُقتبَساً.
+    if len(sit.split()) > 30:
+        return False
+    exp = it.get("explanation")
+    if not isinstance(exp, str) or len(exp.split()) < 5:
+        return False
     return True
 
 
@@ -232,6 +405,9 @@ def norm_item(it) -> dict:
     sit = it.get("situation") or ""
     if not isinstance(sit, str):
         sit = ""
+    exp = it.get("explanation") or ""
+    if not isinstance(exp, str):
+        exp = ""
     return {
         "q": clean_ar(it["q"]),
         "situation": clean_ar(sit),
@@ -239,10 +415,11 @@ def norm_item(it) -> dict:
         "f1": clean_ar(it["f1"]),
         "f2": clean_ar(it["f2"]),
         "f3": clean_ar(it["f3"]),
+        "explanation": clean_ar(exp),
     }
 
 
-def ask(client, model: str, prompt: str):
+def ask(client, model: str, prompt: str, max_tokens: int = 8192):
     resp = client.chat.completions.create(
         model=model,
         messages=[
@@ -253,74 +430,217 @@ def ask(client, model: str, prompt: str):
             {"role": "user", "content": prompt},
         ],
         temperature=0.65,
-        max_tokens=4096,
+        max_tokens=max_tokens,
     )
     return resp.choices[0].message.content or ""
 
 
-def gen_one(client, models, excerpt, n, worker_idx=0, pages=None):
-    """استدعاء واحد: يُرجع قائمة عناصر صالحة (قد تكون فارغة)."""
+def _is_rate_limit(msg: str) -> bool:
+    low = msg.lower()
+    return ("429" in msg or "rate limit" in low or "resource_exhausted"
+            in low or "quota" in low or "too many requests" in low
+            or "503" in msg or "overloaded" in low or "high demand" in low)
+
+
+def _is_quota(msg: str) -> bool:
+    """نفاد حصة حقيقي (429) — يستدعي تهدئة المزوّد، بخلاف 503 العابر."""
+    low = msg.lower()
+    return ("429" in msg or "rate limit" in low or "resource_exhausted" in low
+            or "quota" in low or "too many requests" in low)
+
+
+def _is_missing_model(msg: str) -> bool:
+    low = msg.lower()
+    return ("404" in msg or "does not exist" in low or "not found" in low
+            or "unknown model" in low or "unsupported" in low)
+
+
+def _slot(prov):
+    """إشارة تحدّ الطلبات المتزامنة لكل مزوّد."""
+    import threading
+
+    pid = prov["id"]
+    sem = _SLOTS.get(pid)
+    if sem is None:
+        sem = _SLOTS[pid] = threading.Semaphore(
+            max(1, int(prov.get("concurrency") or 1)))
+    return sem
+
+
+def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
+            focus="", avoid=None):
+    """استدعاء واحد: يمرّ على المزوّدين بالترتيب ويجمع ما يمكن.
+
+    ينتقل للمزوّد التالي فورًا عند 429/الخلل، ويُكمل الناقص من مزوّد آخر
+    إذا أعطى الأول ردًّا مبتورًا أو أقل من المطلوب.
+
+    providers: قائمة (provider_dict, client, models) من build_providers().
+    يعيد قائمة عناصر صالحة (قد تكون فارغة).
+    """
     import time as _t
 
     _t.sleep(worker_idx * 1.5)  # إزاحة بدء العمال لتلطيف حدود الطلب/الدقيقة
-    prompt = PROMPT.format(n=n, style=STYLE, text=excerpt, phrase=PHRASE)
-    raw = None
-    for model in [m for m in models if m not in DEAD_MODELS]:
-        for attempt in range(3):
-            try:
-                raw = ask(client, model, prompt)
-                break
-            except Exception as ex:
-                msg = str(ex)
-                print(f"MODEL_FAIL {model}: {msg[:120]}", file=sys.stderr)
-                if "404" in msg or "does not exist" in msg:
-                    DEAD_MODELS.add(model)
+    avoid_block = ""
+    if avoid:
+        lines = "\n".join("- " + s for s in avoid if s and s.strip())
+        if lines:
+            avoid_block = (
+                "\nتنبيه: الأسئلة التالية وُلّدت سابقاً من نفس المقتطف؛ لا تُعِدها "
+                "ولا تصوغ سؤالاً قريباً منها في المعنى أو الصياغة، وقدّم أسئلة "
+                "جديدة مختلفة عنها:\n" + lines + "\n")
+    prompt = PROMPT.format(n=n, style=STYLE, text=excerpt,
+                           sub=sub or "المحاور العامة",
+                           focus=focus or "تحليل وضعية مهنية",
+                           avoid=avoid_block)
+
+    items, seen = [], set()
+    for prov, client, models in providers:
+        pid = prov["id"]
+        # مزوّد نفدت حصته: نتخطاه بقية التشغيل بدل إهدار الطلبات.
+        if QUOTA_DEAD.get(pid, 0.0) > _t.monotonic():
+            continue
+        cap = int(prov.get("max_tokens") or 8192)
+        saw_limit, saw_quota, got = False, False, 0
+        for model in [m for m in models if m not in DEAD_MODELS]:
+            raw = None
+            for attempt in range(2):
+                try:
+                    with _slot(prov):
+                        raw = ask(client, model, prompt, cap)
                     break
-                transient = "429" in msg or "Rate limit" in msg or "503" in msg
-                if transient and attempt < 2:
-                    wait = 15 * (attempt + 1)
-                    mra = re.search(r"try again in ([\d.]+)(ms|s|m)", msg)
-                    if mra:
-                        val = float(mra.group(1))
-                        wait = max(wait, val / 1000 if mra.group(2) == "ms" else val * 60 if mra.group(2) == "m" else val)
-                    _t.sleep(min(wait, 45))
+                except Exception as ex:
+                    msg = str(ex)
+                    print(f"MODEL_FAIL {pid}/{model}: {msg[:120]}",
+                          file=sys.stderr)
+                    if _is_missing_model(msg):
+                        DEAD_MODELS.add(model)
+                        break
+                    if _is_rate_limit(msg):
+                        saw_limit = True
+                        if _is_quota(msg):
+                            saw_quota = True
+                        mra = re.search(r"try again in ([\d.]+)(ms|s|m)", msg)
+                        if mra and attempt == 0:
+                            # لا ننتظر طويلًا: النموذج التالي ثم المزوّد التالي.
+                            val = float(mra.group(1))
+                            wait = (val / 1000 if mra.group(2) == "ms"
+                                    else val * 60 if mra.group(2) == "m"
+                                    else val)
+                            if wait <= 3:
+                                _t.sleep(wait)
+                        break
+                    break
+            if not raw:
+                continue
+            arr = clean_json_array(raw)
+            if not isinstance(arr, list):
+                continue
+            for it in arr:
+                if not valid_item(it):
                     continue
-                break
-        if raw:
+                nit = norm_item(it)
+                key = re.sub(r"\s+", " ", nit["q"]).lower()
+                if key in seen:
+                    continue
+                seen.add(key)
+                items.append(nit)
+                got += 1
+            if got:
+                print(f"PROVIDER_OK {pid}/{model} +{got} (target {n})",
+                      file=sys.stderr)
             break
-    if not raw:
+        if saw_quota and not got:
+            # نفاد حصة حقيقي: تهدئة قصيرة ثم المحاولة من مزوّد آخر.
+            QUOTA_DEAD[pid] = _t.monotonic() + 120
+            print(f"QUOTA_HOLD {pid} for 2min", file=sys.stderr)
+            continue
+        if got and not saw_quota:
+            QUOTA_DEAD.pop(pid, None)
+        if len(items) >= n:
+            break
+
+    if not items:
         return []
-    arr = clean_json_array(raw)
-    if not isinstance(arr, list):
-        return []
-    items = [norm_item(it) for it in arr if valid_item(it)]
-    if pages and items:
+    if pages:
         lbl = page_label(pages)
         for nit in items:
             nit["p"] = lbl
     return items
 
 
+def _fill_options(correct, distractors, rng):
+    """ثلاثة خيارات خاطئة نظيفة ومختلفة، مع ضمان بقاء الإجابة الصحيحة.
+
+    يعيد (الخيارات الثلاثة, فهرس الصحيح داخلها).
+    """
+    seen = {correct}
+    clean = []
+    for d in distractors:
+        d = (d or "").strip()
+        if not d or d in seen or _is_none(d):
+            continue
+        seen.add(d)
+        clean.append(d)
+    fillers = [
+        "\u0644\u0645 \u064a\u0630\u0643\u0631 \u0627\u0644\u0646\u0635 \u0641\u064a \u0627\u0644\u0645\u0642\u062a\u0637\u0641",
+        "\u062e\u064a\u0627\u0631 \u0627\u0642\u062a\u0631\u0627\u062d\u064a \u0627\u062e\u0631\u0649 \u0645\u0646 \u0627\u0644\u0645\u0627\u062f\u0631\u0633",
+        "\u0639\u0645\u0644\u064a\u0629 \u062a\u0642\u064a\u064a\u0645 \u0623\u0633\u0631\u0649 \u0645\u062e\u062a\u0644\u0641",
+    ]
+    for f in fillers:
+        if len(clean) >= 3:
+            break
+        if f not in seen:
+            seen.add(f)
+            clean.append(f)
+    # نبني 3 مواضع: الصحيح + حتى آخرين. القصّ يتم مرة واحدة هنا.
+    slots = [correct] + clean[:2]
+    # حماية أخيرة: لا بد من ثلاثة مواضع حقيقية دائماً
+    guard = 1
+    while len(slots) < 3:
+        g = ("\u0627\u062e\u062a\u0644\u0627\u0641 \u0645\u062d\u062f\u062f %d"
+             % guard)
+        guard += 1
+        if g not in slots:
+            slots.append(g)
+    rng.shuffle(slots)
+    return slots, slots.index(correct)
+
+
 def compose(items, subject, rng, source_doc="ملف الدرس"):
-    """تركيب: 4 خيارات حقيقية مخلوطة، بدون عبارة «كل ما سبق»."""
+    """وضعية + سؤال + 4 خيارات، الرابع ثابت: «كل الأجوبة السابقة خاطئة»."""
     questions = []
     for it in items:
-        opts = [it["t"], it["f1"], it["f2"], it["f3"]]
-        rng.shuffle(opts)
-        correct_index = opts.index(it["t"])
+        t = (it["t"] or "").strip()
+        none_is_correct = _is_none(t)
+        # الخيار «د» ثابت، فلا يجوز تكرار عبارته ضمن الخيارات الثلاثة.
+        anchor = t if not none_is_correct else "الإجابة الصحيحة"
+        opts3, at = _fill_options(anchor, [it["f1"], it["f2"], it["f3"]], rng)
+        if none_is_correct:
+            opts = opts3 + [NONE_PHRASE]
+            correct_index = 3
+        else:
+            opts = opts3 + [NONE_PHRASE]
+            correct_index = at
         pg = it.get("p") or ""
-        page_txt = f" — {pg}" if pg else ""
-        q = {
+        page_txt = f" \u2014 {pg}" if pg else ""
+        exp = (it.get("explanation") or "").strip()
+        if none_is_correct:
+            base = "لا تنطبق أي من العبارات السابقة على المعطى"
+        else:
+            base = t
+        if not exp:
+            exp = f"{base} (ورد في «{source_doc}»{page_txt})"
+        else:
+            exp = f"{exp} (ورد في «{source_doc}»{page_txt})"
+        questions.append({
             "subject": subject,
+            "situation": (it.get("situation") or "").strip(),
             "text": it["q"],
             "options": opts,
             "correctIndex": correct_index,
-            "explanation": f"{it['t']} (وردت في «{source_doc}»{page_txt})",
+            "explanation": exp,
             "source": f"{source_doc} ({pg})" if pg else source_doc,
-        }
-        if it["situation"]:
-            q["situation"] = it["situation"]
-        questions.append(q)
+        })
     return questions
 
 
@@ -331,6 +651,16 @@ def write_json(path: Path, data: dict):
     tmp.replace(path)
 
 
+def recent_stems(items, n=AVOID_N):
+    """آخر أسئلة وُلّدت (نصوصها) لتمريرها للنموذج ومنع التكرار."""
+    out = []
+    for it in list(items)[-n:]:
+        q = it.get("q") if isinstance(it, dict) else ""
+        if isinstance(q, str) and q.strip():
+            out.append(re.sub(r"\s+", " ", q).strip())
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", default="")
@@ -339,6 +669,8 @@ def main():
                     help="اسم الملف المُفضّل للمصدر في تعليل الإجابة")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--subject", default="")
+    ap.add_argument("--sub", default="",
+                    help="المحور الفرعي المستهدف")
     ap.add_argument("--count", type=int, default=TARGET_DEFAULT)
     ap.add_argument("--phrase-correct", type=int, default=PHRASE_CORRECT_DEFAULT)
     ap.add_argument("--first-count", type=int, default=0,
@@ -367,11 +699,12 @@ def main():
         print("PDF_TEXT_TOO_SHORT")
         return 2
 
-    from groq import Groq
-
-    client = Groq(api_key=resolve_key())
-    models = pick_models(client)
-    print("models:", ",".join(models[:6]), file=sys.stderr)
+    providers = build_providers()
+    if not providers:
+        print("NO_PROVIDER_KEY (GROQ_API_KEY / GEMINI_API_KEY / GITHUB_TOKEN)")
+        return 3
+    for prov, _c, models in providers:
+        print(f"provider {prov['id']}: {','.join(models[:4])}", file=sys.stderr)
     chunks = chunk_pages(extract_pages(pdf_path, pdf_bytes))
     source_doc = (args.source_name.strip() if args.source_name.strip()
                   else (pdf_path.name if pdf_path
@@ -381,20 +714,27 @@ def main():
     first_count_done = 0
 
     if progressive:
-        # ===== الدفعة الفورية: استدعاء واحد سريع ثم كتابة فورية =====
-        fb = gen_one(client, models, chunks[0][0], args.first_count + 1,
-                     pages=chunks[0][1])
+        # ===== الدفعة الفورية: حتى 3 محاولات بطلب متناقص لتفادي رد مبتور =====
         uniq = []
         fseen = set()
-        for nit in fb:
-            k = re.sub(r"\s+", " ", nit["q"]).lower()
-            if k not in fseen:
-                fseen.add(k)
-                uniq.append(nit)
+        for attempt in range(3):
+            need = args.first_count - len(uniq)
+            if need <= 0:
+                break
+            ask_n = args.first_count + 1 if not attempt else need
+            for nit in gen_one(providers, chunks[0][0], ask_n,
+                               pages=chunks[0][1], sub=args.sub):
+                k = re.sub(r"\s+", " ", nit["q"]).lower()
+                if k not in fseen:
+                    fseen.add(k)
+                    uniq.append(nit)
         fb = uniq[: args.first_count]
-        if len(fb) < args.first_count:
-            print("FIRST_FAILED got=%d" % len(fb))
+        if not fb:
+            print("FIRST_FAILED got=0", file=sys.stderr)
             return 4
+        if len(fb) < args.first_count:
+            print("FIRST_PARTIAL got=%d of %d" % (len(fb), args.first_count),
+                  file=sys.stderr)
         sp_idx = set()
         first_questions = compose(fb, args.subject, rng, source_doc)
         write_json(Path(args.out_first), {
@@ -415,46 +755,161 @@ def main():
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     plan = min(MAX_CALLS, -(-args.count // PER_CALL) + PLAN_MARGIN)
-    jobs = [
-        (k, chunks[k % len(chunks)][0], chunks[k % len(chunks)][1], PER_CALL)
-        for k in range(plan)
-    ]
+    # ندور على كل المقاطع مع إزاحة لكل نداء، فلا يتكرّر نداءٌ على مقطع واحد
+    # ولا تبقى بقية المستند بلا تغطية (السبب في توقّف التوليد عند 15).
+    n_chunks = max(1, len(chunks))
+    span = max(1, int(n_chunks / max(1, plan)))
+    jobs = []
+    for k in range(plan):
+        ci = (k * span + (k // n_chunks)) % n_chunks
+        text, pgs = chunks[ci]
+        focus = FOCUS_ANGLES[k % len(FOCUS_ANGLES)]
+        jobs.append((k, text, pgs, PER_CALL, focus))
+
+    # مسار البثّ التدريجي: يُكتب بعد كل نداء مكتمل ليراه السيرفر فوراً.
+    prog_path = None
+    if progressive and args.out_rest:
+        prog_path = Path(args.out_rest).with_suffix(".progress.json")
+
+    def flush_progress(collected, done_n):
+        """يكتب ما جُمِع حتى الآن بشكل ذرّي (يبقى الملف صالحاً دائماً)."""
+        if prog_path is None:
+            return
+        try:
+            snap = list(collected)
+            r2 = random.Random(args.seed if args.seed is not None else 0)
+            r2.shuffle(snap)
+            part = compose(snap, args.subject, r2, source_doc)
+            write_json(prog_path, {
+                "state": "working",
+                "count": len(part),
+                "doneCalls": done_n,
+                "questions": part,
+            })
+        except Exception as ex:  # البثّ لا يصحب فشل الكتابة أبداً
+            print(f"PROGRESS_FAIL {str(ex)[:120]}", file=sys.stderr)
+
+    def absorb(got):
+        """يضيف الأسئلة الجديدة فقط ويعيد عدد المضاف."""
+        added = 0
+        for nit in got:
+            if len(items) >= args.count:
+                break
+            keyq = re.sub(r"\s+", " ", nit["q"]).lower()
+            if keyq in seen_q:
+                continue
+            seen_q.add(keyq)
+            items.append(nit)
+            added += 1
+        return added
 
     done_calls = 0
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
-        futs = {
-            pool.submit(gen_one, client, models, ex, n, k % PARALLEL, pg): (k, n)
-            for k, ex, pg, n in jobs
-        }
-        for fut in as_completed(futs):
+        it_jobs = iter(jobs)
+        pending = {}
+
+        def submit_next():
+            for k, ex, pg, n, fc in it_jobs:
+                pending[pool.submit(
+                    gen_one, providers, ex, n, k % PARALLEL, pg,
+                    sub=args.sub, focus=fc,
+                    avoid=recent_stems(items))] = (k, n)
+                return True
+            return False
+
+        for _ in range(PARALLEL):
+            if not submit_next():
+                break
+        while pending:
+            fut = next(as_completed(list(pending)))
+            _k, _n = pending.pop(fut)
             done_calls += 1
             try:
                 got = fut.result()
             except Exception as ex:  # شبكة/أخرى
-                print(f"CALL_FAIL {futs[fut]}: {str(ex)[:120]}", file=sys.stderr)
+                print(f"CALL_FAIL {_k}: {str(ex)[:120]}", file=sys.stderr)
                 got = []
-            added = 0
-            for nit in got:
-                if len(items) >= args.count:
-                    break
-                keyq = re.sub(r"\s+", " ", nit["q"]).lower()
-                if keyq in seen_q:
-                    continue
-                seen_q.add(keyq)
-                items.append(nit)
-                added += 1
+            added = absorb(got)
             print(
                 f"call#{done_calls}/{plan} added={added} total={len(items)}",
                 file=sys.stderr,
             )
+            # بثّ ما وصلنا إليه فوراً (بلا انتظار نهاية التوليد).
+            if len(items) > first_count_done:
+                flush_progress(items, done_calls)
             if len(items) >= args.count:
-                for f in futs:
+                for f in list(pending):
                     f.cancel()
                 break
+            submit_next()
+
+    # ===== جولات إضافية: يجب أن يسبق المولّد المستخدم حتى يبلغ العدد =====
+    round_no = 0
+    while len(items) < args.count and round_no < 4:
+        round_no += 1
+        need = args.count - len(items)
+        extra_calls = min(MAX_CALLS, -(-need // PER_CALL) + PLAN_MARGIN)
+        print(
+            f"ROUND_EXTRA r={round_no} need={need} calls={extra_calls} "
+            f"have={len(items)}",
+            file=sys.stderr,
+        )
+        rjobs = []
+        for k in range(extra_calls):
+            ci = (k * 3 + round_no * 5) % n_chunks
+            text, pgs = chunks[ci]
+            focus = FOCUS_ANGLES[(round_no * 3 + k) % len(FOCUS_ANGLES)]
+            rjobs.append((k, text, pgs, PER_CALL, focus))
+        round_added = 0
+        with ThreadPoolExecutor(max_workers=PARALLEL) as pool2:
+            riter = iter(rjobs)
+            rpending = {}
+
+            def submit_round():
+                for k, ex, pg, n, fc in riter:
+                    rpending[pool2.submit(
+                        gen_one, providers, ex, n, k % PARALLEL, pg,
+                        sub=args.sub, focus=fc,
+                        avoid=recent_stems(items))] = (k, n)
+                    return True
+                return False
+
+            for _ in range(PARALLEL):
+                if not submit_round():
+                    break
+            while rpending:
+                fut = next(as_completed(list(rpending)))
+                rpending.pop(fut)
+                try:
+                    got = fut.result()
+                except Exception as ex:
+                    print(f"ROUND_CALL_FAIL {str(ex)[:100]}", file=sys.stderr)
+                    got = []
+                added = absorb(got)
+                round_added += added
+                if added:
+                    print(
+                        f"round#{round_no} added={added} total={len(items)}",
+                        file=sys.stderr,
+                    )
+                    flush_progress(items, done_calls + round_no)
+                if len(items) >= args.count:
+                    for f in list(rpending):
+                        f.cancel()
+                    break
+                submit_round()
+        if len(items) >= args.count:
+            break
+        if round_added == 0 and round_no >= 2:
+            break  # لا فائدة من محاولة أخرى
 
     if len(items) < args.count:
+        # نقبل ما توافر ما دام بلغ حدّاً معقولاً: العرض التقدمي أهم من العدد.
         if progressive and len(items) >= first_count_done + 8:
-            pass  # توليد جزئي مقبول في النمط المتدرج
+            print(
+                f"PARTIAL_OK got={len(items)} need={args.count}",
+                file=sys.stderr,
+            )
         else:
             print(f"NOT_ENOUGH_QUESTIONS got={len(items)} need={args.count}")
             return 2
@@ -484,6 +939,11 @@ def main():
         "questions": questions,
     }
     write_json(Path(args.out), out)
+    if prog_path is not None:
+        try:
+            prog_path.unlink()
+        except OSError:
+            pass
     print(f"GEN_OK count={len(questions)}")
     return 0
 

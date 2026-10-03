@@ -1,10 +1,37 @@
+import io
 import json, sys, io, time, re, subprocess
 from pathlib import Path
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+import os
+import re
+
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
-GROQ_API_KEY = '***REMOVED***'
+GROQ_API_KEY = '_groq_key()'
 GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 PROGRESS_FILE = BANKS_DIR.parent.parent / 'tools' / 'ai_review' / '_classify_progress.json'
 
@@ -167,7 +194,7 @@ def find_questions_to_classify():
 def main():
     progress = load_progress()
     to_classify = find_questions_to_classify()
-    print(f"Found {len(to_classify)} questions needing Groq classification")
+    _out.write(f"Found {len(to_classify)} questions needing Groq classification")
 
     # Group by file
     by_file = {}
@@ -203,7 +230,7 @@ def main():
                 time.sleep(1.0)
 
             pct = (processed / len(to_classify)) * 100
-            print(f"[{processed}/{len(to_classify)} {pct:.0f}%] {fname} {s} Q{idx} -> {domain}: {item['text_preview'][:60]}")
+            _out.write(f"[{processed}/{len(to_classify)} {pct:.0f}%] {fname} {s} Q{idx} -> {domain}: {item['text_preview'][:60]}")
 
             target_file = DOMAIN_FILES.get(domain)
             target_subject = DOMAINS.get(domain)
@@ -217,9 +244,9 @@ def main():
     save_progress(progress)
 
     # Apply moves
-    print(f"\n{'='*60}")
-    print(f"APPLYING {len(moves)} MOVES")
-    print(f"{'='*60}")
+    _out.write(f"\n{'='*60}")
+    _out.write(f"APPLYING {len(moves)} MOVES")
+    _out.write(f"{'='*60}")
 
     # Load all destination files
     dest_cache = {}
@@ -244,7 +271,7 @@ def main():
         data = {k: v for k, v in data.items() if v}
         with open(BANKS_DIR / fname, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"  Removed {len(removals)} from {fname}")
+        _out.write(f"  Removed {len(removals)} from {fname}")
 
     # Add to destination files
     for from_file, from_subject, from_idx, to_domain, q in moves:
@@ -265,9 +292,9 @@ def main():
         with open(BANKS_DIR / fname, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         total_q = sum(len(qs) for qs in data.values())
-        print(f"  Saved {fname}: {total_q} total questions")
+        _out.write(f"  Saved {fname}: {total_q} total questions")
 
-    print(f"\nDONE: {len(moves)} questions reclassified")
+    _out.write(f"\nDONE: {len(moves)} questions reclassified")
 
 
 if __name__ == '__main__':

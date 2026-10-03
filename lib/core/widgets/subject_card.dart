@@ -57,7 +57,8 @@ class SubjectCardTile extends StatelessWidget {
               ),
             ),
             if (showChevron)
-              const Icon(Icons.chevron_left, color: AppColors.goldSoft, size: 20),
+              // سهم تقدّم: chevron_right تنعكس في RTL فتشير يسارًا (اتجاه التقدّم).
+              const Icon(Icons.chevron_right, color: AppColors.goldSoft, size: 20),
           ],
         ),
       ),

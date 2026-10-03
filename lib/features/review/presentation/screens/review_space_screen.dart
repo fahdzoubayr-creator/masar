@@ -293,7 +293,8 @@ class _BestScoresCardState extends State<_BestScoresCard> {
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.chevron_left_rounded,
+            // سهم تقدّم: chevron_right تنعكس في RTL فتشير يسارًا.
+            const Icon(Icons.chevron_right_rounded,
                 color: AppColors.goldSoft, size: 22),
           ],
         ),

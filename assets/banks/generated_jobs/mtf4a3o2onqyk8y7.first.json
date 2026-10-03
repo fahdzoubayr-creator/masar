@@ -1,0 +1,61 @@
+{
+ "generatedAt": "2026-08-30T02:15:11",
+ "pdf": "didactique_francais__01.pdf",
+ "seed": 830217123,
+ "count": 4,
+ "phraseCorrectCount": 0,
+ "questions": [
+  {
+   "subject": "Didactique",
+   "text": "Quel est le but principal du guide pédagogique mentionné dans le texte?",
+   "options": [
+    "Fournir aux enseignants les éléments nécessaires à une pédagogie active et fonctionnelle.",
+    "Remplacer le livret de l'élève.",
+    "Évaluer uniquement les compétences linguistiques.",
+    "Définir les règles de conduite des élèves."
+   ],
+   "correctIndex": 0,
+   "explanation": "Fournir aux enseignants les éléments nécessaires à une pédagogie active et fonctionnelle. (وردت في «1re AEP Guide Francais Final 2020» — صفحات 1–3)",
+   "source": "1re AEP Guide Francais Final 2020 (صفحات 1–3)"
+  },
+  {
+   "subject": "Didactique",
+   "text": "Les fiches pédagogiques présentées dans le guide contiennent des scénarios qui aident l'enseignant à planifier, gérer et évaluer les activités d’apprentissage dans le cadre de la classe.",
+   "options": [
+    "Planifier, gérer et évaluer les activités d’apprentissage dans le cadre de la classe.",
+    "Organiser les sorties scolaires et les projets de recherche en dehors de la classe.",
+    "Former les enseignants à la technologie numérique dans le cadre du curriculum.",
+    "Écrire des dissertations sur la littérature française pour les élèves de première année."
+   ],
+   "correctIndex": 0,
+   "explanation": "Planifier, gérer et évaluer les activités d’apprentissage dans le cadre de la classe. (وردت في «1re AEP Guide Francais Final 2020» — صفحات 1–3)",
+   "source": "1re AEP Guide Francais Final 2020 (صفحات 1–3)"
+  },
+  {
+   "subject": "Didactique",
+   "text": "Quel état d’esprit les démarches du guide répondent-elles, selon le texte?",
+   "options": [
+    "À celui du système éducatif traditionnel sans changement dans les écoles primaires.",
+    "À celui de la pédagogie passive qui ne favorise pas l'interaction.",
+    "À celui des réformes innovantes engagées par le ministère de l'éducation nationale.",
+    "À celui de l'enseignement exclusivement oral sans supports écrits pour les élèves de CP."
+   ],
+   "correctIndex": 2,
+   "explanation": "À celui des réformes innovantes engagées par le ministère de l'éducation nationale. (وردت في «1re AEP Guide Francais Final 2020» — صفحات 1–3)",
+   "source": "1re AEP Guide Francais Final 2020 (صفحات 1–3)"
+  },
+  {
+   "subject": "Didactique",
+   "text": "Le guide invite les enseignants à l'utiliser pour planifier les activités d'apprentissage et favoriser l'interaction en classe durant les séances.",
+   "options": [
+    "Former les enseignants aux techniques de gestion de classe sans lien avec le curriculum.",
+    "Planifier les activités d'apprentissage et favoriser l'interaction en classe durant les séances.",
+    "Organiser des concours de poésie pour les élèves et des rencontres avec des auteurs.",
+    "Évaluer uniquement les compétences linguistiques des élèves sans prise en compte de la participation."
+   ],
+   "correctIndex": 1,
+   "explanation": "Planifier les activités d'apprentissage et favoriser l'interaction en classe durant les séances. (وردت في «1re AEP Guide Francais Final 2020» — صفحات 1–3)",
+   "source": "1re AEP Guide Francais Final 2020 (صفحات 1–3)"
+  }
+ ]
+}

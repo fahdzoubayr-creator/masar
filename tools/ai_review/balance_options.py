@@ -1,10 +1,37 @@
+import io
 import json, sys, io, time, subprocess
 from pathlib import Path
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+import os
+import re
+
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 BANKS_DIR = Path(r"D:\masar_app\masar_app\assets\banks")
-GROQ_API_KEY = "***REMOVED***"
+GROQ_API_KEY = "_groq_key()"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 ALL_WRONG_AR = "كل الاقتراحات خاطئة"
 ALL_WRONG_FR = "Toutes les reponses ci-dessus sont fausses."
@@ -134,10 +161,10 @@ def enrich_wrong_options(q):
 def main():
     questions = find_imbalanced()
     total = len(questions)
-    print(f"Found {total} questions with imbalanced options")
+    _out.write(f"Found {total} questions with imbalanced options")
 
     if not total:
-        print("Nothing to do!")
+        _out.write("Nothing to do!")
         return
 
     progress = load_progress()
@@ -168,7 +195,7 @@ def main():
             processed += 1
 
             pct = (processed / total) * 100
-            print(f"[{processed}/{total} {pct:.0f}%] {fname} {subject} Q{idx}...", end=" ", flush=True)
+            _out.write(f"[{processed}/{total} {pct:.0f}%] {fname} {subject} Q{idx}...", end=" ", flush=True)
 
             ok = enrich_wrong_options(q)
             if ok:
@@ -177,12 +204,12 @@ def main():
                 progress.setdefault("processed", {})[key] = "done"
                 ci = q["correctIndex"]
                 avg_wrong = sum(len(q["options"][j]) for j in range(4) if j != ci) / 3
-                print(f"OK (correct={len(q['options'][ci])}, avg_wrong={avg_wrong:.0f})")
+                _out.write(f"OK (correct={len(q['options'][ci])}, avg_wrong={avg_wrong:.0f})")
             else:
                 failed += 1
                 file_failed += 1
                 progress.setdefault("processed", {})[key] = "FAIL"
-                print("FAIL")
+                _out.write("FAIL")
 
             time.sleep(1.0)
 
@@ -192,10 +219,10 @@ def main():
         if processed % 10 == 0:
             save_progress(progress)
 
-        print(f"  Saved {fname}: {file_success} ok, {file_failed} failed")
+        _out.write(f"  Saved {fname}: {file_success} ok, {file_failed} failed")
 
     save_progress(progress)
-    print(f"\n=== DONE: {success} enriched, {failed} failed out of {total} ===")
+    _out.write(f"\n=== DONE: {success} enriched, {failed} failed out of {total} ===")
 
 
 if __name__ == "__main__":

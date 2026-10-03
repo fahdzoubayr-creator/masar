@@ -8,9 +8,66 @@ import 'package:masar_app/core/services/question_validator.dart';
 ///
 /// لا يُولّد أي سؤال من النصوص — يأخذ الأسئلة حصرياً من البنوك الموجودة.
 class QuestionGenerator {
-  static const String allWrongOption = 'كل الاقتراحات خاطئة';
+  /// العبارة الإلزامية للخيار الأخير (د) — مطابقة لما يولّده مولّد المحاور.
+  static const String allWrongOption = 'كل الأجوبة السابقة خاطئة';
+
+  /// صيغ قديمة/مكافئة موجودة في بنك الأسئلة، نوحّدها إلى العبارة الإلزامية.
+  static const List<String> allWrongVariants = <String>[
+    'كل الأجوبة السابقة خاطئة',
+    'كل الاقتراحات السابقة خاطئة',
+    'كل الاقتراحات خاطئة',
+    'جميع الإجابات السابقة خاطئة',
+    'جميع الإجابات خاطئة',
+    'جميع ما سبق خاطئ',
+    'كل ما سبق خاطئ',
+    'لا شيء مما سبق',
+  ];
+
   static const String frenchAllWrongOption =
       'Toutes les réponses ci-dessus sont fausses.';
+
+  /// هل هذا النص يُعنى بـ«كل الأجوبة السابقة خاطئة» بأي صيغة؟
+  static bool isAllWrong(String? raw) {
+    final s = (raw ?? '')
+        .replaceAll('\u0627', 'ا')
+        .replaceAll('\u0623', 'ا')
+        .replaceAll('\u0625', 'ا')
+        .replaceAll('\u0649', 'ي')
+        .replaceAll('\u0629', 'ه')
+        .replaceAll('\u0624', 'و')
+        .replaceAll('\u0626', 'ي')
+        .replaceAll('\u0621', 'ا')
+        .replaceAll('\u0640', '')
+        .replaceAll(RegExp(r'[^\u0620-\u064Aa-zA-Z]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim()
+        .toLowerCase();
+    if (s.isEmpty) return false;
+    String n(String v) => v
+        .replaceAll('\u0627', 'ا')
+        .replaceAll('\u0623', 'ا')
+        .replaceAll('\u0625', 'ا')
+        .replaceAll('\u0649', 'ي')
+        .replaceAll('\u0629', 'ه')
+        .replaceAll('\u0624', 'و')
+        .replaceAll('\u0626', 'ي')
+        .replaceAll('\u0621', 'ا')
+        .replaceAll(RegExp(r'[^\u0620-\u064Aa-zA-Z]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim()
+        .toLowerCase();
+    for (final v in allWrongVariants) {
+      if (s == n(v)) return true;
+    }
+    return s.contains('كل سابقة') && s.contains('خاط');
+  }
+
+  /// يوحّد صيغة الخيار الأخير في قائمة الخيارات.
+  static void normalizeAllWrong(List<String> opts) {
+    for (var i = 0; i < opts.length; i++) {
+      if (isAllWrong(opts[i])) opts[i] = allWrongOption;
+    }
+  }
 
   /// نسبة الأسئلة التي يكون جوابها الصحيح «جميع الاختيارات أعلاه خاطئة».
   static const double allWrongChance = 0.7;
@@ -23,7 +80,7 @@ class QuestionGenerator {
   /// يأخذ الأسئلة حصرياً من بنك الأسئلة (PopularBankData + WadiaaBankData)
   /// ولا يُولّد أي سؤال من النصوص.
   static Future<List<Question>> generateForFolder(String folder,
-      {String? topic, int count = 70}) async {
+      {String? topic, int count = 50}) async {
     // البنك المختص بمحور [folder] فقط — لا نسمح أبداً بدخول أسئلة
     // مواد أخرى حتى عندما يكون العدد دون حدّ [count].
     final folderBank = List<Question>.of(poolForFolder(folder));
@@ -61,40 +118,219 @@ class QuestionGenerator {
     return q.text.contains(topic) || topic.split(' ').any((w) => w.length > 3 && q.text.contains(w));
   }
 
+  /// كلمات مفتاحية تميّز موادّاً عن بعضها داخل بنك «تحدي الكفاءة المهنية»
+  /// الذي يحوي كل المواد في مفتاح واحد.
+  static const Map<String, List<String>> _subjectKeywords = <String, List<String>>{
+    'الرياضيات': <String>[
+      'رياضيات', 'الرياضيات', 'جبر', 'هندسة', 'المثلث', 'المعين', 'متوازي',
+      'الأعداد', 'العدد', 'القسمة', 'الضرب', 'الجمع', 'الطرح', 'الدالة',
+      'المعادلة', 'المعادلات', 'الاحتمال', 'التناسبية', 'النسبة', 'المقياس',
+      'المساحة', 'الحجم', 'الزاوية', 'الزوايا', 'المستقيم', 'الدائرة',
+      'المنصف', 'الوسيط', 'جذر', 'اللوغاريتم',
+      'المتتالية', 'الحد', 'الدوال', 'الإحصاء', 'المعدل', 'الوسيط الإحصائي',
+    ],
+    'اللغة العربية': <String>[
+      'اللغة العربية', 'العربية', 'النحو', 'الصرف', 'البلاغة', 'الجزالة',
+      'الإعراب', 'الجملة', 'الشعر', 'النص', 'الأدب', 'المفهوم', 'الموضوع',
+      'التشبيه', 'الاستعارة', 'الكناية', 'الطباق', 'السجع', 
+    ],
+    'اللغة الفرنسية': <String>[
+      'الفرنسية', 'français', 'francais', 'FLE', 'verbe', 'adjectifs',
+      'le français', 'conjugaison', 'pluriel', 'singulier', 'pronoms',
+    ],
+  };
+
+  /// هل ينتمي السؤال [q] إلى مادة [folder]؟ يُرجع false عند عدم اليقين.
+  static bool _isSameSubject(Question q, String folder) {
+    final words = _subjectKeywords[folder];
+    if (words == null || words.isEmpty) return true; // لا نعرف => نسمح
+    final hay = '${q.subject} ${q.text} ${q.options.join(' ')}';
+    final normHay = _norm(hay);
+    for (final w in words) {
+      if (normHay.contains(_norm(w))) return true;
+    }
+    return false;
+  }
+
   /// بنك المحور الكامل لحلّ [folder]: يجمع البنوك المتعلقة بالمحور فقط.
   static List<Question> poolForFolder(String folder) {
     final direct = QuestionBankLoader.questionsFor(folder) ?? const <Question>[];
-    if (direct.isNotEmpty) return List.of(direct);
-    return List.of(_popularBankFor(folder));
+    if (direct.isNotEmpty) {
+      final kept = direct.where((q) => _isSameSubject(q, folder)).toList();
+      if (kept.isNotEmpty) return kept;
+    }
+    // البنك في مفتاح واحد، فنُصفّي كله بالمادة قبل استخدامه.
+    final wide = List<Question>.of(_popularBankFor(folder));
+    final kept = wide.where((q) => _isSameSubject(q, folder)).toList();
+    return kept.isNotEmpty ? kept : List.of(direct);
   }
 
   /// يعيد توزيع موضع الإجابة الصحيحة عشوائياً بين الاختيارات، مع تثبيت
   /// خيار «جميع الإجابات خاطئة» في آخر موضع لأن نصه يحيل إلى ما قبله.
+  /// تطبيع خفيف للمقارنة: حذف التشكيل وتوحيد الألف والياء والتاء المربوطة.
+  static String _norm(String s) {
+    var t = s;
+    const diac = '\u064B-\u0652\u0670\u0640';
+    t = t.replaceAll(RegExp('[$diac]'), '');
+    t = t
+        .replaceAll('\u0623', '\u0627')
+        .replaceAll('\u0625', '\u0627')
+        .replaceAll('\u0622', '\u0627')
+        .replaceAll('\u0624', '\u0648')
+        .replaceAll('\u0626', '\u064a')
+        .replaceAll('\u0649', '\u064A')
+        .replaceAll('\u0629', '\u0647')
+        .replaceAll('\u0621', '\u0627')
+        .replaceAll(RegExp(r'[^\u0620-\u064AA-Za-z0-9 ]'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim()
+        .toLowerCase();
+    return t;
+  }
+
+  static Set<String> _words(String s) => _norm(s)
+      .split(' ')
+      .where((w) => w.length > 2)
+      .toSet();
+
+  /// تشابه Jaccard بين مجموعتَي كلمات.
+  static double _jaccard(Set<String> a, Set<String> b) {
+    if (a.isEmpty || b.isEmpty) return 0;
+    final inter = a.intersection(b).length;
+    final uni = a.union(b).length;
+    return uni == 0 ? 0 : inter / uni;
+  }
+
+  /// خيار مشتّت مقبول فقط إذا اختلف فعلياً عن الصحيح وعن مشتّتَيه.
+  ///
+  /// بدون هذا الشرط تصير الخيارات متنوّعة لفظياً وصحيحة معاً في آن واحد،
+  /// فتصبح الإجابة الصحيحة ملتبسة.
+  static bool _isDistinctDistractor(
+    String cand,
+    String correct,
+    Set<String> correctWords,
+    List<String> accepted,
+  ) {
+    final n = _norm(cand);
+    if (n.isEmpty) return false;
+    // مطابقة تامة بعد التطبيع => مكرّر.
+    if (n == _norm(correct)) return false;
+    final cw = _words(cand);
+    if (cw.isEmpty) return false;
+    // تشابه عالٍ مع الصحيح => إعادة صياغة للإجابة الصحيحة.
+    if (_jaccard(cw, correctWords) >= 0.6) return false;
+    // تشابه عالٍ مع مشتّت سابق => تكرار بين الخيارات.
+    for (final a in accepted) {
+      if (_jaccard(cw, _words(a)) >= 0.75) return false;
+    }
+    return true;
+  }
+
   static Question withShuffledOptions(Question q) {
     final opts = List<String>.of(q.options);
     if (opts.length < 2 || q.correctIndex >= opts.length) return q;
-    String? pinned;
-    for (final special in const [allWrongOption, frenchAllWrongOption]) {
-      final i = opts.indexOf(special);
-      if (i >= 0) {
-        pinned = opts.removeAt(i);
-        break;
+
+    // 1) توحيد صيغ «كل الأجوبة السابقة خاطئة».
+    normalizeAllWrong(opts);
+
+    // 2) هل العبارة الإلزامية هي الإجابة الصحيحة في هذا السؤال؟
+    final rawCorrect = opts[q.correctIndex];
+    final noneIsCorrect =
+        isAllWrong(rawCorrect) || rawCorrect == frenchAllWrongOption;
+
+    // 3) مشتّتات = بقية الخيارات، نزع كل نسخة من العبارة الإلزامية منها.
+    final distractors = <String>[];
+    for (var i = 0; i < opts.length; i++) {
+      if (i == q.correctIndex) continue;
+      final v = opts[i].trim();
+      if (v.isEmpty) continue;
+      if (isAllWrong(v) || v == frenchAllWrongOption) continue;
+      distractors.add(v);
+    }
+
+    // 4) الإجابة الصحيحة الحقيقية (نصّ من البنك) إن وُجدت بين المشتّتات.
+    //    نبنيها أولاً ثم نكمل المشتّتات، فالصحيحة يجب أن تكون أحد الثلاثة.
+    String? correctText;
+    if (!noneIsCorrect) {
+      final n = _norm(rawCorrect);
+      for (final d in distractors) {
+        if (_norm(d) == n) {
+          correctText = d;
+          break;
+        }
       }
+      if (correctText == null) correctText = rawCorrect;
     }
-    for (int i = opts.length - 1; i > 0; i--) {
+
+    // 5) نختار المشتّتات: 2 فقط إن كانت الصحيحة من الثلاثة، أو 3 إن كانت
+    //    الإجابة هي العبارة الإلزامية.
+    final wantDistractors = noneIsCorrect ? 3 : 2;
+    final correctWords =
+        correctText == null ? <String>{} : _words(correctText!);
+    final chosen = <String>[];
+    final seenNorm = <String>{};
+    if (correctText != null) seenNorm.add(_norm(correctText!));
+
+    for (final d in distractors) {
+      if (chosen.length >= wantDistractors) break;
+      final n = _norm(d);
+      if (n.isEmpty || seenNorm.contains(n)) continue;
+      if (!_isDistinctDistractor(d, correctText ?? '', correctWords, chosen)) {
+        continue;
+      }
+      seenNorm.add(n);
+      chosen.add(d);
+    }
+
+    // 6) حشو إن لم تتوفّر مشتّتات كافية (نادر جداً في بنك صحيح).
+    var guard = 1;
+    while (chosen.length < wantDistractors) {
+      final g =
+          '\u062e\u064a\u0627\u0631 \u0627\u0642\u062a\u0631\u0627\u062d\u064a '
+          '\u0627\u062e\u0631\u0649 \u0645\u0646 \u0627\u0644\u0645\u0627\u062f\u0631\u0633';
+      final cand = '$g $guard';
+      final n = _norm(cand);
+      guard++;
+      if (n.isEmpty || seenNorm.contains(n)) continue;
+      seenNorm.add(n);
+      chosen.add(cand);
+      if (guard > 8) break;
+    }
+
+    // 7) ترتيب الثلاثة الحقيقية: الصحيحة + المشتّتات، ثم خلط.
+    final real = <String>[
+      if (correctText != null) correctText,
+      ...chosen,
+    ];
+    for (int i = real.length - 1; i > 0; i--) {
       final j = _random.nextInt(i + 1);
-      final t = opts[i];
-      opts[i] = opts[j];
-      opts[j] = t;
+      final t = real[i];
+      real[i] = real[j];
+      real[j] = t;
     }
-    if (pinned != null) opts.add(pinned);
+
+    // 8) التركيب النهائي: ثلاثة حقيقية + العبارة الإلزامية في آخر موضع.
+    final out = <String>[...real.take(3), allWrongOption];
+
+    // 9) الفهرس الصحيح يُحلّ من القائمة النهائية، مع تحقق.
+    int ci;
+    if (noneIsCorrect) {
+      ci = 3; // العبارة الإلزامية صحيحة-by-design => موضعها الأخير.
+    } else if (correctText != null) {
+      final want = _norm(correctText!);
+      ci = out.indexWhere((o) => _norm(o) == want);
+      if (ci < 0) ci = out.length - 1; // احتياط: لا -1 أبداً.
+    } else {
+      ci = _random.nextInt(3); // لا نعرف الصحيح => موضع عشوائي آمن.
+    }
+
     return Question(
       id: 'gen_${q.text.hashCode}',
       subject: q.subject,
       level: q.level,
       text: q.text,
-      options: opts,
-      correctIndex: opts.indexOf(q.options[q.correctIndex]),
+      options: out,
+      correctIndex: ci,
       explanation: q.explanation,
       source: q.source,
       situation: q.situation,
@@ -113,6 +349,7 @@ class QuestionGenerator {
   }
 
   static List<Question> _popularBankFor(String folder) {
+    // لا محور معروف: نجمع ما يطابق النص، وإلا نُرجع كل بنك المادة فقط.
     if (folder == 'التشريع المدرسي') {
       return QuestionBankLoader.questionsFor('التشريع المدرسي والإداري') ?? const [];
     }
@@ -175,7 +412,7 @@ class QuestionGenerator {
 
   /// يحول نصاً خاماً إلى أسئلة بنمط امتحان الكفاءة المهنية.
   static List<Question> generateFromText(String text,
-      {required String folder, int count = 70}) {
+      {required String folder, int count = 50}) {
     if (text.trim().length < 40) return [];
     final sentences = _splitSentences(text);
     if (sentences.isEmpty) return [];

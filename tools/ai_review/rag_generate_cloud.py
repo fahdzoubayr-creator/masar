@@ -5,12 +5,38 @@ Downloads TXT files from GitHub Pages, generates MCQ via Groq API.
 import json, sys, io, time, re, random, urllib.request, urllib.parse
 from pathlib import Path
 from groq import Groq
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 PROJECT = Path(r'D:\masar_app\masar_app')
 BANKS = PROJECT / 'assets' / 'banks'
-GROQ_KEY = "***REMOVED***"
+GROQ_KEY = "_groq_key()"
 CLOUD_BASE = 'https://fahdzoubayr-creator.github.io/masar/files'
 MODELS = ["openai/gpt-oss-20b", "allam-2-7b"]
 CHUNK_WORDS = 300
@@ -48,7 +74,7 @@ def download_txt(asset_path):
         with urllib.request.urlopen(req, timeout=30) as resp:
             return resp.read().decode('utf-8')
     except Exception as e:
-        print(f'    FAIL download: {e}')
+        _out.write(f'    FAIL download: {e}')
         return None
 
 
@@ -155,8 +181,8 @@ total_files = 0
 
 for category, files in manifest.items():
     if category in SKIP_LOCAL:
-        print(f"\n{'=' * 50}")
-        print(f"SKIP {category} (local files)")
+        _out.write(f"\n{'=' * 50}")
+        _out.write(f"SKIP {category} (local files)")
         continue
 
     quiz_files = [
@@ -166,29 +192,29 @@ for category, files in manifest.items():
     if not quiz_files:
         continue
 
-    print(f"\n{'=' * 50}")
-    print(f"{category} ({len(quiz_files)} quiz files)")
-    print(f"{'=' * 50}")
+    _out.write(f"\n{'=' * 50}")
+    _out.write(f"{category} ({len(quiz_files)} quiz files)")
+    _out.write(f"{'=' * 50}")
 
     for entry in quiz_files:
         asset_path = entry['txt']
         name = entry.get('name', '')[:50]
         topic = entry.get('topic', category)
-        print(f"\n  [{total_files + 1}] {name}")
+        _out.write(f"\n  [{total_files + 1}] {name}")
 
         text = download_txt(asset_path)
         if not text or len(text.strip()) < 200:
-            print(f"    SKIP (too short or download failed)")
+            _out.write(f"    SKIP (too short or download failed)")
             continue
 
         chunks = chunk_text(text)
-        print(f"    {len(chunks)} chunks ({len(text.split())} words)")
+        _out.write(f"    {len(chunks)} chunks ({len(text.split())} words)")
 
         results = []
         for i, chunk in enumerate(chunks):
-            print(f"    [{i + 1}/{len(chunks)}] ", end='', flush=True)
+            _out.write(f"    [{i + 1}/{len(chunks)}] ", end='', flush=True)
             qs = call_groq(chunk)
-            print(f"{len(qs)} ok", flush=True)
+            _out.write(f"{len(qs)} ok", flush=True)
             results.extend(qs)
             time.sleep(BASE_DELAY)
 
@@ -197,10 +223,10 @@ for category, files in manifest.items():
             saved = save(results, topic, f'rag_{safe}.json')
             total_gen += len(results)
             total_saved += saved
-            print(f"  => {len(results)} gen, {saved} saved")
+            _out.write(f"  => {len(results)} gen, {saved} saved")
 
         total_files += 1
         time.sleep(2)
 
-print(f"\n{'=' * 50}")
-print(f"TOTAL: {total_files} files processed, {total_gen} generated, {total_saved} saved")
+_out.write(f"\n{'=' * 50}")
+_out.write(f"TOTAL: {total_files} files processed, {total_gen} generated, {total_saved} saved")

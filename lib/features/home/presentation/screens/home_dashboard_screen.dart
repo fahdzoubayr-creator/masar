@@ -174,7 +174,8 @@ class _DashboardHeader extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onBack,
-            icon: const Icon(Icons.arrow_forward_ios_rounded,
+            // سهم رجوع: في RTL تنعكس arrow_back لتشير يمينًا (اتجاه العودة).
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
                 color: AppColors.goldSoft, size: 18),
             tooltip: 'رجوع',
           ),

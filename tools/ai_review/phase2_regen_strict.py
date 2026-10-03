@@ -4,12 +4,38 @@ Each question: keep question text + correct answer, generate 3 clean distractors
 """
 import json, subprocess, sys, io, time, re, random
 from pathlib import Path
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
 PROGRESS_PATH = Path(r'D:\masar_app\masar_app\tools\ai_review\regen2_progress.json')
-GROQ_KEY = "***REMOVED***"
+GROQ_KEY = "_groq_key()"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "allam-2-7b"
 
@@ -123,9 +149,9 @@ def main():
                         'correctIndex': q.get('correctIndex', 0),
                     })
 
-    print(f"Questions needing regen: {len(all_q)}")
+    _out.write(f"Questions needing regen: {len(all_q)}")
     num_batches = (len(all_q) + BATCH_SIZE - 1) // BATCH_SIZE
-    print(f"Batches: {num_batches}")
+    _out.write(f"Batches: {num_batches}")
 
     done = set()
     if PROGRESS_PATH.exists():
@@ -141,13 +167,13 @@ def main():
 
         start = bi * BATCH_SIZE
         batch = all_q[start:start + BATCH_SIZE]
-        print(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
+        _out.write(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
 
         prompt = build_prompt(batch)
         response = call_groq(prompt)
 
         if response is None:
-            print("FAILED")
+            _out.write("FAILED")
             done.add(batch_id)
             PROGRESS_PATH.write_text(json.dumps(sorted(done)), "utf-8")
             failed += len(batch)
@@ -188,10 +214,10 @@ def main():
                         json.dump(bank_data, f, ensure_ascii=False, indent=2)
                     fixed += 1
 
-            print("OK")
+            _out.write("OK")
 
         except (json.JSONDecodeError, KeyError) as e:
-            print(f"PARSE: {e}")
+            _out.write(f"PARSE: {e}")
             failed += len(batch)
 
         done.add(batch_id)
@@ -199,9 +225,9 @@ def main():
         time.sleep(SLEEP)
 
         if len(done) % 20 == 0:
-            print(f"  >> Checkpoint: {fixed} fixed, {failed} failed")
+            _out.write(f"  >> Checkpoint: {fixed} fixed, {failed} failed")
 
-    print(f"\nDONE: {fixed} regenerated, {failed} failed")
+    _out.write(f"\nDONE: {fixed} regenerated, {failed} failed")
 
     # Final stats
     remaining = 0
@@ -211,7 +237,7 @@ def main():
             for q in qs:
                 if REGEN_MARKER in q.get('options', []):
                     remaining += 1
-    print(f"Remaining __NEED_REGEN__: {remaining}")
+    _out.write(f"Remaining __NEED_REGEN__: {remaining}")
 
 if __name__ == "__main__":
     main()

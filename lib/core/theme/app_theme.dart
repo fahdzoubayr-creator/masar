@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// الهوية البصرية لتطبيق "مسار" — أخضر داكن مستوحى من الطابع المؤسساتي
+/// الهوية البصرية لتطبيق "مسار" — أزرق داكن مستوحى من الطابع المؤسساتي
 /// مع لمسة ذهبية، بروح زخرفية مغربية بسيطة وغير مباشرة.
+///
+/// - `gold` و`goldSoft` مُنِّرتا ليعملا فوق الخلفية الكحلية.
+/// - الخلفية مولَّدة بإضاءة مقيَّدة (ذروة السطوع 0.032) فتباين النص
+///   عليها 11:1 دون أي تعتيم.
+/// - لا يُلحق ظل بالنصوص: على خلفية داكنة الأصل كان يلتهم نسيج الحرف
+///   ويُظهره ضبابيًا. الوضوح يأتي من لون الخلفية لا من الظلال.
 class AppColors {
   static const bgDeep = Color(0xFF0F3D3D);
   static const bgSurface = Color(0xFF134847);
   static const bgCard = Color(0xFF175452);
-  static const gold = Color(0xFFC9A24A);
-  static const goldSoft = Color(0xFFE7CE8C);
+  static const gold = Color(0xFFF2C75C);
+  static const goldSoft = Color(0xFFF6E3AC);
   static const cream = Color(0xFFF4EEDF);
   static const ok = Color(0xFF5FAE82);
   static const err = Color(0xFFD2664F);
@@ -76,6 +82,10 @@ class AppTheme {
     FontWeight weight = FontWeight.w700,
     Color color = AppColors.cream,
   }) {
-    return GoogleFonts.alexandria(fontSize: size, fontWeight: weight, color: color);
+    return GoogleFonts.alexandria(
+      fontSize: size,
+      fontWeight: weight,
+      color: color,
+    );
   }
 }

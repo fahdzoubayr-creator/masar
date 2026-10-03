@@ -51,3 +51,27 @@ flutter_03.log
 
 # MuPDF page-image cache (3 GB; generated on demand by server/tools)
 assets/review_pages_cache/
+
+# Large review PDFs (excluded from repo; fetched from Releases/cloud instead)
+assets/review_files_cache/dawrat_takwiniya__02.pdf
+assets/review_files_cache/dawrat_takwiniya__07.pdf
+assets/review_files_cache/dawrat_takwiniya__09.pdf
+assets/review_files_cache/dawrat_takwiniya__11.pdf
+assets/review_files_cache/dawrat_takwiniya__13.pdf
+assets/review_files_cache/dawrat_takwiniya__15.pdf
+assets/review_files_cache/didactique_arabe__43.pdf
+assets/review_files_cache/didactique_arabe__77.pdf
+assets/review_files_cache/didactique_maths__01.pdf
+assets/review_files_cache/didactique_maths__06.pdf
+assets/review_files_cache/mouassasat_riyada__14.pdf
+assets/review_files_cache/mouassasat_riyada__26.pdf
+assets/review_files_cache/mouassasat_riyada__27.pdf
+assets/review_files_cache/ouloum_tarbiya__62.pdf
+assets/review_files_cache/ouloum_tarbiya__63.pdf
+assets/review_files_cache/tanshit_tarbawi__03.pdf
+assets/review_files_cache/tanshit_tarbawi__21.pdf
+
+# Local secrets (Groq API key) - never commit
+.env
+.env.*
+!.env.example

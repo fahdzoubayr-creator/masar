@@ -4,13 +4,39 @@ RAG Quiz Generator v2: Smaller chunks, more robust, rate-limit aware.
 import json, sys, io, time, re, random
 from pathlib import Path
 from groq import Groq
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 PROJECT = Path(r'D:\masar_app\masar_app')
 BASE = PROJECT / 'assets' / 'review_files'
 BANKS = PROJECT / 'assets' / 'banks'
-GROQ_KEY = "***REMOVED***"
+GROQ_KEY = "_groq_key()"
 MODEL = "openai/gpt-oss-120b"
 CHUNK_WORDS = 300
 QUESTIONS_PER_CHUNK = 3
@@ -110,12 +136,12 @@ def process_file(txt_path, file_id):
     if len(text.strip()) < 200:
         return []
     chunks = chunk_text(text)
-    print(f"  {len(chunks)} chunks ({len(text.split())} words)", flush=True)
+    _out.write(f"  {len(chunks)} chunks ({len(text.split())} words)", flush=True)
     results = []
     for i, chunk in enumerate(chunks):
-        print(f"  [{i+1}/{len(chunks)}]", end=' ', flush=True)
+        _out.write(f"  [{i+1}/{len(chunks)}]", end=' ', flush=True)
         qs = call_groq(chunk, txt_path.name)
-        print(f"{len(qs)} ok", flush=True)
+        _out.write(f"{len(qs)} ok", flush=True)
         results.extend(qs)
         time.sleep(BASE_DELAY)
     return results
@@ -157,15 +183,15 @@ for category, files in manifest.items():
     has_files = [f for f in quiz_files if (PROJECT / f['txt']).exists()]
     if not has_files: continue
     
-    print(f"\n{'='*50}")
-    print(f"{category} ({len(has_files)} files)")
-    print(f"{'='*50}")
+    _out.write(f"\n{'='*50}")
+    _out.write(f"{category} ({len(has_files)} files)")
+    _out.write(f"{'='*50}")
     
     for entry in has_files:
         txt_path = PROJECT / entry['txt']
         name = entry.get('name', txt_path.stem)[:50]
         topic = entry.get('topic', category)
-        print(f"\n  {name}")
+        _out.write(f"\n  {name}")
         
         questions = process_file(txt_path, f"{category}/{txt_path.stem}")
         if questions:
@@ -173,7 +199,7 @@ for category, files in manifest.items():
             saved = save(questions, topic, f"rag_{safe}.json")
             total_gen += len(questions)
             total_saved += saved
-            print(f"  => {len(questions)} gen, {saved} saved")
+            _out.write(f"  => {len(questions)} gen, {saved} saved")
 
-print(f"\n{'='*50}")
-print(f"TOTAL: {total_gen} generated, {total_saved} saved")
+_out.write(f"\n{'='*50}")
+_out.write(f"TOTAL: {total_gen} generated, {total_saved} saved")

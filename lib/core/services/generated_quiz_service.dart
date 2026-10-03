@@ -21,6 +21,7 @@ class GeneratedQuizService {
     String assetPath, {
     required String subject,
     String? sourceName,
+    String? sub,
   }) async {
     // بلا تخزين بين المحاولات: كل إعادة اختبار = بذرة جديدة وأسئلة تتجدد.
     final uri = Uri.base.resolve('/api/quiz/generate-from-pdf');
@@ -32,6 +33,7 @@ class GeneratedQuizService {
             'path': assetPath,
             'url': ReviewFileService.urlFor(assetPath),
             'subject': subject,
+            if (sub != null && sub.isNotEmpty) 'sub': sub,
             if (sourceName != null && sourceName.isNotEmpty)
               'sourceName': sourceName,
           }),
@@ -58,6 +60,7 @@ class GeneratedQuizService {
     String assetPath, {
     required String subject,
     String? sourceName,
+    String? sub,
   }) async {
     final uri = Uri.base.resolve('/api/quiz/start-from-pdf');
     final resp = await http
@@ -68,6 +71,7 @@ class GeneratedQuizService {
             'path': assetPath,
             'url': ReviewFileService.urlFor(assetPath),
             'subject': subject,
+            if (sub != null && sub.isNotEmpty) 'sub': sub,
             if (sourceName != null && sourceName.isNotEmpty)
               'sourceName': sourceName,
           }),
@@ -80,38 +84,51 @@ class GeneratedQuizService {
     final data = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
     final raw = data['questions'];
     final jobId = data['jobId'];
-    if (raw is! List || raw.isEmpty || jobId is! String) {
+    // السيرفر يردّ فوراً بمعرّف المهمة فقط، وقد تكون الدفعة الأولى فارغة.
+    if (jobId is! String || jobId.isEmpty) {
       throw Exception('START_EMPTY');
     }
-    final first = raw
-        .cast<Map<String, dynamic>>()
-        .map(Question.fromJson)
-        .toList();
+    final first = raw is List
+        ? raw.cast<Map<String, dynamic>>().map(Question.fromJson).toList()
+        : <Question>[];
     return ProgressiveStart(jobId, first);
   }
 
   /// ينتظر أسئلة الخلفية (Polling) حتى جاهزيتها أو انتهاء المهلة.
+  ///
+  /// لا تُرجع قائمة فارغة لمجرد أن الحالة «working» — بل تستمر حتى
+  /// الوصول إلى done أو 404 أو انتهاء المهلة، وإلا تعلّق الكويز على 4 أسئلة.
   static Future<List<Question>> restWhenReady(
     String jobId, {
-    Duration timeout = const Duration(minutes: 8),
+    Duration timeout = const Duration(minutes: 10),
   }) async {
     if (jobId.isEmpty) return const <Question>[];
     final deadline = DateTime.now().add(timeout);
     final uri = Uri.base.resolve('/api/quiz/job/$jobId');
+
     while (DateTime.now().isBefore(deadline)) {
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 2));
       try {
         final resp = await http.get(uri).timeout(const Duration(seconds: 15));
         if (resp.statusCode == 200) {
           final d = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
-          if (d['state'] == 'done') {
-            final raw = d['questions'];
-            if (raw is! List) return const <Question>[];
-            return raw
+          final state = d['state'];
+          final raw = d['questions'];
+
+          if (raw is List && raw.isNotEmpty) {
+            final qs = raw
                 .cast<Map<String, dynamic>>()
                 .map(Question.fromJson)
                 .toList();
+            // done => انتهى. غير ذلك => ما زال يولّد، نتابع الانتظار.
+            if (state == 'done') return qs;
+            if (state == 'error') return qs;
           }
+
+          if (state == 'done' || state == 'error') {
+            return const <Question>[];
+          }
+          // state == 'working' => نكمل الانتظار.
         } else if (resp.statusCode == 404) {
           return const <Question>[];
         }
@@ -122,12 +139,46 @@ class GeneratedQuizService {
     return const <Question>[];
   }
 
+  /// لقطة فورية: يعيد ما وصل من التوليد حتى الآن دون انتظار.
+  ///
+  /// تُستدعى كل ثانيتين أثناء العرض، فيبدأ المستخدم فور وصول أول دفعة
+  /// بدل انتظار اكتمال المهمة.
+  static Future<List<Question>> pollSnapshot(String jobId) async {
+    if (jobId.isEmpty) return const <Question>[];
+    final uri = Uri.base.resolve('/api/quiz/job/$jobId');
+    try {
+      final resp = await http.get(uri).timeout(const Duration(seconds: 12));
+      if (resp.statusCode != 200) return const <Question>[];
+      final d = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+      final raw = d['questions'];
+      if (raw is! List || raw.isEmpty) return const <Question>[];
+      return raw.cast<Map<String, dynamic>>().map(Question.fromJson).toList();
+    } catch (_) {
+      return const <Question>[];
+    }
+  }
+
+  /// هل ما زالت مهمة التوليد تعمل؟
+  static Future<bool> jobWorking(String jobId) async {
+    if (jobId.isEmpty) return false;
+    final uri = Uri.base.resolve('/api/quiz/job/$jobId');
+    try {
+      final resp = await http.get(uri).timeout(const Duration(seconds: 12));
+      if (resp.statusCode != 200) return false;
+      final d = jsonDecode(utf8.decode(resp.bodyBytes)) as Map<String, dynamic>;
+      return d['state'] == 'working';
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// يولّد من عدة ملفات بالتتابع حتى بلوغ [target] سؤالاً — يتخطى ما يفشل.
   static Future<List<Question>> fromPdfs(
     List<String> assetPaths, {
     required String subject,
-    int target = 70,
+    int target = 50,
     List<String?>? sourceNames,
+    String? sub,
   }) async {
     final out = <Question>[];
     for (var i = 0; i < assetPaths.length; i++) {
@@ -136,6 +187,7 @@ class GeneratedQuizService {
       try {
         out.addAll(await fromPdf(p,
             subject: subject,
+            sub: sub,
             sourceName: sourceNames != null && i < sourceNames.length
                 ? sourceNames[i]
                 : null));

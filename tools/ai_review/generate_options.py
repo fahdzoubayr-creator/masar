@@ -12,12 +12,37 @@ import time
 import re
 import subprocess
 from pathlib import Path
+import os
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 BANKS_DIR = Path(r"D:\masar_app\masar_app\assets\banks")
-GROQ_API_KEY = "***REMOVED***"
+GROQ_API_KEY = "_groq_key()"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 DASH = "—"
@@ -91,7 +116,7 @@ def call_groq(prompt, max_retries=2):
                 err = resp["error"]
                 if "rate_limit" in str(err).lower() or err.get("code") == "rate_limit_exceeded":
                     wait = 10 * (attempt + 1)
-                    print(f"    Rate limited, waiting {wait}s...")
+                    _out.write(f"    Rate limited, waiting {wait}s...")
                     time.sleep(wait)
                     continue
                 raise Exception(f"API error: {err}")
@@ -100,7 +125,7 @@ def call_groq(prompt, max_retries=2):
             if attempt < max_retries - 1:
                 time.sleep(3 * (attempt + 1))
             else:
-                print(f"    API call failed after {max_retries} retries: {e}")
+                _out.write(f"    API call failed after {max_retries} retries: {e}")
                 return None
     return None
 
@@ -152,10 +177,10 @@ def generate_option(q):
 def main():
     dash_questions = find_dash_questions()
     total = len(dash_questions)
-    print(f"Found {total} questions with dash padding (excluding already processed)")
+    _out.write(f"Found {total} questions with dash padding (excluding already processed)")
 
     if not total:
-        print("Nothing to do!")
+        _out.write("Nothing to do!")
         return
 
     progress = load_progress()
@@ -186,7 +211,7 @@ def main():
             processed += 1
 
             pct = (processed / total) * 100
-            print(f"[{processed}/{total} {pct:.0f}%] {fname} {subject} Q{idx}...", end=" ", flush=True)
+            _out.write(f"[{processed}/{total} {pct:.0f}%] {fname} {subject} Q{idx}...", end=" ", flush=True)
 
             # Replace ALL dashes in this question
             opts = q["options"]
@@ -209,12 +234,12 @@ def main():
                 success += dashes_replaced
                 file_success += dashes_replaced
                 progress.setdefault("processed", {})[key] = f"replaced_{dashes_replaced}"
-                print(f"OK: {dashes_replaced} dashes replaced")
+                _out.write(f"OK: {dashes_replaced} dashes replaced")
             else:
                 failed += 1
                 file_failed += 1
                 progress.setdefault("processed", {})[key] = "__FAILED__"
-                print("FAIL")
+                _out.write("FAIL")
 
             # Save progress every 10 questions
             if processed % 10 == 0:
@@ -224,10 +249,10 @@ def main():
         with open(fp, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
 
-        print(f"  Saved {fname}: {file_success} ok, {file_failed} failed")
+        _out.write(f"  Saved {fname}: {file_success} ok, {file_failed} failed")
 
     save_progress(progress)
-    print(f"\n=== DONE: {success} generated, {failed} failed out of {total} ===")
+    _out.write(f"\n=== DONE: {success} generated, {failed} failed out of {total} ===")
 
 
 if __name__ == "__main__":

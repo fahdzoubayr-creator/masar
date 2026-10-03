@@ -54,7 +54,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 borderRadius: BorderRadius.circular(100)),
                           ),
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(Icons.chevron_right, size: 18),
+                          // زر رجوع: chevron_left تنعكس في RTL فتشير يمينًا.
+                          icon: const Icon(Icons.chevron_left, size: 18),
                           label: const Text('العودة للرئيسية'),
                         ),
                       ],

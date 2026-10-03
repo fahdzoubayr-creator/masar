@@ -72,10 +72,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _autoSkip() async {
     await _introPlayed.future;
     if (widget.fromBack) return;
-    final loggedIn = await SessionService.isLoggedIn();
-    if (!mounted) return;
-    if (loggedIn) {
-      _goHomeOrRoom();
+    // يبدأ التطبيق دائمًا من واجهة الترحيب ولا يقفز تلقائيًا إلى اللوحة.
+    // الاستثناء الوحيد روابط القاعة العميقة (`?room=`) لأنها نية مشاركة صريحة.
+    if ((Uri.base.queryParameters['room'] ?? '').trim().isNotEmpty) {
+      await _goHomeOrRoom();
     }
   }
 

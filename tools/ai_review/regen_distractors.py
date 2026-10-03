@@ -6,11 +6,16 @@ Keeps question text + correct answer, generates 3 new short distractors.
 import json, subprocess, sys, io, time, re, random
 from pathlib import Path
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
 PROGRESS_PATH = Path(r'D:\masar_app\masar_app\tools\ai_review\regen_progress.json')
-GROQ_KEY = "***REMOVED***"
+GROQ_KEY = "_groq_key()"
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "allam-2-7b"
 
@@ -116,7 +121,7 @@ def main():
                         'correctIndex': ci,
                     })
 
-    print(f"Questions needing regen: {len(all_q)}")
+    _out.write(f"Questions needing regen: {len(all_q)}")
 
     done = set()
     if PROGRESS_PATH.exists():
@@ -132,13 +137,13 @@ def main():
 
         start = bi * BATCH_SIZE
         batch = all_q[start:start + BATCH_SIZE]
-        print(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
+        _out.write(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
 
         prompt = build_prompt(batch)
         response = call_groq(prompt)
 
         if response is None:
-            print("FAILED")
+            _out.write("FAILED")
             done.add(batch_id)
             PROGRESS_PATH.write_text(json.dumps(sorted(done)), "utf-8")
             continue
@@ -189,21 +194,42 @@ def main():
 
                     fixed += 1
 
-            print("OK")
+            _out.write("OK")
 
         except (json.JSONDecodeError, KeyError) as e:
-            print(f"PARSE: {e}")
+            _out.write(f"PARSE: {e}")
 
         done.add(batch_id)
         PROGRESS_PATH.write_text(json.dumps(sorted(done)), "utf-8")
         time.sleep(SLEEP)
 
         if len(done) % 20 == 0:
-            print(f"  >> Checkpoint: {fixed} fixed so far")
+            _out.write(f"  >> Checkpoint: {fixed} fixed so far")
 
-    print(f"\nDONE: {fixed} questions regenerated out of {len(all_q)}")
+    _out.write(f"\nDONE: {fixed} questions regenerated out of {len(all_q)}")
 
     from collections import Counter
+import os
+import re
+
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
     ci_dist = Counter()
     total = 0
     for fp in sorted(BANKS_DIR.glob('*.json')):
@@ -212,9 +238,9 @@ def main():
             for q in qs:
                 ci_dist[q.get('correctIndex', 0)] += 1
                 total += 1
-    print(f"\ncorrectIndex distribution:")
+    _out.write(f"\ncorrectIndex distribution:")
     for i in range(4):
-        print(f"  {i}: {ci_dist[i]} ({ci_dist[i]/total*100:.1f}%)")
+        _out.write(f"  {i}: {ci_dist[i]} ({ci_dist[i]/total*100:.1f}%)")
 
 if __name__ == "__main__":
     main()

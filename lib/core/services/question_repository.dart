@@ -16,7 +16,7 @@ class QuestionRepository {
   static final QuestionRepository instance = QuestionRepository._();
 
   /// عدد أسئلة أي اختبار/كويز: 70 سؤالاً.
-  static const int targetCount = 70;
+  static const int targetCount = 50;
 
   /// أسئلة مادة [subject] (أو كل المواد عند null):
   Future<List<Question>> loadQuestions({String? subject, String? level}) async {

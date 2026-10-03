@@ -250,7 +250,7 @@ def main():
 
     if not api_key and not args.dry_run:
         print("ERROR: No API key found.")
-        print("  For Groq: set GROQ_API_KEY=gsk_...")
+        print("  For Groq: set GROQ_API_KEY in .env or the environment")
         print("  For Gemini: set GEMINI_API_KEY=AIzaSy...")
         print("  Or use --dry-run to test without API calls.")
         sys.exit(1)

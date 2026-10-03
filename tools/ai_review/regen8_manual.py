@@ -4,11 +4,37 @@ Generate 8 replacement questions via Groq allam-2-7b.
 import json, sys, io, time
 from pathlib import Path
 from groq import Groq
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
-GROQ_KEY = "***REMOVED***"
+GROQ_KEY = "_groq_key()"
 MODEL = "allam-2-7b"
 
 client = Groq(api_key=GROQ_KEY)
@@ -159,6 +185,6 @@ for r in REPLACEMENTS:
     data[subj].append(q)
     with open(fp, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f'ADDED to {r["fname"]}/{subj}: {r["text"][:80]}')
+    _out.write(f'ADDED to {r["fname"]}/{subj}: {r["text"][:80]}')
 
-print(f'\nAll 8 replacements added')
+_out.write(f'\nAll 8 replacements added')

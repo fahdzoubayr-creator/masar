@@ -15,3 +15,6 @@ void preloadSfx() {}
 
 /// السياق دائماً جاهز خارج الويب.
 void primeAudio() {}
+
+/// صوت ارتفاع تصاعدي خارج الويب — نستخدم path_unlock كبديل.
+void playRisingSfx() => playSfx(Sfx.path_unlock);

@@ -5,14 +5,40 @@ Structured JSON output + exponential backoff + blacklist validation.
 import json, sys, io, time, random
 from pathlib import Path
 from groq import Groq
+import os
+import re
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def _groq_key() -> str:
+    """مفتاح Groq: من البيئة ثم من .env (مستثنى من git). بلا مفاتيح مضمّنة."""
+    k = os.environ.get("GROQ_API_KEY", "").strip()
+    if k:
+        return k
+    try:
+        root = Path(__file__).resolve().parents[2]
+        for line in (root / ".env").read_text(encoding="utf-8").splitlines():
+            m = re.match(r"\s*GROQ_API_KEY\s*=\s*(.+)\s*$", line)
+            if m:
+                v = m.group(1).strip().strip("\"'")
+                if v:
+                    return v
+    except OSError:
+        pass
+    raise SystemExit("NO_GROQ_KEY")
+
+
+_out = sys.stdout
+for _s in (sys.stdout, sys.stderr):
+    try:
+        _s.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 BANKS_DIR = Path(r'D:\masar_app\masar_app\assets\banks')
 PROGRESS_PATH = Path(r'D:\masar_app\masar_app\tools\ai_review\regen3_progress.json')
 REGEN_MARKER = '__NEED_REGEN__'
 
-client = Groq(api_key="***REMOVED***")
+client = Groq(api_key="_groq_key()")
 MODEL = "openai/gpt-oss-120b"
 BATCH_SIZE = 10
 BASE_DELAY = 5
@@ -92,10 +118,10 @@ def call_groq_batch(prompt, max_retries=5):
         except Exception as e:
             if "429" in str(e) or "rate_limit" in str(e).lower():
                 sleep_time = BASE_DELAY * (2 ** attempt)
-                print(f"  [429] wait {sleep_time}s (try {attempt+1}/{max_retries})", flush=True)
+                _out.write(f"  [429] wait {sleep_time}s (try {attempt+1}/{max_retries})", flush=True)
                 time.sleep(sleep_time)
             else:
-                print(f"  [ERR] {e}", flush=True)
+                _out.write(f"  [ERR] {e}", flush=True)
                 time.sleep(5)
     return None
 
@@ -155,7 +181,7 @@ def main():
 
     total = len(all_q)
     num_batches = (total + BATCH_SIZE - 1) // BATCH_SIZE
-    print(f"Need regen: {total} questions in {num_batches} batches of {BATCH_SIZE}", flush=True)
+    _out.write(f"Need regen: {total} questions in {num_batches} batches of {BATCH_SIZE}", flush=True)
 
     done = set()
     if PROGRESS_PATH.exists():
@@ -171,13 +197,13 @@ def main():
 
         start = bi * BATCH_SIZE
         batch = all_q[start:start + BATCH_SIZE]
-        print(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
+        _out.write(f"[{bi+1}/{num_batches}] Q{start}-{start+len(batch)-1}...", end=" ", flush=True)
 
         prompt = build_prompt(batch)
         result = call_groq_batch(prompt)
 
         if result is None:
-            print("FAILED", flush=True)
+            _out.write("FAILED", flush=True)
             done.add(batch_id)
             PROGRESS_PATH.write_text(json.dumps(sorted(done)), "utf-8")
             failed += len(batch)
@@ -195,7 +221,7 @@ def main():
                 valid = [w.strip() for w in wrongs_raw if w and validate_option(w)]
 
                 if len(valid) < 3:
-                    print(f"(Q{start+idx}:{len(valid)}v)", end=" ", flush=True)
+                    _out.write(f"(Q{start+idx}:{len(valid)}v)", end=" ", flush=True)
 
                 while len(valid) < 3:
                     valid.append("بديل خاطئ آخر")
@@ -221,10 +247,10 @@ def main():
                 batch_fixed += 1
 
             fixed += batch_fixed
-            print(f"OK ({batch_fixed})", flush=True)
+            _out.write(f"OK ({batch_fixed})", flush=True)
 
         except (json.JSONDecodeError, KeyError, TypeError) as e:
-            print(f"PARSE: {e}", flush=True)
+            _out.write(f"PARSE: {e}", flush=True)
             failed += len(batch)
 
         done.add(batch_id)
@@ -232,9 +258,9 @@ def main():
         time.sleep(1.0)
 
         if len(done) % 10 == 0:
-            print(f"  >> Checkpoint: {fixed}/{total} fixed, {failed} failed", flush=True)
+            _out.write(f"  >> Checkpoint: {fixed}/{total} fixed, {failed} failed", flush=True)
 
-    print(f"\nDONE: {fixed} regenerated, {failed} failed out of {total}", flush=True)
+    _out.write(f"\nDONE: {fixed} regenerated, {failed} failed out of {total}", flush=True)
 
     remaining = 0
     for fp in sorted(BANKS_DIR.glob('*.json')):
@@ -243,7 +269,7 @@ def main():
             for q in qs:
                 if REGEN_MARKER in q.get('options', []):
                     remaining += 1
-    print(f"Remaining __NEED_REGEN__: {remaining}", flush=True)
+    _out.write(f"Remaining __NEED_REGEN__: {remaining}", flush=True)
 
 
 if __name__ == "__main__":

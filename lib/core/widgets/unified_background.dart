@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// الخلفية الموحدة لجميع شاشات التطبيق — صورة خلفية مع تدرج داكن
-/// يضمن بقاء المحتوى واضحاً وقابلاً للقراءة فوق الصورة.
+/// الخلفية الموحدة لجميع شاشات التطبيق بعد واجهة الترحيب.
+///
+/// تستخدم `background_screens.png` — خلفية كحلية مولَّدة بإضاءة مقيَّدة
+/// (ذروة السطوع 0.032) فلا تُطبع أي منطقة ساطعة تطمس العناوين أو
+/// الإطارات، ولا حاجة إلى طبقة تعتيم فوقها.
 class UnifiedBackground extends StatelessWidget {
   final Widget child;
 
@@ -13,26 +16,8 @@ class UnifiedBackground extends StatelessWidget {
       children: [
         const Positioned.fill(
           child: Image(
-            image: AssetImage('assets/images/خلفية_الموحدة.jpg'),
+            image: AssetImage('assets/images/background_screens.png'),
             fit: BoxFit.cover,
-          ),
-        ),
-        const Positioned.fill(
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                // تعتيم مدروس: يُبقي روح الصورة ظاهرة ويضمن تباينًا كافيًا
-                // للأيقونات والنصوص في الأعلى والأسفل.
-                colors: [
-                  Color(0x990F3D3D),
-                  Color(0x8C0B2B2B),
-                  Color(0xBF061919),
-                ],
-                stops: [0.0, 0.5, 1.0],
-              ),
-            ),
           ),
         ),
         child,

@@ -673,7 +673,8 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_left_rounded,
+              // سهم تقدّم: chevron_right تنعكس في RTL فتشير يسارًا.
+              const Icon(Icons.chevron_right_rounded,
                   color: AppColors.goldSoft, size: 22),
             ],
           ),
@@ -969,7 +970,8 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                 Icon(
                   isLocked
                       ? Icons.lock_outline_rounded
-                      : Icons.chevron_left_rounded,
+                      // سهم تقدّم: chevron_right تنعكس في RTL فتشير يسارًا.
+                      : Icons.chevron_right_rounded,
                   color: isLocked ? AppColors.gold : AppColors.ok,
                   size: 22,
                 ),

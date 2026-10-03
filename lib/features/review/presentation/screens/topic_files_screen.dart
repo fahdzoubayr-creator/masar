@@ -7,6 +7,7 @@ import 'package:masar_app/core/models/topic_attempt.dart';
 import 'package:masar_app/core/services/generated_quiz_service.dart';
 import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/question_repository.dart';
+import 'package:masar_app/core/services/question_validator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/services/review_file_service.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
@@ -123,6 +124,40 @@ class TopicFilesScreen extends StatelessWidget {
                     : '${files.length} ملفات للمراجعة',
                     style: const TextStyle(
                         fontSize: 11, color: AppColors.goldSoft)),
+                const SizedBox(height: 12),
+                // زر فتح كل ملفات المحور في عارض PDF واحد (متسلسلة).
+                if (files.isNotEmpty)
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        playSfx(Sfx.select);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PdfViewerScreen(
+                              assetPath: files.first.assetPath,
+                              title: topicTitle,
+                              assetPaths: files
+                                  .map((f) => f.assetPath)
+                                  .toList(growable: false),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.menu_book_rounded,
+                          color: AppColors.goldSoft, size: 18),
+                      label: const Text('فتح كل الملفات'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.goldSoft,
+                        side: const BorderSide(
+                            color: AppColors.gold, width: 1.5),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
                 const SizedBox(height: 16),
                 Expanded(
                   child: files.isEmpty
@@ -205,7 +240,8 @@ class TopicFilesScreen extends StatelessWidget {
                                       constraints: const BoxConstraints(
                                           minWidth: 36, minHeight: 36),
                                     ),
-                                    const Icon(Icons.chevron_left_rounded,
+                                    // سهم تقدّم: chevron_right تنعكس في RTL فتشير يسارًا.
+                                    const Icon(Icons.chevron_right_rounded,
                                         color: AppColors.muted, size: 22),
                                   ],
                                 ),
@@ -328,82 +364,138 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
   Future<void> _openQuiz(BuildContext context) async {
     final locked = QuizAttemptService.isLocked(_attempt);
     if (locked) return;
-    String? jobRef; // معرّف مهمة التوليد المتدرج (يُضبط عند سقوط البنوك)
-    const totalTarget = 70;
+
+    // ===== الحالة المشتركة بين التحميل الأول والاستكمال =====
+    String? jobRef; // مهمة التوليد الجارية في الخلفية
+    bool genFailed = false; // فشل التوليد => نكمل من البنك فقط
+    final delivered = <String>{}; // ما استلمناه سابقاً، لتفادي التكرار
+    var bankQueue = <Question>[]; // بنك احتياطي يكمل العدد عند الحاجة
+    int bankCursor = 0; // موضع القراءة في طابور بنك الأسئلة
+    var bankOffset = 0;
+    const bankHead = 10; // أسئلة البنك التي تُعرض فوراً
+    const totalTarget = 50;
+
+    final subject = widget.topicTitle.isNotEmpty
+        ? widget.topicTitle
+        : widget.folderTitle;
+
+    // ملفات المحور التي يُولَّد منها.
+    var files = await ReviewFileService.loadFolderPdfs(
+        widget.folderTitle,
+        topic: widget.topicTitle);
+    if (files.isEmpty) {
+      files = await ReviewFileService.loadFolderPdfs(widget.folderTitle);
+    }
+
+    // بدء التوليد في الخلفية فوراً، دون أي انتظار.
+    if (files.isNotEmpty && jobRef == null) {
+      unawaited(() async {
+        try {
+          final start = await GeneratedQuizService.startProgressive(
+            files.first.assetPath,
+            subject: subject,
+            sub: widget.topicTitle,
+            sourceName: files.first.displayName,
+          );
+          jobRef = start.jobId;
+          for (final q in start.first) {
+            delivered.add(q.text.trim());
+          }
+        } catch (_) {
+          genFailed = true;
+        }
+      }());
+    } else if (files.isEmpty) {
+      genFailed = true;
+    }
+
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => QuizScreen(
           questionLoader: () async {
-            // 1) بنك الأسئلة.
-            var bankQs = await QuestionGenerator.generateForFolder(
-                widget.folderTitle,
-                topic: widget.topicTitle);
-            if (bankQs.isEmpty) {
-              // مطابقة بنكية مرنة: يلتقط بنوكاً مثل «مؤسسات الريادة — مقاربة…»
+            // ===== فتح فوري: أول 10 أسئلة من البنك =====
+            var head = await QuestionGenerator.generateForFolder(
+              widget.folderTitle,
+              topic: widget.topicTitle,
+              count: bankHead + 20,
+            );
+            if (head.length < bankHead) {
               final fuzzy =
                   await QuestionRepository.instance.loadQuestions(
-                subject: widget.topicTitle.isNotEmpty
-                    ? widget.topicTitle
-                    : widget.folderTitle,
-              );
-              if (fuzzy.length >= 20) bankQs = fuzzy;
-            }
-
-            // 2) ملفات المحور للتوليد الإثرائي (لا يُنتظَر عند توفر بنك).
-            var files = await ReviewFileService.loadFolderPdfs(
-                widget.folderTitle,
-                topic: widget.topicTitle);
-            if (files.isEmpty) {
-              files =
-                  await ReviewFileService.loadFolderPdfs(widget.folderTitle);
-            }
-            final subject = widget.topicTitle.isNotEmpty
-                ? widget.topicTitle
-                : widget.folderTitle;
-
-            // 3) يوجد بنك؟ نفتح فوراً به والتوليد يُستكمل في الخلفية.
-            if (bankQs.isNotEmpty) {
-              if (files.isNotEmpty) {
-                unawaited(() async {
-                  try {
-                    final start = await GeneratedQuizService.startProgressive(
-                        files.first.assetPath,
-                        subject: subject,
-                        sourceName: files.first.displayName);
-                    jobRef = start.jobId;
-                  } catch (_) {
-                    jobRef = null;
-                  }
-                }());
-              }
-              return bankQs.take(totalTarget).toList();
-            }
-
-            // 4) لا بنك — توليد متدرج: دفعة أولى فورية ثم استكمال بالخلفية.
-            if (files.isEmpty) return const <Question>[];
-            try {
-              final start = await GeneratedQuizService.startProgressive(
-                  files.first.assetPath,
-                  subject: subject,
-                  sourceName: files.first.displayName);
-              jobRef = start.jobId;
-              return start.first;
-            } catch (_) {
-              // تعذر المتدرج — نتراجع للتوليد المتزامن الكامل.
-              return GeneratedQuizService.fromPdfs(
-                files.map((f) => f.assetPath).toList(),
                 subject: subject,
-                sourceNames: files.map((f) => f.displayName).toList(),
               );
+              final seen = <String>{...head.map((q) => q.text.trim())};
+              for (final q in fuzzy) {
+                if (head.length >= bankHead) break;
+                if (seen.add(q.text.trim())) head.add(q);
+              }
             }
+            head = head
+                .map(QuestionGenerator.withShuffledOptions)
+                .take(bankHead)
+                .toList();
+            for (final q in head) {
+              delivered.add(q.text.trim());
+            }
+            return head;
           },
           restLoader: () async {
-            if (jobRef == null || jobRef!.isEmpty) {
-              return const <Question>[];
+            // لا نصل إلى الهدف أبداً قبل 50 سؤالاً.
+            if (delivered.length >= totalTarget) return const <Question>[];
+
+            // ===== 1) أسئلة مولَّدة، واحداً تلو الآخر =====
+            if (!genFailed && jobRef != null && jobRef!.isNotEmpty) {
+              final snap = await GeneratedQuizService.pollSnapshot(jobRef!);
+              for (final q in snap) {
+                if (delivered.length >= totalTarget) break;
+                final key = q.text.trim();
+                if (!delivered.add(key)) continue;
+                if (QuestionValidator.filterValid([q]).isEmpty) continue;
+                return <Question>[q]; // سؤال واحد => العدّاد يتحرّك
+              }
+              if (await GeneratedQuizService.jobWorking(jobRef!)) {
+                await Future.delayed(const Duration(milliseconds: 700));
+                return const <Question>[];
+              }
             }
-            final rest =
-                await GeneratedQuizService.restWhenReady(jobRef ?? '');
-            return rest;
+
+            // ===== 2) بنك الأسئلة: يملأ حتى reaches 50، بلا سقف بعدد واحد =====
+            while (bankQueue.isEmpty) {
+              if (delivered.length >= totalTarget) return const <Question>[];
+              final need = totalTarget - delivered.length;
+              bankQueue = await QuestionGenerator.generateForFolder(
+                widget.folderTitle,
+                topic: widget.topicTitle,
+                count: need + 40,
+              );
+              // لا بنك متبقٍ بعد إعادة السحب => انتهى كل شيء.
+              if (bankQueue.isEmpty) {
+                if (jobRef == null || jobRef!.isEmpty) {
+                  final fuzzy =
+                      await QuestionRepository.instance.loadQuestions(
+                    subject: subject,
+                  );
+                  bankQueue = fuzzy;
+                }
+                if (bankQueue.isEmpty) return const <Question>[];
+                break;
+              }
+              bankOffset += 0;
+            }
+
+            // نأخذ السؤال التالي من الطابور (توزيع متنوّع: قفزات منتظمة).
+            while (bankCursor < bankQueue.length) {
+              if (delivered.length >= totalTarget) return const <Question>[];
+              final q = bankQueue[bankCursor];
+              bankCursor++;
+              final key = q.text.trim();
+              if (!delivered.add(key)) continue;
+              if (QuestionValidator.filterValid([q]).isEmpty) continue;
+              return <Question>[QuestionGenerator.withShuffledOptions(q)];
+            }
+            // استُهلك الطابور => نكمل من جديد في النداء القادم.
+            bankQueue = [];
+            return const <Question>[];
           },
           testType: 'كويز المحور الفرعي',
           axisName: widget.folderTitle,
@@ -465,10 +557,32 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
           ),
           const SizedBox(height: 8),
           const Text(
-            'إذا لم تحصل على 50% على الأقل في أسئلة هذا الكويز، سيتم منعك من إعادة المحاولة لمدة 3 ساعات — ارجع إلى المراجعة أولاً.',
+            'إذا لم تحصل على 50% على الأقل في أسئلة هذا الكويز، سيتم منعك من إعادة المحاولة لمدة 3 ساعات.',
             style: TextStyle(fontSize: 11, color: AppColors.muted, height: 1.6),
           ),
           const SizedBox(height: 10),
+          // تذكير قبل بدء الكويز — بارز، بلون أحمر، في وسط الإطار.
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppColors.err.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.err.withValues(alpha: 0.55), width: 1.5),
+            ),
+            child: const Text(
+              'هل أنت متأكد من مراجعة هذا المحور بشكل جيد؟',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFFFF8A73),
+                height: 1.7,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
           if (_loading)
             const Center(
                 child: SizedBox(
@@ -493,8 +607,8 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
                   Expanded(
                     child: Text(
                       _remaining.isEmpty
-                          ? 'أنت ممنوع من الكويز — ارجع إلى المراجعة'
-                          : 'أنت ممنوع من الكويز — ارجع إلى المراجعة · متبقي: $_remaining',
+                          ? 'أنت ممنوع من الكويز — راجع المحور ثم انتظر'
+                          : 'أنت ممنوع من الكويز — راجع المحور · متبقي: $_remaining',
                       style: const TextStyle(
                           fontSize: 12, color: AppColors.err, height: 1.5),
                     ),

@@ -19,7 +19,19 @@ import 'package:masar_app/features/review/presentation/widgets/zoom_controls_ove
 class PdfViewerScreen extends StatefulWidget {
   final String assetPath;
   final String title;
-  const PdfViewerScreen({super.key, required this.assetPath, required this.title});
+  /// قائمة اختيارية بكل ملفات المحور — عندها يظهر تنقّل بين الملفات
+  /// (سابق/التالي) في شريط العنوان. `assetPath` هو الملف الأول.
+  final List<String> assetPaths;
+
+  const PdfViewerScreen({
+    super.key,
+    required this.assetPath,
+    required this.title,
+    this.assetPaths = const [],
+  });
+
+  /// هل الشاشة تعرض أكثر من ملف (وضع القراءة المتسلسلة)؟
+  bool get hasMultiple => assetPaths.length > 1;
 
   @override
   State<PdfViewerScreen> createState() => _PdfViewerScreenState();
@@ -40,10 +52,23 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   final ScrollController _imgScroll = ScrollController();
   final TransformationController _imgTc = TransformationController();
 
+  // فهرس الملف الحالي ضمن قائمة المحور (0 = الملف المفرد).
+  int _fileIndex = 0;
+  String _currentPath = '';
+  bool _openingFile = false;
+
+  /// عدد الملفات المعروضة (1 إذا كان ملفًا مفردًا).
+  int get _fileCount => widget.hasMultiple ? widget.assetPaths.length : 1;
+
+  /// مسار الملف الحالي فعليًا.
+  String get _path =>
+      widget.hasMultiple ? widget.assetPaths[_fileIndex] : widget.assetPath;
+
   @override
   void initState() {
     super.initState();
     _imgScroll.addListener(_onImageScroll);
+    _currentPath = widget.assetPath;
     _open();
   }
 
@@ -60,7 +85,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   Future<void> _open() async {
     // 1) الصفحات المصوّرة من السحابة (عربية مضمونة) برفق دون أي سيرفر محلي.
     if (ReviewPageImages.enabled) {
-      final meta = await ReviewPageImages.fetchMeta(widget.assetPath);
+      final meta = await ReviewPageImages.fetchMeta(_path);
       if (meta != null) {
         if (!mounted) return;
         setState(() {
@@ -73,7 +98,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     }
     // 2) التراجع: المحرك الأصلي (pdfx).
     try {
-      final bytes = await ReviewFileService.readAsset(widget.assetPath);
+      final bytes = await ReviewFileService.readAsset(_path);
       final doc = await PdfDocument.openData(bytes);
       final controller = PdfControllerPinch(
         document: Future<PdfDocument>.value(doc),
@@ -88,14 +113,54 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         _controller = controller;
         _pagesCount = doc.pagesCount;
         _opening = false;
+        _openingFile = false;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _error = e;
         _opening = false;
+        _openingFile = false;
       });
     }
+  }
+
+  /// الانتقال إلى ملف آخر من قائمة المحور (وضع القراءة المتسلسلة).
+  Future<void> _openFileAt(int index) async {
+    if (!widget.hasMultiple) return;
+    if (index < 0 || index >= widget.assetPaths.length) return;
+    if (index == _fileIndex && (_controller != null || _imgMeta != null)) return;
+    final path = widget.assetPaths[index];
+    if (_controller != null) {
+      _controller!.removeListener(_onZoomChanged);
+      _controller!.dispose();
+    }
+    setState(() {
+      _fileIndex = index;
+      _currentPath = path;
+      _controller = null;
+      _imgMeta = null;
+      _pagesCount = null;
+      _error = null;
+      _page = 1;
+      _imageFallback = false;
+      _opening = true;
+      _openingFile = true;
+      _zoomRatio = 1.0;
+    });
+    if (_imgScroll.hasClients) _imgScroll.jumpTo(0);
+    _imgTc.value = Matrix4.identity();
+    await _open();
+  }
+
+  void _nextFile() {
+    if (!widget.hasMultiple) return;
+    _openFileAt(_fileIndex + 1);
+  }
+
+  void _prevFile() {
+    if (!widget.hasMultiple) return;
+    _openFileAt(_fileIndex - 1);
   }
 
   /// ينتقل من وضعية الصور إلى المحرك الأصلي عند فشل الصورة الأولى.
@@ -105,7 +170,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     final meta = _imgMeta;
     if (meta == null) return;
     try {
-      final bytes = await ReviewFileService.readAsset(widget.assetPath);
+      final bytes = await ReviewFileService.readAsset(_path);
       final doc = await PdfDocument.openData(bytes);
       final controller = PdfControllerPinch(
         document: Future<PdfDocument>.value(doc),
@@ -130,7 +195,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   /// فتح الملف على المتصفح (ويب بشاشة عريضة فقط): صفحة عرض كبيرة
   /// بصفحات PNG المعالَجة بـMuPDF فيرجع العرض كبيرًا والعربية سليمة.
   Future<void> _openInBrowser() async {
-    final uri = Uri.tryParse(ReviewFileService.viewerUrlFor(widget.assetPath));
+    final uri = Uri.tryParse(ReviewFileService.viewerUrlFor(_path));
     if (uri == null) return;
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened && mounted) {
@@ -244,10 +309,40 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
     // وعلى الهاتف (شاشة ضيقة أو نسخة غير ويب) نخفيه.
     final isDesktop = kIsWeb && MediaQuery.sizeOf(context).width > 600;
     return Scaffold(
-      backgroundColor: const Color(0xFF232B38),
+      // الخلفية الموحدة تُقدَّم من main.dart — لا طبقة معتمة هنا.
       appBar: AppBar(
-        title: Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(
+          widget.hasMultiple
+              ? '${widget.title} · ${_fileIndex + 1}/$_fileCount'
+              : widget.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        leading: widget.hasMultiple
+            ? IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                    color: AppColors.goldSoft, size: 18),
+                tooltip: 'رجوع',
+              )
+            : null,
         actions: [
+          // تنقّل بين ملفات المحور: prev (يمين) ← current ← next (يسار).
+          if (widget.hasMultiple) ...[
+            IconButton(
+              onPressed: _openingFile || _fileIndex == 0 ? null : _prevFile,
+              icon: const Icon(Icons.arrow_forward_ios_rounded,
+                  color: AppColors.goldSoft, size: 18),
+              tooltip: 'الملف السابق',
+            ),
+            IconButton(
+              onPressed:
+                  _openingFile || _fileIndex >= _fileCount - 1 ? null : _nextFile,
+              icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.goldSoft, size: 18),
+              tooltip: 'الملف التالي',
+            ),
+          ],
           if (isDesktop)
             Center(
               child: Padding(
@@ -285,6 +380,19 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
         child: Stack(
           children: [
             Positioned.fill(child: _buildBody()),
+            if (widget.hasMultiple && _error != null && _fileIndex < _fileCount - 1)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 24,
+                child: Center(
+                  child: FilledButton.icon(
+                    onPressed: _nextFile,
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
+                    label: const Text('الملف التالي'),
+                  ),
+                ),
+              ),
             if (!_opening && _error == null && (_controller != null || _imgMeta != null))
               ZoomControlsOverlay(
                 zoomRatio: _zoomRatio,
@@ -332,11 +440,15 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             children: [
               const Icon(Icons.error_outline, size: 52, color: AppColors.err),
               const SizedBox(height: 16),
-              const Text('تعذّر فتح هذا الملف',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.cream)),
+              Text(
+                widget.hasMultiple && _fileIndex < _fileCount - 1
+                    ? 'تعذّر فتح هذا الملف — انتقل للملف التالي'
+                    : 'تعذّر فتح هذا الملف',
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.cream),
+              ),
               const SizedBox(height: 8),
               Text('$_error',
                   textAlign: TextAlign.center,
@@ -362,7 +474,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
       scrollDirection: Axis.vertical,
       minScale: _minScale,
       maxScale: _maxScale,
-      backgroundDecoration: const BoxDecoration(color: Color(0xFF232B38)),
+      // لا غطاء خلفي: تُعرض الخلفية الموحّدة حول صفحات PDF مباشرة.
       onPageChanged: (page) {
         if (mounted && page != _page) {
           setState(() => _page = page);
@@ -381,7 +493,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
       itemBuilder: (context, index) {
         final s = meta.natural[index];
         final aspect = s.width <= 0 || s.height <= 0 ? 1.0 : s.width / s.height;
-        final url = ReviewPageImages.pageUrl(widget.assetPath, index + 1);
+        final url = ReviewPageImages.pageUrl(_path, index + 1);
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
           child: InteractiveViewer(

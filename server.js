@@ -40,8 +40,58 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// ===== .env — أسرار محلية، الملف مستثنى من git =====
+// يقرأ server.js القيم التالية بالترتيب: متغير البيئة الحقيقي ثم .env
+// (قيمة المتغير البيئة الحقيقية تتقدم دائمًا على ملف .env).
+(function loadDotEnv() {
+  try {
+    const raw = fs.readFileSync(path.join(__dirname, '.env'), 'utf8');
+    for (const line of raw.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+      if (!m) continue;
+      const key = m[1];
+      let val = m[2].trim();
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.slice(1, -1);
+      }
+      if (val && !process.env[key]) process.env[key] = val;
+    }
+  } catch {
+    // لا .env — تُستخدم متغيرات البيئة فقط.
+  }
+})();
+
 const ROOT = path.join(__dirname, 'build', 'web');
 const PORT = Number(process.env.PORT) || 8123;
+
+/**
+ * مزوّدو توليد الأسئلة — بالترتيب. كلهم OpenAI-compatible،
+ * والمفتاح يأتي من متغير البيئة ثم .env. المزوّد بلا مفتاح يُتجاهل.
+ * عند 429 ينتقل quiz_from_pdf.py تلقائيًا إلى المزوّد التالي.
+ */
+const LLM_PROVIDERS = [
+  { id: 'groq', keyEnv: 'GROQ_API_KEY' },
+  { id: 'gemini', keyEnv: 'GEMINI_API_KEY' },
+  { id: 'github', keyEnv: 'GITHUB_TOKEN' },
+];
+
+/** معرّفات المزوّدين الذين توفّر لهم مفاتيح. */
+const activeProviders = () =>
+  LLM_PROVIDERS.filter((p) => (process.env[p.keyEnv] || '').trim()).map(
+    (p) => p.id
+  );
+
+/** خطأ مفهوم عندما لا يوجد أي مفتاح. */
+const noProviderError = () => ({
+  error: 'NO_LLM_KEY',
+  detail: 'set at least one of: ' +
+    LLM_PROVIDERS.map((p) => p.keyEnv).join(', ') +
+    ' (in .env or the environment)',
+  providers: activeProviders(),
+});
 
 // ===== الملفات المرفوعة (صور/مستندات) — خارج مجلد البناء كي لا تُمسح عند إعادة البناء =====
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
@@ -475,6 +525,7 @@ const handler = async (req, res) => {
   // ===== توليد كويز من ملف الدرس (PDF -> Groq -> 70 سؤالاً) =====
   if (req.method === 'POST' && urlPath === '/api/quiz/generate-from-pdf') {
     let body = '';
+    req.setEncoding('utf8');
     req.on('data', (c) => {
       body += c;
       if (body.length > 8192) req.destroy();
@@ -487,7 +538,7 @@ const handler = async (req, res) => {
       const rawPath = typeof payload.path === 'string' ? payload.path : '';
       const payloadUrl = typeof payload.url === 'string' ? payload.url : '';
       if (!rawPath && !payloadUrl) return json(res, 400, { error: 'path أو url مطلوب' });
-      let rel;
+      let rel = rawPath;
       let remoteUrl = '';
       if (payloadUrl) {
         // قراءة PDF من GitHub سحابياً — نطاقات مسموحة فقط
@@ -514,28 +565,12 @@ const handler = async (req, res) => {
           return json(res, 403, { error: 'مسار غير مسموح' });
         }
       }
-      const groqKey = () =>
-        process.env.GROQ_API_KEY ||
-        (() => {
-          try {
-            const t = fs.readFileSync(
-              path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
-              'utf8'
-            );
-            const m = t.match(/gsk_[A-Za-z0-9]+/);
-            return m ? m[0] : null;
-          } catch {
-            return null;
-          }
-        })();
-
+      const providers = activeProviders();
+      if (!providers.length) return json(res, 503, noProviderError());
       const proceed = () => {
-        const key = groqKey();
-        if (!key) return json(res, 503, { error: 'GROQ_KEY_MISSING' });
         // بلا كاش دائم: كل محاولة توليد جديدة ببذرة مختلفة.
         const genDir = path.join(__dirname, 'assets', 'banks', 'generated');
         fs.mkdirSync(genDir, { recursive: true });
-        const crypto = require('crypto');
         const stamp =
           Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
         const seed = crypto.randomInt(1, 0x7fffffff);
@@ -553,11 +588,15 @@ const handler = async (req, res) => {
           '--subject', String(payload.subject || ''),
           '--out', outFile
         );
+        if (typeof payload.sub === 'string' && payload.sub.trim()) {
+          scriptArgs.push('--sub', payload.sub.trim());
+        }
         if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
           scriptArgs.push('--source-name', payload.sourceName.trim());
         }
+        // مفاتيح المزوّدين كلها موروثة من process.env (المحمَّلة من .env)
         const proc = spawn('python', scriptArgs, {
-          env: { ...process.env, GROQ_API_KEY: key, PYTHONIOENCODING: 'utf-8' },
+          env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
           windowsHide: true,
         });
         let errTxt = '';
@@ -575,8 +614,8 @@ const handler = async (req, res) => {
           if (code === 0 && fs.existsSync(outFile)) {
             try {
               const j = JSON.parse(fs.readFileSync(outFile, 'utf8'));
-              console.log('[quiz-gen] ' + (remoteUrl || rel) + ' seed=' + seed + ' -> ' + j.count + 'q');
-              return json(res, 200, { cached: false, seed, ...j });
+              console.log('[quiz-gen] ' + (remoteUrl || rel) + ' seed=' + seed + ' -> ' + j.count + 'q via ' + providers.join(','));
+              return json(res, 200, { cached: false, seed, providers, ...j });
             } catch (e) {
               errTxt += String(e);
             }
@@ -606,6 +645,7 @@ const handler = async (req, res) => {
 
   if (req.method === 'POST' && urlPath === '/api/quiz/start-from-pdf') {
     let body = '';
+    req.setEncoding('utf8');
     req.on('data', (c) => {
       body += c;
       if (body.length > 8192) req.destroy();
@@ -643,21 +683,8 @@ const handler = async (req, res) => {
           return json(res, 403, { error: 'مسار غير مسموح' });
         }
       }
-      const gkey =
-        process.env.GROQ_API_KEY ||
-        (() => {
-          try {
-            const t = fs.readFileSync(
-              path.join(__dirname, 'tools', 'ai_review', 'run_pipeline.ps1'),
-              'utf8'
-            );
-            const m = t.match(/gsk_[A-Za-z0-9]+/);
-            return m ? m[0] : null;
-          } catch {
-            return null;
-          }
-        })();
-      if (!gkey) return json(res, 503, { error: 'GROQ_KEY_MISSING' });
+      const jobProviders = activeProviders();
+      if (!jobProviders.length) return json(res, 503, noProviderError());
 
       const crypto = require('crypto');
       const jobId =
@@ -674,20 +701,24 @@ const handler = async (req, res) => {
         path.join(__dirname, 'tools', 'quiz_from_pdf.py'),
         '--seed', String(seed),
         '--subject', String(payload.subject || ''),
-        '--count', '70',
+        '--count', '50',
         '--phrase-correct', '15',
         '--first-count', '4',
         '--out-first', fFirst,
         '--out-rest', fRest,
         '--out', fFull,
       ];
+      if (typeof payload.sub === 'string' && payload.sub.trim()) {
+        scriptArgs.push('--sub', payload.sub.trim());
+      }
       if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
         scriptArgs.push('--source-name', payload.sourceName.trim());
       }
       if (remoteUrl) scriptArgs.push('--url', remoteUrl);
       else scriptArgs.push('--pdf', pdfFile);
+      // مفاتيح المزوّدين كلها موروثة من process.env (المحمَّلة من .env)
       const proc = spawn('python', scriptArgs, {
-        env: { ...process.env, GROQ_API_KEY: gkey, PYTHONIOENCODING: 'utf-8' },
+        env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
         windowsHide: true,
       });
       let errTxt = '';
@@ -703,36 +734,22 @@ const handler = async (req, res) => {
         });
         setTimeout(() => {
           quizJobs.delete(jobId);
-          [fFirst, fRest, fFull].forEach((f) => fs.unlink(f, () => {}));
+          const fProg = path.join(jobDir, jobId + '.progress.json');
+          [fFirst, fRest, fFull, fProg].forEach((f) => fs.unlink(f, () => {}));
         }, 1800000).unref();
       });
       quizJobs.set(jobId, { proc });
 
-      // ننتظر ظهور ملف الدفعة الأولى حتى 90 ثانية ثم نرد فوراً بما توفر
-      const t0 = Date.now();
-      const pollFirst = setInterval(() => {
-        if (fs.existsSync(fFirst)) {
-          clearInterval(pollFirst);
-          try {
-            const j = JSON.parse(fs.readFileSync(fFirst, 'utf8'));
-            console.log('[quiz-start] ' + jobId + ' first=' + j.count);
-            return json(res, 200, {
-              jobId,
-              questions: j.questions,
-              hasMore: true,
-            });
-          } catch (e) {}
-        }
-        const alive = quizJobs.get(jobId)?.proc && !quizJobs.get(jobId).done;
-        if (Date.now() - t0 > 90000 || (!alive && !fs.existsSync(fFirst))) {
-          clearInterval(pollFirst);
-          console.error('[quiz-start-fail] ' + jobId + ' ' + errTxt.slice(-300));
-          return json(res, 502, {
-            error: 'GENERATION_FAILED',
-            detail: errTxt.slice(-160),
-          });
-        }
-      }, 300);
+      // ردّ فوري بمعرّف المهمة فقط: التوليد يجري في الخلفية والواجهة
+      // تستعلم من /api/quiz/job/<id> كل ثانيتين. لا انتظار إطلاقاً،
+      // فيفتح الكويز في أقل من ثانية.
+      console.log('[quiz-start] ' + jobId + ' dispatched');
+      return json(res, 200, {
+        jobId,
+        questions: [],
+        hasMore: true,
+        state: 'working',
+      });
     });
     return;
   }
@@ -744,19 +761,44 @@ const handler = async (req, res) => {
     const fRest = path.join(jobDir, jobId + '.rest.json');
     const fFull = path.join(jobDir, jobId + '.full.json');
     const fFirst = path.join(jobDir, jobId + '.first.json');
-    if (fs.existsSync(fRest)) {
-      try {
-        const j = JSON.parse(fs.readFileSync(fRest, 'utf8'));
-        return json(res, 200, { state: 'done', questions: j.questions || [] });
-      } catch {}
-    }
-    if (fs.existsSync(fFull)) return json(res, 200, { state: 'done', questions: [] });
-    if (!fs.existsSync(fFirst)) return json(res, 404, { error: 'JOB_NOT_FOUND' });
+    const fProg = path.join(jobDir, jobId + '.progress.json');
     const ent = quizJobs.get(jobId);
-    if (ent && !ent.done && ent.proc && ent.proc.exitCode == null) {
-      return json(res, 200, { state: 'working' });
+    const alive = !!(ent && !ent.done && ent.proc && ent.proc.exitCode == null);
+
+    const readJson = (f) => {
+      try {
+        return JSON.parse(fs.readFileSync(f, 'utf8'));
+      } catch {
+        return null;
+      }
+    };
+
+    // 1) انتهى التوليد: المصدر النهائي.
+    if (fs.existsSync(fRest)) {
+      const j = readJson(fRest);
+      if (j) {
+        return json(res, 200, { state: 'done', questions: j.questions || [] });
+      }
     }
-    return json(res, 200, { state: ent?.ok ? 'working' : 'error' });
+    if (fs.existsSync(fFull)) {
+      return json(res, 200, { state: 'done', questions: [] });
+    }
+
+    // 2) ما زال يولّد: نقدّم كل ما وصل حتى الآن (بثّ تدريجي).
+    const prog = fs.existsSync(fProg) ? readJson(fProg) : null;
+    const first = fs.existsSync(fFirst) ? readJson(fFirst) : null;
+    const acc = (first && first.questions) || [];
+    if (prog && prog.questions) acc.push(...prog.questions);
+    const known =
+      acc.length || alive || fs.existsSync(fProg) || fs.existsSync(fFirst);
+    if (known) {
+      return json(res, 200, {
+        state: acc.length ? 'working' : alive ? 'working' : 'error',
+        questions: acc,
+        hasMore: true,
+      });
+    }
+    return json(res, 404, { error: 'JOB_NOT_FOUND' });
   }
 
   // بث ملف مراجعة عبر السيرفر كوسيط ? روابط Releases لا ترسل ترويسات

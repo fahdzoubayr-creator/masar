@@ -653,7 +653,8 @@ class _LevelMapScreenState extends State<LevelMapScreen>
         children: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(Icons.arrow_forward_ios_rounded,
+            // سهم رجوع: في RTL تنعكس arrow_back لتشير يمينًا (اتجاه العودة).
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
                 color: AppColors.goldSoft, size: 18),
             tooltip: 'رجوع',
           ),
@@ -1876,21 +1877,8 @@ class _SpacePainter extends CustomPainter {
     final w = size.width;
     final spaceH = size.height;
 
-    // ── خلفية الفضاء المتدرجة ──
-    final bgPaint = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset(0, 0),
-        Offset(0, spaceH),
-        [
-          const Color(0xFF050A15),
-          const Color(0xFF0A1628),
-          const Color(0xFF0D1F3C),
-          const Color(0xFF0A1628),
-          const Color(0xFF050A15),
-        ],
-        const [0.0, 0.2, 0.5, 0.8, 1.0],
-      );
-    canvas.drawRect(Rect.fromLTWH(0, 0, w, spaceH), bgPaint);
+    // لا خلفية خاصة هنا — الخلفية الموحّدة للتطبيق (من main.dart) هي
+    // الخلفية الوحيدة، وتحمل هذه الطبقة النجوم والكواكب فحسب.
 
     // ── النجوم ──
     for (final star in stars) {

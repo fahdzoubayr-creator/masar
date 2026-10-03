@@ -67,6 +67,10 @@ class _QuizScreenState extends State<QuizScreen> {
   bool finished = false;
   bool _moreLoading = false;
   bool _waitingMore = false;
+  bool _exhausted = false;
+  bool _loading = false;
+  int _loadTries = 0;
+  Timer? _moreTimer;
   int? _lastPct;
   Timer? _timer;
   Duration _remaining = Duration.zero;
@@ -80,10 +84,12 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _moreTimer?.cancel();
     super.dispose();
   }
 
   Future<void> _load() async {
+    if (mounted) setState(() => _loading = true);
     final list = widget.questionLoader != null
         ? await widget.questionLoader!()
         : await QuestionRepository.instance.loadQuestions(
@@ -92,6 +98,7 @@ class _QuizScreenState extends State<QuizScreen> {
     if (!mounted) return;
     final filtered = QuestionValidator.filterValid(list);
     setState(() {
+      _loading = false;
       pool = filtered;
       _remaining = widget.examDuration ?? Duration.zero;
     });
@@ -104,38 +111,65 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   /// يجلب بقية أسئلة التوليد المتدرج ويُلحقها بالقائمة الحالية.
+  ///
+  /// تُستدعى دورياً حتى تنتهي المهمة أو يتوقف الخادم عن إعطاء جديد،
+  /// حتى لا يعلق الكويز على أربع أسئلة.
   Future<void> _loadMore() async {
+    if (_moreLoading || _exhausted || widget.restLoader == null) return;
     setState(() => _moreLoading = true);
     List<Question> rest = const [];
     try {
       rest = await widget.restLoader!();
     } catch (_) {}
     if (!mounted) return;
-    if (!finished && rest.isNotEmpty) {
-      final cur = pool ?? const <Question>[];
-      final fresh = QuestionValidator.filterValid(rest)
-          .where((q) => !cur.any((p) => p.text.trim() == q.text.trim()))
-          .toList();
-      if (fresh.isNotEmpty) {
-        setState(() {
-          pool = [...cur, ...fresh];
-          _moreLoading = false;
-          if (_waitingMore) {
-            _waitingMore = false;
-            current++;
-            selectedIndex = null;
-            answered = false;
-          }
-        });
-        return;
+
+    final cur = pool ?? const <Question>[];
+    final fresh = QuestionValidator.filterValid(rest)
+        .where((q) => !cur.any((p) => p.text.trim() == q.text.trim()))
+        .toList();
+
+    // لا جديد بعد عدة محاولات => انتهى التوليد.
+    _loadTries = fresh.isEmpty ? _loadTries + 1 : 0;
+
+    if (fresh.isNotEmpty) {
+      setState(() {
+        pool = [...cur, ...fresh];
+        _moreLoading = false;
+        if (_waitingMore) {
+          _waitingMore = false;
+          current++;
+          selectedIndex = null;
+          answered = false;
+        }
+      });
+      // سؤال واحد في كل نداء => يتحرّك العدّاد سؤالاً بعد سؤال.
+      _scheduleMore(1);
+      return;
+    }
+
+    setState(() => _moreLoading = false);
+
+    if (_loadTries < 120) {
+      // لم تنتهِ المهمة بعد: أعطها فرصة أخرى بدل الإنهاء المبكر
+      // (120 × 3 ثوانٍ ≈ 6 دقائق، وهي المدة القصوى للتوليد).
+      _scheduleMore(3);
+      if (_waitingMore) return; // ننتظر دون إنهاء الكويز
+    } else {
+      _exhausted = true;
+      if (_waitingMore && !finished) {
+        _saveResult();
+        setState(() => finished = true);
+        _playFinish();
       }
     }
-    setState(() => _moreLoading = false);
-    if (_waitingMore && !finished) {
-      _saveResult();
-      setState(() => finished = true);
-      _playFinish();
-    }
+  }
+
+  /// يعيد جدولة جلب الدفعة التالية دون تراكم المؤقتات.
+  void _scheduleMore(int seconds) {
+    _moreTimer?.cancel();
+    _moreTimer = Timer(Duration(seconds: seconds), () {
+      if (mounted) _loadMore();
+    });
   }
 
   void _startTimer() {
@@ -190,9 +224,11 @@ class _QuizScreenState extends State<QuizScreen> {
     final pool = this.pool;
     if (pool == null) return;
     if (current == pool.length - 1) {
-      // التوليد المتدرج: الدفعة التالية قيد التحضير — ننتظرها بدل الإنهاء.
-      if (widget.restLoader != null && _moreLoading) {
+      // التوليد المتدرج: إن كان الاستكمال جارياً أو لم ينته بعد،
+      // ننتظر الدفعة التالية بدل إنهاء الكويز على 10 أسئلة.
+      if (widget.restLoader != null && !_exhausted) {
         setState(() => _waitingMore = true);
+        if (!_moreLoading) _loadMore();
         return;
       }
       _saveResult();
@@ -279,11 +315,59 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final pool = this.pool;
-    if (pool == null) {
+    if (pool == null || _loading) {
       return Scaffold(
         appBar: AppBar(title: const Text('الاختبار')),
-        body: const Center(
-          child: CircularProgressIndicator(color: AppColors.gold),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: AppColors.gold),
+              const SizedBox(height: 18),
+              Text(
+                'جارٍ توليد الأسئلة من المحور…',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'قد تستغرق العملية لحظات',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.muted),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // ما زال التوليد جارياً ولم تصل أي دفعة بعد -> ننتظر ولا نُنهِ الكويز.
+    if (pool.isEmpty && !_exhausted && widget.restLoader != null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('الاختبار')),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: AppColors.gold),
+              const SizedBox(height: 18),
+              Text(
+                'جارٍ توليد الأسئلة من المحور…',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'سيبدأ العرض تلقائياً بمجرد جاهزية أول دفعة',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.muted),
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -333,10 +417,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 total: pool.length,
                 score: score,
                 remaining: widget.examDuration != null ? _remaining : null),
-            if ((widget.restLoader != null &&
-                    _moreLoading &&
-                    pool.isNotEmpty &&
-                    current < pool.length - 1) ||
+            if ((widget.restLoader != null && !_exhausted && pool.isNotEmpty) ||
                 _waitingMore)
               Container(
                 width: double.infinity,
