@@ -26,6 +26,9 @@ function seededShuffle(arr, seed) {
   return a;
 }
 
+/* أرقام هندية عربية للترقيم داخل اسم المحور الفرعي («النمو ٢») */
+const arNum = (n) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+
 export class Bank {
   constructor() {
     this.bySubject = new Map();
@@ -77,16 +80,22 @@ export class Bank {
       const levels = [];
       if (shuffled.length > 0) {
         // بناء L مستوى ثابتًا، كل مستوى Q سؤالًا.
-        // عند قلّة أسئلة المحور تُعاد دورة الأسئلة (wraparound) حتى نمدّه بأسئلة كافية.
+        // عند قلّة أسئلة الفصل تُعاد دورة الأسئلة (wraparound) حتى نمدّه بأسئلة كافية.
+        // اسم المحور الفرعي من config.axes يتناوب على مستويات الفصل ويُرقّم عند تكراره.
+        const axes = c.axes || [];
+        const axisParts = axes.length ? Math.ceil(L / axes.length) : 0;
         for (let li = 0; li < L; li++) {
           const questions = [];
           for (let k = 0; k < Q; k++) {
             questions.push(shuffled[(li * Q + k) % shuffled.length]);
           }
+          const axis = axes.length ? axes[li % axes.length] : null;
+          const part = axes.length ? Math.floor(li / axes.length) + 1 : 0;
           levels.push({
             id: `c${ci}_l${li + 1}`,
             index: li + 1,
             chapterIndex: ci,
+            name: axis ? (axisParts > 1 ? `${axis} ${arNum(part)}` : axis) : null,
             questions,
           });
         }
@@ -104,10 +113,11 @@ export class Bank {
     });
     // إخفاء الفصول التي لا تحتوي أسئلة
     this.chapters = this.chapters.filter((c) => c.count > 0);
-    this.chapters.forEach((c, i) => {
-      c.index = i;
-      // ترقيم متصل عبر المراحل: المحور 1 => 1..30، المحور 2 => 31..60، ...
-      c.levels.forEach((lv, j) => { lv.globalIndex = i * L + j + 1; });
+    this.chapters.forEach((c, i) => { c.index = i; });
+    // ترقيم عالمي متصل تراكميًا عبر كل الفصول
+    let g = 0;
+    this.chapters.forEach((c) => {
+      c.levels.forEach((lv) => { lv.globalIndex = ++g; });
     });
   }
 

@@ -376,6 +376,7 @@ function renderMap(scrollToChapter = null) {
       rowsHtml += h`
         <div class="level-row">
           <div class="${cls.join(" ")}" data-ci="${ci}" data-li="${li}"
+               title="${lv.name ? esc(lv.name) : ""}"
                style="left:${x.toFixed(2)}%;--n1:${t.n1};--n2:${t.n2}">
             <span class="node-shadow"></span>
             <span class="node-ring"></span>
@@ -657,7 +658,7 @@ function openPreview(chapterIndex, levelIndex) {
         <div class="pv-ic">${ICONS.play}</div>
         <div class="pv-titles">
           <h2>${esc(ch.title)}</h2>
-          <div class="sub">المستوى ${lv.globalIndex || lv.index} • ${esc(ch.subject)}</div>
+          <div class="sub">${lv.name ? esc(lv.name) + " • " : ""}المستوى ${lv.globalIndex || lv.index} • ${esc(ch.subject)}</div>
         </div>
       </div>
       <div class="pv-stars">${[0, 1, 2].map((i) => `<span class="pv-star ${i < stars ? "on" : ""}">★</span>`).join("")}</div>
@@ -859,7 +860,7 @@ function renderQuiz() {
       <div class="quiz-top">
         <button class="iconbtn" id="q-back" aria-label="إنهاء">${ICONS.close}</button>
         <div class="info">
-          <div class="line1">${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
+          <div class="line1">${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
           <div class="line2">السؤال ${q.i + 1} من ${total} • ${ICONS.check} ${q.correct} صحيحة</div>
         </div>
         ${timerChip}
@@ -1103,6 +1104,7 @@ function renderResults(r) {
     if (r.levelIndex + 1 < ch.levels.length) next = { ci: r.chapterIndex, li: r.levelIndex + 1 };
     else if (r.chapterIndex + 1 < app.bank.chapters.length) next = { ci: r.chapterIndex + 1, li: 0 };
   }
+  const nextLv = next ? app.bank.chapters[next.ci].levels[next.li] : null;
 
   const isDaily = r.mode === "daily";
   const needNext = !isDaily && r.passed && allLevelsPassed() && !seasonEligible() && neededLevels().length > 0;
@@ -1131,7 +1133,7 @@ function renderResults(r) {
         ${r.gems ? `<span class="reward-pill">${ICONS.gem} +${r.gems}</span>` : ""}
       </div>` : ""}
       <div class="actions">
-        ${!isDaily && r.passed && next && !needNext ? `<button class="btn green block" id="res-next">المستوى التالي ${ICONS.play}</button>` : ""}
+        ${!isDaily && r.passed && next && !needNext ? `<button class="btn green block" id="res-next">${nextLv && nextLv.name ? "التالي: " + esc(nextLv.name) : "المستوى التالي"} ${ICONS.play}</button>` : ""}
         ${!isDaily && needNext ? `<button class="btn green block" id="res-needed">${ICONS.star} اذهب للمستوى الناقص ${ICONS.play}</button>` : ""}
         ${!isDaily ? `<button class="btn ${r.passed && next ? "ghost" : "green"} block" id="res-retry">إعادة المحاولة</button>` : ""}
         ${isDaily ? `<button class="btn green block" id="res-again">محاولة أخرى</button>` : ""}
