@@ -16,12 +16,6 @@ const SOUNDS = {
   victory: "victory.wav",
   error: "error.wav",
   defeat: "defeat.wav",
-  explosion: "explosion.wav",
-  unlock: "dam_unlock.wav",
-  woosh: "path_unlock.mpeg",
-  hint: "tap.wav",
-  coin: "tap.wav",
-  gem: "success.wav",
 };
 
 export class Audio {

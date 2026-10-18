@@ -39,7 +39,7 @@ export const CONFIG = {
   lives: { max: 5, regenMinutes: 15 },
 
   // المؤقّت لكل سؤال
-  timer: { enabled: true, secondsPerQuestion: 45, bonusCoinsPerRemainingSecond: 0 },
+  timer: { enabled: true, secondsPerQuestion: 45 },
 
   // المعزّزات (تُشترى بالنقاط)
   boosters: {
@@ -49,34 +49,25 @@ export const CONFIG = {
   },
 
   // تحدي اليوم
-  daily: { enabled: true, questionsPerDay: 10, bonusCoins: 150, bonusGems: 2, timePerQuestion: 30 },
-
-  isRtl: true,
-};
-
-/* أنواع الأوضاع (قابلة للتوسعة) */
-export const MODES = {
-  adventure: { label: "المغامرة", icon: "🗺️" },
-  daily: { label: "تحدّي اليوم", icon: "📅" },
-  review: { label: "المراجعة", icon: "🔁" },
+  daily: { questionsPerDay: 10, bonusCoins: 150, bonusGems: 2, timePerQuestion: 30 },
 };
 
 /* ------------------------------------------------------------
    سمات المناطق (خلفيات/ألوان) — للعرض الجمالي فقط
    a/b = لون البانر، n1/n2 = لون العقدة، sky1/sky2 = سماء المنطقة،
-   hill = لون التلال، deco = عناصر زخرفية تعليمية للمنطقة
+   hill = لون التلال
    ------------------------------------------------------------ */
 export const THEMES = {
-  knowledge: { a: "#2b3fd6", b: "#17c9c0", n1: "#6f86ff", n2: "#1b2aa0", sky1: "#5b6cff", sky2: "#2b3fd6", hill: "#0e7d78", deco: ["📚", "🔭", "💠"] },
-  education: { a: "#17c9c0", b: "#21c25e", n1: "#5fe7dd", n2: "#0e7d78", sky1: "#35e0d6", sky2: "#12a097", hill: "#0e8f42", deco: ["🧠", "📖", "🪄"] },
-  psychology: { a: "#21c25e", b: "#8bd450", n1: "#79f0a0", n2: "#0e8f42", sky1: "#7bf0a0", sky2: "#17a05a", hill: "#0e8f42", deco: ["🌳", "🍃", "🦉"] },
-  didactics: { a: "#6a3bd6", b: "#8a2be2", n1: "#b28bff", n2: "#5a2bb0", sky1: "#b28bff", sky2: "#6a3bd6", hill: "#5a2bb0", deco: ["✏️", "📐", "🧩"] },
-  planning: { a: "#ff8a3c", b: "#ffcf3f", n1: "#ffb877", n2: "#c96a10", sky1: "#ffd27a", sky2: "#ff8a3c", hill: "#c96a10", deco: ["📋", "🗂️", "📍"] },
-  assessment: { a: "#ff5fa2", b: "#ff4d5e", n1: "#ff9bc0", n2: "#c01f4a", sky1: "#ff9bc0", sky2: "#ff5fa2", hill: "#c01f4a", deco: ["📝", "✅", "📊"] },
-  practice: { a: "#ffcf3f", b: "#ff8a3c", n1: "#ffe58a", n2: "#c8960a", sky1: "#ffe58a", sky2: "#ffb347", hill: "#c8960a", deco: ["🏫", "🧰", "🗝️"] },
-  legislation: { a: "#3b3bd6", b: "#6a3bd6", n1: "#8f8cff", n2: "#2a1f8f", sky1: "#8f9cff", sky2: "#3b3bd6", hill: "#2a1f8f", deco: ["⚖️", "📜", "🏛️"] },
-  summit: { a: "#8a2be2", b: "#4a2d9c", n1: "#c79bff", n2: "#5a1f9c", sky1: "#c79bff", sky2: "#8a2be2", hill: "#5a1f9c", deco: ["⛰️", "🏔️", "🗻"] },
-  finalfort: { a: "#c8960a", b: "#8a2be2", n1: "#ffe9a8", n2: "#8a5a00", sky1: "#ffe9a8", sky2: "#c8960a", hill: "#8a5a00", deco: ["🏰", "👑", "🏆"] },
+  knowledge: { a: "#2b3fd6", b: "#17c9c0", n1: "#6f86ff", n2: "#1b2aa0", sky1: "#5b6cff", sky2: "#2b3fd6", hill: "#0e7d78" },
+  education: { a: "#17c9c0", b: "#21c25e", n1: "#5fe7dd", n2: "#0e7d78", sky1: "#35e0d6", sky2: "#12a097", hill: "#0e8f42" },
+  psychology: { a: "#21c25e", b: "#8bd450", n1: "#79f0a0", n2: "#0e8f42", sky1: "#7bf0a0", sky2: "#17a05a", hill: "#0e8f42" },
+  didactics: { a: "#6a3bd6", b: "#8a2be2", n1: "#b28bff", n2: "#5a2bb0", sky1: "#b28bff", sky2: "#6a3bd6", hill: "#5a2bb0" },
+  planning: { a: "#ff8a3c", b: "#ffcf3f", n1: "#ffb877", n2: "#c96a10", sky1: "#ffd27a", sky2: "#ff8a3c", hill: "#c96a10" },
+  assessment: { a: "#ff5fa2", b: "#ff4d5e", n1: "#ff9bc0", n2: "#c01f4a", sky1: "#ff9bc0", sky2: "#ff5fa2", hill: "#c01f4a" },
+  practice: { a: "#ffcf3f", b: "#ff8a3c", n1: "#ffe58a", n2: "#c8960a", sky1: "#ffe58a", sky2: "#ffb347", hill: "#c8960a" },
+  legislation: { a: "#3b3bd6", b: "#6a3bd6", n1: "#8f8cff", n2: "#2a1f8f", sky1: "#8f9cff", sky2: "#3b3bd6", hill: "#2a1f8f" },
+  summit: { a: "#8a2be2", b: "#4a2d9c", n1: "#c79bff", n2: "#5a1f9c", sky1: "#c79bff", sky2: "#8a2be2", hill: "#5a1f9c" },
+  finalfort: { a: "#c8960a", b: "#8a2be2", n1: "#ffe9a8", n2: "#8a5a00", sky1: "#ffe9a8", sky2: "#c8960a", hill: "#8a5a00" },
 };
 
 /* مستوى الصعوبة داخل المحور (للمعاينة والزخرفة) */

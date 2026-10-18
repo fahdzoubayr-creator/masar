@@ -103,14 +103,6 @@ export class Store {
     return { improved, gainedStars, coins: coins || 0, gems: gems || 0, best: cur };
   }
 
-  markCompleted(levelId) {
-    const cur = this.getLevel(levelId);
-    if (cur) {
-      cur.completed = true;
-      this.save();
-    }
-  }
-
   /* ---- مساعدات ---- */
   isCompleted(levelId) {
     const l = this.getLevel(levelId);

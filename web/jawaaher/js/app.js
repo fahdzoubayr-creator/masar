@@ -2,7 +2,7 @@
    جواهر الكفاءة — المحرّك الرئيسي (الشاشات والتنقل)
    ============================================================ */
 
-import { CONFIG, MODES, themeOf, difficultyOf, levelReward } from "./config.js";
+import { CONFIG, themeOf, difficultyOf, levelReward } from "./config.js";
 import { Store } from "./store.js";
 import { Bank, isLevelUnlocked, isChapterUnlocked, currentLevelRef } from "./bank.js";
 import { Audio } from "./audio.js";
@@ -29,7 +29,13 @@ function h(strings, ...vals) {
 }
 /* «15 المطلوبة» من كل مرحلة (فصل): إتمامها وشرط فتح التي بعدها */
 function requiredOf(ch) {
-  return Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, (ch && ch.levels.length) || 15);
+  return Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, (ch && ch.levels && ch.levels.length) || 15);
+}
+/* مستوى البوابة (آخر مرحلة أو المطلوبة) — آمن لتحدي اليوم الذي بلا levels */
+function isGateLevel(ch, lvIndex) {
+  const n = (ch && ch.levels && ch.levels.length) || 0;
+  if (!n) return false;
+  return lvIndex === requiredOf(ch) || lvIndex === n;
 }
 
 /* ---------- لهب النار: لسان لهب متعرّج مدبّب (يمتد من الإطار إلى الخارج) ---------- */
@@ -101,19 +107,6 @@ function fmtTime(ms) {
   const r = s % 60;
   return `${m}:${String(r).padStart(2, "0")}`;
 }
-function burstSparks(x, y, n = 8) {
-  const chars = ["✨", "💎", "⭐", "🌟", "💫"];
-  for (let i = 0; i < n; i++) {
-    const s = document.createElement("div");
-    s.className = "spark"; s.textContent = chars[Math.floor(Math.random() * chars.length)];
-    s.style.left = x + "px"; s.style.top = y + "px";
-    const ang = Math.random() * Math.PI * 2, dist = 40 + Math.random() * 90;
-    s.animate([{ transform: "translate(-50%,-50%) scale(0.4)", opacity: 1 },
-      { transform: `translate(${Math.cos(ang) * dist - 50}%,${Math.sin(ang) * dist - 50}%) scale(1.1) rotate(${Math.random() * 360}deg)`, opacity: 0 }],
-      { duration: 700 + Math.random() * 400, easing: "cubic-bezier(.2,.7,.3,1)" });
-    document.body.appendChild(s); setTimeout(() => s.remove(), 1200);
-  }
-}
 function confetti(n = 60) {
   const colors = ["#ffcf3f", "#8a2be2", "#21c25e", "#ff5fa2", "#17c9c0", "#ff8a3c"];
   for (let i = 0; i < n; i++) {
@@ -144,7 +137,6 @@ const ICONS = {
   crown: _svg('<path d="M3.6 8.2l3.3 3.1L12 5.2l5.1 6.1 3.3-3.1-1.4 10.1H5z" fill="currentColor"/>'),
   trophy: _svg('<path d="M7 4h10v3.2a5 5 0 0 1-10 0z" fill="currentColor"/><path d="M7 5H4.5v1.4A3.6 3.6 0 0 0 8 10M17 5h2.5v1.4A3.6 3.6 0 0 1 16 10" stroke="currentColor" stroke-width="1.6" fill="none"/><rect x="10.4" y="11.4" width="3.2" height="4" fill="currentColor"/><rect x="7.4" y="15.4" width="9.2" height="3.2" rx="1" fill="currentColor"/>'),
   check: _svg('<path d="M5 12.5l4.5 4.5L19 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'),
-  compass: _svg('<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.6 8.4l-2.3 5.2-5.2 2.3 2.3-5.2z" fill="currentColor"/>'),
   calendar: _svg('<rect x="4" y="5.6" width="16" height="14.8" rx="2.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 10.4h16M8 3.6v4M16 3.6v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'),
   home: _svg('<path d="M4 11.4L12 4l8 7.4V20H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 20v-5h5v5" fill="none" stroke="currentColor" stroke-width="1.8"/>'),
   map: _svg('<path d="M9 4L4 6v14l5-2 6 2 5-2V4l-5 2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="1.7"/>'),
@@ -162,12 +154,6 @@ const ICONS = {
   eye: _svg('<path d="M2.5 12S6 6.4 12 6.4 21.5 12 21.5 12 18 17.6 12 17.6 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" fill="currentColor"/>'),
   chart: _svg('<path d="M5 19V11M11 19V6M17 19v-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>'),
 };
-function hexToRgba(hex, a) {
-  const h = (hex || "#000000").replace("#", "");
-  const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
-  const r = parseInt(n.slice(0, 2), 16), g = parseInt(n.slice(2, 4), 16), b = parseInt(n.slice(4, 6), 16);
-  return `rgba(${r},${g},${b},${a})`;
-}
 
 /* ---------------- شعارات المناطق (SVG أبيض مميز لكل محور، بلا تكرار) ---------------- */
 const REGION_EMBLEM = [
@@ -190,15 +176,13 @@ const REGION_EMBLEM = [
 function regionIcon(ci) { return REGION_EMBLEM[ci % REGION_EMBLEM.length] || ICONS.gem; }
 
 /* ---------------- HUD ---------------- */
-function hud(left = true) {
+function hud() {
   const s = app.store;
   s.refreshLives();
   const av = avatarHTML(s.profile);
   return h`
     <div class="hud">
-      ${left
-        ? `<button class="iconbtn" id="hud-back" aria-label="رجوع">${ICONS.back}</button>`
-        : `<button class="avatar" id="hud-avatar" aria-label="الملف">${av}</button>`}
+      <button class="avatar" id="hud-avatar" aria-label="الملف">${av}</button>
       <div class="title-block" id="hud-title-block">
         <div class="title">${esc(CONFIG.title)}</div>
         <div class="sub">${esc(s.profile.name || CONFIG.subtitle)}</div>
@@ -220,9 +204,7 @@ function refreshHUD() {
   const set = (id, v) => { const n = document.getElementById(id); if (n) n.textContent = v; };
   set("hud-stars", s.totalStars); set("hud-coins", s.coins); set("hud-gems", s.gems); set("hud-lives", s.lives);
 }
-function wireHUD(onBack) {
-  const back = document.getElementById("hud-back");
-  if (back && onBack) back.addEventListener("click", onBack);
+function wireHUD() {
   const av = document.getElementById("hud-avatar");
   if (av) av.addEventListener("click", () => { app.audio.play("tap"); openSettings(); });
   const tb = document.getElementById("hud-title-block");
@@ -495,7 +477,7 @@ function renderMap(scrollToChapter = null) {
         <span class="mw-cloud c3"></span>
         <span class="mw-spark"></span>
       </div>
-      ${hud(false)}
+      ${hud()}
       ${app.store.season > 1 ? `<div class="season-badge">الموسم ${app.store.season}</div>` : ""}
       <div class="map-wrap"><div class="map-scroll">
         ${chaptersHtml}
@@ -505,7 +487,7 @@ function renderMap(scrollToChapter = null) {
       <button class="btn ${fabCls} continue-fab" id="fab-continue">${fabInner}</button>
     </div>`);
 
-  wireHUD(null);
+  wireHUD();
   const mapScroll = root.querySelector(".map-wrap");
   const focusChapter = scrollToChapter != null ? scrollToChapter : curRef.chapter.index;
   const focusNode = document.getElementById("chapter-" + focusChapter);
@@ -878,11 +860,12 @@ function renderQuiz() {
 
   const b = CONFIG.boosters;
   const bIcon = { fifty: ICONS.divide, hint: ICONS.bulb, skip: ICONS.skip };
+  const bCls = (k) => (q.usedBoosters[k] ? " used" : "");
   const boostersHtml = h`
     <div class="boosters">
-      <button class="booster" data-b="fifty"><span class="bi">${bIcon.fifty}</span><span>${esc(b.fifty.label)}</span><span class="bc">${ICONS.coin}${b.fifty.cost}</span></button>
-      <button class="booster" data-b="hint"><span class="bi">${bIcon.hint}</span><span>${esc(b.hint.label)}</span><span class="bc">${ICONS.coin}${b.hint.cost}</span></button>
-      <button class="booster" data-b="skip"><span class="bi">${bIcon.skip}</span><span>${esc(b.skip.label)}</span><span class="bc">${ICONS.coin}${b.skip.cost}</span></button>
+      <button class="booster${bCls("fifty")}" data-b="fifty"><span class="bi">${bIcon.fifty}</span><span>${esc(b.fifty.label)}</span><span class="bc">${ICONS.coin}${b.fifty.cost}</span></button>
+      <button class="booster${bCls("hint")}" data-b="hint"><span class="bi">${bIcon.hint}</span><span>${esc(b.hint.label)}</span><span class="bc">${ICONS.coin}${b.hint.cost}</span></button>
+      <button class="booster${bCls("skip")}" data-b="skip"><span class="bi">${bIcon.skip}</span><span>${esc(b.skip.label)}</span><span class="bc">${ICONS.coin}${b.skip.cost}</span></button>
     </div>`;
 
   mount(h`
@@ -890,7 +873,7 @@ function renderQuiz() {
       <div class="quiz-top">
         <button class="iconbtn" id="q-back" aria-label="إنهاء">${ICONS.close}</button>
         <div class="info">
-          <div class="line1">${q.level.index === requiredOf(q.chapter) || q.level.index === q.chapter.levels.length ? "🔥 " : ""}${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
+          <div class="line1">${isGateLevel(q.chapter, q.level.index) ? "🔥 " : ""}${esc(q.chapter.title)}${q.mode === "daily" ? "" : q.level.name ? " — " + esc(q.level.name) : " — مستوى " + (q.level.globalIndex || q.level.index)}</div>
           <div class="line2">السؤال ${q.i + 1} من ${total} • ${ICONS.check} ${q.correct} صحيحة</div>
         </div>
         ${timerChip}
@@ -927,11 +910,9 @@ function renderQuiz() {
   document.getElementById("q-back").addEventListener("click", quitQuiz);
   document.getElementById("q-quit").addEventListener("click", quitQuiz);
 
-  if (boostersHtml) {
-    root.querySelectorAll(".booster").forEach((el) => {
-      el.addEventListener("click", () => useBooster(el.dataset.b, el));
-    });
-  }
+  root.querySelectorAll(".booster").forEach((el) => {
+    el.addEventListener("click", () => useBooster(el.dataset.b, el));
+  });
 
   startTimer();
 }
@@ -1069,7 +1050,7 @@ function quitQuiz() {
     </div>`;
   document.body.appendChild(ov);
   ov.querySelector("#quit-no").addEventListener("click", () => ov.remove());
-  ov.querySelector("#quit-yes").addEventListener("click", () => { ov.remove(); clearTimer(); renderMap(app.quiz.chapterIndex); });
+  ov.querySelector("#quit-yes").addEventListener("click", () => { ov.remove(); clearTimer(); app.quiz.mode === "daily" ? renderEntry() : renderMap(app.quiz.chapterIndex); });
 }
 
 /* ============================================================
@@ -1525,6 +1506,7 @@ async function init() {
   app.store.refreshLives();
   try {
     await app.bank.load();
+    if (!app.bank.chapters.length) throw new Error("بنك الأسئلة لا يحوي موضوعات صالحة");
   } catch (e) {
     mount(h`
       <div class="screen entry">

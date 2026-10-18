@@ -1012,10 +1012,6 @@ button {
 }
 .continue-fab svg { width: 20px; height: 20px; flex: none; }
 .continue-fab .fab-tx { font-weight: 900; }
-@keyframes arw {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-4px); }
-}
 
 /* ============================================================
    Sheet (level preview)
@@ -1310,7 +1306,6 @@ button {
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.14);
 }
 .results .actions { display: flex; flex-direction: column; gap: 10px; width: min(330px, 90vw); margin-top: 8px; }
-.rewards-row .reward-pill { display: inline-flex; align-items: center; gap: 6px; }
 .rewards-row .reward-pill svg { width: 15px; height: 15px; }
 .rewards-row .reward-pill:nth-child(1) { color: var(--gold-soft); }
 .rewards-row .reward-pill:nth-child(2) { color: #9fe8ff; }
@@ -1336,7 +1331,6 @@ button {
 }
 
 /* ---------- utility ---------- */
-.hidden { display: none !important; }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -1349,12 +1343,11 @@ button {
   .entry h1 { font-size: 56px; }
 }
 
-.center-col { display: flex; flex-direction: column; align-items: center; }
-
 /* ============================================================
    Timer
    ============================================================ */
 .chip.timer { color: #ffe27a; font-variant-numeric: tabular-nums; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 .chip.timer.warn { color: #ffd0a0; animation: pulse 1s ease-in-out infinite; }
 .chip.timer.danger { color: #ff8095; animation: pulse 0.6s ease-in-out infinite; }
 .timer-bar {
@@ -1395,7 +1388,7 @@ button {
 .booster .bc { font-size: 10.5px; color: var(--gold-soft); display: inline-flex; align-items: center; gap: 2px; }
 .booster .bc svg { width: 13px; height: 13px; }
 .booster:active { transform: scale(0.96); }
-.booster.used, .booster.cant { opacity: 0.4; pointer-events: none; }
+.booster.used { opacity: 0.4; pointer-events: none; }
 .option.removed { opacity: 0.25; pointer-events: none; text-decoration: line-through; }
 .option.hinted { box-shadow: inset 0 0 0 2px var(--gold), 0 0 18px rgba(255, 207, 63, 0.4); }
 
@@ -1422,9 +1415,8 @@ button {
 }
 .menu-row .mi { font-size: 20px; display: inline-flex; }
 .menu-row .mi svg { width: 20px; height: 20px; color: var(--cream); }
-.menu-row #set-reset .mi, .menu-row .mi .trash { color: #ff8fa3; }
+.menu-row#set-reset .mi, .menu-row#set-reset .mi svg { color: #ff8fa3; }
 .how-text svg { width: 16px; height: 16px; vertical-align: -3px; color: var(--cream); }
-.how-text h2 svg { width: 20px; height: 20px; }
 .menu-row .spacer { flex: 1; }
 .menu-row .val { color: var(--muted); font-size: 13px; font-weight: 600; }
 .switch { width: 48px; height: 28px; border-radius: 999px; background: rgba(255, 255, 255, 0.18); position: relative; flex: none; transition: background 0.2s; }
@@ -1469,14 +1461,11 @@ button {
 .avatar-opt.photo-add.sel .av-img { outline: 3px solid #fff; outline-offset: -3px; }
 .field { width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: none; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--cream); background: rgba(0, 0, 0, 0.3); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1); margin-bottom: 14px; }
 .field:focus { outline: none; box-shadow: inset 0 0 0 2px var(--gold); }
-.btn-row { display: flex; gap: 8px; margin-bottom: 12px; }
-.btn-row .btn { flex: 1; }
 .peer-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
 .peer-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .peer-name { font-weight: 800; font-size: 15px; color: var(--cream); }
 .peer-sub { font-size: 12px; font-weight: 700; color: var(--muted); }
 .hud .avatar, .hud .title-block { cursor: pointer; }
-.daily-badge { position: absolute; top: -6px; left: -6px; font-size: 14px; }
 
 /* ============================================================
    المواسم (New Game+)

@@ -53,7 +53,6 @@ export class Bank {
     if (!res) throw lastErr || new Error("تعذّر تحميل بنك الأسئلة");
     const data = await res.json();
     const group = data[CONFIG.bankGroup] || data[Object.keys(data)[0]] || [];
-    this.raw = group;
 
     this.bySubject.clear();
     let idx = 0;
@@ -152,26 +151,6 @@ export class Bank {
     this.chapters.forEach((ch) => {
       ch.levels.forEach((lv) => { lv.globalIndex = ++g; });
     });
-  }
-
-  level(chapterIndex, levelIndex) {
-    const ch = this.chapters[chapterIndex];
-    if (!ch) return null;
-    return ch.levels[levelIndex] || null;
-  }
-
-  levelById(id) {
-    for (const ch of this.chapters) {
-      const lv = ch.levels.find((l) => l.id === id);
-      if (lv) return { chapter: ch, level: lv };
-    }
-    return null;
-  }
-
-  /* كل معرّفات مستويات فصل معيّن */
-  levelIds(chapterIndex) {
-    const ch = this.chapters[chapterIndex];
-    return ch ? ch.levels.map((l) => l.id) : [];
   }
 
   allLevelIds() {
