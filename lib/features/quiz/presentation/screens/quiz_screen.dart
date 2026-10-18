@@ -103,9 +103,9 @@ class _QuizScreenState extends State<QuizScreen> {
       _remaining = widget.examDuration ?? Duration.zero;
     });
     if (widget.examDuration != null && filtered.isNotEmpty) _startTimer();
-    if (widget.restLoader != null &&
-        filtered.isNotEmpty &&
-        widget.examDuration == null) {
+    // نستدعي الاستكمال حتى إن كانت الدفعة الأولى فارغة (بنك الموضوع قد
+    // يكون قليلاً/فارغاً)، وإلا بقي الكويز عالقاً على شاشة التوليد.
+    if (widget.restLoader != null && widget.examDuration == null) {
       _loadMore();
     }
   }

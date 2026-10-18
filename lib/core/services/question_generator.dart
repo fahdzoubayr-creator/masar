@@ -92,15 +92,16 @@ class QuestionGenerator {
       }
     }
 
-    // 1) إن حُدّد موضوع فرعي، نحاول أولاً أسئلته المطابقة (إن وُجدت).
-    if (topic != null) {
-      final topicMatch =
-          folderBank.where((q) => _matchesTopic(q, topic)).toList();
-      if (topicMatch.isNotEmpty) addAll(topicMatch);
+    // إن حُدّد موضوع فرعي: نلتزم بأسئلته المطابقة فقط، ولا نكمل من بقية
+    // المادة، حتى لا تظهر أسئلة محاور أخرى داخل الكويز. النقص يكمله المولّد.
+    final topicKey = topic?.trim();
+    if (topicKey != null && topicKey.isNotEmpty) {
+      addAll(folderBank
+          .where((q) => _matchesTopic(q, topicKey, folder))
+          .toList());
+    } else {
+      addAll(folderBank);
     }
-
-    // 2) أكمل من باقي بنك المحور فقط حتى بلوغ الحاجة.
-    if (pool.length < count) addAll(folderBank);
 
     // خلط واختيار العدد
     final validPool = QuestionValidator.filterValid(pool);
@@ -112,10 +113,26 @@ class QuestionGenerator {
     return result;
   }
 
-  /// هل سؤال [q] يخص موضوعاً فرعياً [topic]؟ مطابقة مرنة على النص والموضوع.
-  static bool _matchesTopic(Question q, String topic) {
-    if (q.subject.contains(topic) || topic.contains(q.subject)) return true;
-    return q.text.contains(topic) || topic.split(' ').any((w) => w.length > 3 && q.text.contains(w));
+  /// هل سؤال [q] يخص موضوعاً فرعياً [topic] ضمن المادة [folder]؟
+  ///
+  /// نتجاهل كلمات اسم المادة (مثل «علوم» و«التربية») لأنها تتكرر في كل
+  /// أسئلة المحور وتُفسد التمييز بين موضوع وآخر.
+  static bool _matchesTopic(Question q, String topic, String folder) {
+    final nTopic = _norm(topic);
+    final hay = _norm('${q.subject} ${q.text}');
+    if (nTopic.isEmpty) return false;
+    if (hay.contains(nTopic)) return true;
+
+    final folderWords = _norm(folder)
+        .split(' ')
+        .where((w) => w.isNotEmpty)
+        .toSet();
+    final words = nTopic
+        .split(' ')
+        .where((w) => w.length > 3 && !folderWords.contains(w))
+        .toList();
+    if (words.isEmpty) return hay.contains(nTopic);
+    return words.any(hay.contains);
   }
 
   /// كلمات مفتاحية تميّز موادّاً عن بعضها داخل بنك «تحدي الكفاءة المهنية»
@@ -339,9 +356,9 @@ class QuestionGenerator {
 
   /// يعيد عدد أسئلة البنك المتاحة لمحور [folder] / موضوع [topic].
   static int bankCountFor(String folder, {String? topic}) {
-    if (topic != null) {
+    if (topic != null && topic.trim().isNotEmpty) {
       final matched = poolForFolder(folder)
-          .where((q) => _matchesTopic(q, topic))
+          .where((q) => _matchesTopic(q, topic, folder))
           .length;
       if (matched > 0) return matched;
     }

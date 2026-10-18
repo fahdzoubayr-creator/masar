@@ -75,7 +75,6 @@ const PORT = Number(process.env.PORT) || 8123;
 const LLM_PROVIDERS = [
   { id: 'groq', keyEnv: 'GROQ_API_KEY' },
   { id: 'gemini', keyEnv: 'GEMINI_API_KEY' },
-  { id: 'github', keyEnv: 'GITHUB_TOKEN' },
 ];
 
 /** معرّفات المزوّدين الذين توفّر لهم مفاتيح. */
@@ -92,6 +91,19 @@ const noProviderError = () => ({
     ' (in .env or the environment)',
   providers: activeProviders(),
 });
+
+/** يعيد مسار النسخة المحفوظة محلياً لملف PDF بعيد إن وُجدت، وإلا ''. */
+function localPdfCacheFor(remoteUrl) {
+  if (!remoteUrl) return '';
+  try {
+    const name = path.basename(new URL(remoteUrl).pathname);
+    if (!name) return '';
+    const p = path.join(__dirname, 'assets', 'review_files_cache', name);
+    return fs.existsSync(p) ? p : '';
+  } catch {
+    return '';
+  }
+}
 
 // ===== الملفات المرفوعة (صور/مستندات) — خارج مجلد البناء كي لا تُمسح عند إعادة البناء =====
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
@@ -577,9 +589,11 @@ const handler = async (req, res) => {
         const outFile = path.join(genDir, 'gen_' + stamp + '.json');
         const { spawn } = require('child_process');
         const scriptArgs = [path.join(__dirname, 'tools', 'quiz_from_pdf.py')];
-        if (remoteUrl) {
+        const cachedPdf = localPdfCacheFor(remoteUrl);
+        if (cachedPdf) {
+          scriptArgs.push('--pdf', cachedPdf);
+        } else if (remoteUrl) {
           scriptArgs.push('--url', remoteUrl);
-          if (pdfFile) scriptArgs.push('--pdf', pdfFile);
         } else {
           scriptArgs.push('--pdf', pdfFile);
         }
@@ -714,7 +728,9 @@ const handler = async (req, res) => {
       if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
         scriptArgs.push('--source-name', payload.sourceName.trim());
       }
-      if (remoteUrl) scriptArgs.push('--url', remoteUrl);
+      const cachedPdf = localPdfCacheFor(remoteUrl);
+      if (cachedPdf) scriptArgs.push('--pdf', cachedPdf);
+      else if (remoteUrl) scriptArgs.push('--url', remoteUrl);
       else scriptArgs.push('--pdf', pdfFile);
       // مفاتيح المزوّدين كلها موروثة من process.env (المحمَّلة من .env)
       const proc = spawn('python', scriptArgs, {
@@ -727,6 +743,10 @@ const handler = async (req, res) => {
         if (errTxt.length > 4000) errTxt = errTxt.slice(-2000);
       });
       proc.on('close', () => {
+        // نُبقي أثر المولّد في سجل الخادم: بدونه يصعب تشخيص البطء/الفرز.
+        if (errTxt.trim()) {
+          console.log('[quiz-job ' + jobId + '] ' + errTxt.trim().slice(-1500));
+        }
         quizJobs.set(jobId, {
           done: true,
           ok: fs.existsSync(fFull),
