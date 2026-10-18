@@ -31,6 +31,26 @@ function h(strings, ...vals) {
 function requiredOf(ch) {
   return Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, (ch && ch.levels.length) || 15);
 }
+
+/* ---------- لهب النار: لسان لهب متعرّج مدبّب (يمتد من الإطار إلى الخارج) ---------- */
+const FLAME_BIG = "M50 2 C48.2 7.5 46.8 10.8 47.3 15 C44.4 12.6 42.2 14.2 42.5 18.4 C42.9 23.4 45.6 27.6 50 28.2 C54.4 27.6 57.1 23.4 57.5 18.4 C57.8 14.2 55.6 12.6 52.7 15 C53.2 10.8 51.8 7.5 50 2 Z";
+const FLAME_SMALL = "M50 6 C48.6 10.5 47.4 13.2 47.8 17 C45.4 15 43.6 16.3 43.9 19.8 C44.4 23.8 46.8 27 50 27.4 C53.2 27 55.6 23.8 56.1 19.8 C56.4 16.3 54.6 15 52.2 17 C52.6 13.2 51.4 10.5 50 6 Z";
+/* تدرّجات اللهب — تُحقن مرة واحدة في الخريطة */
+const FIRE_DEFS = `<svg class="fire-defs" aria-hidden="true"><defs>
+<linearGradient id="fireGradA" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff8a00"/><stop offset=".5" stop-color="#ff5a00"/><stop offset="1" stop-color="#ff2400"/></linearGradient>
+<linearGradient id="fireGradB" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#fff27a"/><stop offset=".45" stop-color="#ffc400"/><stop offset="1" stop-color="#ff6a00"/></linearGradient>
+</defs></svg>`;
+function fireRingSVG() {
+  let back = "";
+  let front = "";
+  for (let i = 0; i < 12; i++) {
+    back += `<g transform="rotate(${i * 30} 50 50)"><path d="${FLAME_BIG}"/></g>`;
+    front += `<g transform="rotate(${i * 30 + 15} 50 50)"><path d="${FLAME_SMALL}"/></g>`;
+  }
+  return `<svg class="fire-ring" viewBox="0 0 100 100" aria-hidden="true">` +
+    `<g class="fire-back" fill="url(#fireGradA)">${back}</g>` +
+    `<g class="fire-front" fill="url(#fireGradB)">${front}</g></svg>`;
+}
 function mount(html) {
   if (app._resizeHandler) { window.removeEventListener("resize", app._resizeHandler); app._resizeHandler = null; }
   if (app._livesTimer) { clearInterval(app._livesTimer); app._livesTimer = null; }
@@ -332,7 +352,7 @@ function renderMap(scrollToChapter = null) {
   const curLevelId = curRef.level.id;
   const justUnlocked = app._prevCurId && app._prevCurId !== curLevelId ? curLevelId : null;
   app._prevCurId = curLevelId;
-  let chaptersHtml = "";
+  let chaptersHtml = FIRE_DEFS;
   let gi = 0; // مؤشر عالمي بالترتيب المرئي — يجعل تمويج الطريق متصلاً
 
   // تصاعديًا من الأسفل إلى الأعلى: نعكس ترتيب المحاور والمستويات
@@ -366,7 +386,8 @@ function renderMap(scrollToChapter = null) {
       if (isMilestone && lvlUnlocked) cls.push("milestone");
       if (justUnlocked === lv.id) cls.push("just-unlocked");
       // النار على عقدة «15 المطلوبة» + آخر مرحلة في الفصل
-      if (lv.index === required || lv.index === ch.levels.length) cls.push("gate");
+      const isGate = lv.index === required || lv.index === ch.levels.length;
+      if (isGate) cls.push("gate");
       let badge = "";
       if (!lvlUnlocked) badge = `<span class="badge lock">${ICONS.lock}</span>`;
       // شارات خارج القرص (فوق الإطار) — التاج والجواهر لتظهرا بوضوح
@@ -394,6 +415,7 @@ function renderMap(scrollToChapter = null) {
               ${badge}
             </div>
             ${outBadge}
+            ${isGate ? fireRingSVG() : ""}
             ${completed ? `<span class="stars">${[0, 1, 2].map((k) => `<i class="${k < stars ? "on" : ""}">${ICONS.star}</i>`).join("")}</span>` : ""}
             ${needsStar ? `<span class="need" title="تحتاج نجمة إضافية">${ICONS.star}</span>` : ""}
             ${isCurrent ? `<span class="start-tag">ابدأ<i>${ICONS.play}</i></span>` : ""}

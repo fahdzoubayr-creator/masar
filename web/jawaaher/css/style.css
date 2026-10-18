@@ -733,7 +733,7 @@ button {
   box-shadow: inset 0 0 0 3px rgba(255, 207, 63, 0.9), 0 0 14px rgba(255, 207, 63, 0.5);
 }
 
-/* ---------- إطار نار عقدة «15 المطلوبة»: لهيب متوهج نابض يكاد يغطي الإطار ---------- */
+/* ---------- نار عقدتَي «15 المطلوبة» وآخر مرحلة: لهب متقد متعدد الطبقات ---------- */
 .level-node.gate .node-ring {
   box-shadow: inset 0 0 0 3px rgba(255, 224, 170, 0.95), 0 0 12px 2px rgba(255, 120, 0, 0.85);
   animation: fireRingPulse 1.05s ease-in-out infinite alternate;
@@ -749,23 +749,34 @@ button {
       0 0 44px 14px rgba(255, 50, 0, 0.45);
   }
 }
-.level-node.gate::before {
-  content: "";
+.fire-ring {
   position: absolute;
-  inset: -15%;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff1200, #ff7a00, #ffd400, #ff9500, #ff1200, #ff5a00, #ffe600, #ff7a00, #ff1200);
-  -webkit-mask: radial-gradient(circle closest-side, transparent 58%, #000 74%, #000 96%, transparent 100%);
-  mask: radial-gradient(circle closest-side, transparent 58%, #000 74%, #000 96%, transparent 100%);
-  filter: blur(4px) saturate(1.7) brightness(1.2);
-  animation: fireSpin 1.7s linear infinite, fireFlicker 0.62s ease-in-out infinite alternate;
-  z-index: 3;
+  inset: -30%;
+  overflow: visible;
   pointer-events: none;
+  z-index: 3;
+  filter: drop-shadow(0 0 4px rgba(255, 150, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 60, 0, 0.5));
+  animation: flameBreath 1.1s ease-in-out infinite alternate;
 }
-@keyframes fireSpin { to { transform: rotate(360deg); } }
-@keyframes fireFlicker {
-  from { filter: blur(3px) saturate(1.5) brightness(0.95); opacity: 0.8; }
-  to { filter: blur(5.5px) saturate(2) brightness(1.5); opacity: 1; }
+.fire-back,
+.fire-front {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+.fire-back { animation: flameSpinA 16s linear infinite; }
+.fire-front { animation: flameSpinB 11s linear infinite reverse; }
+.fire-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+@keyframes flameSpinA { to { transform: rotate(360deg); } }
+@keyframes flameSpinB { to { transform: rotate(360deg); } }
+@keyframes flameBreath {
+  from {
+    filter: drop-shadow(0 0 4px rgba(255, 150, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 60, 0, 0.5));
+    transform: scale(1);
+  }
+  to {
+    filter: drop-shadow(0 0 8px rgba(255, 190, 40, 1)) drop-shadow(0 0 24px rgba(255, 80, 0, 0.8));
+    transform: scale(1.06);
+  }
 }
 
 .level-node:active { transform: scale(0.93); }
