@@ -733,8 +733,8 @@ button {
   box-shadow: inset 0 0 0 3px rgba(255, 207, 63, 0.9), 0 0 14px rgba(255, 207, 63, 0.5);
 }
 
-/* ---------- إطار نار العقد الصعبة: لهيب متوهج نابض يكاد يغطي الإطار ---------- */
-.level-node.hard .node-ring {
+/* ---------- إطار نار عقدة «15 المطلوبة»: لهيب متوهج نابض يكاد يغطي الإطار ---------- */
+.level-node.gate .node-ring {
   box-shadow: inset 0 0 0 3px rgba(255, 224, 170, 0.95), 0 0 12px 2px rgba(255, 120, 0, 0.85);
   animation: fireRingPulse 1.05s ease-in-out infinite alternate;
 }
@@ -749,7 +749,7 @@ button {
       0 0 44px 14px rgba(255, 50, 0, 0.45);
   }
 }
-.level-node.hard::before {
+.level-node.gate::before {
   content: "";
   position: absolute;
   inset: -15%;
