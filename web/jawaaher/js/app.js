@@ -509,6 +509,57 @@ function renderMap(scrollToChapter = null) {
     const jn = root.querySelector('.level-node[data-ci="' + curRef.chapter.index + '"][data-li="' + (curRef.level.index - 1) + '"]');
     if (jn) setTimeout(() => { jn.classList.add("pop"); sparkleAt(jn, 10); }, 300);
   }
+
+  decorateMapRivals();
+}
+
+/* ---- منافسو الخريطة (على غرار كاندي كراش): أفاتار كل زميل عند عقدة وصله ---- */
+let _peersCache = { at: 0, rows: [] };
+async function fetchMapPeers(force) {
+  const s = app.store;
+  if (!s.account || !s.account.token) { _peersCache = { at: 0, rows: [] }; return _peersCache.rows; }
+  const now = Date.now();
+  if (!force && now - _peersCache.at < 8000) return _peersCache.rows;
+  const res = await socialFetch("/api/social/list?token=" + encodeURIComponent(s.account.token));
+  if (res && res.ok) _peersCache = { at: now, rows: res.peers || [] };
+  return _peersCache.rows;
+}
+async function decorateMapRivals() {
+  const s = app.store;
+  if (!app.bank) return;
+  const peers = await fetchMapPeers(false);
+  if (!document.querySelector(".map-scroll")) return; // خرج المستخدم قبل وصول القائمة
+  document.querySelectorAll(".rival-badge").forEach((b) => b.remove()); // تنظيف قبل إعادة الرسم
+  const byId = {};
+  app.bank.chapters.forEach((ch, ci) => ch.levels.forEach((lv, li) => { byId[lv.id] = { ci, li }; }));
+  const placed = {};
+  peers.forEach((p) => {
+    if (!p || !p.visible || !p.pos || !p.pos.level || p.pos.season !== s.season) return;
+    const at = byId[p.pos.level];
+    if (!at) return;
+    const node = document.querySelector(`.level-node[data-ci="${at.ci}"][data-li="${at.li}"]`);
+    if (!node) return;
+    const row = node.parentElement;
+    if (!row) return;
+    const k = placed[p.pos.level] || 0;
+    placed[p.pos.level] = k + 1;
+    const x = parseFloat(node.style.left) || 50;
+    const rightSide = x <= 58; // يُقلب كما تُقلب بطاقة اللاعب — بعيدًا عن حافة الخريطة
+    const b = document.createElement("button");
+    b.className = "rival-badge";
+    b.dataset.peer = p.name;
+    if (rightSide) b.style.right = `calc(${(100 - x).toFixed(2)}% + 52px)`;
+    else b.style.left = `calc(${x.toFixed(2)}% + 52px)`;
+    if (k) b.style.marginTop = k * 40 + "px";
+    b.innerHTML = `<span class="rb-av">${avatarHTML(p)}</span><span class="rb-name">${esc(p.name)}</span>`;
+    b.title = p.stats ? `${p.name} — ⭐ ${p.totalStars} • ✅ ${p.done}/${p.totalLevels}` : p.name;
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      app.audio.play("tap");
+      toast(p.stats ? `${p.name} — ⭐ ${p.totalStars} • ✅ ${p.done}/${p.totalLevels} • موسم ${p.season}` : `${p.name} على الخريطة دون أرقام`);
+    });
+    row.appendChild(b);
+  });
 }
 
 /* يوسّط الخريطة على العقدة الهدف ثم ينفّذ then */
@@ -1226,6 +1277,9 @@ function pushProgress(immediate) {
             gems: s.gems,
             done: ids.length ? s.completedCount(ids) : 0,
             totalLevels: ids.length,
+            lastLevel: s.data.lastLevel || null,
+            avatar: s.profile.avatar || "🧑‍🏫",
+            photo: typeof s.profile.photo === "string" && s.profile.photo.indexOf("data:image") === 0 && s.profile.photo.length <= 45000 ? s.profile.photo : null,
             social: {
               visible: s.settings.social.visible !== false,
               showStats: s.settings.social.showStats !== false,
@@ -1248,7 +1302,7 @@ async function openSocial() {
   ov.className = "overlay";
   const wire = () => {
     const close = ov.querySelector("#soc-close");
-    if (close) close.addEventListener("click", () => { app.audio.play("tap"); ov.remove(); });
+    if (close) close.addEventListener("click", () => { app.audio.play("tap"); ov.remove(); if (app.screen === "map") decorateMapRivals(); });
     if (s.account.token) {
       ov.querySelector("#soc-refresh").addEventListener("click", () => { app.audio.play("tap"); render(); });
       ov.querySelector("#soc-logout").addEventListener("click", () => {
@@ -1482,3 +1536,5 @@ init();
 window.JAWAAHER = app;
 app.pushProgress = pushProgress;
 app.openSocial = openSocial;
+app.decorateMapRivals = decorateMapRivals;
+app.fetchMapPeers = fetchMapPeers;
