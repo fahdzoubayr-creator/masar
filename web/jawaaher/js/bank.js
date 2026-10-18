@@ -73,21 +73,39 @@ export class Bank {
 
   _buildChapters() {
     const Q = CONFIG.questionsPerLevel; // عدد الأسئلة لكل مستوى
-    const L = CONFIG.levelsPerChapter; // عدد المستويات لكل مرحلة (ثابت)
-    this.chapters = CHAPTERS.map((c, ci) => {
+    const L = CONFIG.levelsPerChapter; // عدد المستويات لكل فصل (ثابت)
+    const out = [];
+    CHAPTERS.forEach((c, si) => {
       const pool = this.bySubject.get(c.subject) || [];
-      const shuffled = seededShuffle(pool, 1000 + ci * 97);
-      const levels = [];
-      if (shuffled.length > 0) {
-        // بناء L مستوى ثابتًا، كل مستوى Q سؤالًا.
-        // عند قلّة أسئلة الفصل تُعاد دورة الأسئلة (wraparound) حتى نمدّه بأسئلة كافية.
-        // اسم المحور الفرعي من config.axes يتناوب على مستويات الفصل ويُرقّم عند تكراره.
-        const axes = c.axes || [];
+      if (!pool.length) return; // موضوع بلا أسئلة لا يولّد فصولًا
+      const P = Math.max(1, Math.min(c.parts || 1, pool.length)); // أجزاء الموضوع على الخريطة
+      const shuffled = seededShuffle(pool, 1000 + si * 97);
+      const allAxes = c.axes || [];
+      // توزيع المحاور الفرعية على الأجزاء عند توفّر كفاية (≥3 لكل جزء)، وإلا يتناوبها كاملًا كل جزء
+      const sliced = allAxes.length >= P * 3;
+      for (let p = 0; p < P; p++) {
+        // قطعة أسئلة متصلة من الخلط المشترك — الأجزاء متنافية لا تتكرر بينها
+        const slice = shuffled.slice(
+          Math.floor((p * pool.length) / P),
+          Math.floor(((p + 1) * pool.length) / P),
+        );
+        if (!slice.length) continue;
+        const ci = out.length;
+        const axes = sliced
+          ? allAxes.slice(
+              Math.floor((p * allAxes.length) / P),
+              Math.floor(((p + 1) * allAxes.length) / P),
+            )
+          : allAxes;
+        const title = p > 0 ? `${c.title} (${arNum(p + 1)})` : c.title;
+        // بناء L مستوى ثابتًا، كل مستوى Q سؤالًا مع تدوير عند القلّة (wraparound)
+        // اسم المحور الفرعي يتناوب على مستويات الفصل ويُرقّم عند تكراره
         const axisParts = axes.length ? Math.ceil(L / axes.length) : 0;
+        const levels = [];
         for (let li = 0; li < L; li++) {
           const questions = [];
           for (let k = 0; k < Q; k++) {
-            questions.push(shuffled[(li * Q + k) % shuffled.length]);
+            questions.push(slice[(li * Q + k) % slice.length]);
           }
           const axis = axes.length ? axes[li % axes.length] : null;
           const part = axes.length ? Math.floor(li / axes.length) + 1 : 0;
@@ -99,25 +117,25 @@ export class Bank {
             questions,
           });
         }
+        out.push({
+          index: ci,
+          subject: c.subject,
+          title,
+          icon: c.icon,
+          theme: c.theme,
+          questions: slice,
+          count: slice.length,
+          levels,
+        });
       }
-      return {
-        index: ci,
-        subject: c.subject,
-        title: c.title,
-        icon: c.icon,
-        theme: c.theme,
-        questions: shuffled,
-        count: shuffled.length,
-        levels,
-      };
     });
     // إخفاء الفصول التي لا تحتوي أسئلة
-    this.chapters = this.chapters.filter((c) => c.count > 0);
-    this.chapters.forEach((c, i) => { c.index = i; });
+    this.chapters = out.filter((ch) => ch.count > 0);
+    this.chapters.forEach((ch, i) => { ch.index = i; });
     // ترقيم عالمي متصل تراكميًا عبر كل الفصول
     let g = 0;
-    this.chapters.forEach((c) => {
-      c.levels.forEach((lv) => { lv.globalIndex = ++g; });
+    this.chapters.forEach((ch) => {
+      ch.levels.forEach((lv) => { lv.globalIndex = ++g; });
     });
   }
 

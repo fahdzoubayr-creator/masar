@@ -163,7 +163,7 @@ const REGION_EMBLEM = [
   _svg('<path d="M2 19.5L9 6.5l4 7 2.4-3.4 6.6 9.4z" fill="currentColor"/><circle cx="6" cy="6" r="1.6" fill="currentColor"/>'),
   _svg('<path d="M4.5 21V8.5h2V5h2.2v3.5h2.6V5h2.2v3.5h2.6V5h2.2v3.5h2.2V21z" fill="currentColor"/><rect x="10" y="14" width="4" height="7" rx="1" fill="rgba(0,0,0,.34)"/>'),
 ];
-function regionIcon(ci) { return REGION_EMBLEM[ci] || ICONS.gem; }
+function regionIcon(ci) { return REGION_EMBLEM[ci % REGION_EMBLEM.length] || ICONS.gem; }
 
 /* ---------------- HUD ---------------- */
 function hud(left = true) {
