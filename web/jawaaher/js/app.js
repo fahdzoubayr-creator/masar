@@ -39,6 +39,38 @@ function toast(msg, ms = 1700) {
   document.body.appendChild(t);
   setTimeout(() => t.remove(), ms);
 }
+/* صورة البروفيل: صورة مرفوعة (data URL) أو الرمز التعبيري */
+function avatarHTML(p) {
+  if (p && typeof p.photo === "string" && p.photo.indexOf("data:image") === 0) {
+    return `<img class="av-img" src="${p.photo}" alt="" />`;
+  }
+  return esc((p && p.avatar) || "🧑‍🏫");
+}
+/* تقصّ الصورة مربّعًا 256px وتُحوّلها JPEG صغيرة تناسب التخزين المحلي */
+function processProfilePhoto(file) {
+  return new Promise((resolve) => {
+    if (!file || String(file.type).indexOf("image/") !== 0) { resolve(null); return; }
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      try {
+        const S = 256;
+        const c = document.createElement("canvas");
+        c.width = S; c.height = S;
+        const g = c.getContext("2d");
+        const m = Math.min(img.width, img.height);
+        g.drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, S, S);
+        resolve(c.toDataURL("image/jpeg", 0.82));
+      } catch (e) {
+        resolve(null);
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+    img.src = url;
+  });
+}
 function fmtTime(ms) {
   const s = Math.ceil(ms / 1000);
   const m = Math.floor(s / 60);
@@ -134,7 +166,7 @@ function regionIcon(ci) { return REGION_EMBLEM[ci] || ICONS.gem; }
 function hud(left = true) {
   const s = app.store;
   s.refreshLives();
-  const av = esc(s.profile.avatar);
+  const av = avatarHTML(s.profile);
   return h`
     <div class="hud">
       ${left
@@ -334,7 +366,7 @@ function renderMap(scrollToChapter = null) {
         const flip = x > 58;
         playerBadge = `<button class="player-badge ${flip ? "flip" : ""}" id="player-badge"
              style="${flip ? `right:calc(${(100 - x).toFixed(2)}% + 52px)` : `left:calc(${x.toFixed(2)}% + 52px)`}"
-             aria-label="بطاقة الملف الشخصي"><span class="pb-arrow"></span><span class="pb-av">${esc(s.profile.avatar)}</span><span class="pb-name">${esc(s.profile.name)}</span></button>`;
+             aria-label="بطاقة الملف الشخصي"><span class="pb-arrow"></span><span class="pb-av">${avatarHTML(s.profile)}</span><span class="pb-name">${esc(s.profile.name)}</span></button>`;
       }
       rowsHtml += h`
         <div class="level-row">
@@ -620,7 +652,7 @@ function openPlayerCard() {
         <span class="pc-spacer"></span>
       </div>
       <div class="pc-head">
-        <div class="pc-avatar">${esc(p.avatar)}</div>
+        <div class="pc-avatar">${avatarHTML(p)}</div>
         <div class="pc-name">${esc(p.name)}</div>
         <div class="pc-sub">الموسم ${s.season} • المستوى ${cur.level.globalIndex || cur.level.index} • ${esc(cur.chapter.subject)}</div>
       </div>
@@ -1154,6 +1186,8 @@ function showNoLives() {
 function openSettings() {
   const s = app.store;
   const avatars = ["🧑‍🏫", "👩‍🏫", "🧑‍🎓", "👨‍🎓", "🦉", "🐯", "🦊", "🐼"];
+  let chosenAvatar = s.profile.avatar;
+  let chosenPhoto = typeof s.profile.photo === "string" && s.profile.photo.indexOf("data:image") === 0 ? s.profile.photo : null;
   const ov = document.createElement("div");
   ov.className = "overlay";
   ov.innerHTML = h`
@@ -1163,7 +1197,15 @@ function openSettings() {
       <div class="sub">${esc(s.profile.name)} • ${ICONS.star}${s.totalStars} • ${ICONS.coin}${s.coins} • ${ICONS.gem}${s.gems}</div>
       <input class="field" id="set-name" maxlength="24" value="${esc(s.profile.name)}" placeholder="اسمك" />
       <div class="avatar-grid" id="set-avatars">
-        ${avatars.map((a) => `<button class="avatar-opt ${a === s.profile.avatar ? "sel" : ""}" data-a="${a}">${a}</button>`).join("")}
+        ${avatars.map((a) => `<button class="avatar-opt ${!chosenPhoto && a === chosenAvatar ? "sel" : ""}" data-a="${a}">${a}</button>`).join("")}
+      </div>
+      <div class="photo-row">
+        <div class="photo-prev" id="set-photo-prev"></div>
+        <div class="photo-btns">
+          <button class="btn ghost sm" id="set-photo-pick">📷 صورة من الجهاز</button>
+          <button class="btn ghost sm" id="set-photo-del" ${chosenPhoto ? "" : 'style="display:none"'}>🗑 حذف الصورة</button>
+        </div>
+        <input type="file" id="set-photo-file" accept="image/*" hidden />
       </div>
       <div class="menu-list">
         <div class="menu-row"><span class="mi">${s.settings.sound ? ICONS.sound : ICONS.mute}</span><span>الأصوات</span><span class="spacer"></span><span class="switch ${s.settings.sound ? "on" : ""}" id="set-sound"></span></div>
@@ -1174,12 +1216,33 @@ function openSettings() {
     </div>`;
   document.body.appendChild(ov);
 
-  let chosenAvatar = s.profile.avatar;
+  const prevEl = ov.querySelector("#set-photo-prev");
+  const delBtn = ov.querySelector("#set-photo-del");
+  const syncPhoto = () => {
+    prevEl.innerHTML = avatarHTML({ photo: chosenPhoto, avatar: chosenAvatar });
+    delBtn.style.display = chosenPhoto ? "" : "none";
+    ov.querySelectorAll(".avatar-opt").forEach((x) => x.classList.toggle("sel", !chosenPhoto && x.dataset.a === chosenAvatar));
+  };
+  syncPhoto();
   ov.querySelectorAll(".avatar-opt").forEach((b) => b.addEventListener("click", () => {
     app.audio.play("tap");
-    ov.querySelectorAll(".avatar-opt").forEach((x) => x.classList.remove("sel"));
-    b.classList.add("sel"); chosenAvatar = b.dataset.a;
+    chosenAvatar = b.dataset.a;
+    chosenPhoto = null;
+    syncPhoto();
   }));
+  ov.querySelector("#set-photo-pick").addEventListener("click", () => { app.audio.play("tap"); ov.querySelector("#set-photo-file").click(); });
+  ov.querySelector("#set-photo-file").addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!f) return;
+    const data = await processProfilePhoto(f);
+    if (!data) { toast("تعذّرت قراءة الصورة"); return; }
+    chosenPhoto = data;
+    syncPhoto();
+    app.audio.play("success");
+    toast("تم اختيار الصورة ✓");
+  });
+  delBtn.addEventListener("click", () => { app.audio.play("tap"); chosenPhoto = null; syncPhoto(); });
   ov.querySelector("#set-sound").addEventListener("click", (e) => {
     const v = !s.settings.sound; s.setSetting("sound", v); app.audio.setEnabled(v);
     e.currentTarget.classList.toggle("on", v);
@@ -1190,10 +1253,12 @@ function openSettings() {
   });
   ov.querySelector("#set-save").addEventListener("click", () => {
     const name = ov.querySelector("#set-name").value.trim() || "متدرّب الكفاءة";
-    s.setProfile({ name, avatar: chosenAvatar });
+    s.setProfile({ name, avatar: chosenAvatar, photo: chosenPhoto });
     app.audio.play("button"); ov.remove(); refreshHUD();
     const subEl = document.querySelector(".hud .sub"); if (subEl) subEl.textContent = name;
-    const avEl = document.querySelector(".hud .avatar"); if (avEl) avEl.textContent = chosenAvatar;
+    const avEl = document.getElementById("hud-avatar"); if (avEl) avEl.innerHTML = avatarHTML(s.profile);
+    document.querySelectorAll(".player-badge .pb-av").forEach((el) => { el.innerHTML = avatarHTML(s.profile); });
+    document.querySelectorAll(".player-badge .pb-name").forEach((el) => { el.textContent = name; });
   });
 }
 

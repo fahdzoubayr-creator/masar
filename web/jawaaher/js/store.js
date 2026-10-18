@@ -15,7 +15,7 @@ const DEFAULT = {
   lastLevel: null,
   settings: { sound: true, music: false, social: { visible: true, showStats: true, joinGroup: false } },
   lives: { count: 5, updatedAt: 0 },
-  profile: { name: "متدرّب الكفاءة", avatar: "🧑‍🏫", createdAt: Date.now(), lastPlayedAt: Date.now() },
+  profile: { name: "متدرّب الكفاءة", avatar: "🧑‍🏫", photo: null, createdAt: Date.now(), lastPlayedAt: Date.now() },
   daily: { last: null, streak: 0, bestPct: 0 },
   season: 1, // الموسم الحالي (New Game+)
   seasons: [], // أرشيف المواسم المكتملة
