@@ -42,6 +42,7 @@ app.*.map.json
 # Server runtime data
 /uploads/
 rooms_data.json
+masar_social.json
 *.log
 server_err.log
 certs/

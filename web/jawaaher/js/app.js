@@ -134,6 +134,9 @@ const ICONS = {
   heartBroken: _svg('<path d="M12 20.6C11.6 20.6 3.8 15.9 2.3 11.5 1.1 8.2 3.2 5.1 6.4 5.2c1.8.1 3.4 1.1 5.6 3.2 2.2-2.1 3.8-3.1 5.6-3.2 3.2-.1 5.3 3 4.1 6.3C20.2 15.9 12.4 20.6 12 20.6z" fill="currentColor"/><path d="M13.8 5.8l-2.2 3.4h2.6l-2.4 3.8" fill="none" stroke="rgba(10,12,40,.6)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>'),
   close: _svg('<path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'),
   clock: _svg('<circle cx="12" cy="12" r="8.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'),
+  users: _svg('<circle cx="9" cy="8.4" r="3.4" fill="currentColor"/><path d="M3.4 19.4c.5-3.2 2.8-4.8 5.6-4.8s5.1 1.6 5.6 4.8" fill="currentColor"/><circle cx="17" cy="9.2" r="2.6" fill="currentColor"/><path d="M15.2 14.7c2.6-.5 4.7 1 5.4 4.1" fill="currentColor"/>'),
+  eye: _svg('<path d="M2.5 12S6 6.4 12 6.4 21.5 12 21.5 12 18 17.6 12 17.6 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" fill="currentColor"/>'),
+  chart: _svg('<path d="M5 19V11M11 19V6M17 19v-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>'),
 };
 function hexToRgba(hex, a) {
   const h = (hex || "#000000").replace("#", "");
@@ -259,6 +262,7 @@ function renderEntry() {
         <button class="btn block" id="btn-start">${started ? `الخريطة ${ICONS.map}` : `ابدأ اللعب ${ICONS.play}`}</button>
         <button class="btn blue block" id="btn-daily">تحدّي اليوم ${ICONS.calendar} ${dailyDone ? "(مُنجز)" : ""}</button>
         <button class="btn ghost block" id="btn-how">كيف ألعب؟</button>
+        <button class="btn ghost block" id="btn-social">${ICONS.users} ${app.store.account.token ? "تقدّم الزملاء — " + esc(app.store.account.name || "") : "أنشئ حسابك بين الزملاء"}</button>
       </div>
     </div>`);
 
@@ -267,6 +271,7 @@ function renderEntry() {
   on("btn-continue", () => { app.audio.play("button"); openPreview(cur.chapter.index, cur.level.index - 1); });
   on("btn-daily", () => { app.audio.play("button"); startDaily(); });
   on("btn-how", () => { app.audio.play("tap"); renderHow(); });
+  on("btn-social", () => { app.audio.play("button"); openSocial(); });
 }
 
 /* ============================================================
@@ -1018,6 +1023,7 @@ function finishQuiz() {
   const coins = gainedStars * CONFIG.coins.perStar + (firstClear ? CONFIG.coins.levelClear + correct * CONFIG.coins.perCorrect : 0);
   const gems = firstClear && pct === 100 ? CONFIG.gems.perfectLevel : 0;
   app.store.recordLevel(levelId, { pct, score: q._score || 0, stars, passed, coins, gems });
+  pushProgress();
 
   // احتفال قصير عند إكمال كل مستويات المحور
   const ch = app.bank.chapters[q.chapterIndex];
@@ -1183,6 +1189,145 @@ function showNoLives() {
 /* ============================================================
    الإعدادات / الملف
    ============================================================ */
+/* ============================================================
+   المجتمع — حسابات المعلمين: تقدّم كل أستاذ يظهر للآخر
+   وفق إعدادات الخصوصية الخاصة به
+   ============================================================ */
+const SOCIAL_API = location.protocol === "file:" ? "http://localhost:8123" : location.origin;
+
+async function socialFetch(pathname, opts) {
+  try {
+    const timeout = typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(4000) : undefined;
+    const r = await fetch(SOCIAL_API + pathname, Object.assign({ headers: { "Content-Type": "application/json" }, signal: timeout }, opts || {}));
+    return await r.json();
+  } catch (_) {
+    return { error: "تعذّر الاتصال بالخادم" };
+  }
+}
+
+let _pushTimer = null;
+let _pushChain = Promise.resolve();
+function pushProgress(immediate) {
+  const s = app.store;
+  if (!s.account.token) return Promise.resolve(null);
+  const run = () => {
+    const ids = app.bank ? app.bank.chapters.flatMap((ch) => ch.levels.map((l) => l.id)) : [];
+    // سلسلة الدفعات: لا يُرسَل دفعتان معًا حتى لا تتداخل ترتيبات الحالة على الخادم
+    _pushChain = _pushChain.catch(() => {}).then(() =>
+      socialFetch("/api/social/push", {
+        method: "POST",
+        body: JSON.stringify({
+          token: s.account.token,
+          state: {
+            name: s.account.name || s.profile.name,
+            season: s.season,
+            totalStars: s.totalStars,
+            coins: s.coins,
+            gems: s.gems,
+            done: ids.length ? s.completedCount(ids) : 0,
+            totalLevels: ids.length,
+            social: {
+              visible: s.settings.social.visible !== false,
+              showStats: s.settings.social.showStats !== false,
+            },
+          },
+        }),
+      })
+    );
+    return _pushChain;
+  };
+  clearTimeout(_pushTimer);
+  if (immediate) return run();
+  _pushTimer = setTimeout(run, 1200);
+  return Promise.resolve(null);
+}
+
+async function openSocial() {
+  const s = app.store;
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  const wire = () => {
+    const close = ov.querySelector("#soc-close");
+    if (close) close.addEventListener("click", () => { app.audio.play("tap"); ov.remove(); });
+    if (s.account.token) {
+      ov.querySelector("#soc-refresh").addEventListener("click", () => { app.audio.play("tap"); render(); });
+      ov.querySelector("#soc-logout").addEventListener("click", () => {
+        app.audio.play("tap");
+        s.setAccount(null, null);
+        toast("تم تسجيل الخروج");
+        render();
+      });
+    } else {
+      const doAuth = async (mode) => {
+        const name = ov.querySelector("#soc-name").value.trim();
+        const pin = ov.querySelector("#soc-pin").value.trim();
+        if (name.length < 2) { toast("اكتب اسمًا من حرفين فأكثر"); return; }
+        const res = await socialFetch("/api/social/" + mode, { method: "POST", body: JSON.stringify({ name, pin }) });
+        if (!res.ok) { toast(res.error || "فشلت العملية"); return; }
+        s.setAccount(res.name, res.token);
+        app.audio.play("success");
+        toast("أهلًا بك " + res.name + " ✓");
+        render();
+      };
+      ov.querySelector("#soc-register").addEventListener("click", () => doAuth("register"));
+      ov.querySelector("#soc-login").addEventListener("click", () => doAuth("login"));
+    }
+  };
+  const render = async () => {
+    try {
+      await renderInner();
+    } catch (e) {
+      console.error("social render failed:", e);
+      ov.innerHTML = `<div class="sheet"><div class="grab"></div><h2>تعذّر فتح المجتمع</h2><div class="sub">${esc(String(e))}</div><button class="btn ghost block" id="soc-close">إغلاق</button></div>`;
+      wire();
+    }
+  };
+  const renderInner = async () => {
+    const acc = s.account;
+    let list = null;
+    if (acc.token) {
+      await pushProgress(true);
+      const res = await socialFetch("/api/social/list?token=" + encodeURIComponent(acc.token));
+      list = res && res.ok ? res : null;
+    }
+    const peers = list ? list.peers || [] : [];
+    ov.innerHTML = h`
+      <div class="sheet">
+        <div class="grab"></div>
+        <h2>تقدّم الزملاء ${ICONS.users}</h2>
+        <div class="sub">${acc.token ? "أنت: " + esc(acc.name || s.profile.name) : "حسابك يتيح لزملائك رؤية تقدّمك — وحد أنت مستوى الخصوصية من الإعدادات"}</div>
+        ${acc.token ? `
+          <div class="peer-list">
+            ${peers.length ? peers.map((p) => `
+              <div class="menu-row peer-row">
+                <span class="mi">${p.visible ? (p.stats ? "🧑‍🏫" : "👁") : "🔒"}</span>
+                <div class="peer-info">
+                  <div class="peer-name">${esc(p.name)}</div>
+                  <div class="peer-sub">${!p.visible ? "أخفى تقدّمه" : !p.stats ? "يظهر دون أرقام" : `⭐ ${p.totalStars} • ✅ ${p.done}/${p.totalLevels} • موسم ${p.season}`}</div>
+                </div>
+              </div>`).join("") : `<div class="sub">لا زملاء بعد — افتح اللعبة على متصفح/جهاز آخر وسجّل حسابًا جديدًا هناك بنفس الطريقة.</div>`}
+          </div>
+          <div class="menu-list">
+            <div class="menu-row" id="soc-refresh"><span class="mi">${ICONS.refresh}</span><span>تحديث القائمة</span></div>
+            <div class="menu-row" id="soc-logout"><span class="mi">${ICONS.back}</span><span>تسجيل الخروج</span></div>
+          </div>
+        ` : `
+          <input class="field" id="soc-name" maxlength="24" placeholder="اسم المستخدم (مثال: أ. سارة)" />
+          <input class="field" id="soc-pin" maxlength="6" inputmode="numeric" placeholder="رمز سري من 4–6 أرقام" />
+          <div class="btn-row">
+            <button class="btn green" id="soc-register">حساب جديد</button>
+            <button class="btn" id="soc-login">تسجيل الدخول</button>
+          </div>
+          <div class="sub">الحساب يحفظ تقدّمك على الخادم ويُظهره لزملائك حسب الخصوصية.</div>
+        `}
+        <button class="btn ghost block" id="soc-close">إغلاق</button>
+      </div>`;
+    wire();
+  };
+  document.body.appendChild(ov);
+  await render();
+}
+
 function openSettings() {
   const s = app.store;
   const avatars = ["🧑‍🏫", "👩‍🏫", "🧑‍🎓", "👨‍🎓", "🦉", "🐯", "🦊", "🐼"];
@@ -1198,39 +1343,43 @@ function openSettings() {
       <input class="field" id="set-name" maxlength="24" value="${esc(s.profile.name)}" placeholder="اسمك" />
       <div class="avatar-grid" id="set-avatars">
         ${avatars.map((a) => `<button class="avatar-opt ${!chosenPhoto && a === chosenAvatar ? "sel" : ""}" data-a="${a}">${a}</button>`).join("")}
+        <button type="button" class="avatar-opt photo-add" id="set-photo-pick">
+          <span class="pa-ic">📷</span><span class="pa-t">أضف صورتي</span>
+        </button>
       </div>
-      <div class="photo-row">
-        <div class="photo-prev" id="set-photo-prev"></div>
-        <div class="photo-btns">
-          <button class="btn ghost sm" id="set-photo-pick">📷 صورة من الجهاز</button>
-          <button class="btn ghost sm" id="set-photo-del" ${chosenPhoto ? "" : 'style="display:none"'}>🗑 حذف الصورة</button>
-        </div>
-        <input type="file" id="set-photo-file" accept="image/*" hidden />
-      </div>
+      <input type="file" id="set-photo-file" accept="image/*" hidden />
       <div class="menu-list">
         <div class="menu-row"><span class="mi">${s.settings.sound ? ICONS.sound : ICONS.mute}</span><span>الأصوات</span><span class="spacer"></span><span class="switch ${s.settings.sound ? "on" : ""}" id="set-sound"></span></div>
         <div class="menu-row"><span class="mi">${ICONS.heart}</span><span>الأرواح</span><span class="spacer"></span><span class="val">${s.lives}/${s.maxLives}</span></div>
+        <div class="menu-row" id="set-vis"><span class="mi">${ICONS.eye}</span><span>تقدّمي مرئي للزملاء</span><span class="spacer"></span><span class="switch ${s.settings.social.visible !== false ? "on" : ""}"></span></div>
+        <div class="menu-row" id="set-stats"><span class="mi">${ICONS.chart}</span><span>إظهار أرقامي</span><span class="spacer"></span><span class="switch ${s.settings.social.showStats !== false ? "on" : ""}"></span></div>
+        <div class="menu-row" id="set-peers"><span class="mi">${ICONS.users}</span><span>تقدّم الزملاء</span><span class="spacer"></span><span class="val">${s.account.token ? esc(s.account.name || "") : "بدون حساب"}</span></div>
         <div class="menu-row" id="set-reset"><span class="mi">${ICONS.trash}</span><span>تصفير التقدّم</span><span class="spacer"></span><span class="val">حذف كل شيء</span></div>
       </div>
       <button class="btn green block" id="set-save">حفظ وإغلاق</button>
     </div>`;
   document.body.appendChild(ov);
 
-  const prevEl = ov.querySelector("#set-photo-prev");
-  const delBtn = ov.querySelector("#set-photo-del");
+  const addBtn = ov.querySelector("#set-photo-pick");
   const syncPhoto = () => {
-    prevEl.innerHTML = avatarHTML({ photo: chosenPhoto, avatar: chosenAvatar });
-    delBtn.style.display = chosenPhoto ? "" : "none";
-    ov.querySelectorAll(".avatar-opt").forEach((x) => x.classList.toggle("sel", !chosenPhoto && x.dataset.a === chosenAvatar));
+    addBtn.classList.toggle("sel", !!chosenPhoto);
+    addBtn.innerHTML = chosenPhoto
+      ? `<img class="av-img" src="${chosenPhoto}" alt="" /><span class="pa-t">غيّر صورتي</span><span class="pa-del" id="set-photo-del" aria-label="حذف الصورة">🗑</span>`
+      : `<span class="pa-ic">📷</span><span class="pa-t">أضف صورتي</span>`;
+    ov.querySelectorAll(".avatar-opt:not(.photo-add)").forEach((x) => x.classList.toggle("sel", !chosenPhoto && x.dataset.a === chosenAvatar));
   };
   syncPhoto();
-  ov.querySelectorAll(".avatar-opt").forEach((b) => b.addEventListener("click", () => {
+  ov.querySelectorAll(".avatar-opt:not(.photo-add)").forEach((b) => b.addEventListener("click", () => {
     app.audio.play("tap");
     chosenAvatar = b.dataset.a;
     chosenPhoto = null;
     syncPhoto();
   }));
-  ov.querySelector("#set-photo-pick").addEventListener("click", () => { app.audio.play("tap"); ov.querySelector("#set-photo-file").click(); });
+  addBtn.addEventListener("click", (e) => {
+    if (e.target.closest("#set-photo-del")) { app.audio.play("tap"); chosenPhoto = null; syncPhoto(); return; }
+    app.audio.play("tap");
+    ov.querySelector("#set-photo-file").click();
+  });
   ov.querySelector("#set-photo-file").addEventListener("change", async (e) => {
     const f = e.target.files && e.target.files[0];
     e.target.value = "";
@@ -1242,12 +1391,26 @@ function openSettings() {
     app.audio.play("success");
     toast("تم اختيار الصورة ✓");
   });
-  delBtn.addEventListener("click", () => { app.audio.play("tap"); chosenPhoto = null; syncPhoto(); });
   ov.querySelector("#set-sound").addEventListener("click", (e) => {
     const v = !s.settings.sound; s.setSetting("sound", v); app.audio.setEnabled(v);
     e.currentTarget.classList.toggle("on", v);
     app.audio.play(v ? "select" : "tap");
   });
+  ov.querySelector("#set-vis").addEventListener("click", (e) => {
+    const v = !(s.settings.social.visible !== false);
+    s.setSetting("social", Object.assign({}, s.settings.social, { visible: v }));
+    e.currentTarget.querySelector(".switch").classList.toggle("on", v);
+    app.audio.play(v ? "select" : "tap");
+    pushProgress(true);
+  });
+  ov.querySelector("#set-stats").addEventListener("click", (e) => {
+    const v = !(s.settings.social.showStats !== false);
+    s.setSetting("social", Object.assign({}, s.settings.social, { showStats: v }));
+    e.currentTarget.querySelector(".switch").classList.toggle("on", v);
+    app.audio.play(v ? "select" : "tap");
+    pushProgress(true);
+  });
+  ov.querySelector("#set-peers").addEventListener("click", () => { app.audio.play("button"); ov.remove(); openSocial(); });
   ov.querySelector("#set-reset").addEventListener("click", () => {
     if (confirm("سيتم حذف كل التقدّم. متأكد؟")) { s.reset(); app.audio.setEnabled(s.settings.sound); ov.remove(); renderEntry(); }
   });
@@ -1255,6 +1418,7 @@ function openSettings() {
     const name = ov.querySelector("#set-name").value.trim() || "متدرّب الكفاءة";
     s.setProfile({ name, avatar: chosenAvatar, photo: chosenPhoto });
     app.audio.play("button"); ov.remove(); refreshHUD();
+    pushProgress();
     const subEl = document.querySelector(".hud .sub"); if (subEl) subEl.textContent = name;
     const avEl = document.getElementById("hud-avatar"); if (avEl) avEl.innerHTML = avatarHTML(s.profile);
     document.querySelectorAll(".player-badge .pb-av").forEach((el) => { el.innerHTML = avatarHTML(s.profile); });
@@ -1307,8 +1471,14 @@ async function init() {
   }
   renderEntry();
   app.audio.preload();
+  // رابط ربط التطبيق: ?reg=1 يفتح واجهة التسجيل مباشرة بعد أول تشغيل
+  if (/[?&]reg=1/.test(location.search)) {
+    setTimeout(() => { if (!app.store.account.token) openSocial(); }, 500);
+  }
 }
 
 init();
 
 window.JAWAAHER = app;
+app.pushProgress = pushProgress;
+app.openSocial = openSocial;

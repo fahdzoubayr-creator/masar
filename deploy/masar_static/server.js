@@ -156,6 +156,40 @@ const MIME = {
   '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
 };
 
+// ===== مخزن حسابات لعبة جواهر الكفاءة — مزامنة التقدّم بين الأجهزة =====
+// البيانات في masar_social.json بجانب الخادم (مُضافة إلى .gitignore).
+// الـ PIN يُخزَّن مُجزّأً بملح عشوائي، ولا تُقبل أي بيانات غير محدّدة الحقول.
+const SOCIAL_FILE = path.join(__dirname, 'masar_social.json');
+function socialLoad() {
+  try {
+    return JSON.parse(fs.readFileSync(SOCIAL_FILE, 'utf8'));
+  } catch (_) {
+    return { accounts: {}, sessions: {} };
+  }
+}
+function socialSave(db) {
+  try {
+    fs.writeFileSync(SOCIAL_FILE + '.tmp', JSON.stringify(db));
+    fs.renameSync(SOCIAL_FILE + '.tmp', SOCIAL_FILE);
+  } catch (_) {}
+}
+function socialHash(pin, salt) {
+  return crypto.createHash('sha256').update(salt + ':' + pin).digest('hex');
+}
+function readJsonBody(req) {
+  return new Promise((resolve) => {
+    let d = '';
+    req.on('data', (c) => {
+      d += c;
+      if (d.length > 65536) req.destroy();
+    });
+    req.on('end', () => {
+      try { resolve(JSON.parse(d)); } catch (_) { resolve(null); }
+    });
+    req.on('error', () => resolve(null));
+  });
+}
+
 const handler = async (req, res) => {
   try {
     const ref = String(req.headers.referer || '-');
@@ -215,6 +249,102 @@ const handler = async (req, res) => {
       'Cache-Control': 'no-cache',
     });
     return fs.createReadStream(filePath).pipe(res);
+  }
+
+  // ===== حسابات جواهر الكفاءة: تسجيل/دخول/دفع التقدّم/قائمة الزملاء =====
+  // كل أستاذ يقرر في إعداداته: هل يظهر تقدّمه (visible)؟ وهل تُعرض الأرقام (showStats)؟
+  if (req.method === 'POST' && urlPath === '/api/social/register') {
+    const body = await readJsonBody(req);
+    const name = String((body && body.name) || '').trim();
+    const pin = String((body && body.pin) || '');
+    if (name.length < 2 || name.length > 24) return json(res, 400, { error: 'الاسم من 2 إلى 24 حرفًا' });
+    if (!/^[0-9\u0600-\u06FF]{4,6}$/.test(pin)) return json(res, 400, { error: 'الرمز 4–6 أرقام' });
+    const db = socialLoad();
+    const key = name.toLowerCase();
+    if (db.accounts[key]) return json(res, 409, { error: 'الاسم محجوز — سجّل الدخول' });
+    const salt = crypto.randomBytes(8).toString('hex');
+    db.accounts[key] = {
+      name: name,
+      salt: salt,
+      pinHash: socialHash(pin, salt),
+      createdAt: new Date().toISOString(),
+      state: {},
+    };
+    const token = crypto.randomBytes(24).toString('hex');
+    db.sessions[token] = key;
+    socialSave(db);
+    return json(res, 200, { ok: true, token: token, name: name });
+  }
+
+  if (req.method === 'POST' && urlPath === '/api/social/login') {
+    const body = await readJsonBody(req);
+    const name = String((body && body.name) || '').trim();
+    const pin = String((body && body.pin) || '');
+    const db = socialLoad();
+    const acc = db.accounts[name.toLowerCase()];
+    if (!acc || acc.pinHash !== socialHash(pin, acc.salt)) {
+      return json(res, 401, { error: 'اسم أو رمز غير صحيح' });
+    }
+    const token = crypto.randomBytes(24).toString('hex');
+    db.sessions[token] = name.toLowerCase();
+    socialSave(db);
+    return json(res, 200, { ok: true, token: token, name: acc.name });
+  }
+
+  if (req.method === 'POST' && urlPath === '/api/social/push') {
+    const body = await readJsonBody(req);
+    const token = String((body && body.token) || '');
+    const db = socialLoad();
+    const key = db.sessions[token];
+    if (!key || !db.accounts[key]) return json(res, 401, { error: 'سجّل الدخول أولًا' });
+    const st = (body && body.state) || {};
+    const social = (st.social && typeof st.social === 'object') ? st.social : {};
+    db.accounts[key].state = {
+      name: String(st.name || db.accounts[key].name).slice(0, 24),
+      season: Math.max(1, Math.min(999, Number(st.season) || 1)),
+      totalStars: Math.max(0, Number(st.totalStars) || 0),
+      coins: Math.max(0, Number(st.coins) || 0),
+      gems: Math.max(0, Number(st.gems) || 0),
+      done: Math.max(0, Number(st.done) || 0),
+      totalLevels: Math.max(0, Number(st.totalLevels) || 0),
+      lastPlayedAt: new Date().toISOString(),
+      social: {
+        visible: social.visible !== false,
+        showStats: social.showStats !== false,
+      },
+    };
+    socialSave(db);
+    return json(res, 200, { ok: true });
+  }
+
+  // قائمة الزملاء: من أخفى (visible=false) يظهر اسمه وسطر «أخفى تقدّمه» فقط،
+  // ومن ظهر دون showStats يظهر اسمه دون أي أرقام.
+  if (req.method === 'GET' && urlPath === '/api/social/list') {
+    const token = new URL(req.url, 'http://localhost').searchParams.get('token') || '';
+    const db = socialLoad();
+    const me = db.sessions[token];
+    if (!me) return json(res, 401, { error: 'سجّل الدخول أولًا' });
+    const peers = Object.keys(db.accounts)
+      .filter((k) => k !== me)
+      .map((k) => {
+        const a = db.accounts[k];
+        const st = a.state || {};
+        const vis = !st.social || st.social.visible !== false;
+        const stats = !st.social || st.social.showStats !== false;
+        return {
+          name: st.name || a.name,
+          visible: vis,
+          stats: vis && stats,
+          season: vis && stats ? st.season : null,
+          totalStars: vis && stats ? st.totalStars : null,
+          coins: vis && stats ? st.coins : null,
+          gems: vis && stats ? st.gems : null,
+          done: vis && stats ? st.done : null,
+          totalLevels: vis && stats ? st.totalLevels : null,
+          lastPlayedAt: vis && stats ? (st.lastPlayedAt || null) : null,
+        };
+      });
+    return json(res, 200, { ok: true, me: db.accounts[me].name, peers: peers });
   }
 
   // رابط تحميل تطبيق الأندرويد — يقرأ آخر APK مبني من مجلد البناء مباشرة،

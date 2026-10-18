@@ -1341,23 +1341,43 @@ button {
 }
 .avatar-opt.sel { background: linear-gradient(180deg, #7a5bff, #4a2d9c); box-shadow: inset 0 0 0 2px #fff; }
 .av-img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
-.photo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.photo-prev {
-  width: 58px;
-  height: 58px;
+.avatar-opt.photo-add { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font-size: 24px; }
+.avatar-opt.photo-add .av-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.avatar-opt.photo-add .pa-t {
+  position: relative;
+  z-index: 1;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(9, 6, 26, 0.7);
+  color: #fff;
+  white-space: nowrap;
+}
+.avatar-opt.photo-add .pa-del {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  flex: none;
-  overflow: hidden;
   display: grid;
   place-items: center;
-  font-size: 26px;
-  background: linear-gradient(180deg, #ffe9a8, #f5b942);
-  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.55), 0 4px 10px rgba(0, 0, 0, 0.35);
+  font-size: 12px;
+  background: rgba(255, 77, 109, 0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 }
-.photo-btns { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
-.photo-btns .btn { width: 100%; }
+.avatar-opt.photo-add.sel .av-img { outline: 3px solid #fff; outline-offset: -3px; }
 .field { width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: none; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--cream); background: rgba(0, 0, 0, 0.3); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1); margin-bottom: 14px; }
 .field:focus { outline: none; box-shadow: inset 0 0 0 2px var(--gold); }
+.btn-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.btn-row .btn { flex: 1; }
+.peer-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.peer-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.peer-name { font-weight: 800; font-size: 15px; color: var(--cream); }
+.peer-sub { font-size: 12px; font-weight: 700; color: var(--muted); }
 .hud .avatar, .hud .title-block { cursor: pointer; }
 .daily-badge { position: absolute; top: -6px; left: -6px; font-size: 14px; }
 

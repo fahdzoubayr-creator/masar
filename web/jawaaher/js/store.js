@@ -16,6 +16,7 @@ const DEFAULT = {
   settings: { sound: true, music: false, social: { visible: true, showStats: true, joinGroup: false } },
   lives: { count: 5, updatedAt: 0 },
   profile: { name: "متدرّب الكفاءة", avatar: "🧑‍🏫", photo: null, createdAt: Date.now(), lastPlayedAt: Date.now() },
+  account: { name: null, token: null }, // حساب المجتمع على الخادم (مزامنة التقدّم)
   daily: { last: null, streak: 0, bestPct: 0 },
   season: 1, // الموسم الحالي (New Game+)
   seasons: [], // أرشيف المواسم المكتملة
@@ -40,6 +41,7 @@ export class Store {
         settings: Object.assign(deepClone(DEFAULT.settings), parsed.settings || {}),
         lives: Object.assign(deepClone(DEFAULT.lives), parsed.lives || {}),
         profile: Object.assign(deepClone(DEFAULT.profile), parsed.profile || {}),
+        account: Object.assign(deepClone(DEFAULT.account), parsed.account || {}),
         daily: Object.assign(deepClone(DEFAULT.daily), parsed.daily || {}),
         levels: parsed.levels || {},
         seasons: parsed.seasons || [],
@@ -205,6 +207,15 @@ export class Store {
   }
   setProfile(p) {
     this.data.profile = Object.assign(this.data.profile, p);
+    this.save();
+  }
+
+  /* ---- حساب المجتمع (خادم المزامنة) ---- */
+  get account() {
+    return this.data.account || { name: null, token: null };
+  }
+  setAccount(name, token) {
+    this.data.account = { name: name || null, token: token || null };
     this.save();
   }
 
