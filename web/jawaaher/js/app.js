@@ -27,6 +27,10 @@ function esc(s) {
 function h(strings, ...vals) {
   return strings.reduce((out, s, i) => out + s + (vals[i] != null ? vals[i] : ""), "");
 }
+/* «15 المطلوبة» من كل مرحلة (فصل): إتمامها وشرط فتح التي بعدها */
+function requiredOf(ch) {
+  return Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, (ch && ch.levels.length) || 15);
+}
 function mount(html) {
   if (app._resizeHandler) { window.removeEventListener("resize", app._resizeHandler); app._resizeHandler = null; }
   if (app._livesTimer) { clearInterval(app._livesTimer); app._livesTimer = null; }
@@ -338,7 +342,7 @@ function renderMap(scrollToChapter = null) {
     const doneIds = ch.levels.map((l) => l.id);
     const done = s.completedCount(doneIds);
     // «15 المطلوبة»: شرط إتمام الفصل وشرط فتح التالي — التقدّم يتجه نحوها
-    const required = Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, ch.levels.length);
+    const required = requiredOf(ch);
     const pct = Math.min(100, Math.round((done / required) * 100));
     const maxStars = required * 3;
     const chapterStars = Math.min(s.starsCount(doneIds), maxStars);
@@ -361,7 +365,8 @@ function renderMap(scrollToChapter = null) {
       if (needsStar) cls.push("need-star");
       if (isMilestone && lvlUnlocked) cls.push("milestone");
       if (justUnlocked === lv.id) cls.push("just-unlocked");
-      if (difficultyOf(li, ch.levels.length).key === "hard") cls.push("hard");
+      // النار على عقدة «15 المطلوبة» + آخر مرحلة في الفصل
+      if (lv.index === required || lv.index === ch.levels.length) cls.push("gate");
       let badge = "";
       if (!lvlUnlocked) badge = `<span class="badge lock">${ICONS.lock}</span>`;
       // شارات خارج القرص (فوق الإطار) — التاج والجواهر لتظهرا بوضوح
@@ -667,7 +672,7 @@ function openPreview(chapterIndex, levelIndex) {
       <div class="pv-stars">${[0, 1, 2].map((i) => `<span class="pv-star ${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="stat-grid">
         <div class="stat"><div class="v">${lv.questions.length}</div><div class="k">أسئلة</div></div>
-        <div class="stat"><div class="v" style="color:${diff.color}">${diff.key === "hard" ? "🔥 " : ""}${diff.label}</div><div class="k">الصعوبة</div></div>
+        <div class="stat"><div class="v" style="color:${diff.color}">${levelIndex + 1 === requiredOf(ch) || levelIndex + 1 === ch.levels.length ? "🔥 " : ""}${diff.label}</div><div class="k">الصعوبة</div></div>
         <div class="stat"><div class="v">${best ? best.bestPct + "%" : "—"}</div><div class="k">أفضل نتيجة</div></div>
       </div>
       <div class="pv-rewards">
@@ -863,7 +868,7 @@ function renderQuiz() {
       <div class="quiz-top">
         <button class="iconbtn" id="q-back" aria-label="إنهاء">${ICONS.close}</button>
         <div class="info">
-          <div class="line1">${difficultyOf(q.level.index - 1, q.chapter.levels.length).key === "hard" ? "🔥 " : ""}${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
+          <div class="line1">${q.level.index === requiredOf(q.chapter) || q.level.index === q.chapter.levels.length ? "🔥 " : ""}${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
           <div class="line2">السؤال ${q.i + 1} من ${total} • ${ICONS.check} ${q.correct} صحيحة</div>
         </div>
         ${timerChip}
