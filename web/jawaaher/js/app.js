@@ -262,7 +262,7 @@ function renderEntry() {
         <button class="btn block" id="btn-start">${started ? `الخريطة ${ICONS.map}` : `ابدأ اللعب ${ICONS.play}`}</button>
         <button class="btn blue block" id="btn-daily">تحدّي اليوم ${ICONS.calendar} ${dailyDone ? "(مُنجز)" : ""}</button>
         <button class="btn ghost block" id="btn-how">كيف ألعب؟</button>
-        <button class="btn ghost block" id="btn-social">${ICONS.users} ${app.store.account.token ? "تقدّم الزملاء — " + esc(app.store.account.name || "") : "أنشئ حسابك بين الزملاء"}</button>
+        <button class="btn ghost block" id="btn-social">${ICONS.users} ${app.store.account.token ? "تقدّم الزملاء — " + esc(app.store.account.name || "") : "تقدّم الزملاء"}</button>
       </div>
     </div>`);
 
@@ -1308,23 +1308,9 @@ async function openSocial() {
       ov.querySelector("#soc-logout").addEventListener("click", () => {
         app.audio.play("tap");
         s.setAccount(null, null);
-        toast("تم تسجيل الخروج");
+        toast("تم تسجيل الخروج — يُعاد التعريف تلقائيًا عند الفتح من تطبيق مسار احتراف");
         render();
       });
-    } else {
-      const doAuth = async (mode) => {
-        const name = ov.querySelector("#soc-name").value.trim();
-        const pin = ov.querySelector("#soc-pin").value.trim();
-        if (name.length < 2) { toast("اكتب اسمًا من حرفين فأكثر"); return; }
-        const res = await socialFetch("/api/social/" + mode, { method: "POST", body: JSON.stringify({ name, pin }) });
-        if (!res.ok) { toast(res.error || "فشلت العملية"); return; }
-        s.setAccount(res.name, res.token);
-        app.audio.play("success");
-        toast("أهلًا بك " + res.name + " ✓");
-        render();
-      };
-      ov.querySelector("#soc-register").addEventListener("click", () => doAuth("register"));
-      ov.querySelector("#soc-login").addEventListener("click", () => doAuth("login"));
     }
   };
   const render = async () => {
@@ -1359,20 +1345,14 @@ async function openSocial() {
                   <div class="peer-name">${esc(p.name)}</div>
                   <div class="peer-sub">${!p.visible ? "أخفى تقدّمه" : !p.stats ? "يظهر دون أرقام" : `⭐ ${p.totalStars} • ✅ ${p.done}/${p.totalLevels} • موسم ${p.season}`}</div>
                 </div>
-              </div>`).join("") : `<div class="sub">لا زملاء بعد — افتح اللعبة على متصفح/جهاز آخر وسجّل حسابًا جديدًا هناك بنفس الطريقة.</div>`}
+              </div>`).join("") : `<div class="sub">لا زملاء بعد — افتح اللعبة من تطبيق مسار احتراف على جهاز آخر.</div>`}
           </div>
           <div class="menu-list">
             <div class="menu-row" id="soc-refresh"><span class="mi">${ICONS.refresh}</span><span>تحديث القائمة</span></div>
-            <div class="menu-row" id="soc-logout"><span class="mi">${ICONS.back}</span><span>تسجيل الخروج</span></div>
+            <div class="menu-row" id="soc-logout"><span class="mi">${ICONS.back}</span><span>تسجيل الخروج المؤقت</span></div>
           </div>
         ` : `
-          <input class="field" id="soc-name" maxlength="24" placeholder="اسم المستخدم (مثال: أ. سارة)" />
-          <input class="field" id="soc-pin" maxlength="6" inputmode="numeric" placeholder="رمز سري من 4–6 أرقام" />
-          <div class="btn-row">
-            <button class="btn green" id="soc-register">حساب جديد</button>
-            <button class="btn" id="soc-login">تسجيل الدخول</button>
-          </div>
-          <div class="sub">الحساب يحفظ تقدّمك على الخادم ويُظهره لزملائك حسب الخصوصية.</div>
+          <div class="sub">يتم التعريف تلقائيًا باسمك عند فتح اللعبة من تطبيق «مسار احتراف».</div>
         `}
         <button class="btn ghost block" id="soc-close">إغلاق</button>
       </div>`;
@@ -1525,10 +1505,28 @@ async function init() {
   }
   renderEntry();
   app.audio.preload();
-  // رابط ربط التطبيق: ?reg=1 يفتح واجهة التسجيل مباشرة بعد أول تشغيل
-  if (/[?&]reg=1/.test(location.search)) {
-    setTimeout(() => { if (!app.store.account.token) openSocial(); }, 500);
+  await appIdentityFromLink();
+}
+
+/* هوية «مسار احتراف»: يفتح التطبيق اللعبة بـ ?u=<اسم المسجل الأول>
+   فتعرّف نفسها تلقائيًا على الخادم — دون أي تسجيل داخل اللعبة. */
+async function appIdentityFromLink() {
+  const m = /[?&]u=([^&]+)/.exec(location.search);
+  if (!m) return null;
+  let name = "";
+  try { name = decodeURIComponent(m[1]).trim(); } catch (_) { return null; }
+  if (name.length < 2) return null;
+  const s = app.store;
+  if (s.account.token && (s.account.name || "").toLowerCase() === name.toLowerCase()) return s.account;
+  const res = await socialFetch("/api/social/app-login", { method: "POST", body: JSON.stringify({ name: name }) });
+  if (res && res.ok) {
+    s.setAccount(res.name, res.token);
+    renderEntry(); // تحديث شاشة الافتتاح باسم الحساب
+    pushProgress(true); // مزامنة تقدّمك الحالي فورًا
+    return s.account;
   }
+  if (res && res.error) toast(res.error);
+  return null;
 }
 
 init();

@@ -291,6 +291,33 @@ const handler = async (req, res) => {
     return json(res, 200, { ok: true, token: token, name: acc.name });
   }
 
+  // دخول تلقائي بهوية «مسار احتراف»: التسجيل الأول في التطبيق يكفي،
+  // فلا تسجيل داخل اللعبة إطلاقًا — يُنشأ الحساب صامتًا عند أول فتح بـ ?u=<الاسم>.
+  // الحسابات المسجّلة برمز خاص (طريقة قديمة) محميّة ولا تُفتح بالاسم وحده.
+  if (req.method === 'POST' && urlPath === '/api/social/app-login') {
+    const body = await readJsonBody(req);
+    const name = String((body && body.name) || '').trim();
+    if (name.length < 2 || name.length > 24) return json(res, 400, { error: 'الاسم من 2 إلى 24 حرفًا' });
+    const db = socialLoad();
+    const key = name.toLowerCase();
+    const acc = db.accounts[key];
+    if (acc && acc.pinHash) return json(res, 409, { error: 'هذا الاسم مسجّل برمز خاص' });
+    if (!acc) {
+      db.accounts[key] = {
+        name: name,
+        salt: '',
+        pinHash: '',
+        provisioned: true,
+        createdAt: new Date().toISOString(),
+        state: {},
+      };
+    }
+    const token = crypto.randomBytes(24).toString('hex');
+    db.sessions[token] = key;
+    socialSave(db);
+    return json(res, 200, { ok: true, token: token, name: db.accounts[key].name || name });
+  }
+
   if (req.method === 'POST' && urlPath === '/api/social/push') {
     const body = await readJsonBody(req);
     const token = String((body && body.token) || '');

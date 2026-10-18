@@ -8,6 +8,7 @@ import 'package:masar_app/features/review/presentation/screens/review_space_scre
 import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
 import 'package:masar_app/features/history/presentation/screens/history_screen.dart';
 import 'package:masar_app/features/exams/presentation/screens/level_map_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/jawaaher_game_screen.dart';
 import 'package:masar_app/features/audio_room/presentation/screens/audio_room_lobby_screen.dart';
 import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_screen.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
@@ -82,6 +83,12 @@ class HomeDashboardScreen extends StatelessWidget {
       builder: _buildLevelMap,
     ),
     _DashboardItem(
+      title: 'جواهر الكفاءة',
+      subtitle: 'تحدّي المراحل — منافسة بين الزملاء',
+      icon: Icons.sports_esports_rounded,
+      builder: _buildJawaaher,
+    ),
+    _DashboardItem(
       title: 'مؤشر التقدم',
       subtitle: 'لوحة قياس الأداء والإحصائيات',
       icon: Icons.bar_chart_rounded,
@@ -108,6 +115,8 @@ class HomeDashboardScreen extends StatelessWidget {
       const QuizPickerScreen();
   static Widget _buildHistory(BuildContext context) => const HistoryScreen();
   static Widget _buildLevelMap(BuildContext context) => const LevelMapScreen();
+  static Widget _buildJawaaher(BuildContext context) =>
+      const JawaaherGameScreen();
   static Widget _buildMindMaps(BuildContext context) => const MindMapsScreen();
   static Widget _buildLiveRoom(BuildContext context) =>
       const AudioRoomLobbyScreen();
