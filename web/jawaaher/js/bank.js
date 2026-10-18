@@ -74,7 +74,7 @@ export class Bank {
   _buildChapters() {
     const Q = CONFIG.questionsPerLevel; // عدد الأسئلة لكل مستوى
     const L = CONFIG.levelsPerChapter; // عدد المستويات لكل فصل (ثابت)
-    const out = [];
+    const built = [];
     CHAPTERS.forEach((c, si) => {
       const pool = this.bySubject.get(c.subject) || [];
       if (!pool.length) return; // موضوع بلا أسئلة لا يولّد فصولًا
@@ -90,7 +90,6 @@ export class Bank {
           Math.floor(((p + 1) * pool.length) / P),
         );
         if (!slice.length) continue;
-        const ci = out.length;
         const axes = sliced
           ? allAxes.slice(
               Math.floor((p * allAxes.length) / P),
@@ -110,28 +109,44 @@ export class Bank {
           const axis = axes.length ? axes[li % axes.length] : null;
           const part = axes.length ? Math.floor(li / axes.length) + 1 : 0;
           levels.push({
-            id: `c${ci}_l${li + 1}`,
             index: li + 1,
-            chapterIndex: ci,
             name: axis ? (axisParts > 1 ? `${axis} ${arNum(part)}` : axis) : null,
             questions,
           });
         }
-        out.push({
-          index: ci,
-          subject: c.subject,
-          title,
-          icon: c.icon,
-          theme: c.theme,
-          questions: slice,
-          count: slice.length,
-          levels,
+        built.push({
+          si, p,
+          ch: {
+            subject: c.subject,
+            title,
+            icon: c.icon,
+            theme: c.theme,
+            questions: slice,
+            count: slice.length,
+            levels,
+          },
         });
       }
     });
-    // إخفاء الفصول التي لا تحتوي أسئلة
-    this.chapters = out.filter((ch) => ch.count > 0);
-    this.chapters.forEach((ch, i) => { ch.index = i; });
+    // الترتيب على الشريط بجولات: أجزاء الموضوع الواحد غير متتابعة
+    // الجولة ١ = الجزء الأول من كل الموضوعات، ثم الجزء الثاني… فلا تتجاور أجزاء موضوع واحد
+    const rounds = built.reduce((m, b) => Math.max(m, b.p + 1), 1);
+    const ordered = [];
+    for (let p = 0; p < rounds; p++) {
+      for (const b of built) if (b.p === p) ordered.push(b);
+    }
+    // الترقيم النهائي بعد الترتيب (المعرّفات والمؤشرات)
+    this.chapters = ordered
+      .map((b, ci) => {
+        const ch = b.ch;
+        ch.index = ci;
+        ch.levels.forEach((lv, li) => {
+          lv.id = `c${ci}_l${li + 1}`;
+          lv.chapterIndex = ci;
+        });
+        return ch;
+      })
+      .filter((ch) => ch.count > 0);
     // ترقيم عالمي متصل تراكميًا عبر كل الفصول
     let g = 0;
     this.chapters.forEach((ch) => {
