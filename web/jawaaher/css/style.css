@@ -733,6 +733,41 @@ button {
   box-shadow: inset 0 0 0 3px rgba(255, 207, 63, 0.9), 0 0 14px rgba(255, 207, 63, 0.5);
 }
 
+/* ---------- إطار نار العقد الصعبة: لهيب متوهج نابض يكاد يغطي الإطار ---------- */
+.level-node.hard .node-ring {
+  box-shadow: inset 0 0 0 3px rgba(255, 224, 170, 0.95), 0 0 12px 2px rgba(255, 120, 0, 0.85);
+  animation: fireRingPulse 1.05s ease-in-out infinite alternate;
+}
+@keyframes fireRingPulse {
+  from {
+    box-shadow: inset 0 0 0 3px rgba(255, 205, 130, 0.9), 0 0 8px 1px rgba(255, 80, 0, 0.7);
+  }
+  to {
+    box-shadow:
+      inset 0 0 0 4px rgba(255, 248, 214, 1),
+      0 0 24px 7px rgba(255, 150, 0, 0.95),
+      0 0 44px 14px rgba(255, 50, 0, 0.45);
+  }
+}
+.level-node.hard::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff1200, #ff7a00, #ffd400, #ff9500, #ff1200, #ff5a00, #ffe600, #ff7a00, #ff1200);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 58%, #000 74%, #000 96%, transparent 100%);
+  mask: radial-gradient(circle closest-side, transparent 58%, #000 74%, #000 96%, transparent 100%);
+  filter: blur(4px) saturate(1.7) brightness(1.2);
+  animation: fireSpin 1.7s linear infinite, fireFlicker 0.62s ease-in-out infinite alternate;
+  z-index: 3;
+  pointer-events: none;
+}
+@keyframes fireSpin { to { transform: rotate(360deg); } }
+@keyframes fireFlicker {
+  from { filter: blur(3px) saturate(1.5) brightness(0.95); opacity: 0.8; }
+  to { filter: blur(5.5px) saturate(2) brightness(1.5); opacity: 1; }
+}
+
 .level-node:active { transform: scale(0.93); }
 
 /* شارة "ابدأ" للمستوى الحالي */

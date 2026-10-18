@@ -337,10 +337,12 @@ function renderMap(scrollToChapter = null) {
     const unlocked = isChapterUnlocked(bank, s, ci);
     const doneIds = ch.levels.map((l) => l.id);
     const done = s.completedCount(doneIds);
-    const pct = Math.round((done / ch.levels.length) * 100);
-    const chapterStars = s.starsCount(doneIds);
-    const maxStars = ch.levels.length * 3;
-    const chapterComplete = done === ch.levels.length;
+    // «15 المطلوبة»: شرط إتمام الفصل وشرط فتح التالي — التقدّم يتجه نحوها
+    const required = Math.min(CONFIG.requiredPerChapter || CONFIG.chapterUnlockLevels || 15, ch.levels.length);
+    const pct = Math.min(100, Math.round((done / required) * 100));
+    const maxStars = required * 3;
+    const chapterStars = Math.min(s.starsCount(doneIds), maxStars);
+    const chapterComplete = done >= required;
 
     let rowsHtml = "";
     ch.levels.map((l, i) => ({ l, i })).reverse().forEach(({ l: lv, i: li }) => {
@@ -359,6 +361,7 @@ function renderMap(scrollToChapter = null) {
       if (needsStar) cls.push("need-star");
       if (isMilestone && lvlUnlocked) cls.push("milestone");
       if (justUnlocked === lv.id) cls.push("just-unlocked");
+      if (difficultyOf(li, ch.levels.length).key === "hard") cls.push("hard");
       let badge = "";
       if (!lvlUnlocked) badge = `<span class="badge lock">${ICONS.lock}</span>`;
       // شارات خارج القرص (فوق الإطار) — التاج والجواهر لتظهرا بوضوح
@@ -407,11 +410,11 @@ function renderMap(scrollToChapter = null) {
                 <span class="ch-name">${esc(ch.title)}</span>
                 <span class="ch-stars">${ICONS.star}<b>${chapterStars}</b>/${maxStars}</span>
               </div>
-              <div class="ch-meta">${esc(ch.subject)} • ${ch.count} سؤال • ${ch.levels.length} مستوى</div>
+              <div class="ch-meta">${esc(ch.subject)} • ${ch.count} سؤال • ${ch.levels.length} مستوى • <b>المطلوب ${required}</b></div>
               <div class="ch-bar"><i style="width:${pct}%"></i></div>
             </div>
             <div class="ch-status ${chapterComplete ? "done" : ""} ${unlocked ? "" : "shut"}">
-              ${!unlocked ? ICONS.lock : chapterComplete ? ICONS.check : `${done}/${ch.levels.length}`}
+              ${!unlocked ? ICONS.lock : chapterComplete ? ICONS.check : `${Math.min(done, required)}/${required}`}
             </div>
           </div>
           <div class="chapter-path">${rowsHtml}</div>
@@ -664,7 +667,7 @@ function openPreview(chapterIndex, levelIndex) {
       <div class="pv-stars">${[0, 1, 2].map((i) => `<span class="pv-star ${i < stars ? "on" : ""}">★</span>`).join("")}</div>
       <div class="stat-grid">
         <div class="stat"><div class="v">${lv.questions.length}</div><div class="k">أسئلة</div></div>
-        <div class="stat"><div class="v" style="color:${diff.color}">${diff.label}</div><div class="k">الصعوبة</div></div>
+        <div class="stat"><div class="v" style="color:${diff.color}">${diff.key === "hard" ? "🔥 " : ""}${diff.label}</div><div class="k">الصعوبة</div></div>
         <div class="stat"><div class="v">${best ? best.bestPct + "%" : "—"}</div><div class="k">أفضل نتيجة</div></div>
       </div>
       <div class="pv-rewards">
@@ -860,7 +863,7 @@ function renderQuiz() {
       <div class="quiz-top">
         <button class="iconbtn" id="q-back" aria-label="إنهاء">${ICONS.close}</button>
         <div class="info">
-          <div class="line1">${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
+          <div class="line1">${difficultyOf(q.level.index - 1, q.chapter.levels.length).key === "hard" ? "🔥 " : ""}${esc(q.chapter.title)} — ${q.mode === "daily" ? "تحدّي اليوم" : q.level.name ? esc(q.level.name) : "مستوى " + (q.level.globalIndex || q.level.index)}</div>
           <div class="line2">السؤال ${q.i + 1} من ${total} • ${ICONS.check} ${q.correct} صحيحة</div>
         </div>
         ${timerChip}

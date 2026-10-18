@@ -22,8 +22,9 @@ export const CONFIG = {
   coins: { perCorrect: 10, perStar: 25, levelClear: 30 },
   gems: { perfectLevel: 1 },
 
-  // فتح الفصول التالية بعد إنجاز عدد من مستويات الفصل السابق
-  chapterUnlockLevels: 3,
+  // المطلوب من كل مرحلة (فصل): 15 مستوىًا لإتمامها وفتح التي بعدها — يظهر على البانر
+  requiredPerChapter: 15,
+  chapterUnlockLevels: 15, // فتح الفصل التالي بعد إنجاز 15 من الفصل السابق
 
   // شرط فتح الموسم الجديد (New Game+): أقل عدد نجوم مطلوب في كل مستوى
   seasonUnlockStars: 2,
