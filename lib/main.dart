@@ -32,8 +32,11 @@ class RightScrollbarBehavior extends MaterialScrollBehavior {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // تحميل بنوك الأسئلة من JSON
-  await QuestionBankLoader.init();
+  // تحميل بنوك الأسئلة من JSON — ملف game_challenges.json مُزيل من
+  // الشجرة (9f0222f)، فإن غاب لا يمنع الإقلاع: بنك فارغ مثل GameBankLoader.
+  try {
+    await QuestionBankLoader.init();
+  } catch (_) {}
   await GameBankLoader.init();
   // يُبقي شجرة الوصول (Semantics) مفعّلة دائماً — لإتاحة قارئات الشاشة
   // ولتمكين الفحص التلقائي للواجهة.

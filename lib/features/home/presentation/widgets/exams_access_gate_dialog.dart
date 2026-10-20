@@ -3,7 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'exam_unlock_legacy_stub.dart'
+    if (dart.library.js_interop) 'exam_unlock_legacy_web.dart' as legacy;
 
 /// رابط صفحة التطبيق على فيسبوك — يُفتح من بوابة الامتحانات التجريبية.
 const String kMasarFacebookUrl =
@@ -12,17 +16,37 @@ const String kMasarFacebookUrl =
 /// كود فتح فضاء الامتحانات التجريبية — يُنشر على صفحة الفايسبوك.
 const String kExamsAccessCode = 'MASAR2026';
 
+/// مفتاح تذكّر فتح البوابة — نفس مفتاح البناء القديم (localStorage خام).
+const String _examsUnlockKey = 'masar_exam_unlocked';
+
+Future<bool> _isExamsUnlocked() async {
+  final prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool(_examsUnlockKey) ?? false) return true;
+  if (legacy.wasExamUnlockedLegacy()) {
+    await prefs.setBool(_examsUnlockKey, true);
+    return true;
+  }
+  return false;
+}
+
 /// بوابة دخول فضاء الامتحانات التجريبية.
 /// تعرض رسالة الانضمام لصفحة الفايسبوك + خانة إدخال كود الدخول.
-/// تُعيد [true] فقط إذا نجح المستخدم في إدخال الكود الصحيح.
+/// تُعيد [true] إذا نجح المستخدم في إدخال الكود أو كان قد فتحها سابقاً.
 Future<bool> showExamsAccessGateDialog(BuildContext context) async {
+  if (await _isExamsUnlocked()) return true;
+  if (!context.mounted) return false;
   final result = await showDialog<bool>(
     context: context,
     barrierDismissible: true,
     barrierColor: Colors.black.withValues(alpha: 0.55),
     builder: (_) => const _ExamsAccessGateDialog(),
   );
-  return result ?? false;
+  final unlocked = result ?? false;
+  if (unlocked) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_examsUnlockKey, true);
+  }
+  return unlocked;
 }
 
 class _ExamsAccessGateDialog extends StatefulWidget {
