@@ -35,6 +35,7 @@ flutter:
   assets:
     - assets/images/
     - assets/sounds/
+    - assets/mindmaps/
     - assets/review_files/
     - assets/review_files/مؤسسات الريادة/
     - assets/banks/topics_index.json
