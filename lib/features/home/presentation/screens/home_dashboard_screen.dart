@@ -4,17 +4,10 @@ import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
-import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
-import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
-import 'package:masar_app/features/history/presentation/screens/history_screen.dart';
-import 'package:masar_app/features/exams/presentation/screens/level_map_screen.dart';
-import 'package:masar_app/features/home/presentation/screens/jawaaher_game_screen.dart';
-import 'package:masar_app/features/audio_room/presentation/screens/audio_room_lobby_screen.dart';
-import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_screen.dart';
-import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
-import 'package:masar_app/features/home/presentation/widgets/exams_access_gate_dialog.dart';
-import 'package:masar_app/features/splash/presentation/splash_screen.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
+import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/dashboard_spaces.dart';
+import 'package:masar_app/features/splash/presentation/splash_screen.dart';
 
 /// نموذج عنصر في شبكة لوحة التحكم
 class _DashboardItem {
@@ -22,22 +15,29 @@ class _DashboardItem {
   final String subtitle;
   final IconData icon;
 
-  /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة (الامتحانات التجريبية).
+  /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة.
   final bool featured;
+
+  /// عبارة «لعبة» حمراء فوق العنوان (وسم فضاء مميّز).
+  final bool pill;
 
   /// فضاء غير جاهز بعد — يُعرض مقفلاً ولا يمكن الدخول إليه.
   final bool comingSoon;
 
   /// ملاحظة بارزة تظهر تحت الوصف بلون أحمر.
   final String? note;
-  final WidgetBuilder builder;
+
+  /// الفضاء المرتبط بهذه البطاقة.
+  final DashboardSpace space;
+
   const _DashboardItem({
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.builder,
+    required this.space,
     this.featured = false,
     this.comingSoon = false,
+    this.pill = false,
     this.note,
   });
 }
@@ -66,60 +66,44 @@ class HomeDashboardScreen extends StatelessWidget {
       title: 'العدة المتكاملة للتحضير للامتحان المهني',
       subtitle: 'ملخصات شاملة بصيغة PDF',
       icon: Icons.auto_stories_rounded,
-      builder: _buildReviewSpace,
+      space: DashboardSpace.review,
     ),
     _DashboardItem(
       title: 'بنك الأسئلة',
       subtitle: 'اختبر معارفك حسب المحاور',
       icon: Icons.gps_fixed_rounded,
       note: 'توليد تلقائي للأسئلة غير محدود',
-      builder: _buildQuizPicker,
-    ),
-    _DashboardItem(
-      title: 'الامتحانات التجريبية',
-      subtitle: 'مسار تحدي بالمراحل والنجوم',
-      icon: Icons.timer_rounded,
-      featured: true,
-      builder: _buildLevelMap,
+      space: DashboardSpace.quiz,
     ),
     _DashboardItem(
       title: 'جواهر الكفاءة',
       subtitle: 'تحدّي المراحل — منافسة بين الزملاء',
       icon: Icons.sports_esports_rounded,
-      builder: _buildJawaaher,
+      pill: true,
+      space: DashboardSpace.jawaaher,
     ),
     _DashboardItem(
       title: 'مؤشر التقدم',
       subtitle: 'لوحة قياس الأداء والإحصائيات',
       icon: Icons.bar_chart_rounded,
-      builder: _buildHistory,
+      space: DashboardSpace.history,
     ),
     _DashboardItem(
       title: 'خرائط ذهنية',
       subtitle: 'خطاطات بيداغوجية مركزة',
       icon: Icons.psychology_rounded,
-      comingSoon: true,
-      builder: _buildMindMaps,
+      space: DashboardSpace.mindMaps,
     ),
     _DashboardItem(
       title: 'قاعات الجلسات',
       subtitle: 'دروس - تفاعل - مناقشات - بين الأساتذة',
       icon: Icons.mic_rounded,
-      builder: _buildLiveRoom,
+      space: DashboardSpace.liveRoom,
     ),
   ];
 
-  static Widget _buildReviewSpace(BuildContext context) =>
-      const ReviewSpaceScreen();
-  static Widget _buildQuizPicker(BuildContext context) =>
-      const QuizPickerScreen();
-  static Widget _buildHistory(BuildContext context) => const HistoryScreen();
-  static Widget _buildLevelMap(BuildContext context) => const LevelMapScreen();
-  static Widget _buildJawaaher(BuildContext context) =>
-      const JawaaherGameScreen();
-  static Widget _buildMindMaps(BuildContext context) => const MindMapsScreen();
-  static Widget _buildLiveRoom(BuildContext context) =>
-      const AudioRoomLobbyScreen();
+  // لم تعد مطلوبة (كل البطاقة تُربط مباشرة بالفضاء عبر space.build)
+  // البنيات احتفظت بها للتوافق التاريخي إن لزم الأمر، لكن غير مُستخدمة.
 
   Future<void> _logout(BuildContext context) async {
     await SessionService.logout();
@@ -245,17 +229,17 @@ class _DashboardCard extends StatelessWidget {
               onTap: locked
                   ? null
                   : () async {
-                      if (item.builder != HomeDashboardScreen._buildLiveRoom) {
+                      // الفضاء غير الجاهز مقفل — لا فتح ولا استجابة للضغط.
+                      // القاعات الصوتية فضاء صامت تماماً: بلا مؤثرات إطلاقاً.
+                      if (item.space != DashboardSpace.liveRoom) {
                         playSfx(Sfx.select);
                       }
-                      // فضاء الامتحانات التجريبية محمي بكود الانضمام —
-                      // تُعرض بوابة فيسبوك قبل فتحه، ولا يمرّ منها إلا بالكود.
-                      if (item.builder == HomeDashboardScreen._buildLevelMap) {
-                        final unlocked = await showExamsAccessGateDialog(context);
-                        if (!unlocked || !context.mounted) return;
-                      }
+                      // تسجيل تلقائي عند أول دخول — يحفظ بيانات المستخدم
+                      // لربطها بجميع البطاقات دون عرض واجهة التسجيل.
+                      await SessionService.ensureRegistered();
+                      if (!context.mounted) return;
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: item.builder),
+                        MaterialPageRoute(builder: (_) => item.space.build()),
                       );
                     },
               borderRadius: BorderRadius.circular(20),
@@ -391,6 +375,27 @@ class _DashboardCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            if (item.pill) ...[
+                              // وسم «لعبة» أحمر بارز فوق العنوان.
+                              Text('لعبة',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.tajawal(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.05,
+                                      letterSpacing: 0.5,
+                                      color: AppColors.err,
+                                      shadows: const [
+                                        Shadow(
+                                          color: Color(0x33000000),
+                                          blurRadius: 3,
+                                          offset: Offset(0, 0.5),
+                                        ),
+                                      ])),
+                              const SizedBox(height: 4),
+                            ],
                             Text(item.title,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,

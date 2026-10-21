@@ -4,11 +4,17 @@ import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/app_logo_header.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/dashboard_spaces.dart';
 import 'package:masar_app/features/home/presentation/screens/home_dashboard_screen.dart';
 
 class DummyAuthScreen extends StatefulWidget {
   final String? trackTitle;
-  const DummyAuthScreen({super.key, this.trackTitle});
+
+  /// البطاقة المقصودة في اللوحة — تُفتح تلقائياً بعد إتمام التسجيل.
+  /// (قيمة من [DashboardSpace]، تُمرَّر كنص لتجنّب اعتماد دائري.)
+  final String? nextSpace;
+
+  const DummyAuthScreen({super.key, this.trackTitle, this.nextSpace});
 
   @override
   State<DummyAuthScreen> createState() => _DummyAuthScreenState();
@@ -53,6 +59,20 @@ class _DummyAuthScreenState extends State<DummyAuthScreen> {
   Future<void> _enter({String? name}) async {
     await SessionService.setLoggedIn(name: name);
     if (!mounted) return;
+    await _goAfterAuth();
+  }
+
+  Future<void> _goAfterAuth() async {
+    final ns = DashboardSpaceId.fromId(widget.nextSpace);
+    if (ns != null) {
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        fadeRoute(ns.build()),
+        (route) => false,
+      );
+      return;
+    }
+    if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       fadeRoute(const HomeDashboardScreen()),
       (route) => false,
@@ -69,11 +89,17 @@ class _DummyAuthScreenState extends State<DummyAuthScreen> {
   Future<void> _register() async {
     setState(() => _submitted = true);
     if (!_formKey.currentState!.validate()) return;
-    await _enter(name: _nameCtrl.text);
+    final name = _nameCtrl.text.trim();
+    final contact = _contactCtrl.text.trim();
+    final pass = _passwordCtrl.text;
+    // حفظ كل المعطيات تلقائياً لربطها بجميع البطاقات.
+    await SessionService.register(name: name, contact: contact, password: pass);
+    await _goAfterAuth();
   }
 
   Future<void> _skip() async {
-    await _enter();
+    await SessionService.setLoggedIn();
+    await _goAfterAuth();
   }
 
   Future<void> _socialLogin(String provider) async {
@@ -87,7 +113,8 @@ class _DummyAuthScreenState extends State<DummyAuthScreen> {
         duration: const Duration(seconds: 3),
       ),
     );
-    await _enter(name: name);
+    await SessionService.setLoggedIn(name: name);
+    await _goAfterAuth();
   }
 
   Widget _socialButton({

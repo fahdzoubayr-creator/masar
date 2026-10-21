@@ -76,3 +76,6 @@ assets/review_files_cache/tanshit_tarbawi__21.pdf
 .env
 .env.*
 !.env.example
+
+# الخادم المحلي (نسخة بناء منفصلة + أسرار) — مستثنى من المستودع
+/server/

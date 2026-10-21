@@ -36,6 +36,7 @@ flutter:
     - assets/images/
     - assets/sounds/
     - assets/review_files/
+    - assets/review_files/مؤسسات الريادة/
     - assets/banks/topics_index.json
     - assets/banks/topics/
     - assets/banks/manual/
