@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/features/mindmaps/data/mind_map_catalog.dart';
 import 'package:masar_app/features/review/presentation/widgets/zoom_controls_overlay.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// عارض الخطاطة الذهنية — تكبير/تصغير وتحريك، مع التنقّل بين الخطاطات.
 ///
@@ -79,6 +81,39 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
     }
   }
 
+  /// فتح الخطاطة بدقّتها الكاملة في تبويب متصفح جديد — على الويب فقط.
+  ///
+  /// على الهاتف لا فائدة من ذلك (التطبيق نفسه هو العارض)، لذا الزر
+  /// يظهر حصراً لمَن فتح التطبيق على الويب.
+  Future<void> _openInBrowser(MindMapItem item) async {
+    final url = MindMapCatalog.webAssetUrl(item.file);
+    try {
+      final ok = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!ok && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تعذّر فتح المتصفح — أعد المحاولة'),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تعذّر فتح الملف في المتصفح'),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = widget.siblings;
@@ -140,16 +175,17 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
   }
 
   Widget _topBar(MindMapItem current, int total) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
+    return Container(
+      color: kIsWeb ? const Color(0xCC08110F) : Colors.transparent,
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
       child: Row(
         children: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: AppColors.goldSoft, size: 18),
+                color: AppColors.goldSoft, size: 20),
             tooltip: 'رجوع',
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           ),
           Expanded(
             child: Column(
@@ -180,18 +216,28 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
           IconButton(
             onPressed: _resetZoom,
             icon: const Icon(Icons.zoom_out_map_rounded,
-                color: AppColors.goldSoft, size: 19),
+                color: AppColors.goldSoft, size: 21),
             tooltip: 'إعادة الضبط',
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           ),
+          // على الويب: فتح الخطاطة في تبويب متصفح جديد (بدقّة كاملة).
+          if (kIsWeb)
+            IconButton(
+              onPressed: () => _openInBrowser(current),
+              icon: const Icon(Icons.open_in_new_rounded,
+                  color: AppColors.goldSoft, size: 20),
+              tooltip: 'فتح في المتصفح',
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+            ),
         ],
       ),
     );
   }
 
   Widget _bottomBar(MindMapItem current, int total) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 14),
+    return Container(
+      color: kIsWeb ? const Color(0xCC08110F) : Colors.transparent,
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -199,9 +245,9 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
           IconButton(
             onPressed: _index > 0 ? () => _step(-1) : null,
             icon: const Icon(Icons.chevron_left_rounded,
-                color: AppColors.goldSoft, size: 26),
+                color: AppColors.goldSoft, size: 30),
             tooltip: 'السابقة',
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            constraints: const BoxConstraints(minWidth: 52, minHeight: 52),
           ),
           Expanded(
             child: Text(
@@ -210,16 +256,16 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
-              style: const TextStyle(fontSize: 10.5, color: AppColors.muted),
+              style: const TextStyle(fontSize: 11, color: AppColors.muted),
             ),
           ),
           // «التالية» — chevron_right تنعكس في RTL فتشير يسارًا.
           IconButton(
             onPressed: _index < total - 1 ? () => _step(1) : null,
             icon: const Icon(Icons.chevron_right_rounded,
-                color: AppColors.goldSoft, size: 26),
+                color: AppColors.goldSoft, size: 30),
             tooltip: 'التالية',
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            constraints: const BoxConstraints(minWidth: 52, minHeight: 52),
           ),
         ],
       ),

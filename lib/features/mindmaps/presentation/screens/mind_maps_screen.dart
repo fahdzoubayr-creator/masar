@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/app_logo_header.dart';
 import 'package:masar_app/features/mindmaps/data/mind_map_catalog.dart';
 import 'package:masar_app/features/mindmaps/presentation/screens/mind_map_viewer_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// فضاء «خرائط الذهنية» — معرض الخطاطات الذهنية مرتّباً في محاور.
 class MindMapsScreen extends StatefulWidget {
@@ -57,6 +59,31 @@ class _MindMapsScreenState extends State<MindMapsScreen> {
           item: item,
           siblings: siblings,
         ),
+      ),
+    );
+  }
+
+  /// فتح الخطاطة في تبويب متصفح جديد (على الويب فقط).
+  Future<void> _openInBrowser(MindMapItem item) async {
+    playSfx(Sfx.select);
+    final url = MindMapCatalog.webAssetUrl(item.file);
+    try {
+      final ok = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!ok && mounted) _notify('تعذّر فتح المتصفح — أعد المحاولة');
+    } catch (_) {
+      if (mounted) _notify('تعذّر فتح الملف في المتصفح');
+    }
+  }
+
+  void _notify(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -116,6 +143,8 @@ class _MindMapsScreenState extends State<MindMapsScreen> {
                             itemBuilder: (context, i) => _MindMapCard(
                               item: visible[i],
                               onTap: () => _open(visible[i], visible),
+                              onOpenInBrowser:
+                                  kIsWeb ? () => _openInBrowser(visible[i]) : null,
                             ),
                           ),
               ),
@@ -225,8 +254,13 @@ class _MindMapsScreenState extends State<MindMapsScreen> {
 class _MindMapCard extends StatelessWidget {
   final MindMapItem item;
   final VoidCallback onTap;
+  final VoidCallback? onOpenInBrowser;
 
-  const _MindMapCard({required this.item, required this.onTap});
+  const _MindMapCard({
+    required this.item,
+    required this.onTap,
+    this.onOpenInBrowser,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -246,17 +280,44 @@ class _MindMapCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  color: AppColors.bgSurface,
-                  child: Image.asset(
-                    item.file,
-                    fit: BoxFit.cover,
-                    filterQuality: FilterQuality.medium,
-                    errorBuilder: (context, error, stack) => const Center(
-                      child: Icon(Icons.broken_image_rounded,
-                          color: AppColors.muted, size: 26),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      color: AppColors.bgSurface,
+                      child: Image.asset(
+                        item.file,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.medium,
+                        errorBuilder: (context, error, stack) => const Center(
+                          child: Icon(Icons.broken_image_rounded,
+                              color: AppColors.muted, size: 26),
+                        ),
+                      ),
                     ),
-                  ),
+                    // على الويب: فتح الخطاطة في تبويب متصفح جديد.
+                    if (onOpenInBrowser != null)
+                      Positioned(
+                        top: 4,
+                        left: 4,
+                        child: Material(
+                          color: AppColors.bgDeep.withValues(alpha: 0.72),
+                          shape: const CircleBorder(),
+                          child: Tooltip(
+                            message: 'فتح في المتصفح',
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: onOpenInBrowser,
+                              child: const Padding(
+                                padding: EdgeInsets.all(5),
+                                child: Icon(Icons.open_in_new_rounded,
+                                    size: 14, color: AppColors.goldSoft),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),

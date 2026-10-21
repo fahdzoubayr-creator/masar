@@ -107,6 +107,19 @@ class MindMapCatalog {
       .replaceAll('ة', 'ه')
       .trim()
       .toLowerCase();
+
+  /// رابط مباشر لملف الأصل على الويب — لفتح الخطاطة في تبويب المتصفح
+  /// بدقّة كاملة (خارج إطار التطبيق).
+  ///
+  /// في بناء الويب تُقدَّم الأصول تحت `assets/assets/...` (المجلد الجذر
+  /// `assets/` يُقدَّم على `/assets/`، وداخله مجلد `assets/` الأصلي)،
+  /// فنضاعف البادئة كما في `ReviewFileService.urlFor`.
+  static String webAssetUrl(String assetPath) {
+    final rel = assetPath.startsWith('assets/')
+        ? assetPath.replaceFirst('assets/', 'assets/assets/')
+        : 'assets/$assetPath';
+    return Uri.base.resolve(rel).toString();
+  }
 }
 
 /// محور تصنيف الخطاطات الذهنية.
