@@ -79,8 +79,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
   void initState() {
     super.initState();
     // نبضة حضور دورية تُبقي تسجيلنا حيّاً، مع استدعاء الخادم لأحدث الأعداد.
+    // الاستطلاع سريع (3 ثوانٍ) لأن ردّ الخادم صغير جداً — فيظهر التحديث
+    // للزائر خلال ثوانٍ من دخول أي مستخدم إلى بطاقة.
     _poll = Timer.periodic(
-      const Duration(seconds: 12),
+      const Duration(seconds: 3),
       (_) => _refreshCounts(),
     );
     unawaited(_bootstrapPresence());
