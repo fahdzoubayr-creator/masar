@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:masar_app/core/config/server_address.dart';
+
 /// قاعة «مفتوحة للجميع» — تظهر في شاشة القاعات ويدخلها أي أحد بضغطة واحدة
 /// دون الحاجة إلى رمز (الرمز نفسه اسم الغرفة في LiveKit).
 class PublicRoom {
@@ -44,7 +46,8 @@ class AudioRoomConfig {
   /// في قسم «قاعات مفتوحة» بدل الاكتفاء بالتخزين المحلي.
   ///
   /// ⚙️ حالياً: الخادم المحلي للتجربة — عند الإنتاج استبدله برابط الخادم الرسمي.
-  static const String apiBase = 'http://192.168.0.129:8123';
+  /// المصدر الموحّد: [ServerAddress] (يمكن تغييره عند البناء).
+  static const String apiBase = ServerAddress.apiBase;
 
   /// هل خدمة التوكنات مضبوطة؟ عندها نتصل بخادم البث فعلياً، وإلا نعمل
   /// في الوضع التجريبي (محاكاة داخلية دون إنترنت).

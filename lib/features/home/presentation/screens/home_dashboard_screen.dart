@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/presence_service.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
@@ -43,7 +45,10 @@ class _DashboardItem {
 }
 
 /// لوحة التحكم الرئيسية — تعرض كل فضاءات التكوين في شبكة واحدة.
-class HomeDashboardScreen extends StatelessWidget {
+///
+/// تحت كل بطاقة يظهر عدد المستخدمين المتصلين الآن في الفضاء نفسه،
+/// وتُحدَّث الأعداد دورياً من الخادم.
+class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
 
   // شريط علوي موحّد لكل البطاقات — درجات زيتية هادئة من هوية التطبيق.
@@ -59,6 +64,59 @@ class HomeDashboardScreen extends StatelessWidget {
     end: Alignment.bottomRight,
     colors: [Color(0xFFA8842F), Color(0xFF6E5520)],
   );
+
+  @override
+  State<HomeDashboardScreen> createState() => _HomeDashboardScreenState();
+}
+
+class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
+  /// أعداد الحاضرين الآن لكل فضاء (المفتاح = معرّف الفضاء).
+  Map<String, int> _counts = const {};
+
+  Timer? _poll;
+
+  @override
+  void initState() {
+    super.initState();
+    // نبضة حضور دورية تُبقي تسجيلنا حيّاً، مع استدعاء الخادم لأحدث الأعداد.
+    _poll = Timer.periodic(
+      const Duration(seconds: 12),
+      (_) => _refreshCounts(),
+    );
+    unawaited(_bootstrapPresence());
+  }
+
+  /// أول نبضة + قراءة الأعداد — لتظهر الشارات مباشرةً عند فتح اللوحة.
+  Future<void> _bootstrapPresence() async {
+    await PresenceService.start();
+    if (!mounted) return;
+    setState(() => _counts = PresenceService.counts);
+  }
+
+  @override
+  void dispose() {
+    _poll?.cancel();
+    PresenceService.stop();
+    super.dispose();
+  }
+
+  Future<void> _refreshCounts() async {
+    final counts = await PresenceService.fetch();
+    if (!mounted) return;
+    setState(() => _counts = counts);
+  }
+
+  /// يسجّل دخول المستخدم في الفضاء، ويعيده إلى البهو عند خروجه.
+  Future<void> _enterSpace(DashboardSpace space) async {
+    await PresenceService.setSpace(space.id);
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => space.build()),
+    );
+    if (!mounted) return;
+    await PresenceService.setSpace(PresenceSpace.lobby);
+    await _refreshCounts();
+  }
 
   // البطاقتان الرئيسيتان (Hero) أولاً — أكثر ما يقصده الأستاذ عند الفتح.
   static const List<_DashboardItem> _items = [
@@ -143,12 +201,103 @@ class HomeDashboardScreen extends StatelessWidget {
                     childAspectRatio: 0.98,
                   ),
                   itemCount: _items.length,
-                  itemBuilder: (context, i) => _DashboardCard(item: _items[i]),
+                  itemBuilder: (context, i) => _DashboardCard(
+                    item: _items[i],
+                    liveCount: _counts[_items[i].space.id] ?? 0,
+                    hasPresence: _counts.isNotEmpty,
+                    onOpen: () => _enterSpace(_items[i].space),
+                  ),
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// شارة «المتصلون الآن» أسفل البطاقة — عدد المستخدمين الموجودين
+/// في الفضاء نفسه، بنقطة نابضة توحي بالحيوية.
+class _LiveBadge extends StatefulWidget {
+  final int count;
+  const _LiveBadge({required this.count});
+
+  @override
+  State<_LiveBadge> createState() => _LiveBadgeState();
+}
+
+class _LiveBadgeState extends State<_LiveBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1600),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  /// صياغة عربية سليمة للعدد (مفرد/مثنى/جمع).
+  String _label(int n) {
+    if (n <= 0) return 'لا أحد متصل الآن';
+    if (n == 1) return 'متصل واحد الآن';
+    if (n == 2) return 'متصلان الآن';
+    if (n <= 10) return '$n متصلون الآن';
+    return '$n متصلاً الآن';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final n = widget.count;
+    final alive = n > 0;
+    final dotColor = alive ? const Color(0xFF3ED598) : AppColors.muted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: dotColor.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: dotColor.withValues(alpha: 0.34)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedBuilder(
+            animation: _pulse,
+            builder: (context, _) {
+              final t = alive ? _pulse.value : 0.0;
+              return Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: dotColor,
+                  shape: BoxShape.circle,
+                  boxShadow: alive
+                      ? [
+                          BoxShadow(
+                            color: dotColor.withValues(alpha: 0.25 + 0.45 * t),
+                            blurRadius: 3 + 4 * t,
+                            spreadRadius: 0.5 + 1.2 * t,
+                          ),
+                        ]
+                      : null,
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 6),
+          Text(
+            _label(n),
+            style: GoogleFonts.tajawal(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+              color: alive ? const Color(0xFF7FE7C0) : AppColors.muted,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -205,7 +354,22 @@ class _DashboardHeader extends StatelessWidget {
 
 class _DashboardCard extends StatelessWidget {
   final _DashboardItem item;
-  const _DashboardCard({required this.item});
+
+  /// عدد المتصلين الآن في الفضاء (0 = لا أحد).
+  final int liveCount;
+
+  /// هل وصلتنا أعداد من الخادم؟ (false = الخادم غير متاح فلا نُظهر الشارة)
+  final bool hasPresence;
+
+  /// يُستدعى عند فتح البطاقة.
+  final Future<void> Function() onOpen;
+
+  const _DashboardCard({
+    required this.item,
+    required this.liveCount,
+    required this.hasPresence,
+    required this.onOpen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,22 +402,20 @@ class _DashboardCard extends StatelessWidget {
                       // لربطها بجميع البطاقات دون عرض واجهة التسجيل.
                       await SessionService.ensureRegistered();
                       if (!context.mounted) return;
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => item.space.build()),
-                      );
+                      await onOpen();
                     },
               borderRadius: BorderRadius.circular(20),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: featured
-                      ? AppColors.gold.withValues(alpha: 0.55)
-                      : AppColors.cream.withValues(alpha: 0.14),
-                  width: featured ? 1.2 : 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: featured
+                        ? AppColors.gold.withValues(alpha: 0.55)
+                        : AppColors.cream.withValues(alpha: 0.14),
+                    width: featured ? 1.2 : 1,
+                  ),
                 ),
-              ),
-              child: Column(
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
@@ -429,6 +591,11 @@ class _DashboardCard extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                       height: 1.3,
                                       color: AppColors.err)),
+                            ],
+                            // شارة الحضور: عدد المتصلين الآن في هذا الفضاء.
+                            if (hasPresence) ...[
+                              const SizedBox(height: 8),
+                              _LiveBadge(count: liveCount),
                             ],
                             if (locked) ...[
                               const SizedBox(height: 6),
