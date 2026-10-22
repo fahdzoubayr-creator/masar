@@ -76,11 +76,9 @@ class QuizPickerScreen extends StatelessWidget {
                 style: AppTheme.displayFont(size: 15)),
             const SizedBox(height: 12),
             ...subjects.map((s) {
-              final count = QuestionBankLoader.questionsFor(s)?.length ?? 0;
               return SubjectCardTile(
                 icon: _iconFor(s),
                 title: s,
-                subtitle: '$count سؤالاً متاحاً',
                 onTap: () {
                   playSfx(Sfx.select);
                   Navigator.of(context).push(
