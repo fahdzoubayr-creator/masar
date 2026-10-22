@@ -66,7 +66,7 @@ class _MindMapsScreenState extends State<MindMapsScreen> {
   /// فتح الخطاطة في تبويب متصفح جديد (على الويب فقط).
   Future<void> _openInBrowser(MindMapItem item) async {
     playSfx(Sfx.select);
-    final url = MindMapCatalog.webAssetUrl(item.file);
+    final url = MindMapCatalog.webViewerUrl(item);
     try {
       final ok = await launchUrl(
         Uri.parse(url),

@@ -108,16 +108,18 @@ class MindMapCatalog {
       .trim()
       .toLowerCase();
 
-  /// رابط مباشر لملف الأصل على الويب — لفتح الخطاطة في تبويب المتصفح
-  /// بدقّة كاملة (خارج إطار التطبيق).
+  /// رابط صفحة عارض الخطاطات على المتصفح (`web/mindmap.html`).
   ///
-  /// في بناء الويب تُقدَّم الأصول تحت `assets/assets/...` (المجلد الجذر
-  /// `assets/` يُقدَّم على `/assets/`، وداخله مجلد `assets/` الأصلي)،
-  /// فنضاعف البادئة كما في `ReviewFileService.urlFor`.
-  static String webAssetUrl(String assetPath) {
-    final rel = assetPath.startsWith('assets/')
-        ? assetPath.replaceFirst('assets/', 'assets/assets/')
-        : 'assets/$assetPath';
+  /// الصفحة تعرض الخطاطة بدقّتها الكاملة وتتيح الانتقال إلى التالية أو
+  /// السابقة (أزرار + لوحة المفاتيح)، لأن ملف الصورة وحده لا يتيح ذلك.
+  static String webViewerUrl(MindMapItem item) {
+    final rel = Uri(
+      path: 'mindmap.html',
+      queryParameters: <String, String>{
+        'f': item.file,
+        if (item.title.isNotEmpty) 't': item.title,
+      },
+    ).toString();
     return Uri.base.resolve(rel).toString();
   }
 }

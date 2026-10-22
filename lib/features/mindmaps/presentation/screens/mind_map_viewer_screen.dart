@@ -86,7 +86,7 @@ class _MindMapViewerScreenState extends State<MindMapViewerScreen> {
   /// على الهاتف لا فائدة من ذلك (التطبيق نفسه هو العارض)، لذا الزر
   /// يظهر حصراً لمَن فتح التطبيق على الويب.
   Future<void> _openInBrowser(MindMapItem item) async {
-    final url = MindMapCatalog.webAssetUrl(item.file);
+    final url = MindMapCatalog.webViewerUrl(item);
     try {
       final ok = await launchUrl(
         Uri.parse(url),
