@@ -20,8 +20,15 @@ const SKIP_BUILD = args.includes("--skip-build");
 const DRY = args.includes("--dry");
 const REMOTE = "https://github.com/fahdzoubayr-creator/masar.git";
 
-const sh = (cmd, cwd) =>
-  execSync(cmd, { cwd, stdio: "inherit", shell: "cmd.exe" }).toString();
+const sh = (cmd, cwd, capture = false) => {
+  const out = execSync(cmd, {
+    cwd,
+    stdio: capture ? "pipe" : "inherit",
+    shell: "cmd.exe",
+    encoding: "utf8",
+  });
+  return out || "";
+};
 
 if (!SKIP_BUILD) {
   console.log("== بناء الويب ==");
@@ -31,7 +38,12 @@ if (!SKIP_BUILD) {
 console.log("== تجهيز مجلد النشر ==");
 fs.rmSync(TMP, { recursive: true, force: true });
 fs.mkdirSync(TMP, { recursive: true });
-execFileSync("robocopy", [path.join(REPO, "build", "web"), TMP, "/MIR", "/NFL", "/NDL", "/NJH", "/NJS", "/R:2", "/W:2"], { stdio: "ignore" });
+try {
+  // robocopy يُعيد 0-7 عند النجاح (مع نسخ/حذف ملفات) — نتجاهل هذه الشيفرة.
+  execFileSync("robocopy", [path.join(REPO, "build", "web"), TMP, "/MIR", "/NFL", "/NDL", "/NJH", "/NJS", "/R:2", "/W:2"], { stdio: "ignore" });
+} catch (e) {
+  if (e.status === undefined || e.status > 7) throw e;
+}
 
 // ملف النشر: يُستخرج من الأرشيف (الفرع main القديم) إن وُجد
 const wfDir = path.join(TMP, ".github", "workflows");
@@ -52,7 +64,7 @@ sh("git config user.email \"masar-bot@users.noreply.github.com\"", TMP);
 sh("git config user.name \"masar-deploy\"", TMP);
 sh("git add -A", TMP);
 sh('git commit -q -m "deploy: تحديث نسخة الويب (فرع main للصفحات)"', TMP);
-const sha = sh("git rev-parse --short HEAD", TMP).trim();
+const sha = sh("git rev-parse --short HEAD", TMP, true).trim();
 console.log("   commit: " + sha);
 
 if (DRY) {
