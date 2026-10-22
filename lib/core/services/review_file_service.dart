@@ -41,6 +41,42 @@ class ReviewFileService {
   /// فرع المستودع الذي تُقرأ منه الملفات الخام (raw).
   static const String repoBranch = 'master';
 
+  /// قاعدة استضافة CORS لملفات المراجعة (Firebase Storage / R2 / S3 …).
+  ///
+  /// تُحقن عند البناء فتصل ملفات PDF من نطاق يُرسل ترويسات CORS،
+  /// ويصبح فتحها ممكناً في المتصفح على الاستضافة الثابتة (GitHub Pages)
+  /// حيث يُمنع جلب ملفات الـRelease بسبب غياب ترويسة CORS:
+  ///
+  ///   flutter build web --release \
+  ///     --dart-define=REVIEW_FILE_BASE=https://firebasestorage.googleapis.com/v0/b/<BUCKET>/o/
+  ///
+  /// وتُنسخ الملفات إلى هناك بنفس أسماء الـRelease: <slug>__<NN>.pdf
+  static const String fileBase = String.fromEnvironment(
+    'REVIEW_FILE_BASE',
+    defaultValue: '',
+  );
+
+  /// هل تُرفع الملفات من استضافة CORS مهيّأة؟
+  static bool get hasFileBase => fileBase.isNotEmpty;
+
+  /// يبني رابط ملف في استضافة CORS من مساره في التطبيق.
+  ///
+  /// Firebase Storage يحتاج ترميز مسار الكائن (%2F) ومعامل ?alt=media،
+  /// بينما R2/S3 يستقبلان المسار كما هو.
+  static String cloudUrl(String base, String assetPath) {
+    final m = RegExp(r'^assets/(?:assets/)?review_files/([^/]+)/(.+)$')
+        .firstMatch(assetPath);
+    if (m == null) return '';
+    final slug = folderSlugs[m.group(1)];
+    if (slug == null) return '';
+    final name = '${slug}__${m.group(2)}';
+    final b = base.endsWith('/') ? base : '$base/';
+    if (b.contains('firebasestorage.googleapis.com')) {
+      return '$b${Uri.encodeComponent(name)}?alt=media';
+    }
+    return '$b$name';
+  }
+
   /// ترجمة اسم مجلد المحور إلى المزالج اللاتينية المستخدمة في أسماء
   /// أصول الـRelease — GitHub يقصّ المحارف غير اللاتينية من الأسماء.
   static const Map<String, String> folderSlugs = {
@@ -123,13 +159,14 @@ class ReviewFileService {
       .toString();
 
   /// كل مصادر ملف معيّن مرتّبة حسب الأولوية (تُجرَّب بالترتيب):
-  /// 1) الـRelease (النسخة النهائية ثم القديمة)، 2) الريبو raw (CORS مسموح)،
-  /// 3) وسيط API بنفس الأصل (سيرفر محلي على الويب).
+  /// 1) استضافة CORS (إن هُيّئت)، 2) الـRelease (النسخة النهائية ثم القديمة)،
+  /// 3) الريبو raw (CORS مسموح)، 4) وسيط API بنفس الأصل (سيرفر محلي).
   static List<String> sourcesFor(String assetPath) => <String>[
+        if (hasFileBase) cloudUrl(fileBase, assetPath),
         ...releaseUrlsFor(assetPath),
         if (repoRawUrlFor(assetPath).isNotEmpty) repoRawUrlFor(assetPath),
         if (kIsWeb) serverRelayUrlFor(assetPath),
-      ];
+      ].where((u) => u.isNotEmpty).toList();
 
   /// يقرأ ملفاً (PDF) بترتيب مصادر مستقل تماماً عن أي سيرفر حتمي:
   /// 1) الـRelease، 2) الريبو (raw.githubusercontent — CORS مسموح)،
