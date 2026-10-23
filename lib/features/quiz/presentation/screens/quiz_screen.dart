@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
@@ -6,6 +6,7 @@ import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/models/question.dart';
 import 'package:masar_app/core/models/quiz_result.dart';
 import 'package:masar_app/core/services/progress_service.dart';
+import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/services/question_repository.dart';
 import 'package:masar_app/core/services/question_validator.dart';
 import 'package:masar_app/features/quiz/presentation/screens/results_screen.dart';
@@ -287,6 +288,8 @@ class _QuizScreenState extends State<QuizScreen> {
     );
     widget.onFinished?.call(result);
     await ProgressService.saveResult(result);
+    final _qid = (widget.axisName ?? widget.subAxisName ?? widget.subjectFilter ?? result.subject).toString();
+    try { await QuizAttemptService.record(_qid, result); } catch (_) {}
   }
 
   void _restart() {
