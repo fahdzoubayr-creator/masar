@@ -28,12 +28,12 @@ TARGET_DEFAULT = 70
 PHRASE_CORRECT_DEFAULT = 15
 
 MODEL_PREF = [
-    # النماذج المتاحة فعليًا على حساب Groq الحالي (تم التحقق 2026-09-26).
-    # الترتيب: الأعلى جودة/الأنسب لأسئلة عربية أولاً، ثم النماذج الاحتياطية.
-    "allam-2-7b",
-    "qwen/qwen3.8-27b",
+    # النماذج المتاحة فعليًا على حساب Groq الحالي (تم التحقق 2026-10-04).
+    # الترتيب: الأعلى جودة أولاً (gpt-oss-120b)، ثم الأسرع (allam-2-7b) احتياطاً.
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
+    "qwen/qwen3.8-27b",
+    "allam-2-7b",
 ]
 # نماذج لم تعد متاحة على الحساب — تُستبعد من الترشيح.
 RETIRED_MODELS = {
@@ -61,35 +61,24 @@ PROVIDERS = [
         ],
     },
     {
-        # Groq احتياطي: سريع لكنه محدود بـ6000 توكن/دقيقة.
         "id": "groq",
         "key_env": "GROQ_API_KEY",
         "base": None,  # Groq SDK/endpoint الافتراضي
         "max_tokens": 4096,  # Groq يرفض ما فوق هذا الحد
-        "concurrency": 1,    # طلب واحد ثقيل يسدّ نافذة التوكنز
+        # طلبان متوازيان: النموذج سريع، والدفعة الواحدة تستهلك ~900 توكن
+        # فتبقى ضمن نافذة 6000 توكن/دقيقة مع حصاد أسرع.
+        "concurrency": 2,
         "models_env": "GROQ_MODELS",
         "models": list(MODEL_PREF),
-    },
-    {
-        "id": "github",
-        "key_env": "GITHUB_TOKEN",
-        "base": "https://models.github.ai/inference",
-        "concurrency": 2,
-        "models_env": "GITHUB_MODELS",
-        "models": [
-            "mistral-large-2411",
-            "AI21-Jamba-1.5-Large",
-            "Phi-4",
-        ],
     },
 ]
 
 CHUNK_WORDS = 240     # سقف حجم المقطع (يُصغَّر تلقائياً للملفات القصيرة)
 CHUNK_TARGET = 8      # عدد المقاطع المستهدف: يضمن تنوّع السياق ولو كان الملف قصيراً
 CHUNK_MIN = 80        # أصغر حجم مقطع مقبول
-PER_CALL = 12         # أسئلة مطلوبة في كل استدعاء
+PER_CALL = 6          # أسئلة في كل استدعاء (6 ≈ 1800 توكن: لا بتر في الردّ)
 MAX_CALLS = 34        # سقف استدعاءات لملف واحد
-PARALLEL = 4          # خيوط عاملة؛ لكل مزوّد حدّه الخاص عبر _slot
+PARALLEL = 3          # خيوط عاملة؛ groq محدود المعدّل فالزيادة تُربكه بـ429
 PLAN_MARGIN = 10       # استدعاءات إضافية احتياطية لتعويض المكررات والمرفوضات
 AVOID_N = 18          # عدد الأسئلة السابقة التي نُدرجها لمنع التكرار
 DEAD_MODELS = set()   # نماذج ثبت عدم توفرها (404) تُتخطى فوراً
@@ -141,6 +130,7 @@ SUB_AXES = [
 PROMPT = """اقرأ مقتطف الدرس التالي، ولّد {n} أسئلة اختبارية متعددة الخيارات
 (QCM) معتمدة على تحليل وضعية مهنية أو ديداكتيكية، وموجّهة للمحور الفرعي: {sub}
 وزاوية التركيز المطلوبة في هذه الدفعة: {focus}
+المرجع/السند الذي استُخرج منه المحتوى: {source}
 
 النمط المطلوب: {style}
 
@@ -150,7 +140,8 @@ PROMPT = """اقرأ مقتطف الدرس التالي، ولّد {n} أسئل�
   سؤال   : سؤال مباشر دقيق يستدعي الفهم والتحليل لا الحفظ البصري.
 
 لكل سؤال أخرج هذه الحقول بالضبط:
-  q           : نص السؤال (8 كلمات على الأقل).
+  q           : نص السؤال (8 كلمات على الأقل) دون أي إحالة إشارية إلى
+                «هذا النص» أو «هذا المقتطف» أو «النص المرجعي».
   situation   : الوضعية (12 إلى 28 كلمة) تذكر المعطيات وتمهّد للسؤال.
   t           : الإجابة الصحيحة (2 إلى 12 كلمة).
   f1,f2,f3    : ثلاث عبارات خاطئة مقبولة ومنطقية (2 إلى 12 كلمة لكل واحدة).
@@ -160,12 +151,20 @@ PROMPT = """اقرأ مقتطف الدرس التالي، ولّد {n} أسئل�
   - كل المعلومات من المقتطف فقط. أجب عن المعطى ولا تضف معرفة خارجية.
   - المعطيات في الوضعية مرتبطة مباشرة بالمعطى في السؤال.
   - الوضعية (situation) ملزمة وغير فارغة، وتمهّد للسؤال وتستمد من المعطى المرجعي.
-  - الخيار الرابع «د» نصه ثابت: «كل الأجوبة السابقة خاطئة».
-    يُضاف آلياً إلى الخيارات، ولا تكتبه أبداً داخل f1 أو f2 أو f3.
-  - إن كانت الإجابة الصحيحة هي «كل الأجوبة السابقة خاطئة» فاجعل t مساوياً لها
-    تماماً، أي أن الخيارات الثلاثة الأخرى خاطئة فعلاً.
-  - الخيارات الثلاثة متوازنة، متقاربة في الطول، ومحددة علمياً وتربوياً،
-    ولا يكون أي منها صحيحاً جزئياً أو ناقصاً أو زائداً عن الصحيح.
+  - ممنوع منعاً باتاً استخدام العبارات الإشارية: «هذا النص»، «هذا المقتطف»،
+    «النص المرجعي»، «ورد في المعطى»، «حسب هذا النص». وعند الحاجة إلى الإحالة
+    على المصدر، اذكر اسمه صراحة في نهاية السؤال هكذا: «حسب «{source}»».
+  - الخيارات الأربعة كلّها عبارات واقعية مرتبطة بالمعطى. ممنوع منعاً باتاً
+    وضع «كل الأجوبة السابقة خاطئة» أو «لا شيء مما سبق» أو «لم يرد في النص»
+    أو «خيار آخر» ضمن f1 أو f2 أو f3.
+  - إن كانت الإجابة الصحيحة هي «لا شيء مما سبق» فاجعل t مساوياً لها تماماً،
+    أي أن الخيارات الثلاثة الأخرى خاطئة فعلاً.
+- لا تكرّر صياغة السؤال داخل الإجابة الصحيحة: لا يجوز أن تكون الإجابة
+    الصحيحة تكراراً حرفياً لعبارة وردت في نص السؤال، وإلا حُلّ السؤال
+    بالنظر إلى الكلمات دون الفهم.
+  - الخيارات الأربعة متوازنة، متقاربة في الطول، ومحددة علمياً وتربوياً،
+    ولا يكون أي منها صحيحاً جزئياً أو ناقصاً أو زائداً عن الصحيح. ولا يجوز أن
+    تكون الإجابة الصحيحة وحدها الأطول وضوحاً أو التفصيلاً.
   - استخدم لغة تربوية رسمية مطابقة للغة امتحانات الكفاءة المهنية.
   - أعد مصفوفة JSON فقط دون شرح قبله أو بعده.
 {avoid}
@@ -435,7 +434,23 @@ def ask(client, model: str, prompt: str, max_tokens: int = 8192):
     return resp.choices[0].message.content or ""
 
 
+def _is_billing_quota(msg: str) -> bool:
+    """نفاد حصة الخطة (لا حدّ معدّل): يستوجب تهدئة طويلة."""
+    low = msg.lower()
+    return ("exceeded your current quota" in low or "check your plan" in low)
+
+
+def _is_too_large(msg: str) -> bool:
+    """«Request too large»: تجاوز حدّ النموذج نفسه، لا نفاد حصة.
+
+    خطأ في النموذج لا في الحساب، فنتخطّى هذا النموذج ولا نُهدئ المزوّد.
+    """
+    return "request too large" in msg.lower()
+
+
 def _is_rate_limit(msg: str) -> bool:
+    if _is_too_large(msg):
+        return False
     low = msg.lower()
     return ("429" in msg or "rate limit" in low or "resource_exhausted"
             in low or "quota" in low or "too many requests" in low
@@ -443,7 +458,9 @@ def _is_rate_limit(msg: str) -> bool:
 
 
 def _is_quota(msg: str) -> bool:
-    """نفاد حصة حقيقي (429) — يستدعي تهدئة المزوّد، بخلاف 503 العابر."""
+    """نفاد حصة/معدّل (429) — يستدعي تهدئة قصيرة للمزوّد، بخلاف 503 العابر."""
+    if _is_too_large(msg):
+        return False
     low = msg.lower()
     return ("429" in msg or "rate limit" in low or "resource_exhausted" in low
             or "quota" in low or "too many requests" in low)
@@ -468,7 +485,7 @@ def _slot(prov):
 
 
 def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
-            focus="", avoid=None):
+            focus="", avoid=None, source=""):
     """استدعاء واحد: يمرّ على المزوّدين بالترتيب ويجمع ما يمكن.
 
     ينتقل للمزوّد التالي فورًا عند 429/الخلل، ويُكمل الناقص من مزوّد آخر
@@ -491,6 +508,7 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
     prompt = PROMPT.format(n=n, style=STYLE, text=excerpt,
                            sub=sub or "المحاور العامة",
                            focus=focus or "تحليل وضعية مهنية",
+                           source=source or "المرجع التربوي",
                            avoid=avoid_block)
 
     items, seen = [], set()
@@ -500,7 +518,7 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
         if QUOTA_DEAD.get(pid, 0.0) > _t.monotonic():
             continue
         cap = int(prov.get("max_tokens") or 8192)
-        saw_limit, saw_quota, got = False, False, 0
+        saw_limit, saw_quota, saw_billing, got = False, False, False, 0
         for model in [m for m in models if m not in DEAD_MODELS]:
             raw = None
             for attempt in range(2):
@@ -515,10 +533,15 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
                     if _is_missing_model(msg):
                         DEAD_MODELS.add(model)
                         break
+                    if _is_too_large(msg):
+                        # النموذج لا يحتمل هذا الطلب: نتخطاه فوراً بلا تهدئة.
+                        break
                     if _is_rate_limit(msg):
                         saw_limit = True
                         if _is_quota(msg):
                             saw_quota = True
+                            if _is_billing_quota(msg):
+                                saw_billing = True
                         mra = re.search(r"try again in ([\d.]+)(ms|s|m)", msg)
                         if mra and attempt == 0:
                             # لا ننتظر طويلًا: النموذج التالي ثم المزوّد التالي.
@@ -528,6 +551,12 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
                                     else val)
                             if wait <= 3:
                                 _t.sleep(wait)
+                            elif wait > 60:
+                                # نافذة يومية/مزدوجة: الانتظار لا يفيد داخل
+                                # الكويز، فنتخطّى المزوّد بقية التشغيل.
+                                QUOTA_DEAD[pid] = _t.monotonic() + min(wait, 3600)
+                                print(f"QUOTA_LONG {pid} {wait:.0f}s",
+                                      file=sys.stderr)
                         break
                     break
             if not raw:
@@ -550,9 +579,14 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
                       file=sys.stderr)
             break
         if saw_quota and not got:
-            # نفاد حصة حقيقي: تهدئة قصيرة ثم المحاولة من مزوّد آخر.
-            QUOTA_DEAD[pid] = _t.monotonic() + 120
-            print(f"QUOTA_HOLD {pid} for 2min", file=sys.stderr)
+            # نفاد حصة: تهدئة طويلة عند نفاد حصة الخطة نفسها، وقصيرة عند
+            # مجرد حدّ معدّل — التهدئة الطويلة كانت توقف التوليد لدقائق.
+            if saw_billing:
+                hold, tag = 900, "15min"
+            else:
+                hold, tag = 20, "20s"
+            QUOTA_DEAD[pid] = _t.monotonic() + hold
+            print(f"QUOTA_HOLD {pid} for {tag}", file=sys.stderr)
             continue
         if got and not saw_quota:
             QUOTA_DEAD.pop(pid, None)
@@ -568,10 +602,11 @@ def gen_one(providers, excerpt, n, worker_idx=0, pages=None, sub="",
     return items
 
 
-def _fill_options(correct, distractors, rng):
-    """ثلاثة خيارات خاطئة نظيفة ومختلفة، مع ضمان بقاء الإجابة الصحيحة.
+def _fill_options(correct, distractors, rng, want=4):
+    """الخيار الصحيح + حتى ثلاثة تشتيتات حقيقية من النموذج.
 
-    يعيد (الخيارات الثلاثة, فهرس الصحيح داخلها).
+    لا نُدرج «كل الأجوبة السابقة خاطئة» إلا اضطراراً (نقص التشتيتات)، لأنه
+    خيار يُضعف السؤال ويُفقده منطقيته. يعيد (الخيارات، فهرس الصحيح).
     """
     seen = {correct}
     clean = []
@@ -581,46 +616,69 @@ def _fill_options(correct, distractors, rng):
             continue
         seen.add(d)
         clean.append(d)
-    fillers = [
-        "\u0644\u0645 \u064a\u0630\u0643\u0631 \u0627\u0644\u0646\u0635 \u0641\u064a \u0627\u0644\u0645\u0642\u062a\u0637\u0641",
-        "\u062e\u064a\u0627\u0631 \u0627\u0642\u062a\u0631\u0627\u062d\u064a \u0627\u062e\u0631\u0649 \u0645\u0646 \u0627\u0644\u0645\u0627\u062f\u0631\u0633",
-        "\u0639\u0645\u0644\u064a\u0629 \u062a\u0642\u064a\u064a\u0645 \u0623\u0633\u0631\u0649 \u0645\u062e\u062a\u0644\u0641",
-    ]
-    for f in fillers:
-        if len(clean) >= 3:
-            break
-        if f not in seen:
-            seen.add(f)
-            clean.append(f)
-    # نبني 3 مواضع: الصحيح + حتى آخرين. القصّ يتم مرة واحدة هنا.
-    slots = [correct] + clean[:2]
-    # حماية أخيرة: لا بد من ثلاثة مواضع حقيقية دائماً
+    clean = clean[: want - 1]
+    if len(clean) < want - 1:
+        # نُكمل بـ«لا شيء مما سبق» مرة واحدة فقط، ثم بحقول بديلة.
+        clean.append(NONE_PHRASE)
+        seen.add(NONE_PHRASE)
+    slots = [correct] + clean
     guard = 1
-    while len(slots) < 3:
-        g = ("\u0627\u062e\u062a\u0644\u0627\u0641 \u0645\u062d\u062f\u062f %d"
-             % guard)
+    while len(slots) < want:
+        g = ("إجابة محتملة %d" % guard)
         guard += 1
-        if g not in slots:
+        if g not in seen:
+            seen.add(g)
             slots.append(g)
     rng.shuffle(slots)
     return slots, slots.index(correct)
 
 
+_DEICTIC_TAIL = re.compile(
+    r"\s*(?:في|حسب|وفق|كما\s+ورد|ورد\s+في|بناء\s*على|بناءً\s*على|"
+    r"استناداً?\s*إلى|حسبما\s+ورد\s*في|المذكور\s+في)\s*(?:هذا\s+|هذه\s+)?"
+    r"(?:النص|المقتطف|مقتطف|النص\s+المرجعي|المعطى|المعطيات|"
+    r"معطيات(?:\s+النص)?|المقتطف\s+المرجعي|النص\s+السابق|الوثيقة|السند|"
+    r"الفقرة|المقروء|المكتوب|الجزء|الجزئية)"
+    r"(?:\s+(?:المرجعي|السابق|المذكور|أعلاه|التالي))?\s*[.،؛؟\u061f?!]*\s*$"
+)
+
+# مؤشرات لا تحمل اسم مرجع حقيقياً: تُحذف بلا إضافة «حسب «...»».
+_VAGUE_REF = re.compile(r"(?:الفقرة|المقروء|المكتوب|الجزء|الجزئية)")
+
+
+# حروف تتركها إزالة الإحالة معلّقة في آخر السؤال.
+def strip_deictic(text: str, ref: str = "") -> str:
+    """يحذف الإحالات الإشارية في نهاية السؤال، ويثبّت اسم المرجع صراحةً."""
+    if not text:
+        return text
+    stripped = text.strip()
+    m = _DEICTIC_TAIL.search(stripped)
+    out, n = _DEICTIC_TAIL.subn("", stripped)
+    if n:
+        # «... ب — حسب «x»» => «...» : نزيل كلمات معلّقة قبل المرجع.
+        # ملاحظة: الكلمة تُحذف كاملةً فقط، فلا نبتلع «و» آخر كلمة (أرسطو).
+        prev = None
+        while prev != out:
+            prev = out
+            out = re.sub(
+                r"(?:^|\s)(?:ب|و|في|من|إلى|كي|كما|ورد)\s*$", "", out)
+    out = out.rstrip(" .،؛؟!")
+    if n and ref and m and not _VAGUE_REF.search(m.group(0)):
+        return f"{out} — حسب «{ref}»"
+    return out
+
+
 def compose(items, subject, rng, source_doc="ملف الدرس"):
-    """وضعية + سؤال + 4 خيارات، الرابع ثابت: «كل الأجوبة السابقة خاطئة»."""
+    """وضعية + سؤال + 4 خيارات حقيقية (الصحيحة وثلاثة تشتيتات من النموذج)."""
     questions = []
     for it in items:
         t = (it["t"] or "").strip()
         none_is_correct = _is_none(t)
-        # الخيار «د» ثابت، فلا يجوز تكرار عبارته ضمن الخيارات الثلاثة.
-        anchor = t if not none_is_correct else "الإجابة الصحيحة"
-        opts3, at = _fill_options(anchor, [it["f1"], it["f2"], it["f3"]], rng)
-        if none_is_correct:
-            opts = opts3 + [NONE_PHRASE]
-            correct_index = 3
-        else:
-            opts = opts3 + [NONE_PHRASE]
-            correct_index = at
+        # إن كانت الإجابة «لا شيء مما سبق» فهي الخيار الصحيح، وتشتّتات
+        # النموذج الثلاثة هي الباقي.
+        anchor = t if not none_is_correct else NONE_PHRASE
+        opts, correct_index = _fill_options(
+            anchor, [it["f1"], it["f2"], it["f3"]], rng)
         pg = it.get("p") or ""
         page_txt = f" \u2014 {pg}" if pg else ""
         exp = (it.get("explanation") or "").strip()
@@ -634,8 +692,8 @@ def compose(items, subject, rng, source_doc="ملف الدرس"):
             exp = f"{exp} (ورد في «{source_doc}»{page_txt})"
         questions.append({
             "subject": subject,
-            "situation": (it.get("situation") or "").strip(),
-            "text": it["q"],
+            "situation": strip_deictic(it.get("situation") or ""),
+            "text": strip_deictic(it["q"], source_doc),
             "options": opts,
             "correctIndex": correct_index,
             "explanation": exp,
@@ -723,7 +781,8 @@ def main():
                 break
             ask_n = args.first_count + 1 if not attempt else need
             for nit in gen_one(providers, chunks[0][0], ask_n,
-                               pages=chunks[0][1], sub=args.sub):
+                               pages=chunks[0][1], sub=args.sub,
+                               source=source_doc):
                 k = re.sub(r"\s+", " ", nit["q"]).lower()
                 if k not in fseen:
                     fseen.add(k)
@@ -813,7 +872,8 @@ def main():
                 pending[pool.submit(
                     gen_one, providers, ex, n, k % PARALLEL, pg,
                     sub=args.sub, focus=fc,
-                    avoid=recent_stems(items))] = (k, n)
+                    avoid=recent_stems(items),
+                    source=source_doc)] = (k, n)
                 return True
             return False
 
@@ -870,7 +930,8 @@ def main():
                     rpending[pool2.submit(
                         gen_one, providers, ex, n, k % PARALLEL, pg,
                         sub=args.sub, focus=fc,
-                        avoid=recent_stems(items))] = (k, n)
+                        avoid=recent_stems(items),
+                        source=source_doc)] = (k, n)
                     return True
                 return False
 

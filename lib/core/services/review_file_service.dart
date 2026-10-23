@@ -75,11 +75,12 @@ class ReviewFileService {
 
   /// رابط الجلب المباشر من الريبو عبر raw.githubusercontent.com —
   /// يرسل ترويسة CORS مسموحة فيعمل من أي متصفح دون سيرفر وسيط.
-  /// يعمل فقط للملفات الملتزمة في الريبو (<10MB).
+  /// الملفات المخزّنة (review_files_cache) موجودة في فرع master، لا main
+  /// (main هو ناتج البناء المنشور) — لذلك الفرع هنا master.
   static String repoRawUrlFor(String assetPath) {
     final name = repoFileNameFor(assetPath);
     if (name == null) return '';
-    return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/'
+    return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/master/'
         'assets/review_files_cache/$name';
   }
 

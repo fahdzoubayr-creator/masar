@@ -913,57 +913,25 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
                         style: AppTheme.displayFont(size: 13.5),
                       ),
                       const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              isLocked
-                                  ? 'قاعة خاصة — أدخل رمز الدعوة للدخول'
-                                  : 'دخول مباشر — بدون رمز',
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 10.5,
-                                  color: isLocked
-                                      ? AppColors.goldSoft
-                                      : AppColors.muted),
-                            ),
-                          ),
-                          // شارة الحاضرين الفعليين من خادم البث.
-                          if (entry.value.dir != null &&
-                              entry.value.dir!.participants > 0) ...[
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 7, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: (isLocked
-                                        ? AppColors.gold
-                                        : AppColors.ok)
-                                    .withValues(alpha: 0.16),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.groups_rounded,
-                                      size: 12,
-                                      color: isLocked
-                                          ? AppColors.goldSoft
-                                          : AppColors.ok),
-                                  const SizedBox(width: 3),
-                                  Text('الحاضرون ${entry.value.dir!.participants}',
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: isLocked
-                                              ? AppColors.goldSoft
-                                              : AppColors.ok)),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
+                      Text(
+                        isLocked
+                            ? 'قاعة خاصة — أدخل رمز الدعوة للدخول'
+                            : 'دخول مباشر — بدون رمز',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 10.5,
+                            color: isLocked
+                                ? AppColors.goldSoft
+                                : AppColors.muted),
                       ),
+                      // عدد المتصلين بهذه القاعة — سطر مستقل أسفل البطاقة.
+                      if (entry.value.dir != null) ...[
+                        const SizedBox(height: 7),
+                        _buildConnectedCount(
+                          entry.value.dir!.participants,
+                          accent: isLocked ? AppColors.gold : AppColors.ok,
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -979,6 +947,33 @@ class _AudioRoomLobbyScreenState extends State<AudioRoomLobbyScreen>
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// سطر «المتصلون الآن» أسفل بطاقة القاعة — عدد من خادم البث مباشرة.
+  /// اللون يخضرّ عند وجود متصلين ويبهت عند الصفر.
+  Widget _buildConnectedCount(int count, {required Color accent}) {
+    final online = count > 0;
+    final color = online ? accent : AppColors.muted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: online ? 0.16 : 0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withValues(alpha: online ? 0.45 : 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.groups_rounded, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            online ? 'المتصلون الآن: $count' : 'لا يوجد متصل الآن',
+            style: TextStyle(
+                fontSize: 10, fontWeight: FontWeight.w700, color: color),
+          ),
+        ],
       ),
     );
   }

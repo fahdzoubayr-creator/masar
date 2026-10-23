@@ -57,4 +57,23 @@ void main() {
           reason: 'تسرّب من السحب الجزئي: ${q.text}');
     }
   });
+
+  test('كويز المحور الفرعي: لا يملأ من بقية المادة', () async {
+    final quiz = await QuestionGenerator.generateForFolder(
+      'علوم التربية',
+      topic: 'التقويم والدعم التربويان',
+      count: 50,
+    );
+    expect(quiz, isNotEmpty);
+    // البنك المطابق قليل؛ قديمًا كان يُكمل من كل الـ131 سؤالًا فيصل إلى 50.
+    expect(quiz.length, lessThan(50),
+        reason: 'يبدو أن أسئلة محاور أخرى تسرّبت لإكمال العدد');
+    const offTopic = <String>['بياجيه', 'فيغوتسكي', 'دوركايم', 'الجشطالتية'];
+    for (final q in quiz) {
+      for (final m in offTopic) {
+        expect(q.text.contains(m), isFalse,
+            reason: 'سؤال خارج محور التقويم: ${q.text}');
+      }
+    }
+  });
 }

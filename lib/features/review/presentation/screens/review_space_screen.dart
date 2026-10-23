@@ -6,6 +6,7 @@ import 'package:masar_app/core/services/question_generator.dart';
 import 'package:masar_app/core/services/quiz_attempt_service.dart';
 import 'package:masar_app/core/services/review_file_service.dart';
 import 'package:masar_app/core/services/session_service.dart';
+import 'package:masar_app/core/services/topic_bank_service.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/app_logo_header.dart';
 import 'package:masar_app/features/review/data/review_content.dart';
@@ -57,14 +58,14 @@ class _ReviewSpaceScreenState extends State<ReviewSpaceScreen> {
           total++;
           // Check if folder has PDF files
           final pdfs = await ReviewFileService.loadFolderPdfs(folder.title,
-              topic: topic.title);
+              topic: topic.pdfTopic ?? topic.title);
           if (pdfs.isNotEmpty) {
             withContent++;
             continue;
           }
-          // Check if folder has quiz questions
-          final bank = QuestionGenerator.bankCountFor(folder.title,
-              topic: topic.title);
+          // بنك المحور المؤلَّف: المصدر الوحيد لمحتوى الكويز.
+          final bank = await TopicBankService.indexedCount(
+              folder.title, topic.title);
           if (bank > 0) {
             withContent++;
             continue;
@@ -614,26 +615,27 @@ class _TopicRowState extends State<_TopicRow> {
   Future<void> _load() async {
     final folder = widget.folder;
     if (folder == null) {
-      final bank = QuestionBankLoader.questionsFor(widget.topic.title);
+      // بلا مجلد لا يمكن تحديد بنك المحور، فلا يُحتسب شيء.
       if (!mounted) return;
       setState(() {
-        _quizCount = (bank == null || bank.isEmpty) ? 0 : bank.length;
+        _quizCount = 0;
       });
       return;
     }
     final pdfs = await ReviewFileService.loadFolderPdfs(folder.title,
-        topic: widget.topic.title);
+        topic: widget.topic.pdfTopic ?? widget.topic.title);
     final quizFiles = await ReviewFileService.countFolderQuizFiles(
         folder.title,
-        topic: widget.topic.title);
-    // مواضيع البنوك الخالصة (بلا ملفات نصية) تبقى كويزاتها متاحة
-    // عبر بنوك الأسئلة المدمجة — تُحتسب كأسئلة محور أيضاً.
-    final bankCount =
-        QuestionGenerator.bankCountFor(folder.title, topic: widget.topic.title);
+        topic: widget.topic.pdfTopic ?? widget.topic.title);
+    // بنك المحور الثابت: أسئلة مؤلَّفة يدوياً وفورية بلا شبكة ولا حصة مزوّد.
+    final staticCount = await TopicBankService.indexedCount(
+        folder.title, widget.topic.title);
+    // لا يوجد بعد بنك مدمج ولا توليد: العدّاد هو بنك المحور فقط.
+    const bankCount = 0;
     if (!mounted) return;
     setState(() {
       _pdfCount = pdfs.length;
-      _quizCount = quizFiles + bankCount;
+      _quizCount = staticCount > 0 ? staticCount : quizFiles + bankCount;
     });
   }
 
@@ -642,7 +644,7 @@ class _TopicRowState extends State<_TopicRow> {
     final pdfs = folder == null
         ? const <ReviewPdf>[]
         : await ReviewFileService.loadFolderPdfs(folder.title,
-            topic: widget.topic.title);
+            topic: widget.topic.pdfTopic ?? widget.topic.title);
     if (!context.mounted) return;
     Navigator.of(context).push(
       MaterialPageRoute(

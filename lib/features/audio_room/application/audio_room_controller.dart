@@ -260,7 +260,7 @@ class AudioRoomController extends ChangeNotifier {
 
   /// يطلب جلسة انضمام (رابط + توكن) من خدمة التوكنات في الخادم.
   Future<_RoomSession> _fetchSession() async {
-    const endpoint = AudioRoomConfig.tokenEndpoint;
+    final endpoint = AudioRoomConfig.tokenEndpoint;
     try {
       final response = await http
           .post(
@@ -1227,7 +1227,7 @@ class AudioRoomController extends ChangeNotifier {
   /// الاستدعاء أو رفض الخادم حتى تعرف الواجهة وتُخبر المنسق.
   Future<void> _serverAdmin(String action, String identity,
       {String? reason}) async {
-    const base = AudioRoomConfig.tokenEndpoint;
+    final base = AudioRoomConfig.tokenEndpoint;
     if (base.isEmpty || _sessionToken == null) {
       throw Exception('لا يوجد اتصال بالخادم');
     }

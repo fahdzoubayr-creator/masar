@@ -4,6 +4,7 @@ import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
+import 'package:masar_app/core/services/presence_service.dart';
 import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
 import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
 import 'package:masar_app/features/history/presentation/screens/history_screen.dart';
@@ -17,6 +18,8 @@ import 'package:masar_app/core/widgets/page_transitions.dart';
 
 /// نموذج عنصر في شبكة لوحة التحكم
 class _DashboardItem {
+  /// معرّف ثابت للفضاء — يُستعمل في نبضة الحضور على الخادم.
+  final String id;
   final String title;
   final String subtitle;
   final IconData icon;
@@ -31,6 +34,7 @@ class _DashboardItem {
   final String? note;
   final WidgetBuilder builder;
   const _DashboardItem({
+    required this.id,
     required this.title,
     required this.subtitle,
     required this.icon,
@@ -42,8 +46,12 @@ class _DashboardItem {
 }
 
 /// لوحة التحكم الرئيسية — تعرض كل فضاءات التكوين في شبكة واحدة.
-class HomeDashboardScreen extends StatelessWidget {
+/// تحت كل بطاقة عدّاد المتصلين بالفضاء الآن (من خادم الدليل).
+class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
+
+  @override
+  State<HomeDashboardScreen> createState() => _HomeDashboardScreenState();
 
   // شريط علوي موحّد لكل البطاقات — درجات زيتية هادئة من هوية التطبيق.
   static const _headerGradient = LinearGradient(
@@ -62,12 +70,14 @@ class HomeDashboardScreen extends StatelessWidget {
   // البطاقتان الرئيسيتان (Hero) أولاً — أكثر ما يقصده الأستاذ عند الفتح.
   static const List<_DashboardItem> _items = [
     _DashboardItem(
+      id: 'review',
       title: 'العدة المتكاملة للتحضير للامتحان المهني',
       subtitle: 'ملخصات شاملة بصيغة PDF',
       icon: Icons.auto_stories_rounded,
       builder: _buildReviewSpace,
     ),
     _DashboardItem(
+      id: 'quiz',
       title: 'بنك الأسئلة',
       subtitle: 'اختبر معارفك حسب المحاور',
       icon: Icons.gps_fixed_rounded,
@@ -75,6 +85,7 @@ class HomeDashboardScreen extends StatelessWidget {
       builder: _buildQuizPicker,
     ),
     _DashboardItem(
+      id: 'exams',
       title: 'الامتحانات التجريبية',
       subtitle: 'مسار تحدي بالمراحل والنجوم',
       icon: Icons.timer_rounded,
@@ -82,12 +93,14 @@ class HomeDashboardScreen extends StatelessWidget {
       builder: _buildLevelMap,
     ),
     _DashboardItem(
+      id: 'progress',
       title: 'مؤشر التقدم',
       subtitle: 'لوحة قياس الأداء والإحصائيات',
       icon: Icons.bar_chart_rounded,
       builder: _buildHistory,
     ),
     _DashboardItem(
+      id: 'mindmaps',
       title: 'خرائط ذهنية',
       subtitle: 'خطاطات بيداغوجية مركزة',
       icon: Icons.psychology_rounded,
@@ -95,6 +108,7 @@ class HomeDashboardScreen extends StatelessWidget {
       builder: _buildMindMaps,
     ),
     _DashboardItem(
+      id: 'rooms',
       title: 'قاعات الجلسات',
       subtitle: 'دروس - تفاعل - مناقشات - بين الأساتذة',
       icon: Icons.mic_rounded,
@@ -111,6 +125,21 @@ class HomeDashboardScreen extends StatelessWidget {
   static Widget _buildMindMaps(BuildContext context) => const MindMapsScreen();
   static Widget _buildLiveRoom(BuildContext context) =>
       const AudioRoomLobbyScreen();
+}
+
+class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // نبض الحضور يبدأ مع فتح اللوحة — يظهر عدد المتصلين تحت كل بطاقة.
+    PresenceService.start();
+  }
+
+  @override
+  void dispose() {
+    PresenceService.stop();
+    super.dispose();
+  }
 
   Future<void> _logout(BuildContext context) async {
     await SessionService.logout();
@@ -141,16 +170,26 @@ class HomeDashboardScreen extends StatelessWidget {
                 onLogout: () => _logout(context),
               ),
               Expanded(
-                child: GridView.builder(
-                  padding: const EdgeInsets.fromLTRB(18, 6, 18, 24),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 14,
-                    crossAxisSpacing: 14,
-                    childAspectRatio: 0.98,
+                child: ValueListenableBuilder<Map<String, int>>(
+                  valueListenable: PresenceService.counts,
+                  builder: (context, counts, _) => GridView.builder(
+                    padding: const EdgeInsets.fromLTRB(18, 6, 18, 24),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 14,
+                      crossAxisSpacing: 14,
+                      childAspectRatio: 0.98,
+                    ),
+                    itemCount: HomeDashboardScreen._items.length,
+                    itemBuilder: (context, i) {
+                      final item = HomeDashboardScreen._items[i];
+                      return _DashboardCard(
+                        item: item,
+                        connected: counts[item.id] ?? 0,
+                      );
+                    },
                   ),
-                  itemCount: _items.length,
-                  itemBuilder: (context, i) => _DashboardCard(item: _items[i]),
                 ),
               ),
             ],
@@ -212,7 +251,11 @@ class _DashboardHeader extends StatelessWidget {
 
 class _DashboardCard extends StatelessWidget {
   final _DashboardItem item;
-  const _DashboardCard({required this.item});
+
+  /// عدد المتصلين بهذا الفضاء الآن (0 إن لم يصل أي نبض بعد).
+  final int connected;
+
+  const _DashboardCard({required this.item, required this.connected});
 
   @override
   Widget build(BuildContext context) {
@@ -245,9 +288,15 @@ class _DashboardCard extends StatelessWidget {
                         final unlocked = await showExamsAccessGateDialog(context);
                         if (!unlocked || !context.mounted) return;
                       }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: item.builder),
-                      );
+                      // احتساب المستخدم متصلاً بهذا الفضاء ما دام مفتوحاً.
+                      if (!locked) PresenceService.enter(item.id);
+                      try {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(builder: item.builder),
+                        );
+                      } finally {
+                        if (!locked) PresenceService.leave();
+                      }
                     },
               borderRadius: BorderRadius.circular(20),
             child: Container(
@@ -436,6 +485,8 @@ class _DashboardCard extends StatelessWidget {
                                         color: AppColors.err)),
                               ),
                             ],
+                            const SizedBox(height: 6),
+                            _presenceBadge(),
                           ],
                         ),
                       ),
@@ -448,6 +499,41 @@ class _DashboardCard extends StatelessWidget {
          ),
        ),
      ),
-   );
+    );
+  }
+
+  /// شارة عدد المتصلين بالفضاء — تُعرض أسفل محتوى البطاقة.
+  Widget _presenceBadge() {
+    final online = connected > 0;
+    const muted = Color(0x8FEDE6DA);
+    final color = online ? AppColors.ok : muted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: online ? 0.16 : 0.08),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: online ? 0.5 : 0.22)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.circle, size: 6, color: color),
+          const SizedBox(width: 4),
+          Text(
+            _presenceLabel(connected),
+            style: TextStyle(
+                fontSize: 9.5, fontWeight: FontWeight.w600, color: color),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static String _presenceLabel(int n) {
+    if (n <= 0) return 'لا أحد متصل الآن';
+    if (n == 1) return 'متصل واحد الآن';
+    if (n == 2) return 'متصلان الآن';
+    if (n <= 10) return '$n متصلين الآن';
+    return '$n متصلاً الآن';
   }
 }

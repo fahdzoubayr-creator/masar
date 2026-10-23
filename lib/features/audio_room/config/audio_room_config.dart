@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 /// قاعة «مفتوحة للجميع» — تظهر في شاشة القاعات ويدخلها أي أحد بضغطة واحدة
 /// دون الحاجة إلى رمز (الرمز نفسه اسم الغرفة في LiveKit).
 class PublicRoom {
@@ -30,21 +32,30 @@ class AudioRoomConfig {
 
   // ===== رابط خدمة التوكنات في الخادم الخفي =====
 
-  /// نقطة النهاية التي تصدر توكنات الانضمام، مثال:
-  /// `https://api.ehtiraf-app.com/api/livekit/token`
-  ///
-  /// اتركها فارغة لتشغيل الوضع التجريبي المحلي.
-  ///
-  /// ⚙️ حالياً: خادم تجربة محلي على شبكة المنزل (نفس الواي فاي) —
-  /// عند الانتقال للإنتاج استبدلها برابط الخادم الرسمي.
-  static const String tokenEndpoint =
-      'http://192.168.0.129:8123/api/livekit/token';
+  /// يمكن تجاوز العنوان عند البناء:
+  /// `flutter run --dart-define=API_BASE=http://192.168.100.97:8123`
+  static const String _apiBaseOverride = String.fromEnvironment('API_BASE');
 
-  /// عنوان خادم دليل القاعات — يجعل قاعات كل جهاز مرئية لبقية الأجهزة
-  /// في قسم «قاعات مفتوحة» بدل الاكتفاء بالتخزين المحلي.
+  /// عنوان خادم الدليل والتوكنات.
   ///
-  /// ⚙️ حالياً: الخادم المحلي للتجربة — عند الإنتاج استبدله برابط الخادم الرسمي.
-  static const String apiBase = 'http://192.168.0.129:8123';
+  /// أولوية الاختيار:
+  /// 1) قيمة `--dart-define=API_BASE=...` إن وُجدت.
+  /// 2) على الويب: نفس أصل الصفحة إذا كانت تخدم من خادمنا المحلي
+  ///    (منفذ 8123/http أو 8443/https) — فيعمل الدليل والحضور دون
+  ///    مشاكل CORS ولا حجب المحتوى المختلط.
+  /// 3) خادم التجربة المحلي على شبكة المنزل.
+  static String get apiBase {
+    if (_apiBaseOverride.isNotEmpty) return _apiBaseOverride;
+    if (kIsWeb) {
+      final base = Uri.base;
+      if (base.port == 8123 || base.port == 8443) {
+        return '${base.scheme}://${base.host}:${base.port}';
+      }
+    }
+    return 'http://192.168.100.97:8123';
+  }
+
+  static String get tokenEndpoint => '$apiBase/api/livekit/token';
 
   /// هل خدمة التوكنات مضبوطة؟ عندها نتصل بخادم البث فعلياً، وإلا نعمل
   /// في الوضع التجريبي (محاكاة داخلية دون إنترنت).

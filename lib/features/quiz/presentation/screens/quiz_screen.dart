@@ -74,6 +74,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int? _lastPct;
   Timer? _timer;
   Duration _remaining = Duration.zero;
+  final Map<int, bool> _answers = {};
 
   @override
   void initState() {
@@ -103,9 +104,9 @@ class _QuizScreenState extends State<QuizScreen> {
       _remaining = widget.examDuration ?? Duration.zero;
     });
     if (widget.examDuration != null && filtered.isNotEmpty) _startTimer();
-    if (widget.restLoader != null &&
-        filtered.isNotEmpty &&
-        widget.examDuration == null) {
+    // نستدعي الاستكمال حتى إن كانت الدفعة الأولى فارغة (بنك الموضوع قد
+    // يكون قليلاً/فارغاً)، وإلا بقي الكويز عالقاً على شاشة التوليد.
+    if (widget.restLoader != null && widget.examDuration == null) {
       _loadMore();
     }
   }
@@ -210,13 +211,15 @@ class _QuizScreenState extends State<QuizScreen> {
     if (answered) return;
     final pool = this.pool;
     if (pool == null) return;
+    final ok = index == pool[current].correctIndex;
     setState(() {
       selectedIndex = index;
       answered = true;
-      if (index == pool[current].correctIndex) score++;
+      _answers[current] = ok;
+      if (ok) score++;
     });
     // نغمة حكم فورية: رنين دافئ للصواب وهمهمة لطيفة للخطأ.
-    playSfx(index == pool[current].correctIndex ? Sfx.success : Sfx.error);
+    playSfx(ok ? Sfx.success : Sfx.error);
   }
 
   void _next() {
@@ -307,6 +310,7 @@ class _QuizScreenState extends State<QuizScreen> {
       selectedIndex = null;
       answered = false;
       finished = false;
+      _answers.clear();
       _remaining = widget.examDuration ?? Duration.zero;
     });
     if (widget.examDuration != null) _startTimer();
@@ -416,33 +420,9 @@ class _QuizScreenState extends State<QuizScreen> {
                 current: current,
                 total: pool.length,
                 score: score,
+                answers: List<bool?>.generate(
+                    pool.length, (i) => _answers[i]),
                 remaining: widget.examDuration != null ? _remaining : null),
-            if ((widget.restLoader != null && !_exhausted && pool.isNotEmpty) ||
-                _waitingMore)
-              Container(
-                width: double.infinity,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 22, vertical: 7),
-                color: AppColors.gold.withValues(alpha: 0.08),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 12,
-                      height: 12,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 1.6, color: AppColors.goldSoft),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _waitingMore
-                          ? 'انتهت الدفعة الحالية — جاري تحضير بقية الأسئلة…'
-                          : 'يتم توليد بقية الأسئلة في الخلفية…',
-                      style: const TextStyle(
-                          fontSize: 11.5, color: AppColors.goldSoft),
-                    ),
-                  ],
-                ),
-              ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(22, 20, 22, 20),
@@ -457,6 +437,26 @@ class _QuizScreenState extends State<QuizScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
+                    if ((item.situation ?? '').trim().isNotEmpty) ...[
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.cream.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                              color: AppColors.gold.withValues(alpha: 0.25)),
+                        ),
+                        child: Text(
+                          item.situation!.trim(),
+                          style: const TextStyle(
+                              fontSize: 12.5,
+                              height: 1.7,
+                              color: AppColors.goldSoft),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                    ],
                     Text(item.text,
                         style: AppTheme.displayFont(size: 18, weight: FontWeight.w700)),
                     const SizedBox(height: 24),
@@ -569,10 +569,13 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 }
 
-class _ProgressHeader extends StatelessWidget {
+class _ProgressHeader extends StatefulWidget {
   final int current;
   final int total;
   final int score;
+
+  /// حالة كل سؤال: null لم يُجب، true صحيح، false خطأ.
+  final List<bool?> answers;
 
   /// الوقت المتبقي في الاختبارات الموقّتة (null لغير الموقّتة).
   final Duration? remaining;
@@ -580,8 +583,46 @@ class _ProgressHeader extends StatelessWidget {
     required this.current,
     required this.total,
     required this.score,
+    required this.answers,
     this.remaining,
   });
+
+  @override
+  State<_ProgressHeader> createState() => _ProgressHeaderState();
+}
+
+class _ProgressHeaderState extends State<_ProgressHeader> {
+  final ScrollController _scroll = ScrollController();
+  static const double _step = 28;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _center());
+  }
+
+  @override
+  void didUpdateWidget(covariant _ProgressHeader old) {
+    super.didUpdateWidget(old);
+    if (old.current != widget.current) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _center());
+    }
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  void _center() {
+    if (!_scroll.hasClients) return;
+    final width = _scroll.position.viewportDimension;
+    final target = (widget.current * _step - width / 2 + _step / 2)
+        .clamp(0.0, _scroll.position.maxScrollExtent);
+    _scroll.animateTo(target,
+        duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
+  }
 
   static String _fmt(Duration d) {
     String p(int n) => n.toString().padLeft(2, '0');
@@ -590,41 +631,58 @@ class _ProgressHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rem = remaining;
+    final rem = widget.remaining;
     final low = rem != null && rem.inMinutes < 5;
     return Container(
-      padding: const EdgeInsets.fromLTRB(22, 12, 22, 16),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       decoration: BoxDecoration(
         color: AppColors.bgSurface,
         border: Border(bottom: BorderSide(color: AppColors.gold.withValues(alpha: 0.2))),
       ),
       child: Column(
         children: [
-          Row(
-            children: List.generate(total, (i) {
-              final done = i < current;
-              final isCurrent = i == current;
-              return Expanded(
-                child: Container(
-                  height: 7,
-                  margin: EdgeInsets.only(left: i == total - 1 ? 0 : 5),
+          SizedBox(
+            height: 26,
+            child: ListView.separated(
+              controller: _scroll,
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.answers.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 4),
+              itemBuilder: (context, i) {
+                final done = widget.answers[i];
+                final isCurrent = i == widget.current;
+                final color = done == true
+                    ? AppColors.gold
+                    : done == false
+                        ? AppColors.err
+                        : AppColors.cream.withValues(alpha: 0.12);
+                final fg =
+                    done == null ? AppColors.muted : const Color(0xFF06201F);
+                return Container(
+                  width: 24,
+                  height: 24,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: done
-                        ? AppColors.gold
-                        : isCurrent
-                            ? AppColors.goldSoft
-                            : AppColors.cream.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(3),
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: isCurrent
+                        ? Border.all(color: AppColors.goldSoft, width: 2)
+                        : null,
                   ),
-                ),
-              );
-            }),
+                  child: Text('${i + 1}',
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: fg)),
+                );
+              },
+            ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('السؤال ${current + 1} من $total',
+              Text('السؤال ${widget.current + 1} من ${widget.total}',
                   style: const TextStyle(fontSize: 13, color: AppColors.muted)),
               if (rem != null) ...[
                 Container(
@@ -653,7 +711,7 @@ class _ProgressHeader extends StatelessWidget {
                   ),
                 ),
               ],
-              Text('النقاط: $score',
+              Text('النقاط: ${widget.score}',
                   style: const TextStyle(fontSize: 13, color: AppColors.muted)),
             ],
           ),

@@ -75,7 +75,6 @@ const PORT = Number(process.env.PORT) || 8123;
 const LLM_PROVIDERS = [
   { id: 'groq', keyEnv: 'GROQ_API_KEY' },
   { id: 'gemini', keyEnv: 'GEMINI_API_KEY' },
-  { id: 'github', keyEnv: 'GITHUB_TOKEN' },
 ];
 
 /** معرّفات المزوّدين الذين توفّر لهم مفاتيح. */
@@ -93,6 +92,19 @@ const noProviderError = () => ({
   providers: activeProviders(),
 });
 
+/** يعيد مسار النسخة المحفوظة محلياً لملف PDF بعيد إن وُجدت، وإلا ''. */
+function localPdfCacheFor(remoteUrl) {
+  if (!remoteUrl) return '';
+  try {
+    const name = path.basename(new URL(remoteUrl).pathname);
+    if (!name) return '';
+    const p = path.join(__dirname, 'assets', 'review_files_cache', name);
+    return fs.existsSync(p) ? p : '';
+  } catch {
+    return '';
+  }
+}
+
 // ===== الملفات المرفوعة (صور/مستندات) — خارج مجلد البناء كي لا تُمسح عند إعادة البناء =====
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) {
@@ -108,6 +120,27 @@ const ALLOWED_DOC_EXTS = [
   'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'md', 'rtf',
 ];
 const ALLOWED_ATTACHMENT_EXTS = [...ALLOWED_IMAGE_EXTS, ...ALLOWED_DOC_EXTS];
+
+// ===== حضور البطاقات — عدد المتصلين بكل فضاء الآن =====
+// كل جهاز داخل فضاء يرسل نبضة كل بضع ثوانٍ؛ تُحتسب النبضات الأحدث من
+// PRESENCE_TTL_MS فقط، فيعود عدّاد الفضاء إلى الصفر تلقائياً بمجرد
+// إغلاق التبويب أو الخروج منه (بلا حاجة لطلب «مغادرة» صريح).
+const presenceByDevice = new Map(); // deviceId -> { card, lastSeen }
+const PRESENCE_TTL_MS = 15 * 1000;
+
+/** يزيل النبضات الميتة ويعيد {cardId: عددالمتصلين} للحظة الحالية. */
+function presenceSnapshot() {
+  const now = Date.now();
+  const counts = {};
+  for (const [id, entry] of presenceByDevice) {
+    if (!entry.card || now - entry.lastSeen > PRESENCE_TTL_MS) {
+      presenceByDevice.delete(id);
+      continue;
+    }
+    counts[entry.card] = (counts[entry.card] || 0) + 1;
+  }
+  return counts;
+}
 
 // ===== سجل القاعات الدائم (يُحفظ على القرص ويُحمَّل عند الإقلاع) =====
 const DATA_FILE = path.join(__dirname, 'rooms_data.json');
@@ -175,6 +208,25 @@ const handler = async (req, res) => {
   // نقطة فحص صحة (health) لاستضافة Render — يجب أن تعيد 200.
   if (req.method === 'GET' && urlPath === '/health') {
     return json(res, 200, { ok: true });
+  }
+
+  // ===== حضور البطاقات: POST نبضة من جهاز داخل فضاء، GET لقراءة الأعداد =====
+  // جسم POST: { deviceId: 'abc123', card: 'review' } — card فارغ = خرج.
+  // كلاهما يعيد { ok: true, counts: { review: 2, quiz: 1, ... } }.
+  if (urlPath === '/api/presence') {
+    if (req.method === 'POST') {
+      const body = await readBody(req).catch(() => ({}));
+      const deviceId = String(body.deviceId || '').trim();
+      const card = String(body.card || '').trim();
+      if (deviceId) {
+        if (card) {
+          presenceByDevice.set(deviceId, { card, lastSeen: Date.now() });
+        } else {
+          presenceByDevice.delete(deviceId);
+        }
+      }
+    }
+    return json(res, 200, { ok: true, counts: presenceSnapshot() });
   }
 
   // رابط تحميل تطبيق الأندرويد — يقرأ آخر APK مبني من مجلد البناء مباشرة،
@@ -577,9 +629,11 @@ const handler = async (req, res) => {
         const outFile = path.join(genDir, 'gen_' + stamp + '.json');
         const { spawn } = require('child_process');
         const scriptArgs = [path.join(__dirname, 'tools', 'quiz_from_pdf.py')];
-        if (remoteUrl) {
+        const cachedPdf = localPdfCacheFor(remoteUrl);
+        if (cachedPdf) {
+          scriptArgs.push('--pdf', cachedPdf);
+        } else if (remoteUrl) {
           scriptArgs.push('--url', remoteUrl);
-          if (pdfFile) scriptArgs.push('--pdf', pdfFile);
         } else {
           scriptArgs.push('--pdf', pdfFile);
         }
@@ -714,7 +768,9 @@ const handler = async (req, res) => {
       if (typeof payload.sourceName === 'string' && payload.sourceName.trim()) {
         scriptArgs.push('--source-name', payload.sourceName.trim());
       }
-      if (remoteUrl) scriptArgs.push('--url', remoteUrl);
+      const cachedPdf = localPdfCacheFor(remoteUrl);
+      if (cachedPdf) scriptArgs.push('--pdf', cachedPdf);
+      else if (remoteUrl) scriptArgs.push('--url', remoteUrl);
       else scriptArgs.push('--pdf', pdfFile);
       // مفاتيح المزوّدين كلها موروثة من process.env (المحمَّلة من .env)
       const proc = spawn('python', scriptArgs, {
@@ -727,6 +783,10 @@ const handler = async (req, res) => {
         if (errTxt.length > 4000) errTxt = errTxt.slice(-2000);
       });
       proc.on('close', () => {
+        // نُبقي أثر المولّد في سجل الخادم: بدونه يصعب تشخيص البطء/الفرز.
+        if (errTxt.trim()) {
+          console.log('[quiz-job ' + jobId + '] ' + errTxt.trim().slice(-1500));
+        }
         quizJobs.set(jobId, {
           done: true,
           ok: fs.existsSync(fFull),
