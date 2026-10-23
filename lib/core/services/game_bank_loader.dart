@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
@@ -38,6 +38,7 @@ class GameBankLoader {
   }
 
   static const _bankPath = 'assets/banks/game_challenges.json';
+  static String get bankUrl => 'http://10.0.2.2:8123/api/question-banks/game_challenges.json';
 
   /// هل تم التحميل؟
   static bool get isLoaded => _allQuestions.isNotEmpty;

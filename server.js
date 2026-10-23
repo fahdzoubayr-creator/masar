@@ -1,4 +1,4 @@
-const http = require('http');
+﻿const http = require('http');
 const https = require('https');
 let remoteManifestCache = { t: 0, data: null };
 const FOLDER_SLUGS = {
@@ -1202,6 +1202,23 @@ const handler = async (req, res) => {
 };
 
 // خادم HTTP (للأجهزة التي لا تصل إلى HTTPS ولتطبيق الهاتف).
+// بنك لعبة خارجي: /api/question-banks/<file>.json
+const _qbHandler = function(req,res){
+  const urlPath = req.url.split('?')[0];
+  if (!urlPath.startsWith('/api/question-banks/')) return false;
+  const name = decodeURIComponent(urlPath.replace('/api/question-banks/', ''));
+  if (!/^[\\w\\u0600-\\u06FF\\.-]+\\.json$/.test(name)) { res.writeHead(400, {'Content-Type':'application/json; charset=utf-8'}); res.end(JSON.stringify({error:'bad name'})); return true; }
+  const externalDir = process.env.EXTERNAL_QUESTION_BANKS_DIR || path.resolve(__dirname, '..', '\u0628\u0646\u0643_\u0627\u0644\u0644\u0639\u0628\u0629');
+  const externalPath = path.resolve(externalDir, name);
+  const appPath = path.resolve(__dirname, 'assets', 'banks', 'game', name);
+  const altPath = path.resolve(__dirname, 'assets', 'banks', name);
+  let filePath = null;
+  if (fs.existsSync(externalPath)) filePath = externalPath;
+  else if (fs.existsSync(appPath)) filePath = appPath;
+  else if (fs.existsSync(altPath)) filePath = altPath;
+  if (!filePath) { res.writeHead(404, {'Content-Type':'application/json; charset=utf-8'}); res.end(JSON.stringify({error:'not found'})); return true; }
+  try { const data = fs.readFileSync(filePath, 'utf8'); res.writeHead(200, {'Content-Type':'application/json; charset=utf-8', 'Access-Control-Allow-Origin':'*'}); res.end(data); return true; } catch(e) { res.writeHead(500, {'Content-Type':'application/json; charset=utf-8'}); res.end(JSON.stringify({error:'read failed'})); return true; }
+};
 const server = http.createServer(handler);
 
 // ===== خادم إشارات WebSocket (نقل رسائل الغرفة فقط — لا يمرر الصوت/الفيديو) =====
