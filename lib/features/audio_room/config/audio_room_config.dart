@@ -1,6 +1,10 @@
 import 'dart:math';
 
+<<<<<<< HEAD
 import 'package:flutter/foundation.dart';
+=======
+import 'package:masar_app/core/config/server_address.dart';
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 
 /// قاعة «مفتوحة للجميع» — تظهر في شاشة القاعات ويدخلها أي أحد بضغطة واحدة
 /// دون الحاجة إلى رمز (الرمز نفسه اسم الغرفة في LiveKit).
@@ -38,6 +42,7 @@ class AudioRoomConfig {
 
   /// عنوان خادم الدليل والتوكنات.
   ///
+<<<<<<< HEAD
   /// أولوية الاختيار:
   /// 1) قيمة `--dart-define=API_BASE=...` إن وُجدت.
   /// 2) على الويب: نفس أصل الصفحة إذا كانت تخدم من خادمنا المحلي
@@ -56,6 +61,11 @@ class AudioRoomConfig {
   }
 
   static String get tokenEndpoint => '$apiBase/api/livekit/token';
+=======
+  /// ⚙️ حالياً: الخادم المحلي للتجربة — عند الإنتاج استبدله برابط الخادم الرسمي.
+  /// المصدر الموحّد: [ServerAddress] (يمكن تغييره عند البناء).
+  static const String apiBase = ServerAddress.apiBase;
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 
   /// هل خدمة التوكنات مضبوطة؟ عندها نتصل بخادم البث فعلياً، وإلا نعمل
   /// في الوضع التجريبي (محاكاة داخلية دون إنترنت).

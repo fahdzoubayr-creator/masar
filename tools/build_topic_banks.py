@@ -173,9 +173,13 @@ def load_manual():
                 "manual": True,
             }
             # بنك يدوي: نكتفي بالفحص البنيوي، لا ببوابة التوليد التقديرية.
+<<<<<<< HEAD
             if any(qq.CATCH_ALL.search(o)
                    for i, o in enumerate(rec["options"])
                    if i != rec["correctIndex"]):
+=======
+            if any(qq.CATCH_ALL.search(o) for o in rec["options"]):
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                 print(f"manual: {f.name} خيار وصفي في: {rec['text'][:40]}")
                 continue
             if qq.DEICTIC_ANY.search(rec["text"]):

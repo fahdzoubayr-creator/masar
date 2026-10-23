@@ -317,6 +317,7 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
       ));
       return;
     }
+<<<<<<< HEAD
 
     // بدائل longest_alone: سهلة، تُخلط مبعثرة طوال الكويز
     List<Question> alternates = [];
@@ -358,6 +359,36 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
       MaterialPageRoute(
         builder: (_) => QuizScreen(
           questionLoader: () async => chosen,
+=======
+    final delivered = <String>{}; // ما استلمناه سابقاً، لتفادي التكرار
+    var cursor = 0; // موضع القراءة في بنك المحور
+    const head = 10; // أسئلة البنك التي تُعرض فوراً
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => QuizScreen(
+          questionLoader: () async {
+            final first = staticQs
+                .take(head)
+                .map(QuestionGenerator.withShuffledOptions)
+                .toList();
+            cursor = first.length;
+            for (final q in first) {
+              delivered.add(q.text.trim());
+            }
+            return first;
+          },
+          restLoader: () async {
+            while (cursor < staticQs.length) {
+              final q = staticQs[cursor++];
+              if (!delivered.add(q.text.trim())) continue;
+              if (QuestionValidator.filterValid([q]).isEmpty) continue;
+              return <Question>[QuestionGenerator.withShuffledOptions(q)];
+            }
+            // انتهى بنك المحور: ينتهي الكويز، ولا يوجد مصدر آخر.
+            return const <Question>[];
+          },
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
           testType: 'كويز المحور الفرعي',
           axisName: widget.folderTitle,
           subAxisName: widget.topicTitle,
@@ -416,7 +447,29 @@ class _TopicQuizCardState extends State<TopicQuizCard> {
               ],
             ],
           ),
+<<<<<<< HEAD
           const SizedBox(height: 10),
+=======
+          const SizedBox(height: 8),
+          // عدد أسئلة بنك المحور: من الفهرس، بلا تحميل الملف.
+          FutureBuilder<int>(
+            future: TopicBankService.indexedCount(
+                widget.folderTitle, widget.topicTitle),
+            builder: (context, snap) {
+              final n = snap.data ?? 0;
+              return Text(
+                n > 0
+                    ? 'بنك المحور: $n سؤالاً جاهزاً — بلا توليد، يعمل فوراً.'
+                    : 'بنك المحور غير مكتمل بعد — سيُضاف إليه يدوياً.',
+                style: TextStyle(
+                    fontSize: 11,
+                    color: n > 0 ? AppColors.goldSoft : AppColors.muted,
+                    height: 1.6),
+              );
+            },
+          ),
+          const SizedBox(height: 8),
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
           const Text(
             'إذا لم تحصل على 50% على الأقل في أسئلة هذا الكويز، سيتم منعك من إعادة المحاولة لمدة 3 ساعات.',
             style: TextStyle(fontSize: 11, color: AppColors.muted, height: 1.6),

@@ -626,7 +626,11 @@ class _TopicRowState extends State<_TopicRow> {
         topic: widget.topic.pdfTopic ?? widget.topic.title);
     final quizFiles = await ReviewFileService.countFolderQuizFiles(
         folder.title,
+<<<<<<< HEAD
         topic: widget.topic.pdfTopic ?? widget.topic.title);
+=======
+        topic: widget.topic.title);
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
     // بنك المحور الثابت: أسئلة مؤلَّفة يدوياً وفورية بلا شبكة ولا حصة مزوّد.
     final staticCount = await TopicBankService.indexedCount(
         folder.title, widget.topic.title);

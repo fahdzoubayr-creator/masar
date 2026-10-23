@@ -32,10 +32,13 @@ REPEAT_WORD = re.compile(r"([\u0600-\u06FF]{2,})\s+\1(?:\s|$)")
 TRIPLE = re.compile(r"(.)\1\1")
 # كلمة عربية لحرف واحد أو حرفين مكررة (إعادة خطأ مثل «التENSE»).
 ORPHAN = re.compile(r"(?:^|\s)([\u0600-\u06FF]{1,2})(?:\s|$)")
+<<<<<<< HEAD
 # خيار «كل الأجوبة السابقة خاطئة» بكل صيغه.
 ALL_WRONG = re.compile(
     r"^(?:كل|جميع)\s+(?:الأجوبة|الإجابات|الاختيارات|الخيارات|الاقتراحات)"
     r"\s+(?:السابقة|المقترحة|أعلاه)\s+خاطئة?\.?$")
+=======
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 
 
 def main():
@@ -50,7 +53,10 @@ def main():
     for f in files:
         d = json.loads(f.read_text(encoding="utf-8"))
         qs = d.get("questions") or []
+<<<<<<< HEAD
         folder = (d.get("folder") or "").strip()
+=======
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
         total += len(qs)
         seen_text = Counter()
         for i, qo in enumerate(qs):
@@ -58,20 +64,30 @@ def main():
             text = (qo.get("text") or "").strip()
             opts = qo.get("options") or []
             ci = qo.get("correctIndex")
+<<<<<<< HEAD
             if len(opts) not in (3, 4, 5):
                 problems.append(f"{tag}: خيارات={len(opts)} :: {text[:40]}")
             if len(opts) == 5 and not (
                     isinstance(ci, int) and 0 <= ci < 5
                     and ALL_WRONG.match((opts[ci] or "").strip())):
                 problems.append(f"{tag}: خيار خامس غير مطابق :: {text[:40]}")
+=======
+            if len(opts) != 4:
+                problems.append(f"{tag}: خيارات={len(opts)} :: {text[:40]}")
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
             if not isinstance(ci, int) or not (0 <= ci < len(opts)):
                 problems.append(f"{tag}: مؤشر={ci} :: {text[:40]}")
             if not (qo.get("explanation") or "").strip():
                 problems.append(f"{tag}: شرح فارغ :: {text[:40]}")
+<<<<<<< HEAD
             blob = " | ".join([text, qo.get("situation") or ""]
                               + [o or "" for o in opts])
             # أسئلة الفرنسية: اللاتينية مباحة فيها بقرار المستخدم.
             if LATIN.search(blob) and folder != "ديداكتيك اللغة الفرنسية":
+=======
+            blob = " ".join([text, qo.get("situation") or ""] + [o or "" for o in opts])
+            if LATIN.search(blob):
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                 problems.append(f"{tag}: نص لاتيني :: {text[:60]}")
             if REPLACEMENT.search(blob):
                 problems.append(f"{tag}: محرف بديل/تطويل :: {text[:60]}")
@@ -82,14 +98,19 @@ def main():
                 problems.append(f"{tag}: ثلاث حروف متطالية :: {text[:50]}")
             if qq.DEICTIC_ANY.search(text):
                 problems.append(f"{tag}: إحالة إشارية :: {text[:60]}")
+<<<<<<< HEAD
             if any(qq.CATCH_ALL.search(o or "")
                    for i, o in enumerate(opts) if i != ci):
+=======
+            if any(qq.CATCH_ALL.search(o or "") for o in opts):
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                 problems.append(f"{tag}: خيار وصفي :: {text[:40]}")
             no = [qq.norm(o) for o in opts]
             if len(set(no)) < len(no):
                 problems.append(f"{tag}: خيارات مكررة :: {text[:40]}")
             lens = [len(o or "") for o in opts]
             others = sorted(lens[:ci] + lens[ci + 1:]) if isinstance(ci, int) and ci < len(lens) else []
+<<<<<<< HEAD
             if (others and not qo.get("answerMarked")
                     and lens[ci] == max(lens)
                     and max(lens) - others[-1] >= 14):
@@ -106,6 +127,16 @@ def main():
                 problems.append(f"{tag}: تسريب الإجابة :: {text[:40]}")
             if (isinstance(ci, int) and 0 <= ci < len(opts)
                     and not ALL_WRONG.match((opts[ci] or "").strip())):
+=======
+            if others and lens[ci] == max(lens) and max(lens) - others[-1] >= 14:
+                problems.append(f"{tag}: الإجابة الأطول وحدها :: {text[:40]}")
+            dt = qq.tokens(opts[ci]) if isinstance(ci, int) and ci < len(opts) else set()
+            ct = qq.tokens(f"{text} {qo.get('situation') or ''}")
+            sh = len(dt & ct)
+            if sh >= 4 or (len(dt) >= 3 and sh / len(dt) >= 0.5):
+                problems.append(f"{tag}: تسريب الإجابة :: {text[:40]}")
+            if isinstance(ci, int) and 0 <= ci < len(opts):
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                 answers_seen[ci] += 1
             seen_text[qq.norm(text)] += 1
 

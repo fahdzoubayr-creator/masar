@@ -4,7 +4,9 @@ import 'package:masar_app/core/theme/app_theme.dart';
 class SubjectCardTile extends StatelessWidget {
   final String icon;
   final String title;
-  final String subtitle;
+
+  /// سطر ثانٍ اختياري beneath العنوان (يُخفى إن كان فارغاً).
+  final String? subtitle;
   final VoidCallback? onTap;
   final bool showChevron;
 
@@ -12,7 +14,7 @@ class SubjectCardTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     this.onTap,
     this.showChevron = true,
   });
@@ -50,9 +52,11 @@ class SubjectCardTile extends StatelessWidget {
                   Text(title,
                       style: const TextStyle(
                           fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.cream)),
-                  const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: const TextStyle(fontSize: 11.5, color: AppColors.muted)),
+                  if (subtitle != null && subtitle!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 2),
+                    Text(subtitle!,
+                        style: const TextStyle(fontSize: 11.5, color: AppColors.muted)),
+                  ],
                 ],
               ),
             ),

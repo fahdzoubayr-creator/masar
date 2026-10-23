@@ -1,6 +1,7 @@
 # المحور الفرعي: Didactique
 # ضع أسئلتك أسفل هذا السطر، وافصل بين كل سؤال وآخر بسطر من الشرطات.
 # صيغة السؤال: الوضعية / السؤال / أ ب ج د / الإجابة / الشرح.
+<<<<<<< HEAD
 
 السؤال: Comment se définit la "didactique générale" par rapport aux didactiques disciplinaires ?
 أ) L'application exclusive des méthodes d'évaluation sommative dans les matières scientifiques
@@ -3776,3 +3777,5 @@
 د) Un équilibre rigoureux entre le développement de l'oral, la maîtrise de la lecture, la structuration de la langue et la pratique de l'écrit au service de la communication، وذلك وفق النموذج التقليدي للتلقين
 الإجابة: أ
 الشرح: Explication : la bonne réponse est « Un équilibre rigoureux entre le développement de l'oral, la maîtrise de la lecture, la structuration de la langue et la pratique de l'écrit au service de la communication » ; elle correspond aux contenus validés de ce thème.
+=======
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9

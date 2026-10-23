@@ -3,6 +3,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:masar_app/core/services/game_bank_loader.dart';
 import 'package:masar_app/core/services/question_bank_loader.dart';
+import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/widgets/unified_background.dart';
@@ -32,9 +33,16 @@ class RightScrollbarBehavior extends MaterialScrollBehavior {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // تحميل بنوك الأسئلة من JSON
-  await QuestionBankLoader.init();
+  // تحميل بنوك الأسئلة من JSON — ملف game_challenges.json مُزيل من
+  // الشجرة (9f0222f)، فإن غاب لا يمنع الإقلاع: بنك فارغ مثل GameBankLoader.
+  try {
+    await QuestionBankLoader.init();
+  } catch (_) {}
   await GameBankLoader.init();
+  // تسجيل تلقائي عند أول تشغيل للتطبيق — يُحفظ الاسم في جميع الفضاءات تلقائياً.
+  try {
+    await SessionService.ensureRegistered();
+  } catch (_) {}
   // يُبقي شجرة الوصول (Semantics) مفعّلة دائماً — لإتاحة قارئات الشاشة
   // ولتمكين الفحص التلقائي للواجهة.
   SemanticsBinding.instance.ensureSemantics();

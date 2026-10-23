@@ -25,8 +25,57 @@ class ReviewFileService {
 
   /// ملفات الـPDF الفعلية مستضافة كأصول Release على GitHub
   /// (حدود Pages هي 1GB فقط بينما Releases يدعم حتى 2GB للملف الواحد).
+  ///
+  /// تُجرَّب الإصدارات بالترتيب: الأول هو النسخة النهائية المولَّدة من
+  /// مجلد «ملفات التطبيق نهائي»، والثاني إصدار قديم يخدم الملفات التي
+  /// ليست ضمن النسخة النهائية (مثل بنك الأسئلة).
+  static const List<String> releaseBases = [
+    'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v3/',
+    'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v1/',
+  ];
+
+  /// الإصدار الأساسي (النسخة النهائية).
   static const String releaseBase =
-      'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v1/';
+      'https://github.com/fahdzoubayr-creator/masar/releases/download/review-files-v3/';
+
+  /// فرع المستودع الذي تُقرأ منه الملفات الخام (raw).
+  static const String repoBranch = 'master';
+
+  /// قاعدة استضافة CORS لملفات المراجعة (Firebase Storage / R2 / S3 …).
+  ///
+  /// تُحقن عند البناء فتصل ملفات PDF من نطاق يُرسل ترويسات CORS،
+  /// ويصبح فتحها ممكناً في المتصفح على الاستضافة الثابتة (GitHub Pages)
+  /// حيث يُمنع جلب ملفات الـRelease بسبب غياب ترويسة CORS:
+  ///
+  ///   flutter build web --release \
+  ///     --dart-define=REVIEW_FILE_BASE=https://firebasestorage.googleapis.com/v0/b/<BUCKET>/o/
+  ///
+  /// وتُنسخ الملفات إلى هناك بنفس أسماء الـRelease: <slug>__<NN>.pdf
+  static const String fileBase = String.fromEnvironment(
+    'REVIEW_FILE_BASE',
+    defaultValue: '',
+  );
+
+  /// هل تُرفع الملفات من استضافة CORS مهيّأة؟
+  static bool get hasFileBase => fileBase.isNotEmpty;
+
+  /// يبني رابط ملف في استضافة CORS من مساره في التطبيق.
+  ///
+  /// Firebase Storage يحتاج ترميز مسار الكائن (%2F) ومعامل ?alt=media،
+  /// بينما R2/S3 يستقبلان المسار كما هو.
+  static String cloudUrl(String base, String assetPath) {
+    final m = RegExp(r'^assets/(?:assets/)?review_files/([^/]+)/(.+)$')
+        .firstMatch(assetPath);
+    if (m == null) return '';
+    final slug = folderSlugs[m.group(1)];
+    if (slug == null) return '';
+    final name = '${slug}__${m.group(2)}';
+    final b = base.endsWith('/') ? base : '$base/';
+    if (b.contains('firebasestorage.googleapis.com')) {
+      return '$b${Uri.encodeComponent(name)}?alt=media';
+    }
+    return '$b$name';
+  }
 
   /// ترجمة اسم مجلد المحور إلى المزالج اللاتينية المستخدمة في أسماء
   /// أصول الـRelease — GitHub يقصّ المحارف غير اللاتينية من الأسماء.
@@ -50,8 +99,8 @@ class ReviewFileService {
   /// دليل الملفات لكل محور — يُجلب من الفرع الرئيسي مباشرة (raw)
   /// ليظهر أي تحديث فوراً دون انتظار إعادة نشر الموقع.
   static String get manifestUrl =>
-      'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/main/'
-      'assets/assets/review_files/manifest.json';
+      'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/$repoBranch/'
+      'assets/review_files/manifest.json';
 
   /// يحوّل مسار الأصول (assets/review_files/<مجلد>/<NN>.pdf)
   /// إلى رابط الـRelease المقابل، أو رابط Pages كبديل للمسارات غير المعروفة.
@@ -61,6 +110,18 @@ class ReviewFileService {
     final slug = m == null ? null : folderSlugs[m.group(1)];
     if (m != null && slug != null) return '$releaseBase${slug}__${m.group(2)}';
     return '$baseUrl/${assetPath.replaceFirst('assets/', 'assets/assets/')}';
+  }
+
+  /// كل روابط الـRelease الممكنة لملف معيّن — تُجرَّب بالترتيب
+  /// (النسخة النهائية أولاً ثم الإصدار القديم).
+  static List<String> releaseUrlsFor(String assetPath) {
+    final m =
+        RegExp(r'^assets/(?:assets/)?review_files/([^/]+)/(.+)$').firstMatch(assetPath);
+    final slug = m == null ? null : folderSlugs[m.group(1)];
+    if (m == null || slug == null) return const [];
+    return [
+      for (final base in releaseBases) '$base${slug}__${m.group(2)}',
+    ];
   }
 
   /// اسم الملف في الريبو/الـRelease: <slug>__NN.pdf — يطابق محتوى
@@ -80,7 +141,11 @@ class ReviewFileService {
   static String repoRawUrlFor(String assetPath) {
     final name = repoFileNameFor(assetPath);
     if (name == null) return '';
+<<<<<<< HEAD
     return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/master/'
+=======
+    return 'https://raw.githubusercontent.com/fahdzoubayr-creator/masar/$repoBranch/'
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
         'assets/review_files_cache/$name';
   }
 
@@ -98,15 +163,22 @@ class ReviewFileService {
       .resolve('/api/review-files/file?path=${Uri.encodeComponent(assetPath)}')
       .toString();
 
+  /// كل مصادر ملف معيّن مرتّبة حسب الأولوية (تُجرَّب بالترتيب):
+  /// 1) استضافة CORS (إن هُيّئت)، 2) الـRelease (النسخة النهائية ثم القديمة)،
+  /// 3) الريبو raw (CORS مسموح)، 4) وسيط API بنفس الأصل (سيرفر محلي).
+  static List<String> sourcesFor(String assetPath) => <String>[
+        if (hasFileBase) cloudUrl(fileBase, assetPath),
+        ...releaseUrlsFor(assetPath),
+        if (repoRawUrlFor(assetPath).isNotEmpty) repoRawUrlFor(assetPath),
+        if (kIsWeb) serverRelayUrlFor(assetPath),
+      ].where((u) => u.isNotEmpty).toList();
+
   /// يقرأ ملفاً (PDF) بترتيب مصادر مستقل تماماً عن أي سيرفر حتمي:
-  /// 1) الريبو (raw.githubusercontent — CORS مسموح)، 2) وسيط API بنفس الأصل
-  /// (إن وُجد سياق سيرفر)، 3) الـRelease (هاتف: جلب مباشر)، 4) الكاش،
+  /// 1) الـRelease، 2) الريبو (raw.githubusercontent — CORS مسموح)،
+  /// 3) وسيط API بنفس الأصل (إن وُجد سياق سيرفر)، 4) الكاش،
   /// 5) الأصول المضمّنة داخل التطبيق.
   static Future<Uint8List> readAsset(String assetPath) async {
-    final candidates = <String>[
-      ...{repoRawUrlFor(assetPath), urlFor(assetPath)}.where((u) => u.isNotEmpty),
-      if (kIsWeb) serverRelayUrlFor(assetPath),
-    ];
+    final candidates = sourcesFor(assetPath);
     for (final url in candidates) {
       final cached = await ReviewFileDiskCache.read(url);
       if (cached != null) return cached;
@@ -145,16 +217,20 @@ class ReviewFileService {
     return utf8.decode(resp.bodyBytes);
   }
 
-  /// يقرأ نص ملف المراجعة: من السحابة أو من الأصول المحلية عند التعذّر.
+  /// يقرأ نص ملف المراجعة: من السحابة (كل المصادر) أو من الأصول المحلية
+  /// عند التعذّر.
   static Future<String> readText(String assetPath) async {
-    try {
-      return await _fetchString(urlFor(assetPath));
-    } catch (_) {
+    for (final url in sourcesFor(assetPath)) {
       try {
-        return await rootBundle.loadString(assetPath);
+        return await _fetchString(url);
       } catch (_) {
-        return '';
+        // نجرّب المصدر التالي.
       }
+    }
+    try {
+      return await rootBundle.loadString(assetPath);
+    } catch (_) {
+      return '';
     }
   }
 

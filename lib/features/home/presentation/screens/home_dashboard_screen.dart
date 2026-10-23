@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:masar_app/core/services/presence_service.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:masar_app/core/theme/app_theme.dart';
 import 'package:masar_app/core/services/session_service.dart';
+<<<<<<< HEAD
 import 'package:masar_app/core/services/presence_service.dart';
 import 'package:masar_app/features/review/presentation/screens/review_space_screen.dart';
 import 'package:masar_app/features/quiz/presentation/screens/quiz_picker_screen.dart';
@@ -14,7 +17,12 @@ import 'package:masar_app/features/mindmaps/presentation/screens/mind_maps_scree
 import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
 import 'package:masar_app/features/home/presentation/widgets/exams_access_gate_dialog.dart';
 import 'package:masar_app/features/splash/presentation/splash_screen.dart';
+=======
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 import 'package:masar_app/core/widgets/page_transitions.dart';
+import 'package:masar_app/features/branching/presentation/screens/branching_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/dashboard_spaces.dart';
+import 'package:masar_app/features/splash/presentation/splash_screen.dart';
 
 /// نموذج عنصر في شبكة لوحة التحكم
 class _DashboardItem {
@@ -24,29 +32,42 @@ class _DashboardItem {
   final String subtitle;
   final IconData icon;
 
-  /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة (الامتحانات التجريبية).
+  /// بطاقة مميزة — تُبرز بخلفية ذهبية كاملة.
   final bool featured;
+
+  /// عبارة «لعبة» حمراء فوق العنوان (وسم فضاء مميّز).
+  final bool pill;
 
   /// فضاء غير جاهز بعد — يُعرض مقفلاً ولا يمكن الدخول إليه.
   final bool comingSoon;
 
   /// ملاحظة بارزة تظهر تحت الوصف بلون أحمر.
   final String? note;
-  final WidgetBuilder builder;
+
+  /// الفضاء المرتبط بهذه البطاقة.
+  final DashboardSpace space;
+
   const _DashboardItem({
     required this.id,
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.builder,
+    required this.space,
     this.featured = false,
     this.comingSoon = false,
+    this.pill = false,
     this.note,
   });
 }
 
 /// لوحة التحكم الرئيسية — تعرض كل فضاءات التكوين في شبكة واحدة.
+<<<<<<< HEAD
 /// تحت كل بطاقة عدّاد المتصلين بالفضاء الآن (من خادم الدليل).
+=======
+///
+/// تحت كل بطاقة يظهر عدد المستخدمين المتصلين الآن في الفضاء نفسه،
+/// وتُحدَّث الأعداد دورياً من الخادم.
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 class HomeDashboardScreen extends StatefulWidget {
   const HomeDashboardScreen({super.key});
 
@@ -67,6 +88,61 @@ class HomeDashboardScreen extends StatefulWidget {
     colors: [Color(0xFFA8842F), Color(0xFF6E5520)],
   );
 
+  @override
+  State<HomeDashboardScreen> createState() => _HomeDashboardScreenState();
+}
+
+class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
+  /// أعداد الحاضرين الآن لكل فضاء (المفتاح = معرّف الفضاء).
+  Map<String, int> _counts = const {};
+
+  Timer? _poll;
+
+  @override
+  void initState() {
+    super.initState();
+    // نبضة حضور دورية تُبقي تسجيلنا حيّاً، مع استدعاء الخادم لأحدث الأعداد.
+    // الاستطلاع سريع (3 ثوانٍ) لأن ردّ الخادم صغير جداً — فيظهر التحديث
+    // للزائر خلال ثوانٍ من دخول أي مستخدم إلى بطاقة.
+    _poll = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => _refreshCounts(),
+    );
+    unawaited(_bootstrapPresence());
+  }
+
+  /// أول نبضة + قراءة الأعداد — لتظهر الشارات مباشرةً عند فتح اللوحة.
+  Future<void> _bootstrapPresence() async {
+    await PresenceService.start();
+    if (!mounted) return;
+    setState(() => _counts = PresenceService.counts);
+  }
+
+  @override
+  void dispose() {
+    _poll?.cancel();
+    PresenceService.stop();
+    super.dispose();
+  }
+
+  Future<void> _refreshCounts() async {
+    final counts = await PresenceService.fetch();
+    if (!mounted) return;
+    setState(() => _counts = counts);
+  }
+
+  /// يسجّل دخول المستخدم في الفضاء، ويعيده إلى البهو عند خروجه.
+  Future<void> _enterSpace(DashboardSpace space) async {
+    await PresenceService.setSpace(space.id);
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => space.build()),
+    );
+    if (!mounted) return;
+    await PresenceService.setSpace(PresenceSpace.lobby);
+    await _refreshCounts();
+  }
+
   // البطاقتان الرئيسيتان (Hero) أولاً — أكثر ما يقصده الأستاذ عند الفتح.
   static const List<_DashboardItem> _items = [
     _DashboardItem(
@@ -74,7 +150,7 @@ class HomeDashboardScreen extends StatefulWidget {
       title: 'العدة المتكاملة للتحضير للامتحان المهني',
       subtitle: 'ملخصات شاملة بصيغة PDF',
       icon: Icons.auto_stories_rounded,
-      builder: _buildReviewSpace,
+      space: DashboardSpace.review,
     ),
     _DashboardItem(
       id: 'quiz',
@@ -82,40 +158,48 @@ class HomeDashboardScreen extends StatefulWidget {
       subtitle: 'اختبر معارفك حسب المحاور',
       icon: Icons.gps_fixed_rounded,
       note: 'توليد تلقائي للأسئلة غير محدود',
-      builder: _buildQuizPicker,
+      space: DashboardSpace.quiz,
     ),
     _DashboardItem(
+<<<<<<< HEAD
       id: 'exams',
       title: 'الامتحانات التجريبية',
       subtitle: 'مسار تحدي بالمراحل والنجوم',
       icon: Icons.timer_rounded,
       featured: true,
       builder: _buildLevelMap,
+=======
+      title: 'جواهر الكفاءة',
+      subtitle: 'تحدّي المراحل — منافسة بين الزملاء',
+      icon: Icons.sports_esports_rounded,
+      pill: true,
+      space: DashboardSpace.jawaaher,
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
     ),
     _DashboardItem(
       id: 'progress',
       title: 'مؤشر التقدم',
       subtitle: 'لوحة قياس الأداء والإحصائيات',
       icon: Icons.bar_chart_rounded,
-      builder: _buildHistory,
+      space: DashboardSpace.history,
     ),
     _DashboardItem(
       id: 'mindmaps',
       title: 'خرائط ذهنية',
       subtitle: 'خطاطات بيداغوجية مركزة',
       icon: Icons.psychology_rounded,
-      comingSoon: true,
-      builder: _buildMindMaps,
+      space: DashboardSpace.mindMaps,
     ),
     _DashboardItem(
       id: 'rooms',
       title: 'قاعات الجلسات',
       subtitle: 'دروس - تفاعل - مناقشات - بين الأساتذة',
       icon: Icons.mic_rounded,
-      builder: _buildLiveRoom,
+      space: DashboardSpace.liveRoom,
     ),
   ];
 
+<<<<<<< HEAD
   static Widget _buildReviewSpace(BuildContext context) =>
       const ReviewSpaceScreen();
   static Widget _buildQuizPicker(BuildContext context) =>
@@ -140,6 +224,10 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
     PresenceService.stop();
     super.dispose();
   }
+=======
+  // لم تعد مطلوبة (كل البطاقة تُربط مباشرة بالفضاء عبر space.build)
+  // البنيات احتفظت بها للتوافق التاريخي إن لزم الأمر، لكن غير مُستخدمة.
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 
   Future<void> _logout(BuildContext context) async {
     await SessionService.logout();
@@ -190,11 +278,107 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                       );
                     },
                   ),
+<<<<<<< HEAD
+=======
+                  itemCount: _items.length,
+                  itemBuilder: (context, i) => _DashboardCard(
+                    item: _items[i],
+                    liveCount: _counts[_items[i].space.id] ?? 0,
+                    hasPresence: _counts.isNotEmpty,
+                    onOpen: () => _enterSpace(_items[i].space),
+                  ),
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                 ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// شارة «المتصلون الآن» أسفل البطاقة — عدد المستخدمين الموجودين
+/// في الفضاء نفسه، بنقطة نابضة توحي بالحيوية.
+class _LiveBadge extends StatefulWidget {
+  final int count;
+  const _LiveBadge({required this.count});
+
+  @override
+  State<_LiveBadge> createState() => _LiveBadgeState();
+}
+
+class _LiveBadgeState extends State<_LiveBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1600),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  /// صياغة عربية سليمة للعدد (مفرد/مثنى/جمع).
+  String _label(int n) {
+    if (n <= 0) return 'لا أحد متصل الآن';
+    if (n == 1) return 'متصل واحد الآن';
+    if (n == 2) return 'متصلان الآن';
+    if (n <= 10) return '$n متصلون الآن';
+    return '$n متصلاً الآن';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final n = widget.count;
+    final alive = n > 0;
+    final dotColor = alive ? const Color(0xFF3ED598) : AppColors.muted;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      decoration: BoxDecoration(
+        color: dotColor.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: dotColor.withValues(alpha: 0.34)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedBuilder(
+            animation: _pulse,
+            builder: (context, _) {
+              final t = alive ? _pulse.value : 0.0;
+              return Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: dotColor,
+                  shape: BoxShape.circle,
+                  boxShadow: alive
+                      ? [
+                          BoxShadow(
+                            color: dotColor.withValues(alpha: 0.25 + 0.45 * t),
+                            blurRadius: 3 + 4 * t,
+                            spreadRadius: 0.5 + 1.2 * t,
+                          ),
+                        ]
+                      : null,
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 6),
+          Text(
+            _label(n),
+            style: GoogleFonts.tajawal(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              height: 1.2,
+              color: alive ? const Color(0xFF7FE7C0) : AppColors.muted,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -252,10 +436,28 @@ class _DashboardHeader extends StatelessWidget {
 class _DashboardCard extends StatelessWidget {
   final _DashboardItem item;
 
+<<<<<<< HEAD
   /// عدد المتصلين بهذا الفضاء الآن (0 إن لم يصل أي نبض بعد).
   final int connected;
 
   const _DashboardCard({required this.item, required this.connected});
+=======
+  /// عدد المتصلين الآن في الفضاء (0 = لا أحد).
+  final int liveCount;
+
+  /// هل وصلتنا أعداد من الخادم؟ (false = الخادم غير متاح فلا نُظهر الشارة)
+  final bool hasPresence;
+
+  /// يُستدعى عند فتح البطاقة.
+  final Future<void> Function() onOpen;
+
+  const _DashboardCard({
+    required this.item,
+    required this.liveCount,
+    required this.hasPresence,
+    required this.onOpen,
+  });
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
 
   @override
   Widget build(BuildContext context) {
@@ -279,9 +481,12 @@ class _DashboardCard extends StatelessWidget {
               onTap: locked
                   ? null
                   : () async {
-                      if (item.builder != HomeDashboardScreen._buildLiveRoom) {
+                      // الفضاء غير الجاهز مقفل — لا فتح ولا استجابة للضغط.
+                      // القاعات الصوتية فضاء صامت تماماً: بلا مؤثرات إطلاقاً.
+                      if (item.space != DashboardSpace.liveRoom) {
                         playSfx(Sfx.select);
                       }
+<<<<<<< HEAD
                       // فضاء الامتحانات التجريبية محمي بكود الانضمام —
                       // تُعرض بوابة فيسبوك قبل فتحه، ولا يمرّ منها إلا بالكود.
                       if (item.builder == HomeDashboardScreen._buildLevelMap) {
@@ -297,19 +502,26 @@ class _DashboardCard extends StatelessWidget {
                       } finally {
                         if (!locked) PresenceService.leave();
                       }
+=======
+                      // تسجيل تلقائي عند أول دخول — يحفظ بيانات المستخدم
+                      // لربطها بجميع البطاقات دون عرض واجهة التسجيل.
+                      await SessionService.ensureRegistered();
+                      if (!context.mounted) return;
+                      await onOpen();
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
                     },
               borderRadius: BorderRadius.circular(20),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: featured
-                      ? AppColors.gold.withValues(alpha: 0.55)
-                      : AppColors.cream.withValues(alpha: 0.14),
-                  width: featured ? 1.2 : 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: featured
+                        ? AppColors.gold.withValues(alpha: 0.55)
+                        : AppColors.cream.withValues(alpha: 0.14),
+                    width: featured ? 1.2 : 1,
+                  ),
                 ),
-              ),
-              child: Column(
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
@@ -431,6 +643,27 @@ class _DashboardCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            if (item.pill) ...[
+                              // وسم «لعبة» أحمر بارز فوق العنوان.
+                              Text('لعبة',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.tajawal(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
+                                      height: 1.05,
+                                      letterSpacing: 0.5,
+                                      color: AppColors.err,
+                                      shadows: const [
+                                        Shadow(
+                                          color: Color(0x33000000),
+                                          blurRadius: 3,
+                                          offset: Offset(0, 0.5),
+                                        ),
+                                      ])),
+                              const SizedBox(height: 4),
+                            ],
                             Text(item.title,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -464,6 +697,11 @@ class _DashboardCard extends StatelessWidget {
                                       fontWeight: FontWeight.w700,
                                       height: 1.3,
                                       color: AppColors.err)),
+                            ],
+                            // شارة الحضور: عدد المتصلين الآن في هذا الفضاء.
+                            if (hasPresence) ...[
+                              const SizedBox(height: 8),
+                              _LiveBadge(count: liveCount),
                             ],
                             if (locked) ...[
                               const SizedBox(height: 6),

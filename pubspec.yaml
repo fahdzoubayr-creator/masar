@@ -35,9 +35,17 @@ flutter:
   assets:
     - assets/images/
     - assets/sounds/
+    - assets/mindmaps/
     - assets/review_files/
+<<<<<<< HEAD
     - assets/banks/topics_index.json
     - assets/banks/topics/
     # - assets/banks/manual/
     - assets/banks/quiz_alternates.json
+=======
+    - assets/review_files/مؤسسات الريادة/
+    - assets/banks/topics_index.json
+    - assets/banks/topics/
+    - assets/banks/manual/
+>>>>>>> ac0706f6b636bb2d19e9d21ba5af84b5930495f9
     - assets/banks/game_challenges.json

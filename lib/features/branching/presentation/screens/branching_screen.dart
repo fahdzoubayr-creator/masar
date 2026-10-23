@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:masar_app/core/services/sfx/sfx.dart';
 import 'package:masar_app/core/services/session_service.dart';
 import 'package:masar_app/core/widgets/page_transitions.dart';
-import 'package:masar_app/features/auth/presentation/screens/dummy_auth_screen.dart';
+import 'package:masar_app/features/home/presentation/screens/home_dashboard_screen.dart';
 import 'package:masar_app/features/splash/presentation/splash_screen.dart';
 
 class _Slate {
@@ -146,10 +146,13 @@ class _BranchingScreenState extends State<BranchingScreen> {
   }
 
   Future<void> _goRegistration() async {
-    final track = await SessionService.getTrack();
+    // تسجيل تلقائي عند أول دخول: يُنشأ اسم زائر ويُحفظ مع كل بيانات
+    // المستخدم، ثم تُفتح اللوحة مباشرةً بلا واجهة تسجيل.
+    await SessionService.ensureRegistered();
     if (!mounted) return;
-    Navigator.of(context).push(
-      fadeRoute(DummyAuthScreen(trackTitle: track)),
+    Navigator.of(context).pushAndRemoveUntil(
+      fadeRoute(const HomeDashboardScreen()),
+      (route) => false,
     );
   }
 

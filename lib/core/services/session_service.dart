@@ -5,6 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SessionService {
   static const _key = 'logged_in_v1';
   static const _nameKey = 'user_name_v1';
+  static const _contactKey = 'user_contact_v1';
+  static const _passwordKey = 'user_password_v1';
+  static const _registeredKey = 'user_registered_v1';
   static const _verifiedKey = 'user_verified_v1';
   static const _guestNameKey = 'guest_name_v1';
   static const _monitorKey = 'monitor_v1';
@@ -38,9 +41,73 @@ class SessionService {
     }
   }
 
+  /// تسجيل كامل لمعطيات المستخدم — تُحفظ مرة واحدة وتُستخدم تلقائيًا
+  /// في كل الفضاءات (الاسم للعبة/القاعات، المسلك والسلك للمراجعة...).
+  /// [registered] يميّز التسجيل الفعلي عن «تخطي التسجيل».
+  static Future<void> register({
+    required String name,
+    required String contact,
+    required String password,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_key, true);
+    await prefs.setBool(_registeredKey, true);
+    await prefs.setString(_nameKey, name.trim());
+    await prefs.setString(_contactKey, contact.trim());
+    await prefs.setString(_passwordKey, password);
+  }
+
+  /// هل أكمل المستخدم واجهة التسجيل فعلياً (وليس مجرد تخطٍّ)؟
+  static Future<bool> isRegistered() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!(prefs.getBool(_registeredKey) ?? false)) return false;
+    final name = prefs.getString(_nameKey);
+    return name != null && name.trim().isNotEmpty;
+  }
+
+  static Future<String?> getContact() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_contactKey);
+  }
+
+  static Future<String?> getPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_passwordKey);
+  }
+
   static Future<String?> getUserName() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_nameKey);
+  }
+
+  /// يُسجّل المستخدم تلقائياً عند أول دخول (بدون عرض واجهة التسجيل).
+  /// يُنشئ اسماً فريداً ويُحفظ كل ما يمكن حفظه ليبقى متاحاً
+  /// في جميع البطاقات والفضاءات.
+  static Future<String> ensureRegistered() async {
+    final prefs = await SharedPreferences.getInstance();
+    final registered = prefs.getBool(_registeredKey) ?? false;
+    final existingName = prefs.getString(_nameKey);
+    if (registered && existingName != null && existingName.trim().isNotEmpty) {
+      await prefs.setBool(_key, true);
+      return existingName.trim();
+    }
+    var guest = prefs.getString(_guestNameKey);
+    if (guest == null || guest.trim().isEmpty) {
+      guest = 'زائر-${Random().nextInt(900000) + 100000}';
+      await prefs.setString(_guestNameKey, guest);
+    }
+    // حفظ الاسم تلقائياً لربطه بجميع البطاقات.
+    await prefs.setString(_nameKey, guest);
+    await prefs.setBool(_key, true);
+    await prefs.setBool(_registeredKey, true);
+    // حماية تلقائية: بيانات فارغة محفوظة لاستخدام الفضاءات لاحقاً.
+    if ((prefs.getString(_contactKey) ?? '').isEmpty) {
+      await prefs.setString(_contactKey, '');
+    }
+    if ((prefs.getString(_passwordKey) ?? '').isEmpty) {
+      await prefs.setString(_passwordKey, '');
+    }
+    return guest;
   }
 
   /// يعيد اسم المستخدم المسجّل إن وُجد، وإلا ينشئ اسماً افتراضياً فريداً
@@ -63,6 +130,9 @@ class SessionService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
     await prefs.remove(_nameKey);
+    await prefs.remove(_contactKey);
+    await prefs.remove(_passwordKey);
+    await prefs.remove(_registeredKey);
   }
 
   /// حالة المراقب (صلاحية كاملة) — يفعّلها المالك من إعدادات القاعة.
